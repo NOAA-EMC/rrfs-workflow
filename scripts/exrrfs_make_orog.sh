@@ -3,6 +3,9 @@ set -x
 
 source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 
+export TOPO_DIR="${FIXrrfs}/fix_orog"
+export FIXam=${FIXam:-${HOMErrfs}/fix/am}
+
 #
 #-----------------------------------------------------------------------
 #

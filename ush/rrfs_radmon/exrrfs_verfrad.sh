@@ -16,7 +16,7 @@ export FIXnam=${FIXnam:-${FIX_GSI}}
 
 #################################################################################
 
-export USHradmon=${USHradmon:-${USHdir}/rrfs_radmon}
+export USHradmon=${USHradmon:-${USHrrfs}/rrfs_radmon}
 
 #  Filenames
 export satype_file=${satype_file:-rrfs_radmon_satype.txt}
@@ -40,11 +40,11 @@ export UNCOMPRESS=${UNCOMPRESS:-"gunzip -f"}
 
 ###########################################################################
 # ensure work and TANK dirs exist, verify radstat and biascr are available
-echo "DATA dir =", $DATA
-if [[ ! -d ${DATA} ]]; then
-   mkdir $DATA
+echo "DATA dir =", $DATAradmon
+if [[ ! -d ${DATAradmon} ]]; then
+   mkdir $DATAradmon
 fi
-cd $DATA
+cd $DATAradmon
 echo " radstat " $radstat
 
 data_available=0

@@ -3,6 +3,11 @@ set -x
 
 source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 
+export FIXam=${FIXam:-${HOMErrfs}/fix/am}
+export FIXLAM=${FIXLAM:-${HOMErrfs}/fix/lam/RRFS_NA_3km}
+export FIX_GSI="${FIXrrfs}/gsi"
+export DCOMINgvf="${DCOMROOT}/viirs"
+
 export CRES=${CRES:-"C3463"}
 export PREDEF_GRID_NAME=${PREDEF_GRID_NAME:-"RRFS_NA_3km"}
 #
@@ -46,6 +51,7 @@ This is the ex-script for the prep_cyc tasks for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
+
 case $MACHINE in
 
   "WCOSS2")

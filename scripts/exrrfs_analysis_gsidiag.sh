@@ -47,6 +47,8 @@ the specified cycle.
 #
 ulimit -a
 
+export FIX_GSI="${FIXrrfs}/gsi"
+
 case $MACHINE in
 #
 "WCOSS2")
@@ -89,7 +91,6 @@ esac
 # Process shared_output_data from Umbrella DATA
 #-----------------------------------------------------------------------
 #
-export shared_output_data=${umbrella_analysis_data}/output
 if [ ! -r ${shared_output_data} ]; then
   echo "FATAL ERROR: Directory ${shared_output_data} is not available for this job"
 fi
@@ -324,7 +325,8 @@ if [ "${DO_RADMON}" = "TRUE" ]; then
 
      export RAD_AREA=${RAD_AREA:-rgn}
      export CYCLE_INTERVAL=${CYCLE_INTERVAL:-1}
-     export DATA=${DATA}/radmon
+     export DATAradmon=${DATA}/radmon
+     mkdir -p $DATAradmon
      export TANKverf_radM1=${TANKverf_radM1:-${TANKverf}/radmon.${PDY}}
 
      export GSI_MON_BIN=$EXECrrfs

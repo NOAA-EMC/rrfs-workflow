@@ -59,6 +59,14 @@ export OB_TYPE=${OB_TYPE}
 #
 ulimit -a
 
+# relocated package definitions
+export FIXam=${FIXam:-${HOMErrfs}/fix/am}
+export FIXLAM=${FIXLAM:-${HOMErrfs}/fix/lam/RRFS_NA_3km}
+export FIX_GSI="${FIXrrfs}/gsi"
+export AIRCRAFT_REJECT="${FIXrrfs}/gsi"
+export SFCOBS_USELIST="${FIXrrfs}/gsi"
+
+
 case $MACHINE in
 #
 "WCOSS2")

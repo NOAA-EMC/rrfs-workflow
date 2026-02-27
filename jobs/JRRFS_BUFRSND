@@ -8,8 +8,6 @@ set -xue
 # Specify Package Location
 #-----------------------------------------------------------------------
 export NET='rrfs'
-export MACHINE="WCOSS2"
-export WORKFLOW_MANAGER="ecflow"
 export HOMErrfs=${HOMErrfs:-""}
 export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
 export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
@@ -37,8 +35,6 @@ case "${WGF}" in
     export RUN="firewx"
     ;;
 esac
-export fhr=01
-export tmmark=tm00
 
 export DATA=${DATA:-${DATAROOT}/${jobid}}
 mkdir -p ${DATA}
@@ -84,11 +80,9 @@ on the output files corresponding to a specified forecast hour.
 
 if [ $WGF = "ensf" ]; then
   export ENSMEM_INDX=${MEMBER_NAME}
-  export FHRLIM=60
   DO_ENSFCST="TRUE"
 elif [ $WGF = "det" ]; then
   export ENSMEM_INDX=""
-  export FHRLIM=84
 fi
 export mem_num=m$(echo "${ENSMEM_INDX}")
 
