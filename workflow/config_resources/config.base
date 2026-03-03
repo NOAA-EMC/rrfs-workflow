@@ -88,6 +88,9 @@ export WALLTIME_FCST=${WALLTIME_FCST:-"00:50:00"}
 export NODES_SAVE_FOR_NEXT=${NODES_SAVE_FOR_NEXT:-"<nodes>1:ppn=1</nodes>"}
 export WALLTIME_SAVE_FOR_NEXT=${WALLTIME_SAVE_FOR_NEXT:-"00:50:00"}
 
+# save_for_next
+export NODES_SAVE_FOR_NEXT=${NODES_SAVE_FOR_NEXT:-"<nodes>1:ppn=40</nodes>"}
+
 # ensmean
 export NODES_ENSMEAN=${NODES_ENSMEAN:-"<nodes>2:ppn=40</nodes>"}
 export WALLTIME_ENSMEAN=${WALLTIME_ENSMEAN:-"00:60:00"}
