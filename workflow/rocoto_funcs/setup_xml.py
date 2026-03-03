@@ -182,6 +182,12 @@ def setup_xml(HOMErrfs, expdir):
         extra = "\nmodule use /work/noaa/zrtrr/gge/hercules/rocoto/modulefiles"
     elif machine in ['gaeac6']:
         extra = "\nmodule use /gpfs/f6/arfs-gsl/world-shared/gge/rocoto/modulefiles"
+    elif machine in ['ursa']:
+        extra = "\nmodule use /scratch4/BMC/zrtrr/gge/rocoto/modulefiles"
+    elif machine in ['hera']:
+        extra = "\nmodule use /scratch4/BMC/zrtrr/gge/rocoto_hera/modulefiles"
+    elif machine in ['jet']:
+        extra = "\nmodule use /lfs5/BMC/nrtrr/gge/rocoto/modulefiles"
     elif machine in ['wcoss2']:
         extra = "\nmodule use /apps/ops/test/nco/modulefiles/core"
     elif machine in ['derecho']:
