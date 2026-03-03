@@ -199,10 +199,7 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
        else
          cycmaj=18
        fi
-       for completed_ensinit_member in $(seq 1 30); do
-         completed_ensinit_member_3d=$( printf "%03d" "${completed_ensinit_member}" )
-         ecflow_client --force=complete /rrfs_dev/primary/${cycmaj}/rrfs/v1.0/${cyc}/forecast/enkf/jrrfs_enkf_forecast_ensinit_mem${completed_ensinit_member_3d} /rrfs_dev/primary/${cycmaj}/rrfs/v1.0/${cyc}/forecast/enkf/jrrfs_enkf_save_restart_ensinit_mem${completed_ensinit_member_3d}
-       done
+       ecflow_client --event skip_ensinit
      fi
 
      # F2Py shared object files to PYTHONPATH
