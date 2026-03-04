@@ -16,7 +16,7 @@ export cyc="%CYC%"
 # Load modules
 ############################################################
 module load intel/${intel_ver}
-module load craype/${craypepinup.ecf
+module load craype/${craype_ver}
 module load ve/rrfs/${rrfs_pythonve_ver}
 module load cray-mpich/${cray_mpich_ver}
 module load cray-pals/${cray_pals_ver}
