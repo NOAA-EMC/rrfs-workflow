@@ -57,7 +57,7 @@ def recenter(xmlFile, expdir):
       <and>{strneqs}
       </and>
     </or>
-    <metataskdep metatask="prep_ic"/>
+    <taskdep task="prep_ic"/>
   </and>
   </dependency>'''
     #

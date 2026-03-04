@@ -52,7 +52,7 @@ def getkf(xmlFile, expdir, taskType):
         dependencies = f'''
   <dependency>
   <and>{timedep}
-    <metataskdep metatask="prep_ic"/>
+    <taskdep task="prep_ic"/>
     {iodadep}
     {recenterdep}
   </and>

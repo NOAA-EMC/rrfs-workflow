@@ -66,7 +66,7 @@ export NODES_IC=${NODES_IC:-"<nodes>1:ppn=40</nodes>"}
 export NODES_LBC=${NODES_LBC:-"<nodes>1:ppn=40</nodes>"}
 
 # prep_ic
-export NODES_PREP_IC=${NODES_PREP_IC:-"<nodes>1:ppn=1</nodes>"}
+export NODES_PREP_IC=${NODES_PREP_IC:-"<nodes>1:ppn=40</nodes>"}
 export WALLTIME_PREP_IC=${WALLTIME_PREP_IC:-"00:10:00"}
 
 # prep_lbc
