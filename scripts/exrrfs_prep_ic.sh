@@ -55,7 +55,7 @@ for index in "${mem_list[@]}"; do
     pid=$((10#${index}-1))
     export CMDFILE="${DATA}/script_prep_ic_${pid}.sh"
   fi
-  echo $CMDFILE, $memdir
+  echo "$CMDFILE", "$memdir"
 
 
 if [[ "${start_type}" == "cold" ]]; then
