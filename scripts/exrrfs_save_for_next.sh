@@ -49,8 +49,6 @@ done
 ${cpreq} "${EXECrrfs}"/rank_run.x .
 ${MPI_RUN_CMD} rank_run.x "$CMDFILE"
 
-export err=$?
-
 # Check for errors
 export err=$?
 if (( err != 0 )) ; then
