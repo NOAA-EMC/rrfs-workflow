@@ -44,11 +44,11 @@ fi
 done
 
 #
-# use xargs to run the command using  one core at a time (this takes a long time!)
+# parallel run the serial tasks
 #
-echo "===== CMDFILE ====="
-cat  "$CMDFILE"
-xargs -I {} -P "${NTASKS}" sh -c '{}' < "$CMDFILE"
+${cpreq} "${EXECrrfs}"/rank_run.x .
+${MPI_RUN_CMD} rank_run.x "$CMDFILE"
+
 export err=$?
 
 # Check for errors
