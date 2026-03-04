@@ -126,9 +126,9 @@ for hr in ${SFC_UPDATE_CYCS:-"99"}; do
         to_file="${umbrella_prep_ic_mem}/mpasout.nc"
       fi
       echo "surface update from ${thisfile} to ${to_file}"
-      echo ncks -O -C -x -v ${var_list} "${to_file}"  tmp.nc  >> "$CMDFILE"
-      echo ncks -A -v ${var_list} "${umbrella_prep_ic_mem}/mpas_sfc.nc" tmp.nc  >> "$CMDFILE"
-      echo mv tmp.nc "${to_file}"  >> "$CMDFILE"
+      echo " ncks -O -C -x -v ${var_list} \"${to_file}\"  tmp.nc ; \
+             ncks -A -v ${var_list} \"${umbrella_prep_ic_mem}/mpas_sfc.nc\" tmp.nc ; \
+             mv tmp.nc \"${to_file}\" " >>  "$CMDFILE"
     else
       echo "SFC_UPDATE failed, cannot find warm start file: ${thisfile}"
     fi
