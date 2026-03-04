@@ -26,6 +26,7 @@ cyc=${CDATE:8:2}
 logroot=${COMROOT}/${NET}/${VERSION}/logs
 logfile="${logroot}/${RUN}.${PDY}/${cyc}/${WGF}/${RUN}_${taskraw}_${TAG}_${PDY}${cyc}.log"
 echo "----log file:"
+echo "${logroot}/${RUN}.${PDY}/${cyc}/${WGF}/rrfs.log"
 ls ${logfile}*
 
 echo -e  "\n---com output:"
