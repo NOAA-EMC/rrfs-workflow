@@ -10,7 +10,6 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
     #  0 = no parallel spinup cycles in the experiment
     #  1 = a spinup cycle
     # -1 = a prod cycle parallel to spinup cycles
-    meta_id = 'prep_ic'
     if spinup_mode == 1:
         cycledefs = 'spinup'
         num_spinup_cycledef = os.getenv('NUM_SPINUP_CYCLEDEF', '1')
@@ -31,13 +30,10 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
     }
     if spinup_mode != 0:
         dcTaskEnv['SPINUP_MODE'] = f'{spinup_mode}'
-    metatask = False
     if spinup_mode == 1:
-        task_id = f'{meta_id}_spinup'
+        task_id = 'prep_ic_spinup'
     else:
-        task_id = f'{meta_id}'
-    meta_bgn = ""
-    meta_end = ""
+        task_id = 'prep_ic'
 
     if do_ensemble:
         ens_size = int(os.getenv('ENS_SIZE', '2'))
@@ -165,6 +161,5 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
   </and>
   </dependency>'''
     #
-    xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv, dependencies,
-             metatask, meta_id, meta_bgn, meta_end, "PREP_IC")
+    xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv, dependencies, command_id="PREP_IC")
 # end of fcst --------------------------------------------------------
