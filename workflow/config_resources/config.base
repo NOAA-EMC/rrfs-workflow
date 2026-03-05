@@ -66,7 +66,11 @@ export NODES_IC=${NODES_IC:-"<nodes>1:ppn=40</nodes>"}
 export NODES_LBC=${NODES_LBC:-"<nodes>1:ppn=40</nodes>"}
 
 # prep_ic
-export NODES_PREP_IC=${NODES_PREP_IC:-"<nodes>1:ppn=40</nodes>"}
+if ${DO_ENSEMBLE:-false}; then
+  export NODES_PREP_IC=${NODES_PREP_IC:-"<nodes>1:ppn=40</nodes>"}
+else
+  export NODES_PREP_IC=${NODES_PREP_IC:-"<nodes>1:ppn=1</nodes>"}
+fi
 export WALLTIME_PREP_IC=${WALLTIME_PREP_IC:-"00:10:00"}
 
 # prep_lbc
