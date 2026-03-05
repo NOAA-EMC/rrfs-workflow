@@ -55,7 +55,6 @@ for index in "${mem_list[@]}"; do # loop through all the members
     pid=$((10#${index}-1))
     export CMDFILE="${DATA}/script_prep_ic_${pid}.sh"
   fi
-  echo "$CMDFILE", "$memdir"
 
   if [[ "${start_type}" == "cold" ]]; then
     thisfile=${COMINrrfs}/${RUN}.${PDY}/${cyc}/ic/${WGF}${memdir}/init.nc
