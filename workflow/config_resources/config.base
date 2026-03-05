@@ -84,8 +84,12 @@ export WALLTIME_NONVAR_CLDANA=${WALLTIME_NONVAR_CLDANA:-"00:20:00"}
 export NODES_FCST=${NODES_FCST:-"<nodes>3:ppn=40</nodes>"}
 export WALLTIME_FCST=${WALLTIME_FCST:-"00:50:00"}
 
-# fcst
-export NODES_SAVE_FOR_NEXT=${NODES_SAVE_FOR_NEXT:-"<nodes>1:ppn=1</nodes>"}
+# save_for_next
+if ${DO_ENSEMBLE:-false}; then
+  export NODES_SAVE_FOR_NEXT=${NODES_SAVE_FOR_NEXT:-"<nodes>1:ppn=40</nodes>"}
+else
+  export NODES_SAVE_FOR_NEXT=${NODES_SAVE_FOR_NEXT:-"<nodes>1:ppn=1</nodes>"}
+fi
 export WALLTIME_SAVE_FOR_NEXT=${WALLTIME_SAVE_FOR_NEXT:-"00:50:00"}
 
 # ensmean
