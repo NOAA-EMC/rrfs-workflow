@@ -38,7 +38,7 @@ for memdir in "${mem_list[@]}"; do
 # save to com
 if [[ "${mpasout_interval,,}" != "none"  ]]; then
   mpasout_path=$(realpath "${mpasout_file}")
-  echo "${cpreq}" "${mpasout_path}" "${comoutdir}/." >> "${CMDFILE}"
+  echo "${cpreq} ${mpasout_path} ${comoutdir}/." >> "${CMDFILE}"
 fi
 
 done
