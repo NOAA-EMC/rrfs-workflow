@@ -68,16 +68,16 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
         datadep_prod = ""
         for i in range(1, int(ens_size) + 1):
             memdirstr = f'/mem{i:03d}'
-            datadep_prod = datadep_prod + f'''\n        <datadep age="00:05:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;{memdirstr}/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
+            datadep_prod = datadep_prod + f'''\n      <datadep age="00:05:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;{memdirstr}/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
     else:
-        datadep_prod = f'''\n        <datadep age="00:05:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
+        datadep_prod = f'''\n      <datadep age="00:05:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
 
     datadep_spinup = f'''\n      <taskdep task="fcst_spinup" cycle_offset="-1:00:00"/>'''
     if spinup_mode == 0:  # no parallel spinup cycles
         datadep = datadep_prod
     elif spinup_mode == 1:  # a spinup cycle
         datadep = datadep_spinup
-    else:  # a prod cycle paralle to spinup cycles
+    else:  # spinup_mode == -1, i.e. a prod cycle paralle to spinup cycles
         datadep = "whatever"  # dependencies will be rewritten near the end of this file
 
     #
@@ -143,7 +143,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
             strneqs = strneqs + f"\n      <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
         streqs = streqs.lstrip('\n')
         strneqs = strneqs.lstrip('\n')
-        datadep_spinup = datadep_spinup.lstrip('\n')[2:]
+        datadep_spinup = datadep_spinup.lstrip('\n')
         dependencies = f'''
   <dependency>
   <and>{timedep}
