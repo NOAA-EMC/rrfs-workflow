@@ -42,7 +42,7 @@ else
   mem_list=("000") # if determinitic
 fi
 
-for index in "${mem_list[@]}"; do
+for index in "${mem_list[@]}"; do # loop through all the members
   # Determine path
   if (( 10#${index} == 0 )); then
     memdir=""
@@ -57,115 +57,112 @@ for index in "${mem_list[@]}"; do
   fi
   echo "$CMDFILE", "$memdir"
 
-
-if [[ "${start_type}" == "cold" ]]; then
-  thisfile=${COMINrrfs}/${RUN}.${PDY}/${cyc}/ic/${WGF}${memdir}/init.nc
-  if [[ -r ${thisfile} ]]; then
-    echo "${cpreq}" "${thisfile}" "${umbrella_prep_ic_mem}/init.nc" >> "$CMDFILE"
-    echo "cold start from ${thisfile}"
-  else
-    echo "FATAL ERROR: PREP_IC failed, cannot find cold start file: ${thisfile}"
-    err_exit
-  fi
-elif [[ "${start_type}" == "warm" ]]; then
-  thisfile="undefined"
-  if (( spinup_mode == 1 ));  then
-    NUM=1 # only use the previous cycle mpasout.nc
-    fcststr="fcst_spinup"
-  else
-    NUM=3
-    if [[ "${prod_switch:-"no"}" == "yes" ]]; then
+  if [[ "${start_type}" == "cold" ]]; then
+    thisfile=${COMINrrfs}/${RUN}.${PDY}/${cyc}/ic/${WGF}${memdir}/init.nc
+    if [[ -r ${thisfile} ]]; then
+      echo "${cpreq} ${thisfile} ${umbrella_prep_ic_mem}/init.nc" >> "$CMDFILE"
+      echo "cold start from ${thisfile}"
+    else
+      echo "FATAL ERROR: PREP_IC failed, cannot find cold start file: ${thisfile}"
+      err_exit
+    fi
+  elif [[ "${start_type}" == "warm" ]]; then
+    thisfile="undefined"
+    if (( spinup_mode == 1 ));  then
+      NUM=1 # only use the previous cycle mpasout.nc
       fcststr="fcst_spinup"
     else
-      fcststr="fcst"
+      NUM=3
+      if [[ "${prod_switch:-"no"}" == "yes" ]]; then
+        fcststr="fcst_spinup"
+      else
+        fcststr="fcst"
+      fi
     fi
-  fi
-  for (( ii=cyc_interval; ii<=$(( NUM*cyc_interval )); ii=ii+cyc_interval )); do
-    CDATEp=$(${NDATE} -${ii} "${CDATE}" )
-    PDYii=${CDATEp:0:8}
-    cycii=${CDATEp:8:2}
-    thisfile=${COMINrrfs}/${RUN}.${PDYii}/${cycii}/${fcststr}/${WGF}${memdir}/mpasout.${timestr}.nc
-    if [[ -r ${thisfile} ]]; then
-      break
-    fi
-  done
-  if [[ -r ${thisfile} ]]; then
-    echo "${cpreq}" "${thisfile}" "${umbrella_prep_ic_mem}/mpasout.nc"  >> "$CMDFILE"
-    echo "warm start from ${thisfile}"
-  else
-    echo "FATAL ERROR: PREP_IC failed, cannot find warm start file: ${thisfile}"
-    err_exit
-  fi
-else
-  echo "FATAL ERROR: PREP_IC failed, start type is not defined"
-  err_exit
-fi
-
-#
-# do sfc cycling
-#
-for hr in ${SFC_UPDATE_CYCS:-"99"}; do
-  shr=$(printf '%02d' $((10#$hr)) )
-  var_list="smois,snow,snowh,snowc,sst,canwat,tslb,skintemp,landmask,isltyp,ivgtyp,soilt1"
-  if [ "${cyc}" == "${shr}" ]; then
-    NUM=3 # look back ${NUM} cycles to find mpasout files for surface cycling
     for (( ii=cyc_interval; ii<=$(( NUM*cyc_interval )); ii=ii+cyc_interval )); do
       CDATEp=$(${NDATE} -${ii} "${CDATE}" )
       PDYii=${CDATEp:0:8}
       cycii=${CDATEp:8:2}
-      thisfile=${COMINrrfs}/${RUN}.${PDYii}/${cycii}/fcst/${WGF}${memdir}/mpasout.${timestr}.nc
+      thisfile=${COMINrrfs}/${RUN}.${PDYii}/${cycii}/${fcststr}/${WGF}${memdir}/mpasout.${timestr}.nc
       if [[ -r ${thisfile} ]]; then
         break
       fi
     done
     if [[ -r ${thisfile} ]]; then
-      echo "${cpreq}" "${thisfile}" "${umbrella_prep_ic_mem}/mpas_sfc.nc" >> "$CMDFILE"
-      if [[ -r "${umbrella_prep_ic_mem}/init.nc" ]]; then
-        to_file="${umbrella_prep_ic_mem}/init.nc"
-      elif [[ -r "${umbrella_prep_ic_mem}/mpasout.nc" ]]; then
-        to_file="${umbrella_prep_ic_mem}/mpasout.nc"
-      fi
-      echo "surface update from ${thisfile} to ${to_file}"
-      echo " ncks -O -C -x -v ${var_list} \"${to_file}\"  tmp.nc ; \
-             ncks -A -v ${var_list} \"${umbrella_prep_ic_mem}/mpas_sfc.nc\" tmp.nc ; \
-             mv tmp.nc \"${to_file}\" " >>  "$CMDFILE"
+      echo "${cpreq} ${thisfile} ${umbrella_prep_ic_mem}/mpasout.nc"  >> "$CMDFILE"
+      echo "warm start from ${thisfile}"
     else
-      echo "SFC_UPDATE failed, cannot find warm start file: ${thisfile}"
+      echo "FATAL ERROR: PREP_IC failed, cannot find warm start file: ${thisfile}"
+      err_exit
     fi
-  fi
-done
-
-#
-#  find the right satbias file
-#
-PREP_IC_TYPE=${PREP_IC_TYPE:-"no_da"}
-if [[ "${PREP_IC_TYPE}" == "jedivar" ]] || [[ "${PREP_IC_TYPE}" == "getkf"  ]]; then
-  if ( (( spinup_mode == 1 )) && [[ "${start_type}" == "warm" ]] ) || \
-     ( (( spinup_mode == -1 )) && [[ "${prod_switch:-"no"}" == "yes" ]] ); then
-    # warm start in the spinup session or prod_switch in the prod session
-      spinup_str="_spinup"
   else
-      spinup_str=""
+    echo "FATAL ERROR: PREP_IC failed, start type is not defined"
+    err_exit
   fi
-
-  NUM=5 # look back ${NUM} cycles to find satbias files
-  if [[ "${USE_THE_LATEST_SATBIAS:-"FALSE"}" == "TRUE" ]]; then # only use the latest satbias from the previous cycle
-    NUM=1
-  fi
-
-  for (( ii=cyc_interval; ii<=$(( NUM*cyc_interval )); ii=ii+cyc_interval )); do
-    CDATEp=$(${NDATE} -${ii} "${CDATE}" )
-    PDYii=${CDATEp:0:8}
-    cycii=${CDATEp:8:2}
-    satbias_path=${COMINrrfs}/${RUN}.${PDYii}/${cycii}/${PREP_IC_TYPE}${spinup_str}/${WGF}
-    nSatbias=$(find "${satbias_path}"/*satbias*.nc | wc -l)
-    if (( nSatbias > 0 )); then
-      echo cp "${satbias_path}"/*satbias*.nc  "${umbrella_prep_ic_mem}" >> "$CMDFILE"
-      echo "found satbias from ${satbias_path}"
-      break
+  #
+  # do sfc cycling
+  #
+  for hr in ${SFC_UPDATE_CYCS:-"99"}; do
+    shr=$(printf '%02d' $((10#$hr)) )
+    var_list="smois,snow,snowh,snowc,sst,canwat,tslb,skintemp,landmask,isltyp,ivgtyp,soilt1"
+    if [ "${cyc}" == "${shr}" ]; then
+      NUM=3 # look back ${NUM} cycles to find mpasout files for surface cycling
+      for (( ii=cyc_interval; ii<=$(( NUM*cyc_interval )); ii=ii+cyc_interval )); do
+        CDATEp=$(${NDATE} -${ii} "${CDATE}" )
+        PDYii=${CDATEp:0:8}
+        cycii=${CDATEp:8:2}
+        thisfile=${COMINrrfs}/${RUN}.${PDYii}/${cycii}/fcst/${WGF}${memdir}/mpasout.${timestr}.nc
+        if [[ -r ${thisfile} ]]; then
+          break
+        fi
+      done
+      if [[ -r ${thisfile} ]]; then
+        echo "${cpreq}" "${thisfile}" "${umbrella_prep_ic_mem}/mpas_sfc.nc" >> "$CMDFILE"
+        if [[ -r "${umbrella_prep_ic_mem}/init.nc" ]]; then
+          to_file="${umbrella_prep_ic_mem}/init.nc"
+        elif [[ -r "${umbrella_prep_ic_mem}/mpasout.nc" ]]; then
+          to_file="${umbrella_prep_ic_mem}/mpasout.nc"
+        fi
+        echo "surface update from ${thisfile} to ${to_file}"
+        echo " ncks -O -C -x -v ${var_list} \"${to_file}\"  tmp.nc ; \
+               ncks -A -v ${var_list} \"${umbrella_prep_ic_mem}/mpas_sfc.nc\" tmp.nc ; \
+               mv tmp.nc \"${to_file}\" " >>  "$CMDFILE"
+      else
+        echo "SFC_UPDATE failed, cannot find warm start file: ${thisfile}"
+      fi
     fi
   done
-fi
+  #
+  #  find the right satbias file
+  #
+  PREP_IC_TYPE=${PREP_IC_TYPE:-"no_da"}
+  if [[ "${PREP_IC_TYPE}" == "jedivar" ]] || [[ "${PREP_IC_TYPE}" == "getkf"  ]]; then
+    if ( (( spinup_mode == 1 )) && [[ "${start_type}" == "warm" ]] ) || \
+       ( (( spinup_mode == -1 )) && [[ "${prod_switch:-"no"}" == "yes" ]] ); then
+      # warm start in the spinup session or prod_switch in the prod session
+        spinup_str="_spinup"
+    else
+        spinup_str=""
+    fi
+
+    NUM=5 # look back ${NUM} cycles to find satbias files
+    if [[ "${USE_THE_LATEST_SATBIAS:-"FALSE"}" == "TRUE" ]]; then # only use the latest satbias from the previous cycle
+      NUM=1
+    fi
+
+    for (( ii=cyc_interval; ii<=$(( NUM*cyc_interval )); ii=ii+cyc_interval )); do
+      CDATEp=$(${NDATE} -${ii} "${CDATE}" )
+      PDYii=${CDATEp:0:8}
+      cycii=${CDATEp:8:2}
+      satbias_path=${COMINrrfs}/${RUN}.${PDYii}/${cycii}/${PREP_IC_TYPE}${spinup_str}/${WGF}
+      nSatbias=$(find "${satbias_path}"/*satbias*.nc | wc -l)
+      if (( nSatbias > 0 )); then
+        echo "cp ${satbias_path}/*satbias*.nc  ${umbrella_prep_ic_mem}" >> "$CMDFILE"
+        echo "found satbias from ${satbias_path}"
+        break
+      fi
+    done
+  fi
 
 done # done for all the members
 
