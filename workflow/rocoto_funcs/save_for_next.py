@@ -6,25 +6,15 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 
 
 def save_for_next(xmlFile, expdir, do_ensemble=False, do_spinup=False):
-    meta_id = 'save_for_next'
     cyc_interval = os.getenv('CYC_INTERVAL')
-    if do_spinup:
-        cycledefs = 'spinup'
-    else:
-        cycledefs = 'prod'
+    cycledefs = 'prod'
+    task_id = 'save_for_next'
+
     # Task-specific EnVars beyond the task_common_vars
     dcTaskEnv = {
         'MPASOUT_INTERVAL': os.getenv('MPASOUT_INTERVAL', '1'),
         'CYC_INTERVAL': os.getenv('CYC_INTERVAL', '3'),
     }
-
-    metatask = False
-    if do_spinup:
-        task_id = f'{meta_id}_spinup'
-    else:
-        task_id = f'{meta_id}'
-    meta_bgn = ""
-    meta_end = ""
 
     if do_ensemble:
         ens_size = int(os.getenv('ENS_SIZE', '2'))
@@ -38,10 +28,7 @@ def save_for_next(xmlFile, expdir, do_ensemble=False, do_spinup=False):
             memdirstr = f'/mem{i:03d}'
             datadep = datadep + f'''\n<datadep age="00:01:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_@H_&rrfs_ver;/&WGF;{memdirstr}</cyclestr><cyclestr offset="{cyc_interval}:00:00">/mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'''
     else:
-        if do_spinup:
-            datadep = f'''<datadep age="00:01:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_spinup_@H_&rrfs_ver;/&WGF;</cyclestr><cyclestr offset="{cyc_interval}:00:00">/mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'''
-        else:
-            datadep = f'''<datadep age="00:01:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_@H_&rrfs_ver;/&WGF;</cyclestr><cyclestr offset="{cyc_interval}:00:00">/mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'''
+        datadep = f'''<datadep age="00:01:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_@H_&rrfs_ver;/&WGF;</cyclestr><cyclestr offset="{cyc_interval}:00:00">/mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'''
 
     timedep = ""
     realtime = os.getenv("REALTIME", "false")
@@ -57,6 +44,5 @@ def save_for_next(xmlFile, expdir, do_ensemble=False, do_spinup=False):
   </dependency>'''
 
     #
-    xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv, dependencies,
-             metatask, meta_id, meta_bgn, meta_end, "SAVE_FOR_NEXT")
+    xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv, dependencies, command_id="SAVE_FOR_NEXT")
 # end of fcst --------------------------------------------------------
