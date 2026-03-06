@@ -63,7 +63,10 @@ def setup_xml(HOMErrfs, expdir):
 
 # ---------------------------------------------------------------------------
 # assemble tasks for a deterministic experiment
-        if do_deterministic == "TRUE":
+        if do_deterministic == "TRUE" and os.getenv("IC_ONLY", "FALSE").upper() == "TRUE":
+            ungrib_ic(xmlFile, expdir)
+            ic(xmlFile, expdir)
+        elif do_deterministic == "TRUE":
             if os.getenv("DO_IODA", "FALSE").upper() == "TRUE":
                 if do_chemistry == "TRUE":
                     ioda_airnow(xmlFile, expdir)
