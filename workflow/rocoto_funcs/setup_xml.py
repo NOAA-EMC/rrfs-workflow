@@ -150,7 +150,8 @@ def setup_xml(HOMErrfs, expdir):
             if os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
                 getkf(xmlFile, expdir, 'OBSERVER')
                 getkf(xmlFile, expdir, 'SOLVER')
-                getkf(xmlFile, expdir, 'POST')
+                if os.getenv("DO_GETKF_POST", "TRUE").upper() == "TRUE":
+                    getkf(xmlFile, expdir, 'POST')
             if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
                 nonvar_cldana(xmlFile, expdir, do_ensemble=True)
             fcst(xmlFile, expdir, do_ensemble=True)
