@@ -86,7 +86,7 @@ source "${USHrrfs}/find_ensembles.sh"
 #
 # For HYB_ENS_TYPE=0, check number of ensemble files, if not enough, default to pure 3DVar
 #
-if [[ ${HYB_ENS_TYPE} == 0 ]]; then
+if (( HYB_ENS_TYPE == 0 )) ; then
   ens_size=$(( 10#${ENS_SIZE} ))
   ens_count=$(find ens -name "mem*.nc" | wc -l)
   if (( ens_count < ens_size )); then
