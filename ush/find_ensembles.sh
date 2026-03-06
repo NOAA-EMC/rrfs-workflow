@@ -2,7 +2,6 @@
 # find ensemble forecasts based on user settings
 #
 # shellcheck disable=SC2154,SC2153
-set -x
 if [[ "${HYB_WGT_ENS}" != "0" ]] && [[ "${HYB_WGT_ENS}" != "0.0" ]]; then # using ensembles
   mpasout_file=mpasout.${timestr}.nc
   enshrs=$(( 10#${ENS_BEC_LOOK_BACK_HRS} + 1 ))
@@ -50,11 +49,11 @@ if [[ "${HYB_WGT_ENS}" != "0" ]] && [[ "${HYB_WGT_ENS}" != "0.0" ]]; then # usin
        fi
      fi
 # Break if we actually found and linked files
-     if [[ "$found_data" == "true" ]]; then break; fi
+     if [[ "${found_data}" == "true" ]]; then break; fi
   done
 
 # Check if we failed to find data after checking all enshrs
-  if [[ "$found_data" == "false" ]]; then
+  if [[ "${found_data}" == "false" ]]; then
     echo "No ensemble files found within the ${enshrs} hour look-back window."
   fi
 
