@@ -38,8 +38,8 @@ def save_for_next(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     #
     dependencies = f'''
   <dependency>
-    <and>{timedep}{datadep}
-    </and>
+  <and>{timedep}{datadep}
+  </and>
   </dependency>'''
 
     #
