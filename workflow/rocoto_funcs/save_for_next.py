@@ -37,7 +37,9 @@ def save_for_next(xmlFile, expdir, do_ensemble=False, do_spinup=False):
         timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
     #
     dependencies = f'''
-  <dependency>{timedep}{datadep}
+  <dependency>
+  <and>{timedep}{datadep}
+  </and>
   </dependency>'''
 
     #
