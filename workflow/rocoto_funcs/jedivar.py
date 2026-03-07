@@ -75,13 +75,9 @@ def jedivar(xmlFile, expdir, do_spinup=False):
         HYB_ENS_PATH = f'&COMROOT;/{NET}/{VERSION}'
 
     ens_dep = ""
-    need_ens_dep = False
-    if realtime.upper() == "TRUE":
-        ens_dep = ""
 
-    elif HYB_WGT_ENS != "0" and HYB_WGT_ENS != "0.0" and HYB_ENS_TYPE == "1":  # rrfsens
+    if HYB_WGT_ENS != "0" and HYB_WGT_ENS != "0.0" and HYB_ENS_TYPE == "1":  # rrfsens
         RUN = 'rrfs'
-        need_ens_dep = True
         for enshrs in range(1, int(ens_bec_look_back_hrs) + 1):
             for i in range(1, int(ens_size) + 1):
                 ensindexstr = f'mem{i:03d}'
@@ -89,7 +85,6 @@ def jedivar(xmlFile, expdir, do_spinup=False):
 
     elif HYB_WGT_ENS != "0" and HYB_WGT_ENS != "0.0" and HYB_ENS_TYPE == "2":  # interpolated GDAS/GEFS
         RUN = 'rrfs'
-        need_ens_dep = True
         ens_dep = f'''
     <or>
       <datadep age="00:05:00"><cyclestr  offset="0:00:00">{HYB_ENS_PATH}/{RUN}.@Y@m@d/@H/ic/enkf/mem030/init.nc</cyclestr></datadep>
@@ -116,7 +111,7 @@ def jedivar(xmlFile, expdir, do_spinup=False):
     coldhrs = coldhrs.split(' ')
     strneqs = ""
     streqs = ""
-    if need_ens_dep and coldstart_cyc_do_da.upper() == "FALSE":  # if no DA at coldstart cycs, skip checking ensembles
+    if coldstart_cyc_do_da.upper() == "FALSE":  # if no DA at coldstart cycs, skip checking ensembles
         spaces = " " * 6
         streqs = '<or>'
         strneqs = ""
