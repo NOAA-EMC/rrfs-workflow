@@ -5,7 +5,7 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 # begin of ensmean --------------------------------------------------------
 
 
-def ensmean(xmlFile, expdir):
+def ensmean(xmlFile, fcst_dep, expdir):
     meta_id = 'ensmean'
     cycledefs = 'prod'
     #
@@ -42,8 +42,7 @@ def ensmean(xmlFile, expdir):
     #
     dependencies = f'''
   <dependency>
-  <and>{timedep}
-    <metataskdep metatask="fcst"/>
+  <and>{timedep}{fcst_dep}
   </and>
   </dependency>'''
     #

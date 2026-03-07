@@ -14,6 +14,7 @@ from rocoto_funcs.prep_ic import prep_ic
 from rocoto_funcs.prep_lbc import prep_lbc
 from rocoto_funcs.jedivar import jedivar
 from rocoto_funcs.fcst import fcst
+from rocoto_funcs.smart_ens_groups import smart_ens_groups
 from rocoto_funcs.save_for_next import save_for_next
 from rocoto_funcs.getkf import getkf
 from rocoto_funcs.recenter import recenter
@@ -63,7 +64,10 @@ def setup_xml(HOMErrfs, expdir):
 
 # ---------------------------------------------------------------------------
 # assemble tasks for a deterministic experiment
-        if do_deterministic == "TRUE":
+        if do_deterministic == "TRUE" and os.getenv("IC_ONLY", "FALSE").upper() == "TRUE":
+            ungrib_ic(xmlFile, expdir)
+            ic(xmlFile, expdir)
+        elif do_deterministic == "TRUE":
             if os.getenv("DO_IODA", "FALSE").upper() == "TRUE":
                 if do_chemistry == "TRUE":
                     ioda_airnow(xmlFile, expdir)
@@ -147,10 +151,13 @@ def setup_xml(HOMErrfs, expdir):
             if os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
                 getkf(xmlFile, expdir, 'OBSERVER')
                 getkf(xmlFile, expdir, 'SOLVER')
-                getkf(xmlFile, expdir, 'POST')
+                if os.getenv("DO_GETKF_POST", "TRUE").upper() == "TRUE":
+                    getkf(xmlFile, expdir, 'POST')
             if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
                 nonvar_cldana(xmlFile, expdir, do_ensemble=True)
-            fcst(xmlFile, expdir, do_ensemble=True)
+            listGrpInfo = smart_ens_groups('fcst')
+            for dcGrpInfo in listGrpInfo["group_list"]:
+                fcst(xmlFile, expdir, dcGrpInfo, do_ensemble=True)
             if os.getenv('DO_CYC', 'FALSE').upper() == "TRUE":
                 save_for_next(xmlFile, expdir, do_ensemble=True)
             if os.getenv("DO_POST", "TRUE").upper() == "TRUE":
@@ -158,7 +165,8 @@ def setup_xml(HOMErrfs, expdir):
                     mpassit(xmlFile, expdir, index, dcGrpInfo, do_ensemble=True)
                     upp(xmlFile, expdir, index, dcGrpInfo, do_ensemble=True)
             if do_ensmean_post == "TRUE":
-                ensmean(xmlFile, expdir)
+                fcst_dep = listGrpInfo["combined_dependency_xml"]
+                ensmean(xmlFile, fcst_dep, expdir)
                 for index, dcGrpInfo in enumerate(listPostGrpInfo):
                     mpassit(xmlFile, expdir, index, dcGrpInfo, do_ensemble=True, do_ensmean_post=True)
                     upp(xmlFile, expdir, index, dcGrpInfo, do_ensemble=True, do_ensmean_post=True)

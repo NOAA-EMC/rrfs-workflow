@@ -5,8 +5,9 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 # begin of fcst --------------------------------------------------------
 
 
-def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
+def fcst(xmlFile, expdir, dcGrpInfo=None, do_ensemble=False, do_spinup=False):
     meta_id = 'fcst'
+    dep_xml=""
     if do_spinup:
         cycledefs = 'spinup'
         num_spinup_cycledef = os.getenv('NUM_SPINUP_CYCLEDEF', '1')
@@ -59,16 +60,18 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
         meta_end = ""
         ensindexstr = ""
     else:
+        members = dcGrpInfo["members"]
+        dep_xml = dcGrpInfo["dependency_xml"]
+        batch_name = dcGrpInfo["batch_name"]
         metatask = True
         task_id = f'{meta_id}_m#ens_index#'
         dcTaskEnv['ENS_INDEX'] = "#ens_index#"
         meta_bgn = ""
         meta_end = ""
         ens_size = int(os.getenv('ENS_SIZE', '2'))
-        ens_indices = ''.join(f'{i:03d} ' for i in range(1, int(ens_size) + 1)).strip()
         meta_bgn = f'''
-<metatask name="{meta_id}">
-<var name="ens_index">{ens_indices}</var>'''
+<metatask name="{batch_name}">
+<var name="ens_index">{members}</var>'''
         meta_end = f'\
 </metatask>\n'
         ensindexstr = "_m#ens_index#"
@@ -111,7 +114,7 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     dependencies = f'''
   <dependency>
   <and>{timedep}{prep_lbc_dep}
-    {prep_ic_dep}{jedidep}{chemdep}{cloudana_dep}{recenterdep}
+    {prep_ic_dep}{jedidep}{chemdep}{cloudana_dep}{recenterdep}{dep_xml}
   </and>
   </dependency>'''
 
