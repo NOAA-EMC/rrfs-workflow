@@ -7,7 +7,7 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 
 def fcst(xmlFile, expdir, dcGrpInfo=None, do_ensemble=False, do_spinup=False):
     meta_id = 'fcst'
-    dep_xml=""
+    dep_xml = ""
     if do_spinup:
         cycledefs = 'spinup'
         num_spinup_cycledef = os.getenv('NUM_SPINUP_CYCLEDEF', '1')
@@ -68,7 +68,6 @@ def fcst(xmlFile, expdir, dcGrpInfo=None, do_ensemble=False, do_spinup=False):
         dcTaskEnv['ENS_INDEX'] = "#ens_index#"
         meta_bgn = ""
         meta_end = ""
-        ens_size = int(os.getenv('ENS_SIZE', '2'))
         meta_bgn = f'''
 <metatask name="{batch_name}">
 <var name="ens_index">{members}</var>'''

@@ -15,7 +15,7 @@ def smart_ens_groups(meta_id):
     groups = [all_indices[i * k + min(i, m): (i + 1) * k + min(i + 1, m)] for i in range(num_groups)]
 
     # 3. Build group info and XML dependencies
-    xml_grp = "" # Define dependency for all the groups, prepare for subsequent tasks
+    xml_grp = ""   # Define dependency for all the groups, prepare for subsequent tasks
 
     for i, group_indices in enumerate(groups):
         # Create the range string: "001-015"
