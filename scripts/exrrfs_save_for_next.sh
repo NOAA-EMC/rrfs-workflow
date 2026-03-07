@@ -47,7 +47,7 @@ done
 # parallel run the serial tasks
 #
 ${cpreq} "${EXECrrfs}"/rank_run.x .
-${MPI_RUN_CMD} rank_run.x "$CMDFILE"
+${MPI_RUN_CMD} ./rank_run.x "$CMDFILE"
 
 # Check for errors
 export err=$?
