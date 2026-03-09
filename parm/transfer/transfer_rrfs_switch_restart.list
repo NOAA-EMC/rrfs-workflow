@@ -24,14 +24,15 @@
 # transfered.
 
 
-_COMROOT_/rrfs/_SHORTVER_/rrfsens._PDY_/
-+ /??/
-+ /??/m001/***
+_COMROOT_/rrfs/_SHORTVER_/rrfs._PDY_/
++ /11/
++ /11/forecast/
++ /11/forecast/RESTART/
++ /11/forecast/RESTART/*.120000.*
++ /10/
++ /10/forecast/
++ /10/forecast/RESTART/
++ /10/forecast/RESTART/*.120000.*
 - *
 B 1000000
 
-_COMROOT_/rrfs/_SHORTVER_/rrfsens._PDYm1_/
-+ /??/
-+ /??/m001/***
-- *
-B 1000000
