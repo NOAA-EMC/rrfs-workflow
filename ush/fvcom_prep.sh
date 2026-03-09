@@ -178,7 +178,7 @@ echo $ilake_use' fvcom output files found - proceed...'
 
 # extract GL mask variables
 echo 'Copying a file for GL mask on RRFS grid ...'
-cp ${FIXLAM}/${CRES}_fvcom_mask.nc ./tmp.nc	# RRFS CONUS
+cpreq ${FIXLAM}/${CRES}_fvcom_mask.nc ./tmp.nc	# RRFS CONUS
 
 # get time info
 echo 'getting time information from a sample FVCOM output file...'
