@@ -1112,10 +1112,10 @@ if [ "${DO_GSIDIAG_OFFLINE}" = "FALSE" ]; then
     if [ "${MEM_TYPE}" = "MEAN" ]; then
       if [ "${CYCLE_TYPE}" = "spinup" ]; then
         mkdir -p ${umbrella_analysis_data}/${RUN}_observer_gsi_spinup_ensmean_${envir}_${cyc}
-        cp obs_input.* ${umbrella_analysis_data}/${RUN}_observer_gsi_spinup_ensmean_${envir}_${cyc}/.
+        cpreq obs_input.* ${umbrella_analysis_data}/${RUN}_observer_gsi_spinup_ensmean_${envir}_${cyc}/.
       else
         mkdir -p ${umbrella_analysis_data}/${RUN}_observer_gsi_ensmean_${envir}_${cyc}
-        cp obs_input.* ${umbrella_analysis_data}/${RUN}_observer_gsi_ensmean_${envir}_${cyc}/.
+        cpreq obs_input.* ${umbrella_analysis_data}/${RUN}_observer_gsi_ensmean_${envir}_${cyc}/.
       fi
     fi
   fi

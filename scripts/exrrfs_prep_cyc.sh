@@ -905,7 +905,7 @@ do_lake_surgery=${do_lake_surgery}
 update_snow=true
 /
 EOF
-         cp use_raphrrr_sfc.namelist use_raphrrr_sfc.namelist_rap
+         cpreq use_raphrrr_sfc.namelist use_raphrrr_sfc.namelist_rap
 
        elif [ "${file}" = "${hrrrfile}" ]; then
 
@@ -919,7 +919,7 @@ do_lake_surgery=${do_lake_surgery}
 update_snow=false
 /
 EOF
-         cp use_raphrrr_sfc.namelist use_raphrrr_sfc.namelist_hrrr
+         cpreq use_raphrrr_sfc.namelist use_raphrrr_sfc.namelist_hrrr
 
        elif [ "${file}" = "${hrrr_akfile}" ]; then
 
@@ -934,10 +934,10 @@ update_snow=false
 /
 EOF
 
-         cp use_raphrrr_sfc.namelist use_raphrrr_sfc.namelist_hrrrak
+         cpreq use_raphrrr_sfc.namelist use_raphrrr_sfc.namelist_hrrrak
        fi
      fi
-     cp sfc_data.nc sfc_data.nc_read
+     cpreq sfc_data.nc sfc_data.nc_read
      . prep_step
      ${APRUN} ${EXECrrfs}/$pgm >>$pgmout 2>errfile
      export err=$?; err_chk

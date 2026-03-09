@@ -26,10 +26,10 @@ fi
 
 # Copy model specific GEMPAK tables into working directory
 #
-cp ${GEMPAK_FIX}/rrfs_ncepgrib129.tbl ncepgrib129.tbl
-cp ${GEMPAK_FIX}/rrfs_ncepgrib2.tbl ncepgrib2.tbl
-cp ${GEMPAK_FIX}/rrfs_wmogrib2.tbl wmogrib2.tbl
-cp ${GEMPAK_FIX}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
+cpreq ${GEMPAK_FIX}/rrfs_ncepgrib129.tbl ncepgrib129.tbl
+cpreq ${GEMPAK_FIX}/rrfs_ncepgrib2.tbl ncepgrib2.tbl
+cpreq ${GEMPAK_FIX}/rrfs_wmogrib2.tbl wmogrib2.tbl
+cpreq ${GEMPAK_FIX}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
 
 cd $DATA
 export GRIB=prslev
@@ -47,10 +47,10 @@ cd $DATA/rrfs_conus_subh
 
 # Copy model specific GEMPAK tables into working directory
 #
-cp ${GEMPAK_FIX}/rrfs_ncepgrib129.tbl ncepgrib129.tbl
-cp ${GEMPAK_FIX}/rrfs_ncepgrib2.tbl ncepgrib2.tbl
-cp ${GEMPAK_FIX}/rrfs_wmogrib2.tbl wmogrib2.tbl
-cp ${GEMPAK_FIX}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
+cpreq ${GEMPAK_FIX}/rrfs_ncepgrib129.tbl ncepgrib129.tbl
+cpreq ${GEMPAK_FIX}/rrfs_ncepgrib2.tbl ncepgrib2.tbl
+cpreq ${GEMPAK_FIX}/rrfs_wmogrib2.tbl wmogrib2.tbl
+cpreq ${GEMPAK_FIX}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
 
 cd $DATA
 export GRIB=prslev
@@ -88,10 +88,10 @@ cd $DATA/rrfs_alaska
 
 # Copy model specific GEMPAK tables into working directory
 #
-cp ${GEMPAK_FIX}/rrfs_ncepgrib129.tbl ncepgrib129.tbl
-cp ${GEMPAK_FIX}/rrfs_ncepgrib2.tbl ncepgrib2.tbl
-cp ${GEMPAK_FIX}/rrfs_wmogrib2.tbl wmogrib2.tbl
-cp ${GEMPAK_FIX}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
+cpreq ${GEMPAK_FIX}/rrfs_ncepgrib129.tbl ncepgrib129.tbl
+cpreq ${GEMPAK_FIX}/rrfs_ncepgrib2.tbl ncepgrib2.tbl
+cpreq ${GEMPAK_FIX}/rrfs_wmogrib2.tbl wmogrib2.tbl
+cpreq ${GEMPAK_FIX}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
 
 cd $DATA
 export GRIB=prslev
@@ -104,10 +104,10 @@ cd $DATA/rrfs_prico
 
 # Copy model specific GEMPAK tables into working directory
 #
-cp ${GEMPAK_FIX}/rrfs_ncepgrib129.tbl ncepgrib129.tbl
-cp ${GEMPAK_FIX}/rrfs_ncepgrib2.tbl ncepgrib2.tbl
-cp ${GEMPAK_FIX}/rrfs_wmogrib2.tbl wmogrib2.tbl
-cp ${GEMPAK_FIX}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
+cpreq ${GEMPAK_FIX}/rrfs_ncepgrib129.tbl ncepgrib129.tbl
+cpreq ${GEMPAK_FIX}/rrfs_ncepgrib2.tbl ncepgrib2.tbl
+cpreq ${GEMPAK_FIX}/rrfs_wmogrib2.tbl wmogrib2.tbl
+cpreq ${GEMPAK_FIX}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
 
 cd $DATA
 export GRIB=prslev
@@ -120,10 +120,10 @@ cd $DATA/rrfs_hawaii
 
 # Copy model specific GEMPAK tables into working directory
 #
-cp ${GEMPAK_FIX}/rrfs_ncepgrib129.tbl ncepgrib129.tbl
-cp ${GEMPAK_FIX}/rrfs_ncepgrib2.tbl ncepgrib2.tbl
-cp ${GEMPAK_FIX}/rrfs_wmogrib2.tbl wmogrib2.tbl
-cp ${GEMPAK_FIX}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
+cpreq ${GEMPAK_FIX}/rrfs_ncepgrib129.tbl ncepgrib129.tbl
+cpreq ${GEMPAK_FIX}/rrfs_ncepgrib2.tbl ncepgrib2.tbl
+cpreq ${GEMPAK_FIX}/rrfs_wmogrib2.tbl wmogrib2.tbl
+cpreq ${GEMPAK_FIX}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
 
 cd $DATA
 export GRIB=prslev
