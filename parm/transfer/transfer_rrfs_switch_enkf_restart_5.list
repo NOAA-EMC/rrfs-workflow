@@ -25,14 +25,15 @@
 
 
 _COMROOT_/rrfs/_SHORTVER_/enkfrrfs._PDY_/
-+ /11/
-+ /11/m???/
-+ /11/m???/forecast/
-+ /11/m021/forecast/RESTART/***
-+ /11/m022/forecast/RESTART/***
-+ /11/m023/forecast/RESTART/***
-+ /11/m024/forecast/RESTART/***
-+ /11/m025/forecast/RESTART/***
++ /10/
++ /10/m???/
++ /10/m???/forecast/
++ /10/m???/forecast/RESTART/
++ /10/m021/forecast/RESTART/*.120000.*
++ /10/m022/forecast/RESTART/*.120000.*
++ /10/m023/forecast/RESTART/*.120000.*
++ /10/m024/forecast/RESTART/*.120000.*
++ /10/m025/forecast/RESTART/*.120000.*
 - *
 B 1000000
 

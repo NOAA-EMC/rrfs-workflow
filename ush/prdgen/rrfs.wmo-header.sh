@@ -20,6 +20,8 @@ mkdir -p ${data}/wmo
 
 wmo_outdir=${data}/wmo
 
+. prep_step
+
 #--------------------------------------------------------------- 
 #-- process WMO header
 

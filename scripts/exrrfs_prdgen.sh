@@ -387,6 +387,9 @@ elif [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
   # Processing for the RRFS fire weather grid
   #
 
+
+. prep_step
+
   # set GTYPE=2 for GRIB2
   GTYPE=2
 

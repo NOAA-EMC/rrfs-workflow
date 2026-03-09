@@ -16,11 +16,11 @@ export cyc="%CYC%"
 ############################################################
 module load intel/${intel_ver}
 module load craype/${craype_ver}
-module load python/${python_ver}
+module load ve/rrfs/${rrfs_pythonve_ver}
 module load cray-mpich/${cray_mpich_ver}
 module load cray-pals/${cray_pals_ver}
-module load hdf5/1.12.2
-module load netcdf/4.7.4
+module load hdf5-D/${hdf5_ver}
+module load netcdf-D/${netcdf_ver}
 module load udunits/${udunits_ver}
 module load gsl/${gsl_ver}
 module load nco/${nco_ver}

@@ -3,7 +3,7 @@
 #PBS -S /bin/bash
 #PBS -q %QUEUE%
 #PBS -A %PROJ%-%PROJENVIR%
-#PBS -l walltime=01:33:00
+#PBS -l walltime=00:59:00
 #PBS -l place=vscatter:excl,select=12:ncpus=128:ompthreads=2:mem=500G
 #PBS -l debug=true
 
@@ -17,7 +17,7 @@ export cyc="%CYC%"
 ############################################################
 module load intel/${intel_ver}
 module load craype/${craype_ver}
-module load python/${python_ver}
+module load ve/rrfs/${rrfs_pythonve_ver}
 module load cray-mpich/${cray_mpich_ver}
 module load cray-pals/${cray_pals_ver}
 module load jasper/${jasper_ver}

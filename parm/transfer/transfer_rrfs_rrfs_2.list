@@ -24,20 +24,41 @@
 # transfered.
 
 
+_COMROOT_/rrfs/_SHORTVER_/rrfs._PDYm1_/23/forecast/RESTART/
++ /*.000000.*
+- *
+B 1000000
+
 _COMROOT_/rrfs/_SHORTVER_/rrfs._PDY_/
 + /??/
 + /??/forecast/
 + /??/forecast/RESTART/
-+ /??/forecast/RESTART/***
++ /23/forecast/RESTART/*.000000.*
++ /22/forecast/RESTART/*.230000.*
++ /21/forecast/RESTART/*.220000.*
++ /20/forecast/RESTART/*.210000.*
++ /19/forecast/RESTART/*.200000.*
++ /18/forecast/RESTART/*.190000.*
++ /17/forecast/RESTART/*.180000.*
++ /16/forecast/RESTART/*.170000.*
++ /15/forecast/RESTART/*.160000.*
++ /14/forecast/RESTART/*.150000.*
++ /13/forecast/RESTART/*.140000.*
++ /12/forecast/RESTART/*.130000.*
++ /11/forecast/RESTART/*.120000.*
++ /10/forecast/RESTART/*.120000.*
++ /10/forecast/RESTART/*.110000.*
++ /09/forecast/RESTART/*.100000.*
++ /08/forecast/RESTART/*.090000.*
++ /07/forecast/RESTART/*.080000.*
++ /06/forecast/RESTART/*.070000.*
++ /05/forecast/RESTART/*.060000.*
++ /04/forecast/RESTART/*.050000.*
++ /03/forecast/RESTART/*.040000.*
++ /02/forecast/RESTART/*.030000.*
++ /01/forecast/RESTART/*.020000.*
++ /00/forecast/RESTART/*.010000.*
 - *
 B 1000000
 
-_COMROOT_/rrfs/_SHORTVER_/rrfs._PDYm1_/
-+ /??/
-+ /??/
-+ /??/forecast/
-+ /??/forecast/RESTART/
-+ /??/forecast/RESTART/***
-- *
-B 1000000
 
