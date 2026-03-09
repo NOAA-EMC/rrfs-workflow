@@ -1,0 +1,106 @@
+#!/usr/bin/env bash
+# Aloha! This file is to setup some top level experiment options
+#
+# shellcheck disable=all
+export NET=rrfs                    # rrfs, rtma,
+export MESH_NAME=conus3km         # conus12km, conus3km, na12km, etc
+export WGF="det"   # working group function = "det", "enkf", "ens", "firewx"
+export EXP_NAME=MPAS_RAP
+export VERSION=$(cat ./VERSION)
+export TAG=mpas_rap
+export OPSROOT=/scratch4/BMC/rtrr/NCO_dirs/${EXP_NAME}
+export EXPDIR=${OPSROOT}/exp/rrfs${WGF}
+export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
+export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=YES
+#
+export REALTIME=true
+export ZETA_LEVELS="L65.txt"
+#
+export DO_IODA=false
+export DO_JEDI=false
+export IC_ONLY=true
+#export SNUDGETYPES="GGG" # G=gsd_update_soiltq from GSI; P=2022 J Hydro paper; chars=SoilT,SnowT,SoilQ
+export DO_NONVAR_CLOUD_ANA=false
+export COLDSTART_CYCS_DO_DA=false
+export DO_CHEMISTRY=false
+export DO_CLEAN=true
+export HYB_WGT_ENS=0.0
+export HYB_WGT_STATIC=1.0
+export HYB_ENS_TYPE=1      # 1.rrfs; 2.interpolated GEFS/GDAS; 0.TBD on the fly (rrfs->GDAS->3DVAR)
+export HYB_ENS_PATH=""     # if empty, the workflow will try to find ensembles automatically
+export DO_RADAR_REF=false  # does not work for 3DVar, only EnVar or GETKF
+export RADARREFL_TIMELEVEL="00"  # 00 15 30 45 min
+export ENS_SIZE=30
+export ENS_BEC_LOOK_BACK_HRS=1  # define the hours going back for ensemble forecast files for the ensemble BEC
+export DO_HOFX=false
+export HOFX_FHRS="000 001 012"
+
+export STATIC_BEC_MODEL="GSIBEC" # the static bec model, GSIBEC and BUMPBEC
+export GSIBEC_X=40 #GSIBEC_X * GSIBEC_Y should match the number of MPI tasks
+export GSIBEC_Y=20
+
+export DO_CYC=true
+export CYC_INTERVAL=12
+for i in {0..23};    do arr[$i]="0"; done # 1hr fcst
+#for i in {0..23..12}; do arr[$i]="12"; done # 12hr fcst every 12hrs
+export FCST_LEN_HRS_CYCLES="${arr[*]}"
+export HISTORY_INTERVAL=1
+export MPASSIT_GROUP_TOTAL_NUM=1
+export UPP_GROUP_TOTAL_NUM=1
+
+export IC_OFFSET=3
+export LBC_OFFSET=3
+export LBC_LENGTH=3
+export LBC_INTERVAL=1
+export LBC_UNGRIB_GROUP_TOTAL_NUM=1
+export LBC_GROUP_TOTAL_NUM=1
+
+export RETRO_PERIOD="2024052700-2024052800"
+export IC_CYCS="03 15"  # evenly divide 24 hours, e.g., "00 12", "00 06 12 18", etc
+export LBC_CYCS="03 15"  # evenly divide 24 hours, e.g., "00 12", "00 06 12 18", etc
+export COLDSTART_CYCS="03 15"   # cycles to cold start from external models
+#export DO_SPINUP=true
+#export SPINUP_CYCS="12 15"   # cycles to cold start from external models
+#export PRODSWITCH_CYCS="12 15"  # cycles to PROD switch to the spun-up ICs
+#
+# set as follows to start spinup at 03/15z
+#export DO_SPINUP=true
+#export IC_OFFSET=3
+#export COLDSTART_CYCS="03 15"
+#export PRODSWITCH_CYCS="09 21"
+#
+export ACCOUNT="rtwrfruc"
+export RESERVATION="rrfsens"
+#
+export STARTTIME_UNGRIB_IC="00:00:01"
+export STARTTIME_IC="00:00:01"
+export WALLTIME_FCST="0:15:00"
+export WALLTIME_MPASSIT="0:10:00"
+export WALLTIME_UPP="0:10:00"
+export WALLTIME_JEDIVAR="00:30:00"
+#
+export KEEPDATA=YES
+export STMP_RETENTION_CYCS=24
+#
+# local.setup: setup some local options specific to a platform or an experiment
+#
+# set up IC, LBC sources and A/Q/P/R information
+export IC_EXTRN_MDL_NAME="RAP"
+export IC_EXTRN_MDL_FILENAME_PATTERN="@y@j@H000^HHH^"
+export LBC_EXTRN_MDL_NAME=${IC_EXTRN_MDL_NAME}
+export LBC_EXTRN_MDL_FILENAME_PATTERN=${IC_EXTRN_MDL_FILENAME_PATTERN}
+export IC_EXTRN_MDL_BASEDIR="/public/data/grib/ftp_rap_hyb/7/0/105/0_794802_32769"
+export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
+export OBSPATH="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/obs_rap"
+export OBSPATH_NSSLMOSIAC="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/reflectivity"
+export OBSPATH_AIRNOW="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/airnow"
+export QUEUE="batch"
+export PARTITION="u1-compute"
+
+export NODES_IC="<nodes>4:ppn=160</nodes>"
+export NODES_LBC="<nodes>10:ppn=160</nodes>"
+export NODES_FCST="<nodes>10:ppn=160</nodes>"
+export NODES_MPASSIT="<nodes>1:ppn=160</nodes>"
+export NODES_UPP="<nodes>1:ppn=80</nodes>"
+export NODES_JEDIVAR="<nodes>20:ppn=40</nodes>"
+
