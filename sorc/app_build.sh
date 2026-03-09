@@ -234,15 +234,37 @@ if [ "${BUILD}" = false ] && [ "${MOVE}" = true ]; then
   exit 0
 fi
 
+NCO_BUILD="FALSE"
 # check if PLATFORM is set
 if [ -z $PLATFORM ] ; then
   # Automatically detect HPC platforms for wcoss2, hera, jet, orion, hercules, etc
-  source ${HOME_DIR}/ush/fix_rrfs_locations.sh
+  if [[ "$HOME_DIR" == "/lfs/h1/ops"* ]] ; then
+      PLATFORM=wcoss2
+      NCO_BUILD="TRUE"
+  elif [[ "$HOME_DIR" == "/lfs/h2"* ]] ; then
+      PLATFORM=wcoss2
+  elif [[ "$HOME_DIR" == "/scratch1"* ]] ; then
+      PLATFORM=hera
+  elif [[ "$HOME_DIR" == "/jetmon"* ]] ; then
+      PLATFORM=jet
+  elif [[ "$HOME_DIR" == "/work"* ]]; then
+      hoststr=$(hostname)
+      if [[ "$hoststr" == "hercules"* ]]; then
+        PLATFORM=hercules
+      else
+        PLATFORM=orion
+      fi
+  else
+      PLATFORM=unknown
+  fi
+
   if [[ "$PLATFORM" == "unknown" ]]; then
     printf "\nERROR: Please set PLATFORM.\n\n"
     usage
     exit 0
   fi
+elif [[ "$HOME_DIR" == "/lfs/h1/ops"* ]] ; then
+      NCO_BUILD="TRUE"
 fi
 # set PLATFORM (MACHINE)
 MACHINE="${PLATFORM}"
@@ -350,8 +372,7 @@ if [ "${EXTRN}" = true ]; then
   fi
 
   # run check-out
-  python --version 1>/dev/null 2>/dev/null
-  if [[ $(which python) == "/usr/bin/python" ]]; then
+  if [[ "$NCO_BUILD" == "TRUE" ]]; then
        module unload python
        module load PrgEnv-intel/${PrgEnv_intel_ver}
        module load python/${python_ver}
@@ -612,5 +633,25 @@ AQM_UTIL_PREFIX=aqm_util
 [ -f ${EXEC_DIR}/update_GVF.exe ] && mv ${EXEC_DIR}/update_GVF.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_update_GVF.exe
 [ -f ${EXEC_DIR}/update_ice.exe ] && mv ${EXEC_DIR}/update_ice.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_update_ice.exe
 [ -f ${EXEC_DIR}/use_raphrrr_sfc.exe ] && mv ${EXEC_DIR}/use_raphrrr_sfc.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_use_raphrrr_sfc.exe
+
+# For ops builds, remove version-controlled developer-only codes and
+# locally update git-index to hide these deletions from git (status).
+if [[ $NCO_BUILD = "TRUE" ]]; then
+    cd $HOME_DIR
+    RMFILE_LIST="${HOME_DIR}/parm/non_ops_files_to_rm.list"
+    echo "Removing files not needed for ops and updating git index..."
+    while read line; do
+        echo "updating git index and deleting ${line}"
+        if [[ -d $line ]]; then
+            git update-index --assume-unchanged ${line}/{.,}*
+            rm -rf $line
+        elif [[ -e $line ]]; then
+            git update-index --assume-unchanged $line
+            rm -f $line
+        else
+            echo "${line} does not exist. Confirm file existence."
+        fi
+    done < $RMFILE_LIST
+fi
 
 exit 0

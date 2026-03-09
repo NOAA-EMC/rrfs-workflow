@@ -2,7 +2,7 @@ import datetime as dt
 import pandas as pd
 import os
 import fnmatch
-import ESMF
+import esmpy as ESMF
 import xarray as xr
 import numpy as np
 from netCDF4 import Dataset
@@ -16,7 +16,7 @@ def date_range(current_day):
     
     start_datetime = fcst_datetime - dt.timedelta(days=1, hours=1)
     
-    fcst_dates = pd.date_range(start=start_datetime, periods=24, freq='H').strftime("%Y%m%d%H")
+    fcst_dates = pd.date_range(start=start_datetime, periods=24, freq='h').strftime("%Y%m%d%H")
 
     print(f'Current cycle: {fcst_datetime}')
     return(fcst_dates)
