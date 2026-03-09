@@ -36,7 +36,7 @@ def ioda_bufr(xmlFile, expdir):
     dependencies = f'''
   <dependency>
   <and>{timedep}
-    <datadep age="00:05:00"><cyclestr>{fpath}</cyclestr></datadep>
+    <datadep age="00:02:00"><cyclestr>{fpath}</cyclestr></datadep>
   </and>
   </dependency>'''
     #

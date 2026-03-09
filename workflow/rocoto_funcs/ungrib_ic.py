@@ -64,13 +64,13 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
         starttime = get_cascade_env(f"STARTTIME_{task_id}".upper())
         timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
     #
-    datadep = f'  <datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath}</cyclestr></datadep>'
+    datadep = f'  <datadep age="00:02:00"><cyclestr offset="-{offset}:00:00">{fpath}</cyclestr></datadep>'
     if ic_filename_pattern_b != '':
         dcTaskEnv['FILENAME_PATTERN_B'] = f'<cyclestr offset="-{offset}:00:00">{ic_filename_pattern_b}</cyclestr>'
         fpath2 = f'{ic_source_basedir}/{ic_filename_pattern_b}'.replace('^HHH^', offset.zfill(3))
         fpath2 = f'{fpath2}'.replace('^HH^', offset.zfill(2))
         datadep = datadep + \
-            f'\n    <datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath2}</cyclestr></datadep>'
+            f'\n    <datadep age="00:02:00"><cyclestr offset="-{offset}:00:00">{fpath2}</cyclestr></datadep>'
     dependencies = f'''
   <dependency>
   <and>{timedep}

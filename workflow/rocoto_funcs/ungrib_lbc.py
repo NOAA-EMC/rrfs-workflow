@@ -94,12 +94,12 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
         fpath3 = fpath.replace('^HHH^', comin_hr3)
         fpath3 = fpath3.replace('^HH^', str(i).zfill(2))
         datadep = datadep + \
-            f'\n     <datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath3}</cyclestr></datadep>'
+            f'\n     <datadep age="00:02:00"><cyclestr offset="-{offset}:00:00">{fpath3}</cyclestr></datadep>'
         if lbc_filename_pattern_b != '':
             fpath4 = fpath2.replace('^HHH^', comin_hr3)
             fpath4 = fpath4.replace('^HH^', str(i).zfill(2))
             datadep = datadep + \
-                f'\n     <datadep age="00:05:00"><cyclestr offset="-{offset}:00:00">{fpath4}</cyclestr></datadep>'
+                f'\n     <datadep age="00:02:00"><cyclestr offset="-{offset}:00:00">{fpath4}</cyclestr></datadep>'
 
     dependencies = f'''
   <dependency>
