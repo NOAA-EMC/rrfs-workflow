@@ -110,11 +110,23 @@ for index in "${mem_list[@]}"; do # loop through all the members
         CDATEp=$(${NDATE} -${ii} "${CDATE}" )
         PDYii=${CDATEp:0:8}
         cycii=${CDATEp:8:2}
-        thisfile=${COMINrrfs}/${RUN}.${PDYii}/${cycii}/fcst/${WGF}${memdir}/mpasout.${timestr}.nc
-        if [[ -r ${thisfile} ]]; then
+        thisfile_mpasout=${COMINsfc}/${RUN}.${PDYii}/${cycii}/fcst/${WGF}${memdir}/mpasout.${timestr}.nc
+        if [[ -r ${thisfile_mpasout} ]]; then
+          thisfile=${thisfile_mpasout}
           break
         fi
       done
+      # if no mpasout files, use init.nc (from another run)
+      if [[ ! -r ${thisfile_mpasout} ]] && [[ "${COMINsfc}" != "${COMINrrfs}" ]] ; then
+        PDYii=${CDATE:0:8}
+        cycii=${CDATE:8:2}
+        thisfile_init=${COMINsfc}/${RUN}.${PDYii}/${cycii}/ic/${WGF}${memdir}/init.nc
+        if [[ -r ${thisfile_init} ]]; then
+          var_list="smois,snow,snowh,snowc,sst,canwat,tslb,skintemp,landmask,isltyp,ivgtyp"
+          thisfile=${thisfile_init}
+        fi
+      fi
+      #
       if [[ -r ${thisfile} ]]; then
         echo "${cpreq}" "${thisfile}" "${umbrella_prep_ic_mem}/mpas_sfc.nc" >> "$CMDFILE"
         if [[ -r "${umbrella_prep_ic_mem}/init.nc" ]]; then
@@ -127,7 +139,7 @@ for index in "${mem_list[@]}"; do # loop through all the members
                ncks -A -v ${var_list} \"${umbrella_prep_ic_mem}/mpas_sfc.nc\" tmp.nc ; \
                mv tmp.nc \"${to_file}\" " >>  "$CMDFILE"
       else
-        echo "SFC_UPDATE failed, cannot find warm start file: ${thisfile}"
+        echo "SFC_UPDATE failed, cannot find source file for sfc state: ${thisfile}"
       fi
     fi
   done

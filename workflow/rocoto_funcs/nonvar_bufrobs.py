@@ -41,9 +41,9 @@ def nonvar_bufrobs(xmlFile, expdir):
     dependencies = f'''
   <dependency>
   <and>{timedep}
-    <datadep age="00:05:00"><cyclestr>{larc_path}</cyclestr></datadep>
-    <datadep age="00:05:00"><cyclestr>{lght_path}</cyclestr></datadep>
-    <datadep age="00:05:00"><cyclestr>{metar_path}</cyclestr></datadep>
+    <datadep age="00:02:00"><cyclestr>{larc_path}</cyclestr></datadep>
+    <datadep age="00:02:00"><cyclestr>{lght_path}</cyclestr></datadep>
+    <datadep age="00:02:00"><cyclestr>{metar_path}</cyclestr></datadep>
   </and>
   </dependency>'''
     #

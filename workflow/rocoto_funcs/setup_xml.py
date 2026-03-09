@@ -63,7 +63,10 @@ def setup_xml(HOMErrfs, expdir):
 
 # ---------------------------------------------------------------------------
 # assemble tasks for a deterministic experiment
-        if do_deterministic == "TRUE":
+        if do_deterministic == "TRUE" and os.getenv("IC_ONLY", "FALSE").upper() == "TRUE":
+            ungrib_ic(xmlFile, expdir)
+            ic(xmlFile, expdir)
+        elif do_deterministic == "TRUE":
             if os.getenv("DO_IODA", "FALSE").upper() == "TRUE":
                 if do_chemistry == "TRUE":
                     ioda_airnow(xmlFile, expdir)
@@ -147,7 +150,8 @@ def setup_xml(HOMErrfs, expdir):
             if os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
                 getkf(xmlFile, expdir, 'OBSERVER')
                 getkf(xmlFile, expdir, 'SOLVER')
-                getkf(xmlFile, expdir, 'POST')
+                if os.getenv("DO_GETKF_POST", "TRUE").upper() == "TRUE":
+                    getkf(xmlFile, expdir, 'POST')
             if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
                 nonvar_cldana(xmlFile, expdir, do_ensemble=True)
             fcst(xmlFile, expdir, do_ensemble=True)

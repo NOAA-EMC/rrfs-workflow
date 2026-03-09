@@ -39,6 +39,12 @@ mkdir -p "${DATA}"
 export COMINrrfs=${COMINrrfs:-$(compath.py "${envir}/rrfs/${rrfs_ver}")}
 export COMOUT=${COMOUT:-$(compath.py -o "${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}")}
 #
+# Define the source dir for sfc update
+if [[ -z "${SFC_UPDATE_SOURCE_DIR}" ]]; then
+  export COMINsfc=${COMINrrfs}
+else
+  export COMINsfc="${SFC_UPDATE_SOURCE_DIR}/com/rrfs/${rrfs_ver}"
+fi
 #----------------------------------------
 # Execute the script.
 #----------------------------------------
