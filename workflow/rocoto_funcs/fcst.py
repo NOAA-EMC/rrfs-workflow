@@ -6,7 +6,7 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 # begin of fcst --------------------------------------------------------
 
 
-def fcst(xmlFile, expdir, dcEnsGrpInfo=None, do_ensemble=False, do_spinup=False):
+def fcst(xmlFile, expdir, do_ensemble=False, dcEnsGrpInfo=None, do_spinup=False):
     meta_id = 'fcst'
     dep_xml = ""
     if do_spinup:

@@ -157,7 +157,7 @@ def setup_xml(HOMErrfs, expdir):
                 nonvar_cldana(xmlFile, expdir, do_ensemble=True)
             listEnsGrpInfo = smart_ens_groups('fcst')
             for dcEnsGrpInfo in listEnsGrpInfo["group_list"]:
-                fcst(xmlFile, expdir, dcEnsGrpInfo, do_ensemble=True)
+                fcst(xmlFile, expdir, do_ensemble=True, dcEnsGrpInfo=dcEnsGrpInfo)
             if os.getenv('DO_CYC', 'FALSE').upper() == "TRUE":
                 save_for_next(xmlFile, expdir, do_ensemble=True)
             if os.getenv("DO_POST", "TRUE").upper() == "TRUE":
