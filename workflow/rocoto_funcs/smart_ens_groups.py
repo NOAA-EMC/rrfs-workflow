@@ -48,4 +48,3 @@ def smart_ens_groups(meta_id):
         "group_list": list_group_info,
         "combined_dep_xml": xml_grp
     }
-
