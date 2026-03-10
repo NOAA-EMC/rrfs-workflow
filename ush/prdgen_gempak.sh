@@ -22,10 +22,10 @@ export PS4='GEMPAK_T$SECONDS + '
 NAGRIB=nagrib2
 
 # --- Copy GEMPAK Tables ---
-cp "$GEMPAK_FIX/rrfs_g2varsncep1.tbl" g2varsncep1.tbl
-cp "$GEMPAK_FIX/rrfs_g2varswmo2.tbl" g2varswmo2.tbl
-cp "$GEMPAK_FIX/rrfs_g2vcrdncep1.tbl" g2vcrdncep1.tbl
-cp "$GEMPAK_FIX/rrfs_g2vcrdwmo2.tbl" g2vcrdwmo2.tbl
+cpreq "$GEMPAK_FIX/rrfs_g2varsncep1.tbl" g2varsncep1.tbl
+cpreq "$GEMPAK_FIX/rrfs_g2varswmo2.tbl" g2varswmo2.tbl
+cpreq "$GEMPAK_FIX/rrfs_g2vcrdncep1.tbl" g2vcrdncep1.tbl
+cpreq "$GEMPAK_FIX/rrfs_g2vcrdwmo2.tbl" g2vcrdwmo2.tbl
 
 # --- Set GEMPAK Parameters ---
 cpyfil=gds
@@ -137,7 +137,7 @@ case "$RUNTYPE" in
     cat temp tempmaxref263k > "grib${fhr_padded}"
     ;;
   rrfs_conus_subh)
-    cp "$GRIBIN" "grib${fhr_padded}"
+    cpreq "$GRIBIN" "grib${fhr_padded}"
     wgrib2 "${GRIBIN}" -match "$timea min" -grib "grib${fhr_padded}_${timea}"
     wgrib2 "${GRIBIN}" -match "$timeb min" -grib "grib${fhr_padded}_${timeb}"
     wgrib2 "${GRIBIN}" -match "$timec min" -grib "grib${fhr_padded}_${timec}"
@@ -158,7 +158,7 @@ case "$RUNTYPE" in
     mv temp "grib${fhr_padded}"
     ;;
   *)
-    cp "$GRIBIN" "grib${fhr_padded}"
+    cpreq "$GRIBIN" "grib${fhr_padded}"
     ;;
 esac
 
