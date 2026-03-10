@@ -5,7 +5,7 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 # begin of fcst --------------------------------------------------------
 
 
-def fcst(xmlFile, expdir, dcGrpInfo=None, do_ensemble=False, do_spinup=False):
+def fcst(xmlFile, expdir, dcEnsGrpInfo=None, do_ensemble=False, do_spinup=False):
     meta_id = 'fcst'
     dep_xml = ""
     if do_spinup:
@@ -60,17 +60,20 @@ def fcst(xmlFile, expdir, dcGrpInfo=None, do_ensemble=False, do_spinup=False):
         meta_end = ""
         ensindexstr = ""
     else:
-        members = dcGrpInfo["members"]
-        dep_xml = dcGrpInfo["dependency_xml"]
-        batch_name = dcGrpInfo["batch_name"]
+        if dcEnsGrpInfo is None:
+            print('dcEnsGrpInfo not set up or incorrect!')
+            sys.exit(1)
+        ens_indices = dcEnsGrpInfo["ens_indices"]
+        dep_xml = dcEnsGrpInfo["dep_xml"]
+        group_name = dcEnsGrpInfo["group_name"]
         metatask = True
         task_id = f'{meta_id}_m#ens_index#'
         dcTaskEnv['ENS_INDEX'] = "#ens_index#"
         meta_bgn = ""
         meta_end = ""
         meta_bgn = f'''
-<metatask name="{batch_name}">
-<var name="ens_index">{members}</var>'''
+<metatask name="{group_name}">
+<var name="ens_index">{ens_indices}</var>'''
         meta_end = f'\
 </metatask>\n'
         ensindexstr = "_m#ens_index#"

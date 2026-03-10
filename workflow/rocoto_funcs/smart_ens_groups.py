@@ -5,8 +5,11 @@ import os
 def smart_ens_groups(meta_id):
     list_group_info = []
     ens_size = int(os.getenv('ENS_SIZE', '30'))
-    num_groups = int(os.getenv('NUM_ENS_GROUPS', '1'))
-    ens_threshold = os.getenv('ENS_FINISH_THRESHOLD', '1.0')
+    num_groups = int(os.getenv('ENS_GROUP_TOT_NUM', '1'))
+    try:
+        ens_threshold = float(os.getenv('ENS_FINISH_THRESHOLD', '1.0'))
+    except ValueError:
+        ens_threshold = 1.0  # Fallback if the input is "abc"
 
     # 1. Generate padded IDs (001, 002...)
     all_indices = [f'{i:03d}' for i in range(1, ens_size + 1)]
@@ -19,25 +22,21 @@ def smart_ens_groups(meta_id):
     xml_grp = ""   # Define dependency for all the groups, prepare for subsequent tasks
 
     for i, group_indices in enumerate(groups):
-        # Create the range string: "001-015"
-        range_label = f"{group_indices[0]}-{group_indices[-1]}"
-        current_group_name = f"{meta_id}_{range_label}"
+        current_group = f"{meta_id}_g{i:02d}"
 
-        xml_grp = xml_grp + f'\n    <metataskdep metatask="{current_group_name}"/>'
+        xml_grp = xml_grp + f'\n    <metataskdep metatask="{current_group}"/>'
 
         # Define dependency: Batch 2 depends on Batch 1, etc.
-        dependency_xml = ""
+        dep_xml = ""
         if i > 0:
             # Dependency points to the previous range label
-            prev_range = f"{groups[i-1][0]}-{groups[i-1][-1]}"
-            current_group_name = f"{meta_id}_{groups[i][0]}-{groups[i][-1]}"
-            dependency_xml = f'\n    <metataskdep metatask="{meta_id}_{prev_range}"   threshold="{ens_threshold}"/>'
+            prev_group = f"{meta_id}_g{i-1:02d}"
+            dep_xml = f'\n    <metataskdep metatask="{prev_group}"   threshold="{ens_threshold:.1f}"/>'
 
         list_group_info.append({
-            "members": ' '.join(group_indices),
-            "batch_name": current_group_name,
-            "dependency_xml": dependency_xml,
-            "range": range_label  # Optional: keep the range string as a separate key
+            "ens_indices": ' '.join(group_indices),
+            "group_name": current_group,
+            "dep_xml": dep_xml,
         })
 
     # Generate a summary string of all ranges
@@ -47,9 +46,6 @@ def smart_ens_groups(meta_id):
     # Return a dictionary containing BOTH the list and the combined XML
     return {
         "group_list": list_group_info,
-        "combined_dependency_xml": xml_grp
+        "combined_dep_xml": xml_grp
     }
 
-
-# Example usage:
-# groups = smart_ens_groups("my_experiment")
