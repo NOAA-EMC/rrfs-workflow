@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import sys
 from rocoto_funcs.base import xml_task, get_cascade_env
 
 # begin of fcst --------------------------------------------------------
