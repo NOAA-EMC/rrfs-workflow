@@ -6,10 +6,7 @@ def smart_ens_groups(meta_id):
     list_group_info = []
     ens_size = int(os.getenv('ENS_SIZE', '30'))
     num_groups = int(os.getenv('ENS_GROUP_TOT_NUM', '1'))
-    try:
-        ens_threshold = float(os.getenv('ENS_FINISH_THRESHOLD', '1.0'))
-    except ValueError:
-        ens_threshold = 1.0  # Fallback if the input is "abc"
+    ens_metadep_frac_threshold = float(os.getenv('ENS_METADEP_FRAC_THRESHOLD', '1.0'))
 
     # 1. Generate padded IDs (001, 002...)
     all_indices = [f'{i:03d}' for i in range(1, ens_size + 1)]
@@ -31,7 +28,7 @@ def smart_ens_groups(meta_id):
         if i > 0:
             # Dependency points to the previous range label
             prev_group = f"{meta_id}_g{i-1:02d}"
-            dep_xml = f'\n    <metataskdep metatask="{prev_group}"   threshold="{ens_threshold:.1f}"/>'
+            dep_xml = f'\n    <metataskdep metatask="{prev_group}" threshold="{ens_metadep_frac_threshold:.1f}"/>'
 
         list_group_info.append({
             "ens_indices": ' '.join(group_indices),
