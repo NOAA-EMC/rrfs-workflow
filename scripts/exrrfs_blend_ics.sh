@@ -233,12 +233,10 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
      if [ -f ${shared_output_data}/fv_core.res.tile1.nc ]; then
        rm -f ${shared_output_data}/fv_core.res.tile1.nc
      fi
-#     ln -s ${DATA}/fv_core.res.tile1.nc ${shared_output_data}/fv_core.res.tile1.nc
      cpreq ${DATA}/fv_core.res.tile1.nc ${shared_output_data}/fv_core.res.tile1.nc
      if [ -f ${shared_output_data}/fv_tracer.res.tile1.nc ]; then
        rm -f ${shared_output_data}/fv_tracer.res.tile1.nc
      fi
-#     ln -s ${DATA}/fv_tracer.res.tile1.nc ${shared_output_data}/fv_tracer.res.tile1.nc
      cpreq ${DATA}/fv_tracer.res.tile1.nc ${shared_output_data}/fv_tracer.res.tile1.nc
      # Move the remaining RESTART files to INPUT
      cpreq -p ${COMrrfs}/${RUN}.${yyyymmdd_m}/${hh_m}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc          ${shared_output_data}/fv_core.res.nc

@@ -57,29 +57,6 @@ export GRIB=prslev
 export type=rrfs_conus_subh
 echo "$USHrrfs/prdgen_gempak.sh $type $GRIB $FHR" >> $DATA/poescript
 fi
-#################################################################
-
-#################################################################
-# Execute the script to make conus GEMPAK grids (Common convection-allowing model fields)
-#
-# won't work currently as CONUS testbed files lack .idx files
-#
-#
-# mkdir -p $DATA/rrfs_conus_cam
-# cd $DATA/rrfs_conus_cam
-
-# Copy model specific GEMPAK tables into working directory
-#
-# cp ${GEMPAK_FIX}/rrfs_ncepgrib129.tbl ncepgrib129.tbl
-# cp ${GEMPAK_FIX}/rrfs_ncepgrib2.tbl ncepgrib2.tbl
-# cp ${GEMPAK_FIX}/rrfs_wmogrib2.tbl wmogrib2.tbl
-# cp ${GEMPAK_FIX}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
-
-# cd $DATA
-# export GRIB=testbed
-# export type=rrfs_conus_cam
-# echo "$USHrrfs/prdgen_gempak.sh $type $GRIB $FHR" >> $DATA/poescript
-#################################################################
 
 #################################################################
 # Execute the script to make alaska GEMPAK grids

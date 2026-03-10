@@ -103,9 +103,6 @@ This is the J-job script for the prep_cyc tasks for the specified cycle.
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 export CYCLE_SUBTYPE=${CYCLE_SUBTYPE:-empty}
 
-####export gridspec_dir=${GESROOT}/grid_spec
-####export MAILTO="${MAILTO:-}"
-
 #-----------------------------------------------------------------------
 # Define COM directories
 #-----------------------------------------------------------------------

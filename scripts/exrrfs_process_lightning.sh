@@ -65,7 +65,6 @@ python -u ${HOMErrfs}/ush/process_lightning.py
 if [ -f ${shared_output_data}/fedobs.nc ] && [ -s ${DATA}/fedobs.nc ]; then
   rm -f ${shared_output_data}/fedobs.nc
 fi
-#ln -s ${DATA}/fedobs.nc ${shared_output_data}/fedobs.nc
 cpreq ${DATA}/fedobs.nc ${shared_output_data}/fedobs.nc
 cpreq -p fedobs.nc ${COMOUT_ANALYSIS}/fedobs.nc
 
