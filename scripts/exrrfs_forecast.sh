@@ -160,7 +160,9 @@ esac
 [[ -e ${umbrella_forecast_data}/forecast_clean.flag ]] && rm -f ${umbrella_forecast_data}/forecast_clean.flag
 
 if [ ${WGF} = "firewx" ]; then
-  export FIXLAM=${COMrrfs}/firewx_input/${CDATE}
+#  export FIXLAM=${COMrrfs}/firewx_input/${CDATE}
+  export FIXLAM=${COMrrfs}/${RUN}.${PDY}/${cyc}/input
+
 else
   export FIXLAM=${FIXLAM:-${FIXrrfs}/lam/${PREDEF_GRID_NAME}}
 fi
