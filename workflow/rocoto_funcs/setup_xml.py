@@ -14,6 +14,7 @@ from rocoto_funcs.prep_ic import prep_ic
 from rocoto_funcs.prep_lbc import prep_lbc
 from rocoto_funcs.jedivar import jedivar
 from rocoto_funcs.fcst import fcst
+from rocoto_funcs.smart_ens_groups import smart_ens_groups
 from rocoto_funcs.save_for_next import save_for_next
 from rocoto_funcs.getkf import getkf
 from rocoto_funcs.recenter import recenter
@@ -154,7 +155,9 @@ def setup_xml(HOMErrfs, expdir):
                     getkf(xmlFile, expdir, 'POST')
             if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
                 nonvar_cldana(xmlFile, expdir, do_ensemble=True)
-            fcst(xmlFile, expdir, do_ensemble=True)
+            listEnsGrpInfo = smart_ens_groups('fcst')
+            for dcEnsGrpInfo in listEnsGrpInfo["group_list"]:
+                fcst(xmlFile, expdir, do_ensemble=True, dcEnsGrpInfo=dcEnsGrpInfo)
             if os.getenv('DO_CYC', 'FALSE').upper() == "TRUE":
                 save_for_next(xmlFile, expdir, do_ensemble=True)
             if os.getenv("DO_POST", "TRUE").upper() == "TRUE":
@@ -162,7 +165,8 @@ def setup_xml(HOMErrfs, expdir):
                     mpassit(xmlFile, expdir, index, dcGrpInfo, do_ensemble=True)
                     upp(xmlFile, expdir, index, dcGrpInfo, do_ensemble=True)
             if do_ensmean_post == "TRUE":
-                ensmean(xmlFile, expdir)
+                fcst_dep = listEnsGrpInfo["combined_dep_xml"]
+                ensmean(xmlFile, fcst_dep, expdir)
                 for index, dcGrpInfo in enumerate(listPostGrpInfo):
                     mpassit(xmlFile, expdir, index, dcGrpInfo, do_ensemble=True, do_ensmean_post=True)
                     upp(xmlFile, expdir, index, dcGrpInfo, do_ensemble=True, do_ensmean_post=True)

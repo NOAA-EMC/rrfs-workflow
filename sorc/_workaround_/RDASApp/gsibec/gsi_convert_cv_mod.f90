@@ -71,7 +71,8 @@ subroutine tv_to_t_tl_(tv,tv_tl,q,q_tl,t_tl,t)
    do j = 1, size(t_tl,2)
      do i = 1, size(t_tl,1)
  
-       if(t(i,j,k) < rmiss_th) then
+       !if(t(i,j,k) < rmiss_th) then
+       if(abs(t(i,j,k)) > 1.0e30) then
          t_tl(i,j,k) = zero
          cycle
        endif
@@ -107,7 +108,8 @@ subroutine tv_to_t_ad_(tv,tv_ad,q,q_ad,t_ad,t)
    do j = 1, size(t_ad,2)
      do i = 1, size(t_ad,1)
 
-       if(t(i,j,k) < rmiss_th) then
+       !if(t(i,j,k) < rmiss_th) then
+       if(abs(t(i,j,k)) > 1.0e30) then
          tv_ad(i,j,k) = zero
          q_ad(i,j,k) = zero
          t_ad(i,j,k) = zero

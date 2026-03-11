@@ -50,7 +50,8 @@ subroutine normal_rh_to_q(rhnorm,t,p,q)
    do k=1,nsig
       do j=1,lon2
          do i=1,lat2
-            if(regional .and. ges_tsen(i,j,k,ntguessig) < rmiss_th) then
+            !if(regional .and. ges_tsen(i,j,k,ntguessig) < rmiss_th) then
+            if(regional .and. abs(ges_tsen(i,j,k,ntguessig)) > 1.0e30) then
               q(i,j,k) = zero
               cycle
             endif
@@ -124,7 +125,8 @@ subroutine normal_rh_to_q_ad(rhnorm,t,p,q)
    do k=1,nsig
       do j=1,lon2
          do i=1,lat2
-            if(regional .and. ges_tsen(i,j,k,ntguessig) < rmiss_th) then
+            !if(regional .and. ges_tsen(i,j,k,ntguessig) < rmiss_th) then
+            if(regional .and. abs(ges_tsen(i,j,k,ntguessig)) > 1.0e30) then
               rhnorm(i,j,k) = zero
               if ( qoption == 2 ) then
                 t(i,j,k  ) = zero

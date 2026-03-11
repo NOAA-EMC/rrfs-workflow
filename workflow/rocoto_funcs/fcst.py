@@ -1,12 +1,14 @@
 #!/usr/bin/env python
 import os
+import sys
 from rocoto_funcs.base import xml_task, get_cascade_env
 
 # begin of fcst --------------------------------------------------------
 
 
-def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
+def fcst(xmlFile, expdir, do_ensemble=False, dcEnsGrpInfo=None, do_spinup=False):
     meta_id = 'fcst'
+    dep_xml = ""
     if do_spinup:
         cycledefs = 'spinup'
         num_spinup_cycledef = os.getenv('NUM_SPINUP_CYCLEDEF', '1')
@@ -59,15 +61,19 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
         meta_end = ""
         ensindexstr = ""
     else:
+        if dcEnsGrpInfo is None:
+            print('dcEnsGrpInfo not set up or incorrect!')
+            sys.exit(1)
+        ens_indices = dcEnsGrpInfo["ens_indices"]
+        dep_xml = dcEnsGrpInfo["dep_xml"]
+        group_name = dcEnsGrpInfo["group_name"]
         metatask = True
         task_id = f'{meta_id}_m#ens_index#'
         dcTaskEnv['ENS_INDEX'] = "#ens_index#"
         meta_bgn = ""
         meta_end = ""
-        ens_size = int(os.getenv('ENS_SIZE', '2'))
-        ens_indices = ''.join(f'{i:03d} ' for i in range(1, int(ens_size) + 1)).strip()
         meta_bgn = f'''
-<metatask name="{meta_id}">
+<metatask name="{group_name}">
 <var name="ens_index">{ens_indices}</var>'''
         meta_end = f'\
 </metatask>\n'
@@ -111,7 +117,7 @@ def fcst(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     dependencies = f'''
   <dependency>
   <and>{timedep}{prep_lbc_dep}
-    {prep_ic_dep}{jedidep}{chemdep}{cloudana_dep}{recenterdep}
+    {prep_ic_dep}{jedidep}{chemdep}{cloudana_dep}{recenterdep}{dep_xml}
   </and>
   </dependency>'''
 
