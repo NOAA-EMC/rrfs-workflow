@@ -186,26 +186,6 @@ ln -s fv3sar_tile1_sfcvar sfc_data.nc
 #
 #-----------------------------------------------------------------------
 #
-# Fix checksum for the files after calculating ensemble mean 
-#
-#-----------------------------------------------------------------------
-#
-#for files in fv3sar_tile1_dynvar  fv3sar_tile1_sfcvar  fv3sar_tile1_tracer  ; do
-#  ncatted -a checksum,,d,,  $files
-#done
-#
-#-----------------------------------------------------------------------
-#
-# Copy output from the ensemble mean task into umbrella data directory.
-#
-#-----------------------------------------------------------------------
-#
-#cpreq fv3sar_tile1_dynvar ${umbrella_calc_ensmean_data}
-#cpreq fv3sar_tile1_sfcvar ${umbrella_calc_ensmean_data}
-#cpreq fv3sar_tile1_tracer ${umbrella_calc_ensmean_data}
-#
-#-----------------------------------------------------------------------
-#
 # touch a file to show completion of the task
 #
 touch ${COMOUT}/calc_ensmean_complete.txt

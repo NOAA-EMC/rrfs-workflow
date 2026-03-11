@@ -54,7 +54,6 @@ save_yyyy=${save_time:0:4}
 save_mm=${save_time:4:2}
 save_dd=${save_time:6:2}
 save_hh=${save_time:8:2}
-#cdate_crnt_fhr=$( date --utc --date "${yyyymmdd} ${hh} UTC" "+%Y%m%d%H" )
 export CYCLE_DIR="${DATAROOT}/${RUN}/${WGF}/${PDY}${cyc}"
 #
 #-----------------------------------------------------------------------

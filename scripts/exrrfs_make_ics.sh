@@ -134,17 +134,6 @@ export extrn_mdl_staging_dir="${shared_output_data}"
 #
 #-----------------------------------------------------------------------
 #
-# Specify the set of valid argument names for this script/function.  Then
-# process the arguments provided to this script/function (which should
-# consist of a set of name-value pairs of the form arg1="value1", etc).
-#
-#-----------------------------------------------------------------------
-#
-#### valid_args=( "extrn_mdl_fns_on_disk" )
-#### process_args valid_args "$@"
-#
-#-----------------------------------------------------------------------
-#
 # Set machine-dependent parameters.
 #
 #-----------------------------------------------------------------------

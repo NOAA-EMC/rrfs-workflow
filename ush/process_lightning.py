@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 #######################################################################
 #                                                                     #
 # Pre-process GOES-R GLM gridded Flash Extent Density (FED) data      #

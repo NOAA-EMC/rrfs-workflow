@@ -530,39 +530,6 @@ fi
 
 fi #SENDCOM
 
-#-----------------------------------------------------------------------
-#   clean forecast umbrella data directory
-#-----------------------------------------------------------------------
-#if [ ${fhr#0} -eq ${FCST_LEN_HRS_CYCLES[$cyc]#0} ]; then
-#  if [ -f ${umbrella_forecast_data}/forecast_${CYCLE_TYPE}_clean.flag ]; then
-#    if [ ${KEEPDATA} == "YES" ]; then
-#      cd ${umbrella_forecast_data}
-#      backup_directory=BACKUP_$$
-#      mkdir ${backup_directory}
-#      mv output RESTART ./${backup_directory}
-#    else
-#      rm -rf ${umbrella_forecast_data}
-#    fi
-#    cd $DATA
-#  fi
-#fi
-#
-#-----------------------------------------------------------------------
-#   clean forecast netcdf files for saving space
-#-----------------------------------------------------------------------
-#
-#if [ ${PREDEF_GRID_NAME} = "RRFS_NA_3km" ]; then
-#  indx="00 06 12 18"
-#  for i in $indx
-#  do
-#    if [ "$cyc" == $i ]; then
-#      echo "long forecast cycle, keep .nc for bufrsnd" 
-#    else
-#      rm -f ${dyn_file}
-#      rm -f ${phy_file}
-#    fi
-#  done
-#fi
 #
 #-----------------------------------------------------------------------
 #

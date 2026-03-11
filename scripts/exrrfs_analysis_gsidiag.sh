@@ -118,16 +118,6 @@ HH=${YYYYMMDDHH:8:2}
 YYYYMMDD=${YYYYMMDDHH:0:8}
 #
 #-----------------------------------------------------------------------
-# skip if GSI_TYPE is OBSERVER
-#-----------------------------------------------------------------------
-#
-#### This code and logic should be removed before implementation
-if [ "${GSI_TYPE}" = "OBSERVER" ]; then
-   echo "FATAL ERROR: Design issue identified"
-   exit 9
-fi
-#
-#-----------------------------------------------------------------------
 # Loop over first and last outer loops to generate innovation
 # diagnostic files for indicated observation types (groups)
 #

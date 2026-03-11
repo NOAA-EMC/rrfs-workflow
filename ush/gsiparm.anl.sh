@@ -1,3 +1,4 @@
+#!/bin/bash
 set -eux
 gsi_namelist="
  &SETUP

@@ -211,7 +211,6 @@ if [[ "$run_lightning" == true ]]; then
   if [ -f ${shared_output_data}/rrfs.t${HH}z.LightningInFV3LAM.bin ] && [ -s ${DATA}/LightningInFV3LAM.dat ]; then
     rm -f ${shared_output_data}/rrfs.t${HH}z.LightningInFV3LAM.bin
   fi
-#  ln -s ${DATA}/LightningInFV3LAM.dat ${shared_output_data}/rrfs.t${HH}z.LightningInFV3LAM.bin
   cpreq ${DATA}/LightningInFV3LAM.dat ${shared_output_data}/rrfs.t${HH}z.LightningInFV3LAM.bin
   cpreq -p LightningInFV3LAM.dat ${COMOUT_ANALYSIS}/rrfs.t${HH}z.LightningInFV3LAM.bin
 fi
@@ -283,7 +282,6 @@ if [[ "$run_cloud" == true ]]; then
     if [ -f ${shared_output_data}/rrfs.t${HH}z.NASALaRC_cloud4fv3.bin ] && [ -s ${DATA}/NASALaRC_cloud4fv3.bin ]; then
       rm -f ${shared_output_data}/rrfs.t${HH}z.NASALaRC_cloud4fv3.bin
     fi
-#    ln -s ${DATA}/NASALaRC_cloud4fv3.bin ${shared_output_data}/rrfs.t${HH}z.NASALaRC_cloud4fv3.bin
     cpreq ${DATA}/NASALaRC_cloud4fv3.bin ${shared_output_data}/rrfs.t${HH}z.NASALaRC_cloud4fv3.bin
     cpreq -p NASALaRC_cloud4fv3.bin ${COMOUT_ANALYSIS}/rrfs.t${HH}z.NASALaRC_cloud4fv3.bin
   fi
@@ -342,7 +340,6 @@ if [[ "$run_metar" == true ]]; then
   if [ -f ${shared_output_data}/rrfs.t${HH}z.fv3_metarcloud.bin ] && [ -s ${DATA}/fv3_metarcloud.bin ]; then
     rm -f ${shared_output_data}/rrfs.t${HH}z.fv3_metarcloud.bin
   fi
-#  ln -s ${DATA}/fv3_metarcloud.bin ${shared_output_data}/rrfs.t${HH}z.fv3_metarcloud.bin 
   cpreq ${DATA}/fv3_metarcloud.bin ${shared_output_data}/rrfs.t${HH}z.fv3_metarcloud.bin
   cpreq -p fv3_metarcloud.bin ${COMOUT_ANALYSIS}/rrfs.t${HH}z.fv3_metarcloud.bin
 fi
