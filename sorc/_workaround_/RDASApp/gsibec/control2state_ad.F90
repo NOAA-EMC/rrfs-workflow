@@ -56,6 +56,7 @@ use control_vectors, only: cvars3d,cvars2d
 use bias_predictors, only: predictors
 use gridmod, only: regional,lat2,lon2,nsig,twodvar_regional,mpas_regional
 use jfunc, only: nsclen,npclen,ntclen
+use jfunc, only: qoption
 use gsi_4dvar, only: nsubwin, lsqrtb
 #ifdef USE_ALL_ORIGINAL
 use cwhydromod, only: cw2hydro_ad
