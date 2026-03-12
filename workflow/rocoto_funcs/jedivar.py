@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import os
-import textwrap
 from rocoto_funcs.base import xml_task, get_cascade_env
 
 # begin of jedivar --------------------------------------------------------
