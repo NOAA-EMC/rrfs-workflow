@@ -10,6 +10,8 @@ def getkf(xmlFile, expdir, taskType):
     # Task-specific EnVars beyond the task_common_vars
     extrn_mdl_source = os.getenv('IC_EXTRN_MDL_NAME', 'IC_PREFIX_not_defined')
     physics_suite = os.getenv('PHYSICS_SUITE', 'PHYSICS_SUITE_not_defined')
+    coldhrs = os.getenv('COLDSTART_CYCS', '03 15')
+    coldstart_cyc_do_da = os.getenv('COLDSTART_CYCS_DO_DA', 'TRUE')
     dcTaskEnv = {
         'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
         'PHYSICS_SUITE': f'{physics_suite}',
@@ -32,6 +34,14 @@ def getkf(xmlFile, expdir, taskType):
 
     dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
     # dependencies
+    coldhrs = coldhrs.split(' ')
+    strneqs = ""
+    if coldstart_cyc_do_da.upper() == "FALSE":
+        spaces = " " * 4
+        for hr in coldhrs:
+            hr = f"{int(hr):02d}"
+            strneqs += '\n' + spaces + f'<strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>'
+
     timedep = ""
     realtime = os.getenv("REALTIME", "false")
     if realtime.upper() == "TRUE":
@@ -51,7 +61,7 @@ def getkf(xmlFile, expdir, taskType):
 
         dependencies = f'''
   <dependency>
-  <and>{timedep}
+  <and>{timedep}{strneqs}
     <taskdep task="prep_ic"/>
     {iodadep}
     {recenterdep}
