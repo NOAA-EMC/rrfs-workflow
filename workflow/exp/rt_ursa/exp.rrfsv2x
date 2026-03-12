@@ -9,9 +9,11 @@ export EXP_NAME=RRFSv2X
 export VERSION=$(cat ./VERSION)
 export TAG=rrfsv2x
 export OPSROOT=/scratch4/BMC/rtrr/NCO_dirs/${EXP_NAME}
-export EXPDIR=${OPSROOT}/exp/${VERSION}/rrfs${WGF}
+export EXPDIR=${OPSROOT}/exp/rrfs${WGF}
 export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
 export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=YES
+#
+export SFC_UPDATE_SOURCE_DIR=/scratch4/BMC/rtrr/NCO_dirs/MPAS_RAP
 #
 export REALTIME=true     # true, false
 export ZETA_LEVELS="L65.txt"
@@ -26,7 +28,7 @@ export HYB_ENS_PATH=""     # if empty, the workflow will try to find ensembles a
 export ENS_SIZE=30
 export ENS_BEC_LOOK_BACK_HRS=1  # define the hours going back for ensemble forecast files for the ensemble BEC
 
-#export DO_HOFX=true
+export DO_HOFX=false
 export HOFX_FHRS="000 001 012"
 
 export STATIC_BEC_MODEL="GSIBEC" # the static bec model, GSIBEC and BUMPBEC
@@ -36,25 +38,25 @@ export GSIBEC_Y=20
 export DO_CYC=true
 export CYC_INTERVAL=1
 for i in {0..23};    do arr[$i]="03"; done # 3hr fcst
-for i in {0..23..03}; do arr[$i]="18"; done # 18hr fcst
-for i in {0..23..12}; do arr[$i]="24"; done # 24hr fcst every 12hrs
+for i in {0..23..03}; do arr[$i]="12"; done # 18hr fcst
+for i in {0..23..12}; do arr[$i]="48"; done # 24hr fcst every 12hrs
 for i in 00; do arr[$i]="36"; done # 36hr fcst at 00Z
 export FCST_LEN_HRS_CYCLES="${arr[*]}"
 export HISTORY_INTERVAL=1
-export POST_GROUP_TOT_NUM=2 # num of groups, the final group absorbs leftovers, the first group contains the extra f000h file
+export POST_GROUP_TOT_NUM=5
 
-export IC_OFFSET=6
+export IC_OFFSET=3
 export LBC_OFFSET=6
-export LBC_LENGTH=30
+export LBC_LENGTH=48
 export LBC_INTERVAL=1
-export LBC_UNGRIB_GROUP_TOTAL_NUM=5
-export LBC_GROUP_TOTAL_NUM=5
-export PREP_LBC_LOOK_BACK_HRS=5 # define the hours going back for prep_lbc to find lbc files
+export LBC_UNGRIB_GROUP_TOTAL_NUM=3
+export LBC_GROUP_TOTAL_NUM=6
+export PREP_LBC_LOOK_BACK_HRS=11 # define the hours going back for prep_lbc to find lbc files
 
 export RETRO_PERIOD="2024052700-2024052800"
-export LBC_CYCS="00 06 12 18"  # evenly divide 24 hours, e.g., "00 12", "00 06 12 18", etc
-export COLDSTART_CYCS="00 12"   # cycles to cold start from external models
-#export SFC_UPDATE_CYCS=${COLDSTART_CYCS}
+export LBC_CYCS="00 12"  # evenly divide 24 hours, e.g., "00 12", "00 06 12 18", etc
+export COLDSTART_CYCS="03 15"   # cycles to cold start from external models
+export SFC_UPDATE_CYCS=${COLDSTART_CYCS}
 
 #export DO_SPINUP=true
 #export PRODSWITCH_CYCS="06 18"  # cycles to PROD switch to the spun-up ICs
@@ -65,22 +67,29 @@ export COLDSTART_CYCS="00 12"   # cycles to cold start from external models
 #export COLDSTART_CYCS="03 15"
 #export PRODSWITCH_CYCS="09 21"
 #
-export WALLTIME_FCST="4:00:00"
-export WALLTIME_SAVE_FCST="4:00:00"
-export WALLTIME_MPASSIT="2:00:00"
-export WALLTIME_UPP="2:00:00"
-export WALLTIME_JEDIVAR="00:30:00"
+export WALLTIME_FCST="5:00:00"
+export WALLTIME_SAVE_FCST="0:30:00"
+export WALLTIME_MPASSIT="3:00:00"
+export WALLTIME_UPP="3:00:00"
+export WALLTIME_JEDIVAR="00:15:00"
 # Ursa
 export QUEUE="batch"
 export PARTITION="u1-compute"
-export NODES_IC="<nodes>10:ppn=160</nodes>"
-export NODES_LBC="<nodes>10:ppn=160</nodes>"
-export NODES_FCST="<nodes>20:ppn=160</nodes>"
+export NODES_PREP_IC="<nodes>1:ppn=10</nodes>"
+export NODES_IC="<nodes>2:ppn=192</nodes>"
+export NODES_LBC="<nodes>2:ppn=192</nodes>"
+export NODES_FCST="<nodes>10:ppn=160</nodes>"
 export NODES_MPASSIT="<nodes>1:ppn=160</nodes>"
 export NODES_UPP="<nodes>1:ppn=160</nodes>"
 export NODES_JEDIVAR="<nodes>20:ppn=40</nodes>"
 #
 export KEEPDATA=YES
+export MAXTRIES=3
+export STMP_RETENTION_CYCS=26
+export COM_RETENTION_CYCS=72
+export COM_LBC_RETENTION_CYCS=42
+export CYCLETHROTTLE=3600
+export CYCLELIFESPAN=2
 #
 # local.setup: setup some local options specific to a platform or an experiment
 #
@@ -96,25 +105,20 @@ export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
 export OBSPATH="/public/data/grids/rap/obs"
 
 #
-export ACCOUNT="rtrr"
-#export QUEUE="rth"
-#export PARTITION="kjet"
-#export RESERVATION="rrfsens"
+export ACCOUNT="rtwrfruc"
+export RESERVATION="rrfsens"
 #
 export STARTTIME_UNGRIB_IC="00:00:01"
 export STARTTIME_UNGRIB_LBC="00:00:01"
 export STARTTIME_IC="00:00:01"
 export STARTTIME_LBC="00:00:01"
-export STARTTIME_IODA_BUFR="00:05:01"
-export STARTTIME_JEDIVAR="00:35:01"
-export STARTTIME_FCST="00:35:01"
-export STARTTIME_MPASSIT="00:35:01"
-export STARTTIME_UPP="00:35:01"
-export STARTTIME_PREP_IC="00:05:00"
-export STARTTIME_PREP_LBC="00:20:00"
+export STARTTIME_IODA_BUFR="00:00:01"
+export STARTTIME_JEDIVAR="00:01:01"
+export STARTTIME_FCST="00:02:01"
+export STARTTIME_MPASSIT="00:05:01"
+export STARTTIME_UPP="00:05:01"
+export STARTTIME_PREP_IC="00:01:00"
+export STARTTIME_PREP_LBC="00:03:00"
 export MORE_XML_ENTITIES=true
 export DO_CLEAN=true
-#export RESERVATION_CLEAN=${RESERVATION}
 export USE_THE_LATEST_SATBIAS=false
-export MAXTRIES=3
-export STMP_RETENTION_CYCS=12

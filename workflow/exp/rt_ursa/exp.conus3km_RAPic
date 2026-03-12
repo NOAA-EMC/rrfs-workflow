@@ -14,7 +14,7 @@ export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
 export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=YES
 #
 export REALTIME=true
-export ZETA_LEVELS="L65.txt"
+export ZETA_LEVELS="L60.txt"
 #
 export DO_IODA=false
 export DO_JEDI=false
@@ -74,6 +74,7 @@ export RESERVATION="rrfsens"
 #
 export STARTTIME_UNGRIB_IC="00:00:01"
 export STARTTIME_IC="00:00:01"
+export WALLTIME_IC="0:15:00"
 export WALLTIME_FCST="0:15:00"
 export WALLTIME_MPASSIT="0:10:00"
 export WALLTIME_UPP="0:10:00"
@@ -97,7 +98,7 @@ export OBSPATH_AIRNOW="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/airnow"
 export QUEUE="batch"
 export PARTITION="u1-compute"
 
-export NODES_IC="<nodes>4:ppn=160</nodes>"
+export NODES_IC="<nodes>2:ppn=192</nodes>"
 export NODES_LBC="<nodes>10:ppn=160</nodes>"
 export NODES_FCST="<nodes>10:ppn=160</nodes>"
 export NODES_MPASSIT="<nodes>1:ppn=160</nodes>"

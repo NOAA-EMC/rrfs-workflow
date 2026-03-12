@@ -124,7 +124,7 @@ for index in "${mem_list[@]}"; do # loop through all the members
       # if no mpasout files, use init.nc from another run
       if [[ ! -s "${source_file}" ]]; then
         if [[  "${COMINsfc}" == "${COMINrrfs}" ]]; then
-	  echo "SFC_UPDATE: ${COMINsfc} = ${COMINrrfs}, same init.nc,  skip sfc_update!"
+          echo "SFC_UPDATE: ${COMINsfc} = ${COMINrrfs}, same init.nc,  skip sfc_update!"
         else
           PDYii=${CDATE:0:8}
           cycii=${CDATE:8:2}
