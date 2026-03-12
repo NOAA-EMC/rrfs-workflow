@@ -158,15 +158,16 @@ def header_end(xmlFile):
 
 def wflow_begin(xmlFile):
     realtime = os.getenv("REALTIME", "false").upper()
-    cyclethrottle = os.getenv("RETRO_CYCLETHROTTLE", "3")
-    taskthrottle = os.getenv("RETRO_TASKTHROTTLE", "30")
+    cyclethrottle = os.getenv("CYCLETHROTTLE", "3")
+    taskthrottle = os.getenv("TASKTHROTTLE", "30")
+    cyclelifespan = os.getenv("CYCLELIFESPAN", "2")
     machine = os.getenv('MACHINE').lower()
     if machine in ['wcoss2', 'derecho']:
         scheduler = 'pbspro'
     else:
         scheduler = 'slurm'
     if realtime == "TRUE":
-        text = f'<workflow realtime="T" scheduler="{scheduler}" cyclethrottle="26" cyclelifespan="01:00:00:00">'
+        text = f'<workflow realtime="T" scheduler="{scheduler}" cyclethrottle="{cyclethrottle}" cyclelifespan="{cyclelifespan}:00:00:00">'
     else:
         text = f'<workflow realtime="F" scheduler="{scheduler}" cyclethrottle="{cyclethrottle}" taskthrottle="{taskthrottle}">'
     xmlFile.write(f'\n{text}\n')
