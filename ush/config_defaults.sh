@@ -589,6 +589,10 @@ WFLOW_LAUNCH_LOG_FN="log.launch_FV3LAM_wflow"
 # An array containing the hours of the day at which the GSI hybrid using 
 # FV3LAM ensemeble.
 #
+# CYCLE_THROTTLE:
+# Number of cycles ahead of the current cycle that can run
+# Only used for retro experiments
+#
 #-----------------------------------------------------------------------
 #
 DATE_FIRST_CYCL="YYYYMMDD"
@@ -622,6 +626,7 @@ DA_CYCLE_INTERV="1"
 RESTART_INTERVAL="1 2"
 RESTART_INTERVAL_LONG="1 2"
 CYCL_HRS_HYB_FV3LAM_ENS=( "99" )
+CYCLE_THROTTLE=12
 #-----------------------------------------------------------------------
 #
 # Set cycle definition for each group.  The cycle definition sets the cycle
@@ -677,6 +682,10 @@ CYCL_HRS_HYB_FV3LAM_ENS=( "99" )
 # cycle definition for "archive" group
 # This group runs: run_archive
 #
+# CLEAN_CYCLEDEF:
+# cycle definition for "clean" group
+# This group runs: clean
+#
 #-----------------------------------------------------------------------
 #
 CYCLEDAY="*"
@@ -690,6 +699,7 @@ PROD_CYCLEDEF="00 01 01 01 2100 *"
 RECENTER_CYCLEDEF="00 01 01 01 2100 *"
 PRODLONG_CYCLEDEF="00 01 01 01 2100 *"
 ARCHIVE_CYCLEDEF="00 01 01 01 2100 *"
+CLEAN_CYCLEDEF="00 01 01 01 2100 *"
 SAVEDA_CYCLEDEF="00 01 01 01 2100 *"
 #
 #-----------------------------------------------------------------------

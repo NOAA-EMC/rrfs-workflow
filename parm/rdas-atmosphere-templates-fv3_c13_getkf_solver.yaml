@@ -46,7 +46,7 @@ inflation_mult: 1.0
 # Horizontal localization for GETKF
 obs_distribution_localizations:
   obs_distribution:
-    name: RoundRobin
+    name: Halo
     halo size: 500e3
   obs_localizations:
   - localization method: Horizontal Gaspari-Cohn
@@ -55,7 +55,7 @@ override_obs_distribution_localizations:
   override: true
   mrms_refl:
     obs_distribution:
-      name: RoundRobin
+      name: Halo
       halo size: 100e3
     obs_localizations:
     - localization method: Horizontal Gaspari-Cohn

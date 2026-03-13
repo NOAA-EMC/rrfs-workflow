@@ -19,7 +19,11 @@
 # set up currentime from CDATE 
 #-----------------------------------------------------------------------
 #
-currentime=$(echo "${CDATE}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
+if [ "${DO_RETRO}" = "TRUE" ]; then
+  currentime="${CYCLEDATE:0:8} ${CYCLEDATE:8:2}"
+else
+  currentime=$(echo "${CDATE}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
+fi
 
 listens=$(seq 1 $nens)
 

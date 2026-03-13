@@ -399,7 +399,7 @@ define resources used for each tasks
 ]>
 
 {%- if do_retro %}
-<workflow realtime="F" scheduler="&SCHED;" cyclethrottle="12">
+<workflow realtime="F" scheduler="&SCHED;" cyclethrottle="{{ cycle_throttle }}">
 {% else %}
 <workflow realtime="T" scheduler="&SCHED;" cyclethrottle="26" cyclelifespan="01:00:00:00">
 {%- endif %}
@@ -418,6 +418,7 @@ define resources used for each tasks
 {%- endif %}
   <cycledef group="recentercyc"> {{ recenter_cycledef }} </cycledef>
   <cycledef group="archive">  {{ archive_cycledef }} </cycledef> 
+  <cycledef group="clean">  {{ clean_cycledef }} </cycledef> 
 
   <log>
     <cyclestr>&LOGDIR;/FV3LAM_wflow_&TAG;.log</cyclestr>
@@ -4094,7 +4095,7 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
-  <task name="&CLEAN_TN;" cycledefs="archive" maxtries="{{ maxtries_run_post }}">
+  <task name="&CLEAN_TN;" cycledefs="clean" maxtries="{{ maxtries_run_post }}">
 
     &RSRV_POST;
 
@@ -4107,6 +4108,7 @@ MODULES_RUN_TASK_FP script.
     <envar><name>GLOBAL_VAR_DEFNS_FP</name><value>&GLOBAL_VAR_DEFNS_FP;</value></envar>
     <envar><name>LOGDIR</name><value>&LOGDIR;</value></envar>
     <envar><name>CDATE</name><value><cyclestr offset="-4:00:00">@Y@m@d@H</cyclestr></value></envar>
+    <envar><name>CYCLEDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
     <envar><name>NWGES_BASEDIR</name><value><cyclestr>&NWGES_BASEDIR;</cyclestr></value></envar>
 {%- if do_ensemble %}
     <envar><name>nens</name><value><cyclestr>{{ num_ens_members }}</cyclestr></value></envar>
@@ -4115,6 +4117,7 @@ MODULES_RUN_TASK_FP script.
 {%- endif %}
 
     <dependency>
+{%- if not do_retro %}
        <or>
           <and>
             <or>
@@ -4135,6 +4138,21 @@ MODULES_RUN_TASK_FP script.
             <taskdep task="&RUN_PRDGEN_TN;_f012" cycle_offset="-6:00:00"/>
           </and>
        </or>
+{%- else %}
+       <or>
+{%- if do_dacycle %}
+         <and>
+           <taskdep task="&RUN_ANALYSIS_TN;"/>
+           <taskdep task="&RUN_ANALYSIS_JEDI_TN;"/>
+         </and>
+{%- elif do_ensemble %}
+         <and>
+           <taskdep task="&RUN_ENKFUPDT_TN;"/>
+           <taskdep task="&RUN_ENKFUPDT_JEDI_TN;"/>
+         </and>
+{%- endif %}
+       </or>
+{%- endif %}
     </dependency>
 
   </task>
