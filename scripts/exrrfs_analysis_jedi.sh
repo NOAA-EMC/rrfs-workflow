@@ -180,7 +180,9 @@ if  [ ${ob_type} != "conv" ] || [ ${BKTYPE} -eq 1 ]; then #not using GDAS
   l_both_fv3sar_gfs_ens=.false.
 fi
 
-bkpath=${bkpath}.jedi
+if [ "${DO_PARALLEL_DA}" = "TRUE" ]; then
+  bkpath=${bkpath}.jedi
+fi
 
 #
 #---------------------------------------------------------------------
@@ -846,7 +848,7 @@ fi
 
 
 #####################################################################
-# 7. Copy results to INPUT.jedi
+# 7. Copy results to INPUT
 #####################################################################
 cp "$OUT"                           ${bkpath}/fv_core.res.tile1.nc
 cp "$OUTtr"                         ${bkpath}/fv_tracer.res.tile1.nc
@@ -863,9 +865,6 @@ fi
 # Save the Jdiag files for diagnostic tools
 cp jdiag* ${COMOUT}
 cp -r data/satbias_out ${COMOUT}/.
-
-# touch a file in INPUT.jedi its clear if jedi/gsi analysis restarts were used
-touch ${bkpath}/jedi
 
 #
 #-----------------------------------------------------------------------

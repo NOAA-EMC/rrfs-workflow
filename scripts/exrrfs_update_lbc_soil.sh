@@ -166,17 +166,19 @@ else
   BKTYPE=1              # cold start
 fi
 
-echo "DA_SYSTEM: $DA_SYSTEM"
-case "$DA_SYSTEM" in
-  GSI)
-    rm -rf $bkpath
-    cp -r $bkpath.gsi $bkpath
-    ;;
-  JEDI)
-    rm -rf $bkpath
-    cp -r $bkpath.jedi $bkpath
-    ;;
-esac
+if [ "${DO_PARALLEL_DA}" = "TRUE" ]; then
+  echo "DA_SYSTEM: $DA_SYSTEM"
+  case "$DA_SYSTEM" in
+    GSI)
+      rm -rf $bkpath
+      cp -r $bkpath.gsi $bkpath
+      ;;
+    JEDI)
+      rm -rf $bkpath
+      cp -r $bkpath.jedi $bkpath
+      ;;
+  esac
+fi
 
 #
 #-----------------------------------------------------------------------
