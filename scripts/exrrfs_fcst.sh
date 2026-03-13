@@ -43,6 +43,14 @@ mkdir -p graphinfo stream_list
 ln -snf "${FIXrrfs}/${MESH_NAME}"/graphinfo/* graphinfo/
 ${cpreq} "${FIXrrfs}/stream_list/${PHYSICS_SUITE}"/* stream_list/
 
+# If not doing post-processing (DO_POST is not TRUE), meaning history and diag files are not needed.
+# In this case, We would only output minimal information to history and diag files, to save space
+#
+if [[ "${DO_POST}" != "TRUE" ]]; then
+  sed -i -E '/initial_time|xtime|Time/!d'  stream_list/stream_list.atmosphere.diagnostics
+  sed -i -E '/initial_time|xtime|Time/!d'  stream_list/stream_list.atmosphere.output
+fi
+
 # generate the namelist on the fly
 # do_restart already defined in the above
 start_time=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H:%M:%S) 
