@@ -116,16 +116,22 @@ def fcst(xmlFile, expdir, do_ensemble=False, dcEnsGrpInfo=None, do_spinup=False)
         if os.getenv("DO_ENSEMBLE", "FALSE").upper() == "TRUE":
             recenterhrs = recenter_cycs.split(' ')
             recenterdep = f'\n<taskdep task="recenter"/>'
-            streqs = "<or>"
+            streqs_rec = "<or>"
+            strneqs_rec = "<and>"
             for hr in recenterhrs:
                 hr = f"{int(hr):02d}"
-                streqs += '\n' + spaces + f'  <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>'
-            streqs += '\n' + spaces + '</or>'
+                streqs_rec += '\n' + spaces + f'  <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>'
+                strneqs_rec += '\n' + spaces + f'  <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>'
+            streqs_rec += '\n' + spaces + '</or>'
+            strneqs_rec += '\n    </and>'
             recenterdep_indented = textwrap.indent(recenterdep, "      ")  # 6 extra spaces
             final_recenterdep = f'''
+    <or>
+    {strneqs_rec}
     <and>
-      {streqs}{recenterdep_indented}
-    </and>'''
+      {streqs_rec}{recenterdep_indented}
+    </and>
+    </or>'''
 
     coldhrs = coldhrs.split(' ')
     streqs = ""
