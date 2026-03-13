@@ -29,6 +29,10 @@ ${cpreq} "${meshgriddir}"/"${MESH_NAME}".grid.nc mesh.nc
 #-----------------------------------------------------------------------
 #
 
+# If GOES IDs are not set, use default values
+goes_west_id=${NONVAR_GOES_WEST_ID:-272}
+goes_east_id=${NONVAR_GOES_EAST_ID:-273}
+
 ${cpreq} "${OBSPATH}/${CDATE}.rap.t${cyc}z.lgycld.tm00.bufr_d" lgycld.bufr_d
 
 cat << EOF > namelist.nasalarc
@@ -39,6 +43,8 @@ cat << EOF > namelist.nasalarc
   ioption=2,
   userDX=${NONVAR_USER_DX},
   proj_name="${NONVAR_PROJ_NAME}",
+  satidgoeswest=${goes_west_id},
+  satidgoeseast=${goes_east_id},
   debug=0,
  /
 EOF
