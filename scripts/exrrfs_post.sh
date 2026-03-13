@@ -506,8 +506,10 @@ cpreq -p ${prslev} ${COMOUT}
 # Native level output is disabled for ensemble forecasts after f00
 if [[ -f ${natlev} ]]; then
   cpreq -p ${natlev} ${COMOUT}
+  if (( 10#$cyc % 6 == 0 )); then # only for long cycles
   if [[ ${SENDDBN} = "YES" && ${post_fhr} -eq "000" ]]; then
      $DBNROOT/bin/dbn_alert MODEL ${DBN_ALERT_TYPE} $job ${COMOUT}/${natlev}
+  fi
   fi
 fi
 # NBMFLD file is only generated for RRFS and REFS
