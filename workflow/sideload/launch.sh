@@ -31,6 +31,18 @@ fi
 ulimit -s unlimited
 ulimit -v unlimited
 ulimit -a
+if [[ ${MACHINE,,} == "ursa" ]]; then # special needs at ursa
+  export I_MPI_ADJUST_ALLTOALL=3
+  export I_MPI_ADJUST_ALLTOALLV=3
+  export I_MPI_ADJUST_ALLREDUCE=2
+  export I_MPI_ADJUST_BCAST=2
+  export I_MPI_ADJUST_REDUCE=2
+  export I_MPI_ADJUST_GATHER=2
+  export I_MPI_ADJUST_GATHERV=2
+  export I_MPI_ADJUST_SCATTER=2
+  export I_MPI_ADJUST_SCATTERV=2
+  export I_MPI_COLL_INTRANODE=pt2pt
+fi
 #
 echo "load rrfs-workflow modules by default"
 set +x # suppress messy output in the module load process

@@ -46,6 +46,8 @@ def day_clean(srcPath, cyc1, cyc2, srcType, WGF):
         EXPDIR = os.getenv("EXPDIR", "EXPDIR_not_defined")
         STMP_KEPT_TASKS = os.getenv("STMP_KEPT_TASKS", "").strip()
         RUN = os.getenv("RUN", "")
+    else:
+        STMP_KEPT_TASKS = ""
 
     for i in range(cyc1, cyc2 + 1):
         if check_is_cyc_done:
