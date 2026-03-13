@@ -51,6 +51,13 @@ export LBC_INTERVAL=1
 export LBC_UNGRIB_GROUP_TOTAL_NUM=2
 export LBC_GROUP_TOTAL_NUM=2
 
+# GOES IDs for nonvariational cloud analysis depend on retro period!
+# NOTE: Dates listed below are approximate
+export NONVAR_GOES_WEST_ID=272  # For retros AFTER ~1/4/2023
+#export NONVAR_GOES_WEST_ID=271  # For retros BEFORE ~1/4/2023
+#export NONVAR_GOES_EAST_ID=273  # For retros AFTER ~4/7/2025
+export NONVAR_GOES_EAST_ID=270  # For retros BEFORE ~4/7/2025
+
 export RETRO_PERIOD="2024052700-2024052800"
 export LBC_CYCS="00 12"  # evenly divide 24 hours, e.g., "00 12", "00 06 12 18", etc
 export COLDSTART_CYCS="00 12"   # cycles to cold start from external models
