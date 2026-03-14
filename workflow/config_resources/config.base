@@ -34,8 +34,8 @@ else
 fi
 
 # if HISTORY_INTERVAL=none, set DO_POST=false
-if [[ "${HISTORY_INTERVAL,,}" != "none" ]]; then
-  DO_POST=false
+if [[ "${HISTORY_INTERVAL,,}" == "none" ]]; then
+  export DO_POST=false
 fi
 
 # DO_CLEAN
