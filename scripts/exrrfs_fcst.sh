@@ -87,7 +87,7 @@ fi
 #
 # prelink the history/diag files to umbrella
 if [[ "${history_interval,,}" != "none" ]]; then
-  history_all=$(seq 0 $((10#${history_interval})) $((10#${fcst_len_hrs_thiscyc} )) )
+  history_all=$(seq 0 $((10#${history_interval%%:*})) $((10#${fcst_len_hrs_thiscyc} )) )
   for fhr in ${history_all}; do
     CDATEp=$( ${NDATE} "${fhr}" "${CDATE}" )
     timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
@@ -99,7 +99,7 @@ if [[ "${history_interval,,}" != "none" ]]; then
 fi
 # prelink the mpasout files to umbrella
 if [[ "${mpasout_interval,,}" != "none" ]]; then
-  mpasout_all=$(seq 0 $((10#${mpasout_interval})) $((10#${fcst_len_hrs_thiscyc} )) )
+  mpasout_all=$(seq 0 $((10#${mpasout_interval%%:*})) $((10#${fcst_len_hrs_thiscyc} )) )
   for fhr in ${mpasout_all}; do
     CDATEp=$( ${NDATE} "${fhr}" "${CDATE}" )
     timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
