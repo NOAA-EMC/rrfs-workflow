@@ -34,7 +34,7 @@ else
 fi
 
 # if HISTORY_INTERVAL=none, set DO_POST=false
-if [[ "${history_interval,,}" != "none" ]]; then
+if [[ "${HISTORY_INTERVAL,,}" != "none" ]]; then
   DO_POST=false
 fi
 
