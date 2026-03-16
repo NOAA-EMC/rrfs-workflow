@@ -2637,7 +2637,7 @@ DO_IODA_MRMS="FALSE"
 #-----------------------------------------------------------------------
 #
 DO_JEDIVAR="FALSE"
-DO_PARALLEL_DA="FALSE"
+DO_PARALLEL_DA="TRUE"
 DA_SYSTEM="GSI"
 DO_DACOLD="NO"
 DO_ARCHIVE_RETRO="FALSE"
