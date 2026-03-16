@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import os
-import textwrap
 from rocoto_funcs.base import xml_task, get_cascade_env
 
 # begin of jedivar --------------------------------------------------------
@@ -78,10 +77,14 @@ def jedivar(xmlFile, expdir, do_spinup=False):
 
     if HYB_WGT_ENS != "0" and HYB_WGT_ENS != "0.0" and HYB_ENS_TYPE == "1":  # rrfsens
         RUN = 'rrfs'
+        ens_dep = "\n    <or>"
         for enshrs in range(1, int(ens_bec_look_back_hrs) + 1):
+            ens_dep = ens_dep + "\n    <and>"
             for i in range(1, int(ens_size) + 1):
                 ensindexstr = f'mem{i:03d}'
-                ens_dep = ens_dep + f'\n    <datadep age="00:01:00"><cyclestr offset="-{enshrs}:00:00">{HYB_ENS_PATH}/{RUN}.@Y@m@d/@H/fcst/enkf/</cyclestr>{ensindexstr}/<cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'
+                ens_dep = ens_dep + f'\n      <datadep age="00:01:00"><cyclestr offset="-{enshrs}:00:00">{HYB_ENS_PATH}/{RUN}.@Y@m@d/@H/fcst/enkf/</cyclestr>{ensindexstr}/<cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'
+            ens_dep = ens_dep + "\n    </and>"
+        ens_dep = ens_dep + "\n    </or>"
 
     elif HYB_WGT_ENS != "0" and HYB_WGT_ENS != "0.0" and HYB_ENS_TYPE == "2":  # interpolated GDAS/GEFS
         RUN = 'rrfs'
@@ -107,33 +110,19 @@ def jedivar(xmlFile, expdir, do_spinup=False):
     else:
         iodadep = f'<datadep age="00:01:00"><cyclestr>&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/ioda_bufr/det/ioda_aircar.nc</cyclestr></datadep>'
 
+    final_ens_dep = ens_dep
     #
     coldhrs = coldhrs.split(' ')
     strneqs = ""
-    streqs = ""
-    if coldstart_cyc_do_da.upper() == "FALSE":  # if no DA at coldstart cycs, skip checking ensembles
-        spaces = " " * 6
-        streqs = '<or>'
-        strneqs = ""
+    if coldstart_cyc_do_da.upper() == "FALSE":  # if no DA at coldstart cycs, skip this task
         for hr in coldhrs:
             hr = f"{int(hr):02d}"
-            streqs += '\n' + spaces + f'  <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>'
-            strneqs += '\n' + spaces + f'  <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>'
-        streqs += '\n' + spaces + '</or>'
-        ens_dep_indented = textwrap.indent(ens_dep, "    ")  # four extra spaces
-        final_ens_dep = f'''
-    <or>
-      {streqs}
-      <and>{strneqs}{ens_dep_indented}
-      </and>
-    </or>'''
+            strneqs += f'\n    <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>'
 
-    else:
-        final_ens_dep = ens_dep
     #
     dependencies = f'''
   <dependency>
-  <and>{timedep}
+  <and>{timedep}{strneqs}
     {prep_ic_dep}
     {iodadep}{final_ens_dep}
   </and>

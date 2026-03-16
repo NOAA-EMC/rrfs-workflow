@@ -10,6 +10,9 @@ def getkf(xmlFile, expdir, taskType):
     # Task-specific EnVars beyond the task_common_vars
     extrn_mdl_source = os.getenv('IC_EXTRN_MDL_NAME', 'IC_PREFIX_not_defined')
     physics_suite = os.getenv('PHYSICS_SUITE', 'PHYSICS_SUITE_not_defined')
+    coldhrs = os.getenv('COLDSTART_CYCS', '03 15')
+    coldstart_cyc_do_da = os.getenv('COLDSTART_CYCS_DO_DA', 'TRUE')
+    recenter_cycs = os.getenv('RECENTER_CYCS', '99')
     dcTaskEnv = {
         'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
         'PHYSICS_SUITE': f'{physics_suite}',
@@ -32,6 +35,14 @@ def getkf(xmlFile, expdir, taskType):
 
     dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
     # dependencies
+    coldhrs = coldhrs.split(' ')
+    strneqs = ""
+    spaces = " " * 4
+    if coldstart_cyc_do_da.upper() == "FALSE":
+        for hr in coldhrs:
+            hr = f"{int(hr):02d}"
+            strneqs += '\n' + spaces + f'<strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>'
+
     timedep = ""
     realtime = os.getenv("REALTIME", "false")
     if realtime.upper() == "TRUE":
@@ -45,16 +56,32 @@ def getkf(xmlFile, expdir, taskType):
             iodadep = f'<datadep age="00:01:00"><cyclestr>&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/ioda_bufr/det/ioda_aircar.nc</cyclestr></datadep>'
             dcTaskEnv['IODA_BUFR_WGF'] = 'det'
 
-        recenterdep = ""
+        final_recenterdep = ""
         if os.getenv("DO_RECENTER", "FALSE").upper() == "TRUE":
+            recenterhrs = recenter_cycs.split(' ')
             recenterdep = f'<taskdep task="recenter"/>'
+            streqs_rec = "<or>"
+            strneqs_rec = "<and>"
+            for hr in recenterhrs:
+                hr = f"{int(hr):02d}"
+                streqs_rec += '\n' + spaces + f'  <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>'
+                strneqs_rec += '\n' + spaces + f'  <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>'
+            streqs_rec += '\n      </or>'
+            strneqs_rec += '\n    </and>'
+            final_recenterdep = f'''
+    <or>
+    {strneqs_rec}
+    <and>
+      {streqs_rec}
+      {recenterdep}
+    </and>
+    </or>'''
 
         dependencies = f'''
   <dependency>
-  <and>{timedep}
+  <and>{timedep}{strneqs}
     <taskdep task="prep_ic"/>
-    {iodadep}
-    {recenterdep}
+    {iodadep}{final_recenterdep}
   </and>
   </dependency>'''
     elif taskType.upper() == "SOLVER":
