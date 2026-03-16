@@ -37,7 +37,7 @@
         filename_template="history.$Y-$M-$D_$h.$m.$s.nc"
         io_type="pnetcdf,cdf5"
         clobber_mode="replace_files"
-        output_interval="@history_interval@:00:00" >
+        output_interval="@history_interval@" >
         <file name="stream_list/stream_list.atmosphere.output"/>
 </stream>
 
@@ -46,7 +46,7 @@
         filename_template="diag.$Y-$M-$D_$h.$m.$s.nc"
         io_type="pnetcdf,cdf5"
         clobber_mode="replace_files"
-        output_interval="@diag_interval@:00:00" >
+        output_interval="@diag_interval@" >
         <file name="stream_list/stream_list.atmosphere.diagnostics"/>
 </stream>
 

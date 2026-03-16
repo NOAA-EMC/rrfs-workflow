@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 import os
 import sys
+import textwrap
 from rocoto_funcs.base import xml_task, get_cascade_env
 
 # begin of fcst --------------------------------------------------------
@@ -25,6 +26,9 @@ def fcst(xmlFile, expdir, do_ensemble=False, dcEnsGrpInfo=None, do_spinup=False)
     history_interval = os.getenv('HISTORY_INTERVAL', '1')
     restart_interval = os.getenv('RESTART_INTERVAL', 'none')
     physics_suite = os.getenv('PHYSICS_SUITE', 'PHYSICS_SUITE_not_defined')
+    coldhrs = os.getenv('COLDSTART_CYCS', '03 15')
+    coldstart_cyc_do_da = os.getenv('COLDSTART_CYCS_DO_DA', 'TRUE')
+    recenter_cycs = os.getenv('RECENTER_CYCS', '99')
     dcTaskEnv = {
         'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
         'LBC_INTERVAL': f'{lbc_interval}',
@@ -89,23 +93,71 @@ def fcst(xmlFile, expdir, do_ensemble=False, dcEnsGrpInfo=None, do_spinup=False)
 
     jedidep = ""
     cloudana_dep = ""
+    final_recenterdep = ""
     recenterdep = ""
+    spaces = " " * 6
+    do_da = False
     if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
+        do_da = True
         if do_spinup:
             cloudana_dep = f'\n    <taskdep task="nonvar_cldana_spinup"/>'
         else:
             cloudana_dep = f'\n    <taskdep task="nonvar_cldana{ensindexstr}"/>'
     elif os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
+        do_da = True
         if os.getenv("DO_ENSEMBLE", "FALSE").upper() == "TRUE":
             jedidep = f'\n    <taskdep task="getkf_solver"/>'
         elif do_spinup:
             jedidep = f'\n    <taskdep task="jedivar_spinup"/>'
         else:
             jedidep = f'\n    <taskdep task="jedivar"/>'
+
+    elif os.getenv("DO_RECENTER", "FALSE").upper() == "TRUE":
+        if os.getenv("DO_ENSEMBLE", "FALSE").upper() == "TRUE":
+            recenterhrs = recenter_cycs.split(' ')
+            recenterdep = f'\n<taskdep task="recenter"/>'
+            streqs_rec = "<or>"
+            strneqs_rec = "<and>"
+            for hr in recenterhrs:
+                hr = f"{int(hr):02d}"
+                streqs_rec += '\n' + spaces + f'  <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>'
+                strneqs_rec += '\n' + spaces + f'  <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>'
+            streqs_rec += '\n' + spaces + '</or>'
+            strneqs_rec += '\n    </and>'
+            recenterdep_indented = textwrap.indent(recenterdep, "      ")  # 6 extra spaces
+            final_recenterdep = f'''
+    <or>
+    {strneqs_rec}
+    <and>
+      {streqs_rec}{recenterdep_indented}
+    </and>
+    </or>'''
+
+    coldhrs = coldhrs.split(' ')
+    streqs = ""
+    strneqs = ""
+    if do_da:
+        if coldstart_cyc_do_da.upper() == "FALSE":  # if no DA at coldstart cycs, skip checking DA tasks
+            streqs = "<or>"
+            for hr in coldhrs:
+                hr = f"{int(hr):02d}"
+                streqs += '\n' + spaces + f'  <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>'
+                strneqs += '\n' + spaces + f'  <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>'
+            streqs += '\n' + spaces + '</or>'
+            jedidep_indented = textwrap.indent(jedidep, "    ")  # four extra spaces
+            cloudana_dep_indented = textwrap.indent(cloudana_dep, "    ")  # four extra spaces
+            da_dep = f'''
+    <or>
+      {streqs}
+      <and>{strneqs}{jedidep_indented}{cloudana_dep_indented}
+      </and>
+    </or>'''
+
+        else:
+            da_dep = f'{jedidep}{cloudana_dep}'
+
     else:
-        if os.getenv("DO_RECENTER", "FALSE").upper() == "TRUE":
-            if os.getenv("DO_ENSEMBLE", "FALSE").upper() == "TRUE":
-                recenterdep = f'\n<taskdep task="recenter"/>'
+        da_dep = ""
 
     prep_ic_dep = f'<taskdep task="prep_ic"/>'
     if do_spinup:
@@ -116,8 +168,8 @@ def fcst(xmlFile, expdir, do_ensemble=False, dcEnsGrpInfo=None, do_spinup=False)
 
     dependencies = f'''
   <dependency>
-  <and>{timedep}{prep_lbc_dep}
-    {prep_ic_dep}{jedidep}{chemdep}{cloudana_dep}{recenterdep}{dep_xml}
+  <and>{timedep}{prep_lbc_dep}{da_dep}
+    {prep_ic_dep}{chemdep}{final_recenterdep}{dep_xml}
   </and>
   </dependency>'''
 

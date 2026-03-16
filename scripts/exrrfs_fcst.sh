@@ -69,6 +69,8 @@ history_interval=${HISTORY_INTERVAL:-1}
 diag_interval=${HISTORY_INTERVAL:-1}
 mpasout_interval=${MPASOUT_INTERVAL:-1}
 [[ ${restart_interval} =~ ^[0-9]+$ ]] && restart_interval="${restart_interval}:00:00"
+[[ ${history_interval} =~ ^[0-9]+$ ]] && history_interval="${history_interval}:00:00"
+[[ ${diag_interval} =~ ^[0-9]+$ ]] && diag_interval="${diag_interval}:00:00"
 [[ ${mpasout_interval} =~ ^[0-9]+$ ]] && mpasout_interval="${mpasout_interval}:00:00"
 sed -e "s/@restart_interval@/${restart_interval}/" -e "s/@history_interval@/${history_interval}/" \
     -e "s/@diag_interval@/${diag_interval}/" -e "s/@lbc_interval@/${lbc_interval}/" \
@@ -83,19 +85,29 @@ if [[ "${DO_CHEMISTRY^^}" == "TRUE" ]]; then
   source "${USHrrfs}"/chem_fcst.sh
 fi
 #
-# prelink the forecast output files to umbrella
-history_all=$(seq 0 $((10#${history_interval})) $((10#${fcst_len_hrs_thiscyc} )) )
-for fhr in ${history_all}; do
-  CDATEp=$( ${NDATE} "${fhr}" "${CDATE}" )
-  timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
-  if [[ "${DO_SPINUP:-FALSE}" != "TRUE" ]];  then
-    ln -snf "${UMBRELLA_FCST_DATA}/history.${timestr}.nc" "${DATA}"
-    ln -snf "${UMBRELLA_FCST_DATA}/diag.${timestr}.nc" "${DATA}"
-    if [[ "${mpasout_interval,,}" != "none" ]]; then
+# prelink the history/diag files to umbrella
+if [[ "${history_interval,,}" != "none" ]]; then
+  history_all=$(seq 0 $((10#${history_interval%%:*})) $((10#${fcst_len_hrs_thiscyc} )) )
+  for fhr in ${history_all}; do
+    CDATEp=$( ${NDATE} "${fhr}" "${CDATE}" )
+    timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
+    if [[ "${DO_SPINUP:-FALSE}" != "TRUE" ]];  then
+      ln -snf "${UMBRELLA_FCST_DATA}/history.${timestr}.nc" "${DATA}"
+      ln -snf "${UMBRELLA_FCST_DATA}/diag.${timestr}.nc" "${DATA}"
+    fi
+  done
+fi
+# prelink the mpasout files to umbrella
+if [[ "${mpasout_interval,,}" != "none" ]]; then
+  mpasout_all=$(seq 0 $((10#${mpasout_interval%%:*})) $((10#${fcst_len_hrs_thiscyc} )) )
+  for fhr in ${mpasout_all}; do
+    CDATEp=$( ${NDATE} "${fhr}" "${CDATE}" )
+    timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
+    if [[ "${DO_SPINUP:-FALSE}" != "TRUE" ]];  then
       ln -snf "${UMBRELLA_FCST_DATA}/mpasout.${timestr}.nc" "${DATA}"
     fi
-  fi
-done
+  done
+fi
 
 # run the MPAS model
 source prep_step

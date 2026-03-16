@@ -33,6 +33,11 @@ else
   export PREP_LBC_LOOK_BACK_HRS=${PREP_LBC_LOOK_BACK_HRS:-${lbc_step_hrs}}
 fi
 
+# if HISTORY_INTERVAL=none, set DO_POST=false
+if [[ "${HISTORY_INTERVAL,,}" == "none" ]]; then
+  export DO_POST=false
+fi
+
 # DO_CLEAN
 if ${DO_CLEAN:-false} && ! ${REALTIME:-false}; then
   export STMP_RETENTION_CYCS=${STMP_RETENTION_CYCS:-2}
