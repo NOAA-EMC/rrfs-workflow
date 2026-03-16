@@ -68,9 +68,9 @@ the specified cycle.
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
-  analworkname="_gsi_spinup"
+  analworkname="_${DA_SYSTEM,,}_spinup"
 else
-  analworkname="_gsi"
+  analworkname="_${DA_SYSTEM,,}"
 fi
 
 if [[ ! -v OB_TYPE ]]; then
