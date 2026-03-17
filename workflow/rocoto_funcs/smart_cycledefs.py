@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import os
-from datetime import datetime, timedelta
 
 
 def smart_cycledefs():
