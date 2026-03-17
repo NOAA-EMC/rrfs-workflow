@@ -57,7 +57,7 @@ def smart_cycledefs():
     dcCycledef = {}
     dcCycledef['ic'] = f'{cycledef_ic}'
     dcCycledef['lbc'] = f'{cycledef_lbc}'
-    exclude_str = os.getenv('CYCLEDEF_PROD_EXClUDE', '')
+    exclude_str = os.getenv('CYCLEDEF_PROD_EXCLUDE', '')
     if exclude_str:
         dcCycledef['prod'] = {'exclude_hours': f'{exclude_str}', "cycledef": f'{cycledef_prod}'}
     else:
