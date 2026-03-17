@@ -25,9 +25,9 @@ def smart_cycledefs():
         if len(cold_cycs) > 1:
             spinup_hrs.extend(list(range(int(cold_cycs[1]), int(prodswitch_cycs[1]))))
         #
-        realtime = os.getenv('REALTIME', 'false')
-        spinup = os.getenv('DO_SPINUP', 'false')
-        if realtime.upper() == "TRUE":
+        realtime = os.getenv('REALTIME', 'FALSE').upper() == "TRUE"
+        spinup = os.getenv('DO_SPINUP', 'FALSE').upper() == "TRUE"
+        if realtime:
             cycledef_ic = f'  &Y1;&M1;&D1;{cold_cycs[0]}00 &Y2;&M2;&D2;2300 {ic_step.zfill(2)}:00:00'
             cycledef_lbc = f' &Y1;&M1;&D1;{lbc_cycs[0]}00 &Y2;&M2;&D2;2300 {lbc_step.zfill(2)}:00:00'
             cycledef_prod = f'&Y1;&M1;&D1;0000 &Y2;&M2;&D2;2300 {cyc_interval.zfill(2)}:00:00'
@@ -44,27 +44,42 @@ def smart_cycledefs():
             cold_cyc1 = cold_cycs[index]
             lbc_cyc1 = lbc_cycs[index]
             prod_cyc1 = cold_cyc1
-            if spinup.upper() == "TRUE":  # if spinup, the first prod_cyc is from prodswitch_cycs
+            if spinup:  # if spinup, the first prod_cyc is from prodswitch_cycs
                 prod_cyc1 = prodswitch_cycs[index]
             #
             cycledef_ic = f'  {retrodates[0][0:8]}{cold_cyc1}00 {retrodates[1]}00 {ic_step.zfill(2)}:00:00'
             cycledef_lbc = f' {retrodates[0][0:8]}{lbc_cyc1}00 {retrodates[1]}00 {lbc_step.zfill(2)}:00:00'
             cycledef_prod = f'{retrodates[0][0:8]}{prod_cyc1}00 {retrodates[1]}00 {cyc_interval.zfill(2)}:00:00'
-            if spinup.upper() == "TRUE":
+            if spinup:
                 cycledef_spinup = f'{retrodates[0][0:8]}{cold_cyc1}00 {retrodates[1]}00 {cyc_interval.zfill(2)}:00:00'
     #
     # fill in the Cycledef dictionary
     dcCycledef = {}
     dcCycledef['ic'] = f'{cycledef_ic}'
     dcCycledef['lbc'] = f'{cycledef_lbc}'
+    #
     exclude_str = os.getenv('CYCLEDEF_PROD_EXCLUDE', '')
     if exclude_str:
         dcCycledef['prod'] = {'exclude_hours': f'{exclude_str}', "cycledef": f'{cycledef_prod}'}
     else:
         dcCycledef['prod'] = f'{cycledef_prod}'
     #
-    if spinup.upper() == "TRUE":
+    if spinup:
         valid_str = " ".join(f"{i}" for i in spinup_hrs)
         dcCycledef['spinup'] = {'valid_hours': f'{valid_str}', "cycledef": f'{cycledef_spinup}'}
+    #
+    # if we don't do DA at cold start cycles, let's exclude cold_cycs
+    nocoldda = os.getenv('COLDSTART_CYCS_DO_DA', 'FALSE').upper() == 'FALSE'
+    if nocoldda:
+        if spinup:  # if spinup, coldda only happens at spinup cycles
+            spinup_hrs2 = [item for item in spinup_hrs if item not in list(map(int, cold_cycs))]
+            valid_str = " ".join(f"{i}" for i in spinup_hrs2)
+            dcCycledef['da_nocold'] = {'valid_hours': f'{valid_str}', "cycledef": f'{cycledef_spinup}'}
+        else:
+            exclude_cycs = list(map(int, os.getenv('CYCLEDEF_PROD_EXCLUDE', '').strip().split()))
+            exclude_cycs.extend(list(map(int, cold_cycs)))
+            exclude_cycs = sorted(set(exclude_cycs))  # uniq and sort
+            exclude_str = " ".join(f"{i}" for i in exclude_cycs)
+            dcCycledef['da_nocold'] = {'exclude_hours': f'{exclude_str}', "cycledef": f'{cycledef_prod}'}
     # ~~~~
     return dcCycledef
