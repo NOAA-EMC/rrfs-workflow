@@ -64,7 +64,7 @@
     config_mynn_mixscalars = 0
     config_mynn_mixaerosols = 1
     config_mynn_mixnumcon = 0
-    config_mynn_sfcflux_land = 0
+    !config_mynn_sfcflux_land = 0
 /
 &physics_mp_tempo
     config_tempo_aerosolaware = .true.
