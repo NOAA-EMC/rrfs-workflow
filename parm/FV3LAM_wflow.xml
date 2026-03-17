@@ -1422,6 +1422,7 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 ************************************************************************
 -->
+{%- if do_parallel_da or da_system in ["GSI"] %}
   <task name="&CALC_ENSMEAN_TN;_spinup" cycledefs="spinupcyc" maxtries="{{ maxtries_run_prepstart }}">
 
     &RSRV_ENKF;
@@ -1542,8 +1543,10 @@ MODULES_RUN_TASK_FP script.
 
   </metatask>
 {%- endif %}
+{%- endif %}
 
 {%- if do_enkfupdate %}
+{%- if do_parallel_da or da_system in ["GSI"] %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -1575,11 +1578,12 @@ MODULES_RUN_TASK_FP script.
         <metataskdep metatask="run_ensemble_observer_spinup"/>
     </dependency>
   </task>
-
+{%- endif %}
 <!--
 ************************************************************************
 ************************************************************************
 -->
+{%- if do_parallel_da or da_system in ["JEDI"] %}
   <task name="&RUN_ENKFUPDT_JEDI_TN;_spinup" cycledefs="spinupcyc" maxtries="{{ maxtries_analysis_enkf_jedi }}">
     &RSRV_ENKF;
     &WALL_LIMIT_ANALYSIS;
@@ -1606,7 +1610,11 @@ MODULES_RUN_TASK_FP script.
 
     <dependency>
       <and>
-        <metataskdep metatask="run_ensemble_observer_spinup"/>
+        {%- for m in range(1, num_ens_members+1) %}
+        {%- if do_ensinit %}
+          <taskdep task="&PREP_CYC_SPINUP_TN;_mem{{ "%04d" % m }}"/>
+        {%- endif %}
+        {%- endfor %}
         <taskdep task="&IODA_BUFR_TN;_spinup"/>
         {%- if do_enkf_radar_ref %}
         <taskdep task="&PROCESS_RADAR_REF_TN;_spinup"/>
@@ -1615,10 +1623,11 @@ MODULES_RUN_TASK_FP script.
     </dependency>
   </task>
 
-
+{%- endif %}
 {%- endif %}
 
 {%- if do_enkf_radar_ref %}
+{%- if do_parallel_da or da_system in ["GSI"] %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -1653,6 +1662,7 @@ MODULES_RUN_TASK_FP script.
     </dependency>
   </task>
 
+{%- endif %}
 {%- endif %}
 
 {% if do_ensemble and do_nonvar_cldanal %}
@@ -1782,6 +1792,7 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 --> 
 {%- if do_jedivar %}
+{%- if do_parallel_da or da_system in ["JEDI"] %}
   <task name="&ANALYSIS_JEDI_TN;_spinup{{ uscore_ensmem_name }}" cycledefs="spinupcyc" maxtries="{{ maxtries_analysis_jedi }}">
 
     &RSRV_ANALYSIS;
@@ -1852,10 +1863,12 @@ MODULES_RUN_TASK_FP script.
 
   </task>
 {%- endif %}
+{%- endif %}
 <!--
 ************************************************************************
 ************************************************************************
 -->
+{%- if do_parallel_da or da_system in ["GSI"] %}
   <task name="&ANALYSIS_GSI_TN;_spinup{{ uscore_ensmem_name }}" cycledefs="spinupcyc" maxtries="{{ maxtries_analysis_gsi }}">
 
     &RSRV_ANALYSIS;
@@ -1923,6 +1936,7 @@ MODULES_RUN_TASK_FP script.
     </dependency>
 
   </task>
+{%- endif %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -1960,15 +1974,25 @@ MODULES_RUN_TASK_FP script.
     <dependency>
        {%- if do_jedivar %}
        <and>
+         {%- if do_parallel_da or da_system in ["GSI"] %}
          <taskdep task="&ANALYSIS_GSI_TN;_spinup{{ uscore_ensmem_name }}"/>
+         {%- endif %}
+         {%- if do_parallel_da or da_system in ["JEDI"] %}
          <taskdep task="&ANALYSIS_JEDI_TN;_spinup{{ uscore_ensmem_name }}"/>
+         {%- endif %}
          {%- if do_envar_radar_ref and do_jedivar %}
+         {%- if do_parallel_da or da_system in ["GSI"] %}
          <taskdep task="&HYBRID_RADAR_REF_TN;_spinup"/>
+         {%- endif %}
+         {%- if do_parallel_da or da_system in ["JEDI"] %}
          <taskdep task="&HYBRID_RADAR_REF_JEDI_TN;_spinup"/>
+         {%- endif %}
          {%- endif %}
        </and>
        {%- else  %}
+       {%- if do_parallel_da or da_system in ["GSI"] %}
        <taskdep task="&ANALYSIS_GSI_TN;_spinup{{ uscore_ensmem_name }}"/>
+       {%- endif %}
        {%- endif %}
        {%- if do_pm_da %}
          <taskdep task="&ANALYSIS_SD_GSI_TN;_spinup{{ uscore_ensmem_name }}"/>
@@ -1978,6 +2002,7 @@ MODULES_RUN_TASK_FP script.
   </task>
 
 {%- if do_envar_radar_ref and not do_envar_radar_ref_once %}
+{%- if do_parallel_da or da_system in ["GSI"] %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -2024,8 +2049,10 @@ MODULES_RUN_TASK_FP script.
 
   </task>
 {% endif -%}
+{% endif -%}
 
 {%- if do_jedivar and do_envar_radar_ref %}
+{%- if do_parallel_da or da_system in ["JEDI"] %}
 
   <task name="&HYBRID_RADAR_REF_JEDI_TN;_spinup" cycledefs="spinupcyc" maxtries="{{ maxtries_analysis_jedi }}">
 
@@ -2069,8 +2096,10 @@ MODULES_RUN_TASK_FP script.
   </task>
 
 {% endif -%}
+{% endif -%}
 
 {%- if do_gsidiag_offline %}
+{%- if do_parallel_da or da_system in ["GSI"] %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -2112,6 +2141,7 @@ MODULES_RUN_TASK_FP script.
   </task>
 
 {%- endif %}
+{% endif -%}
 
 {% endif -%}
 
@@ -2569,6 +2599,7 @@ MODULES_RUN_TASK_FP script.
 
 {%- if not do_ensfcst %}
 {%- if do_gsiobserver %}
+{%- if do_parallel_da or da_system in ["GSI"] %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -2696,8 +2727,10 @@ MODULES_RUN_TASK_FP script.
   </metatask>
 {%- endif %}
 {%- endif %}
+{%- endif %}
 
 {%- if do_enkfupdate %}
+{%- if do_parallel_da or da_system in ["GSI"] %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -2728,11 +2761,13 @@ MODULES_RUN_TASK_FP script.
         <metataskdep metatask="run_ensemble_observer"/>
     </dependency>
   </task>
+{%- endif %}
 
 <!--
 ************************************************************************
 ************************************************************************
 -->
+{%- if do_parallel_da or da_system in ["JEDI"] %}
   <task name="&RUN_ENKFUPDT_JEDI_TN;" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_analysis_enkf_jedi }}">
     &RSRV_ENKF;
     &WALL_LIMIT_ANALYSIS;
@@ -2758,7 +2793,9 @@ MODULES_RUN_TASK_FP script.
 
     <dependency>
       <and>
-        <metataskdep metatask="run_ensemble_observer"/>
+        {%- for m in range(1, num_ens_members+1) %}
+        <taskdep task="&PREP_CYC_PROD_TN;_mem{{ "%04d" % m }}"/>
+        {%- endfor %}
         <taskdep task="&IODA_BUFR_TN;_prod"/>
         {%- if do_enkf_radar_ref %}
         <taskdep task="&PROCESS_RADAR_REF_TN;_prod"/>
@@ -2768,8 +2805,10 @@ MODULES_RUN_TASK_FP script.
   </task>
 
 {%- endif %}
+{%- endif %}
 
 {%- if do_enkf_radar_ref %}
+{%- if do_parallel_da or da_system in ["GSI"] %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -2803,6 +2842,7 @@ MODULES_RUN_TASK_FP script.
     </dependency>
   </task>
 
+{%- endif %}
 {%- endif %}
 
 {% if do_ensemble %}
@@ -2861,6 +2901,7 @@ MODULES_RUN_TASK_FP script.
 ************************************************************************
 -->
 {%- if do_jedivar %}
+{%- if do_parallel_da or da_system in ["JEDI"] %}
   <task name="&ANALYSIS_JEDI_TN;_prod{{ uscore_ensmem_name }}" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_analysis_jedi }}">
 
     &RSRV_ANALYSIS;
@@ -2945,10 +2986,12 @@ MODULES_RUN_TASK_FP script.
 
   </task>
 {%- endif %}
+{%- endif %}
 <!--
 ************************************************************************
 ************************************************************************
 -->
+{%- if do_parallel_da or da_system in ["GSI"] %}
   <task name="&ANALYSIS_GSI_TN;_prod{{ uscore_ensmem_name }}" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_analysis_gsi }}">
 
     &RSRV_ANALYSIS;
@@ -3025,6 +3068,7 @@ MODULES_RUN_TASK_FP script.
     </dependency>
 
   </task>
+{%- endif %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -3062,11 +3106,19 @@ MODULES_RUN_TASK_FP script.
     <dependency>
        {%- if do_jedivar %}
        <and>
+         {%- if do_parallel_da or da_system in ["GSI"] %}
          <taskdep task="&ANALYSIS_GSI_TN;_prod{{ uscore_ensmem_name }}"/>
+         {%- endif %}
+         {%- if do_parallel_da or da_system in ["JEDI"] %}
          <taskdep task="&ANALYSIS_JEDI_TN;_prod{{ uscore_ensmem_name }}"/>
+         {%- endif %}
          {%- if do_envar_radar_ref and do_jedivar %}
+         {%- if do_parallel_da or da_system in ["GSI"] %}
          <taskdep task="&HYBRID_RADAR_REF_TN;_prod"/>
+         {%- endif %}
+         {%- if do_parallel_da or da_system in ["JEDI"] %}
          <taskdep task="&HYBRID_RADAR_REF_JEDI_TN;_prod"/>
+         {%- endif %}
          {%- endif %}
        </and>
        {%- else  %}
@@ -3080,6 +3132,7 @@ MODULES_RUN_TASK_FP script.
   </task>
 
 {%- if do_envar_radar_ref and not do_envar_radar_ref_once %}
+{%- if do_parallel_da or da_system in ["GSI"] %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -3126,8 +3179,10 @@ MODULES_RUN_TASK_FP script.
 
   </task>
 {%- endif %}
+{%- endif %}
 
 {%- if do_jedivar and do_envar_radar_ref %}
+{%- if do_parallel_da or da_system in ["JEDI"] %}
   <task name="&HYBRID_RADAR_REF_JEDI_TN;_prod" cycledefs="prodcyc,prodcyc_long" maxtries="{{ maxtries_analysis_jedi }}">
 
     &RSRV_ANALYSIS;
@@ -3170,10 +3225,12 @@ MODULES_RUN_TASK_FP script.
 
   </task>
 {%- endif %}
+{%- endif %}
 
 
 
 {%- if do_gsidiag_offline %}
+{%- if do_parallel_da or da_system in ["GSI"] %}
 <!--
 ************************************************************************
 ************************************************************************
@@ -3214,6 +3271,7 @@ MODULES_RUN_TASK_FP script.
 
   </task>
 
+{%- endif %}
 {%- endif %}
 
 {% endif -%}
@@ -3552,13 +3610,21 @@ MODULES_RUN_TASK_FP script.
         <taskdep task="&CLDANL_NONVAR_TN;_prod{{ uscore_ensmem_name }}"/>
         {%- elif do_enkf_radar_ref %}
         <and>
+        {%- if do_parallel_da or da_system in ["GSI"] %}
         <taskdep task="&ENKF_RADAR_REF_TN;"/>
+        {%- endif %}
+        {%- if do_parallel_da or da_system in ["JEDI"] %}
         <taskdep task="&RUN_ENKFUPDT_JEDI_TN;"/>
+        {%- endif %}
         </and>
         {%- else %}
         <and>
+          {%- if do_parallel_da or da_system in ["GSI"] %}
           <taskdep task="&RUN_ENKFUPDT_TN;"/>
+          {%- endif %}
+          {%- if do_parallel_da or da_system in ["JEDI"] %}
           <taskdep task="&RUN_ENKFUPDT_JEDI_TN;"/>
+          {%- endif %}
         </and>
        {%- endif %}
       {%- else %}
@@ -3630,13 +3696,21 @@ MODULES_RUN_TASK_FP script.
         <taskdep task="&CLDANL_NONVAR_TN;_prod{{ uscore_ensmem_name }}"/>
         {%- elif do_enkf_radar_ref %}
         <and>
+        {%- if do_parallel_da or da_system in ["GSI"] %}
         <taskdep task="&ENKF_RADAR_REF_TN;"/>
+        {%- endif %}
+        {%- if do_parallel_da or da_system in ["JEDI"] %}
         <taskdep task="&RUN_ENKFUPDT_JEDI_TN;"/>
+        {%- endif %}
         </and>
         {%- else %}
         <and>
+        {%- if do_parallel_da or da_system in ["GSI"] %}
         <taskdep task="&RUN_ENKFUPDT_TN;"/>
+        {%- endif %}
+        {%- if do_parallel_da or da_system in ["JEDI"] %}
         <taskdep task="&RUN_ENKFUPDT_JEDI_TN;"/>
+        {%- endif %}
         </and>
        {%- endif %}
       {%- else %}
@@ -4142,13 +4216,21 @@ MODULES_RUN_TASK_FP script.
        <or>
 {%- if do_dacycle %}
          <and>
+           {%- if do_parallel_da or da_system in ["GSI"] %}
            <taskdep task="&RUN_ANALYSIS_TN;"/>
+           {%- endif %}
+           {%- if do_parallel_da or da_system in ["JEDI"] %}
            <taskdep task="&RUN_ANALYSIS_JEDI_TN;"/>
+           {%- endif %}
          </and>
 {%- elif do_ensemble %}
          <and>
+           {%- if do_parallel_da or da_system in ["GSI"] %}
            <taskdep task="&RUN_ENKFUPDT_TN;"/>
+           {%- endif %}
+           {%- if do_parallel_da or da_system in ["JEDI"] %}
            <taskdep task="&RUN_ENKFUPDT_JEDI_TN;"/>
+           {%- endif %}
          </and>
 {%- endif %}
        </or>

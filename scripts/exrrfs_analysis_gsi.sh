@@ -178,9 +178,9 @@ if  [ ${ob_type} != "conv" ] || [ ${BKTYPE} -eq 1 ]; then #not using GDAS
   l_both_fv3sar_gfs_ens=.false.
 fi
 
-bkpath=${bkpath}.gsi
-#touch a file in INPUT.gsi its clear if jedi/gsi analysis restarts were used
-touch ${bkpath}/gsi
+if [[ "${DO_PARALLEL_DA}" = "TRUE" ]]; then
+  bkpath=${bkpath}.gsi
+fi
 #
 #---------------------------------------------------------------------
 #

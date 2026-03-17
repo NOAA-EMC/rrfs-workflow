@@ -2627,9 +2627,17 @@ DO_IODA_MRMS="FALSE"
 #
 # DO_JEDIVAR:
 # Flag turn on the IODA converters for conventional observations in prepbufr files.
+#
+# DO_PARALLEL_DA:
+# If true, tells workflow to run both GSI and JEDI in parallel
+#
+# DA_SYSTEM:
+# Which DA system should we use to initialize the forecasts (GSI or JEDI)
+#
 #-----------------------------------------------------------------------
 #
 DO_JEDIVAR="FALSE"
+DO_PARALLEL_DA="TRUE"
 DA_SYSTEM="GSI"
 DO_DACOLD="NO"
 DO_ARCHIVE_RETRO="FALSE"

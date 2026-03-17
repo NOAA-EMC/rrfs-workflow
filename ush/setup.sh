@@ -514,9 +514,10 @@ optionList[30]=DO_IODA_BUFR
 optionList[31]=DO_IODA_MRMS
 optionList[32]=EBB_DCYCLE
 optionList[33]=PREP_MODEL_FOR_FED
-optionList[34]=DA_SYSTEM
-optionList[35]=DO_DACOLD
-optionList[36]=DO_ARCHIVE_RETRO
+optionList[34]=DO_PARALLEL_DA
+optionList[35]=DA_SYSTEM
+optionList[36]=DO_DACOLD
+optionList[37]=DO_ARCHIVE_RETRO
 
 obs_number=${#optionList[@]}
 for (( i=0; i<${obs_number}; i++ ));

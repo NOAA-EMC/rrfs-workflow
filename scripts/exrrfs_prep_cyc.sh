@@ -1244,16 +1244,18 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-jedidir=${modelinputdir}.jedi
-gsidir=${modelinputdir}.gsi
-if [ -d "${gsidir}" ]; then
-  rm -rf "${gsidir}"
+if [ "${DO_PARALLEL_DA}" = "TRUE" ]; then
+  jedidir=${modelinputdir}.jedi
+  gsidir=${modelinputdir}.gsi
+  if [ -d "${gsidir}" ]; then
+    rm -rf "${gsidir}"
+  fi
+  if [ -d "${jedidir}" ]; then
+    rm -rf "${jedidir}"
+  fi
+  cp -rL ${modelinputdir} ${gsidir}
+  cp -rL ${modelinputdir} ${jedidir}
 fi
-if [ -d "${jedidir}" ]; then
-  rm -rf "${jedidir}"
-fi
-cp -rL ${modelinputdir} ${gsidir}
-cp -rL ${modelinputdir} ${jedidir}
 
 #
 #-----------------------------------------------------------------------
@@ -1262,13 +1264,22 @@ cp -rL ${modelinputdir} ${jedidir}
 #
 #-----------------------------------------------------------------------
 #
+if [[ "${DA_SYSTEM}" = "JEDI" || "${DO_PARALLEL_DA}" = "TRUE" ]]; then
 
-if [[ "${DO_ENVAR_RADAR_REF}" = "TRUE" || "${DO_ENKF_RADAR_REF}" == "TRUE" ]]; then
-  if [[ ${BKTYPE} == 0 || ${BKTYPE} == 3 ]]; then
-    cd ${jedidir}
-    cp ${USHdir}/prep_phydata_dbz.py .
-    python prep_phydata_dbz.py phy_data.nc
+  if [ "${DO_PARALLEL_DA}" = "TRUE" ]; then
+    bkdir=${modelinputdir}.jedi
+  else
+    bkdir=${modelinputdir}
   fi
+
+  if [[ "${DO_ENVAR_RADAR_REF}" = "TRUE" || "${DO_ENKF_RADAR_REF}" == "TRUE" ]]; then
+    if [[ ${BKTYPE} == 0 || ${BKTYPE} == 3 ]]; then
+      cd ${bkdir}
+      cp ${USHdir}/prep_phydata_dbz.py .
+      python prep_phydata_dbz.py phy_data.nc
+    fi
+  fi
+
 fi
 
 #

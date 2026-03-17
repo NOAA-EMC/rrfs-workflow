@@ -168,7 +168,11 @@ for imem in  $(seq 1 $nens); do
   fi
 
   mkdir data/inputs/${memcharv0}
-  bkpath=${bkpath}.jedi
+  if [ "${DO_PARALLEL_DA}" = "TRUE" ]; then
+    bkpath=${bkpath}.jedi
+  else
+    bkpath=${bkpath}
+  fi
   ln -snf ${bkpath}/fv_core.res.tile1.nc       data/inputs/${memcharv0}/fv_core.res.tile1.nc
   ln -snf ${bkpath}/fv_tracer.res.tile1.nc     data/inputs/${memcharv0}/fv_tracer.res.tile1.nc
   ln -snf ${bkpath}/sfc_data.nc                data/inputs/${memcharv0}/sfc_data.nc
@@ -349,7 +353,7 @@ done
 #
 #-----------------------------------------------------------------------
 #
-# Move increments to INPUT.jedi
+# Move increments to INPUT
 #
 #-----------------------------------------------------------------------
 #
@@ -363,7 +367,11 @@ for imem in  $(seq 1 $nens); do
   else
     bkpath=${cycle_dir}/${slash_ensmem_subdir}/fcst_fv3lam/INPUT
   fi
-  bkpath=${bkpath}.jedi
+  if [ "${DO_PARALLEL_DA}" = "TRUE" ]; then
+    bkpath=${bkpath}.jedi
+  else
+    bkpath=${bkpath}
+  fi
   mv ${memcharv0}/* ${bkpath}
 done
 

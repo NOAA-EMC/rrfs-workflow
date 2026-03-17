@@ -165,8 +165,11 @@ for imem in  $(seq 1 $nens) ensmean; do
     bkpath=${cycle_dir}/${slash_ensmem_subdir}/fcst_fv3lam/INPUT
     observer_nwges_dir="${NWGES_DIR}/${slash_ensmem_subdir}/observer_gsi"
   fi
-
-  bkpath=${bkpath}.gsi
+  if [ "${DO_PARALLEL_DA}" = "TRUE" ]; then
+    bkpath=${bkpath}.gsi
+  else
+    bkpath=${bkpath}
+  fi
   ln -snf  ${bkpath}/fv_core.res.tile1.nc      fv3sar_tile1_${memcharv0}_dynvars
   ln -snf  ${bkpath}/fv_tracer.res.tile1.nc    fv3sar_tile1_${memcharv0}_tracer
   ln -snf  ${bkpath}/sfc_data.nc               fv3sar_tile1_${memcharv0}_sfcdata
