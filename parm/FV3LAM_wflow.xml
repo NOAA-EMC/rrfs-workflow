@@ -4217,10 +4217,10 @@ MODULES_RUN_TASK_FP script.
 {%- if do_dacycle %}
          <and>
            {%- if do_parallel_da or da_system in ["GSI"] %}
-           <taskdep task="&ANALYSIS_GSI_TN;"/>
+           <taskdep task="&ANALYSIS_GSI_TN;_prod"/>
            {%- endif %}
            {%- if do_parallel_da or da_system in ["JEDI"] %}
-           <taskdep task="&RUN_ANALYSIS_JEDI_TN;"/>
+           <taskdep task="&ANALYSIS_JEDI_TN;_prod"/>
            {%- endif %}
          </and>
 {%- elif do_ensemble %}
