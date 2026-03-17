@@ -57,8 +57,6 @@
     config_physics_suite = 'hrrrv5'
     config_convection_scheme = 'cu_grell_freitas'
     config_gfl_sub3d = 1
-    config_tempo_aerosolaware = .true.
-    config_tempo_hailaware = .true.
     config_gwdo_scheme = 'bl_ugwp_gwdo'
     config_lsm_scheme    = 'sf_ruc'
     num_soil_layers      = 9
@@ -66,6 +64,12 @@
     config_mynn_mixscalars = 0
     config_mynn_mixaerosols = 1
     config_mynn_mixnumcon = 0
+    config_mynn_sfcflux_land = 0
+/
+&physics_mp_tempo
+    config_tempo_aerosolaware = .true.
+    config_tempo_hailaware = .true.
+    config_tempo_ml_for_bl_nc = .true.
 /
 &soundings
     config_sounding_interval = 'none'
