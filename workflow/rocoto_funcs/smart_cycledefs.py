@@ -57,7 +57,12 @@ def smart_cycledefs():
     dcCycledef = {}
     dcCycledef['ic'] = f'{cycledef_ic}'
     dcCycledef['lbc'] = f'{cycledef_lbc}'
-    dcCycledef['prod'] = f'{cycledef_prod}'
+    exclude_str = os.getenv('CYCLEDEF_PROD_EXClUDE', '')
+    if exclude_str:
+        dcCycledef['prod'] = {'exclude_hours': f'{exclude_str}', "cycledef": f'{cycledef_prod}'}
+    else:
+        dcCycledef['prod'] = f'{cycledef_prod}'
+    #
     if spinup.upper() == "TRUE":
         valid_str = " ".join(f"{i}" for i in spinup_hrs)
         dcCycledef['spinup'] = {'valid_hours': f'{valid_str}', "cycledef": f'{cycledef_spinup}'}
