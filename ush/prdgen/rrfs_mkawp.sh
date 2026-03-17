@@ -34,15 +34,15 @@ then
   . prep_step
 
   export FORT11=rrfs.t${cyc}z.prslev.3km.f${fhr}.na.grib2
-  export FORT51=grib2.rrfs.t${cyc}z.awips.f${fhr}.na
-  $TOCGRIB2 < $PARMrrfs/wmo/grib2_awips_rrfs_f${fhr}
+  export FORT51=grib2.rrfs.t${cyc}z.f${fhr}.na
+  $TOCGRIB2 < $PARMrrfs/wmo/grib2_rrfs_f${fhr}_na
   export err=$?; err_chk
 
-  cpreq -p grib2.rrfs.t${cyc}z.awips.f${fhr}.na ${COMOUT}/wmo
+  cpreq -p grib2.rrfs.t${cyc}z.f${fhr}.na ${COMOUT}/wmo
 
  if [ $SENDDBN_NTC = YES ]
  then
-   $DBNROOT/bin/dbn_alert NTC_LOW $NET $job ${COMOUT}/wmo/grib2.rrfs.t${cyc}z.awips.f${fhr}.na
+   $DBNROOT/bin/dbn_alert NTC_LOW $NET $job ${COMOUT}/wmo/grib2.rrfs.t${cyc}z.f${fhr}.na
  fi
 
 else
