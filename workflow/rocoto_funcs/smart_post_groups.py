@@ -76,6 +76,8 @@ def smart_post_groups(dcCycleDef):
             dcCycles_by_postgrp[i].extend(dcCycles_by_postgrp[j])
     #
     cycledef_prod = dcCycleDef['prod']
+    if isinstance(cycledef_prod, dict):
+        cycledef_prod = cycledef_prod["cycledef"]
     for index, valid_hours in dcCycles_by_postgrp.items():
         if index == 0:  # the first post group uses the prod cycledef
             continue
