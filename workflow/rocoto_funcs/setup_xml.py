@@ -90,13 +90,13 @@ def setup_xml(HOMErrfs, expdir):
                 prep_lbc(xmlFile, expdir)
                 # spin up line
                 prep_ic(xmlFile, expdir, spinup_mode=1)
-                jedivar(xmlFile, expdir, do_spinup=True)
+                jedivar(xmlFile, expdir, spinup_mode=1)
                 if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
                     nonvar_cldana(xmlFile, expdir, do_spinup=True)
                 fcst(xmlFile, expdir, do_spinup=True)
                 # prod line
                 prep_ic(xmlFile, expdir, spinup_mode=-1)
-                jedivar(xmlFile, expdir)
+                jedivar(xmlFile, expdir, spinup_mode=-1)
                 if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
                     nonvar_cldana(xmlFile, expdir)
                 fcst(xmlFile, expdir)

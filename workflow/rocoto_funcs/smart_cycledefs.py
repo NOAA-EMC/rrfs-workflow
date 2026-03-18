@@ -69,7 +69,7 @@ def smart_cycledefs():
         dcCycledef['spinup'] = {'valid_hours': f'{valid_str}', "cycledef": f'{cycledef_spinup}'}
     #
     # if we don't do DA at cold start cycles, let's exclude cold_cycs
-    nocoldda = os.getenv('COLDSTART_CYCS_DO_DA', 'FALSE').upper() == 'FALSE'
+    nocoldda = os.getenv('COLDSTART_CYCS_DO_DA', 'TRUE').upper() == 'FALSE'
     if nocoldda:
         if spinup:  # if spinup, coldda only happens at spinup cycles
             spinup_hrs2 = [item for item in spinup_hrs if item not in list(map(int, cold_cycs))]

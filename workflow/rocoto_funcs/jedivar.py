@@ -5,15 +5,21 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 # begin of jedivar --------------------------------------------------------
 
 
-def jedivar(xmlFile, expdir, do_spinup=False):
+def jedivar(xmlFile, expdir, spinup_mode=0):
+    nocoldda = os.getenv('COLDSTART_CYCS_DO_DA', 'TRUE').upper() == 'FALSE'
+    do_spinup = spinup_mode == 1
     if do_spinup:
-        cycledefs = 'spinup'
+        if nocoldda:
+            cycledefs = 'da_nocold'
+        else:
+            cycledefs = 'spinup'
         task_id = 'jedivar_spinup'
     else:
-        cycledefs = 'prod'
+        if spinup_mode == 0 and nocoldda:
+            cycledefs = 'da_nocold'
+        else:
+            cycledefs = 'prod'
         task_id = 'jedivar'
-    coldhrs = os.getenv('COLDSTART_CYCS', '03 15')
-    coldstart_cyc_do_da = os.getenv('COLDSTART_CYCS_DO_DA', 'TRUE')
     # Task-specific EnVars beyond the task_common_vars
     extrn_mdl_source = os.getenv('IC_EXTRN_MDL_NAME', 'IC_PREFIX_not_defined')
     physics_suite = os.getenv('PHYSICS_SUITE', 'PHYSICS_SUITE_not_defined')
@@ -69,7 +75,6 @@ def jedivar(xmlFile, expdir, do_spinup=False):
         HYB_ENS_PATH = f'&COMROOT;/{NET}/{VERSION}'
 
     ens_dep = ""
-
     if HYB_WGT_ENS != "0" and HYB_WGT_ENS != "0.0" and HYB_ENS_TYPE == "1":  # rrfsens
         RUN = 'rrfs'
         ens_dep = "\n    <or>"
@@ -104,22 +109,12 @@ def jedivar(xmlFile, expdir, do_spinup=False):
         iodadep = '<taskdep task="ioda_bufr"/>'
     else:
         iodadep = f'<datadep age="00:01:00"><cyclestr>&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/ioda_bufr/det/ioda_aircar.nc</cyclestr></datadep>'
-
-    final_ens_dep = ens_dep
-    #
-    coldhrs = coldhrs.split(' ')
-    strneqs = ""
-    if coldstart_cyc_do_da.upper() == "FALSE":  # if no DA at coldstart cycs, skip this task
-        for hr in coldhrs:
-            hr = f"{int(hr):02d}"
-            strneqs += f'\n    <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>'
-
     #
     dependencies = f'''
   <dependency>
-  <and>{timedep}{strneqs}
+  <and>{timedep}
     {prep_ic_dep}
-    {iodadep}{final_ens_dep}
+    {iodadep}{ens_dep}
   </and>
   </dependency>'''
     #
