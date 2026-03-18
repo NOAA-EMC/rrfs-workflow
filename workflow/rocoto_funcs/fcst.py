@@ -12,11 +12,6 @@ def fcst(xmlFile, expdir, do_ensemble=False, dcEnsGrpInfo=None, do_spinup=False)
     dep_xml = ""
     if do_spinup:
         cycledefs = 'spinup'
-        num_spinup_cycledef = os.getenv('NUM_SPINUP_CYCLEDEF', '1')
-        if num_spinup_cycledef == '2':
-            cycledefs = 'spinup,spinup2'
-        elif num_spinup_cycledef == '3':
-            cycledefs = 'spinup,spinup2,spinup3'
     else:
         cycledefs = 'prod'
     # Task-specific EnVars beyond the task_common_vars
@@ -35,6 +30,7 @@ def fcst(xmlFile, expdir, do_ensemble=False, dcEnsGrpInfo=None, do_spinup=False)
         'HISTORY_INTERVAL': f'{history_interval}',
         'RESTART_INTERVAL': f'{restart_interval}',
         'MPASOUT_INTERVAL': os.getenv('MPASOUT_INTERVAL', '1'),
+        'MPASOUT_TIMELEVELS': os.getenv('MPASOUT_TIMELEVELS', ''),
         'PHYSICS_SUITE': f'{physics_suite}',
         'FCST_LEN_HRS_CYCLES': f'{fcst_len_hrs_cycles}',
         'FCST_DT': os.getenv('FCST_DT', 'FCST_DT_not_defined'),

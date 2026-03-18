@@ -6,12 +6,14 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 
 
 def getkf(xmlFile, expdir, taskType):
-    cycledefs = 'prod'
+    nocoldda = os.getenv('COLDSTART_CYCS_DO_DA', 'TRUE').upper() == 'FALSE'
+    if nocoldda:
+        cycledefs = 'da_nocold'
+    else:
+        cycledefs = 'prod'
     # Task-specific EnVars beyond the task_common_vars
     extrn_mdl_source = os.getenv('IC_EXTRN_MDL_NAME', 'IC_PREFIX_not_defined')
     physics_suite = os.getenv('PHYSICS_SUITE', 'PHYSICS_SUITE_not_defined')
-    coldhrs = os.getenv('COLDSTART_CYCS', '03 15')
-    coldstart_cyc_do_da = os.getenv('COLDSTART_CYCS_DO_DA', 'TRUE')
     recenter_cycs = os.getenv('RECENTER_CYCS', '99')
     dcTaskEnv = {
         'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
@@ -35,14 +37,6 @@ def getkf(xmlFile, expdir, taskType):
 
     dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
     # dependencies
-    coldhrs = coldhrs.split(' ')
-    strneqs = ""
-    spaces = " " * 4
-    if coldstart_cyc_do_da.upper() == "FALSE":
-        for hr in coldhrs:
-            hr = f"{int(hr):02d}"
-            strneqs += '\n' + spaces + f'<strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>'
-
     timedep = ""
     realtime = os.getenv("REALTIME", "false")
     if realtime.upper() == "TRUE":
@@ -57,6 +51,7 @@ def getkf(xmlFile, expdir, taskType):
             dcTaskEnv['IODA_BUFR_WGF'] = 'det'
 
         final_recenterdep = ""
+        spaces = " " * 4
         if os.getenv("DO_RECENTER", "FALSE").upper() == "TRUE":
             recenterhrs = recenter_cycs.split(' ')
             recenterdep = f'<taskdep task="recenter"/>'
@@ -79,7 +74,7 @@ def getkf(xmlFile, expdir, taskType):
 
         dependencies = f'''
   <dependency>
-  <and>{timedep}{strneqs}
+  <and>{timedep}
     <taskdep task="prep_ic"/>
     {iodadep}{final_recenterdep}
   </and>
