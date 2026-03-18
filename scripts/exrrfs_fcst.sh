@@ -106,8 +106,9 @@ fi
 if [[ "${MPASOUT_TIMELEVELS}" != "" ]]; then # prioritize MPASOUT_TIMELEVELS
   read -ra mpasout_all <<< "${MPASOUT_TIMELEVELS}"
 elif [[ "${mpasout_interval,,}" != "none" ]]; then
- read -ra mpasout_all <<< $(seq 0 $((10#${mpasout_interval%%:*})) $((10#${fcst_len_hrs_thiscyc} )) | paste -sd ' ')
+ read -ra mpasout_all <<< "$(seq 0 $((10#${mpasout_interval%%:*})) $((10#${fcst_len_hrs_thiscyc} )) | paste -sd ' ')"
 fi
+# shellcheck disable=SC2068
 for fhr in ${mpasout_all[@]}; do
   CDATEp=$( ${NDATE} "${fhr}" "${CDATE}" )
   timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
