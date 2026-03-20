@@ -32,19 +32,19 @@ ${cpreq} "${meshgriddir}"/"${MESH_NAME}".grid.nc mesh.nc
 ${cpreq} "${OBSPATH}/${CDATE}.rap.t${cyc}z.lgycld.tm00.bufr_d" lgycld.bufr_d
 
 # Determine appropriate GOES IDs
-if (( ${CDATE} > 2023010419 )); then
+if (( CDATE > 2023010419 )); then
   satidgoeswest=272
 else
   satidgoeswest=271
 fi
 
-if (( ${CDATE} > 2025040716 )); then
+if (( CDATE > 2025040716 )); then
   satidgoeseast=273
 else
   satidgoeseast=270
 fi
 
-if (( ${CDATE} < 2021010118 )); then
+if (( CDATE < 2021010118 )); then
   echo "ERROR: This is an old retro. Please check whether the GOES IDs used by" 
   echo "the nonvariational cloud analysis (larccld.fd) are appropriate for" 
   echo "this time period"
