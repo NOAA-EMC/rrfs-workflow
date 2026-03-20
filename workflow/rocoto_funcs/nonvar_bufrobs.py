@@ -23,9 +23,7 @@ def nonvar_bufrobs(xmlFile, expdir):
         'NONVAR_LARC_NPTS': os.getenv('NONVAR_LARC_NPTS', 'NONVAR_LARC_NPTS_not_defined'),
         'NONVAR_METAR_IMPACT': os.getenv('NONVAR_METAR_IMPACT', 'NONVAR_METAR_IMPACT_not_defined'),
         'NONVAR_PROJ_NAME': os.getenv('NONVAR_PROJ_NAME', 'NONVAR_PROJ_NAME_not_defined'),
-        'NONVAR_USERDX': os.getenv('NONVAR_USERDX', 'NONVAR_USERDX_not_defined'),
-        'NONVAR_GOES_WEST_ID': os.getenv('NONVAR_GOES_WEST_ID', 272),
-        'NONVAR_GOES_EAST_ID': os.getenv('NONVAR_GOES_EAST_ID', 273)
+        'NONVAR_USERDX': os.getenv('NONVAR_USERDX', 'NONVAR_USERDX_not_defined')
     }
 
     dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
