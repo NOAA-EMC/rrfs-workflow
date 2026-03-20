@@ -50,7 +50,7 @@ all_obs=( "${COMOUT}/nonvar_bufrobs/${WGF}/NASALaRC_cloud4mpas.bin"
           "${COMOUT}/nonvar_bufrobs/${WGF}/mpas_metarcloud.bin"
           "${COMOUT}/nonvar_reflobs/${WGF}/RefInGSI3D.dat" )
 for ob in ${all_obs[@]}; do
-  if [[ -r ${ob} ]]; then
+  if [[ -s ${ob} ]]; then
     ${cpreq} ${ob} .
   else
     echo "WARNING: The following processed observations are NOT available"

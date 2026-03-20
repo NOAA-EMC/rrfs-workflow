@@ -5,16 +5,17 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 # begin of nonvar_cldana --------------------------------------------------------
 
 
-def nonvar_cldana(xmlFile, expdir, do_ensemble=False, do_spinup=False):
+def nonvar_cldana(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
     meta_id = 'nonvar_cldana'
     nocoldda = os.getenv('COLDSTART_CYCS_DO_DA', 'TRUE').upper() == 'FALSE'
+    do_spinup = spinup_mode == 1
     if do_spinup:
         if nocoldda:
             cycledefs = 'da_nocold'
         else:
             cycledefs = 'spinup'
     else:
-        if nocoldda:
+        if spinup_mode == 0 and nocoldda:
             cycledefs = 'da_nocold'
         else:
             cycledefs = 'prod'
