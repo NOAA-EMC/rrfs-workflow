@@ -8,9 +8,15 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 def nonvar_cldana(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     meta_id = 'nonvar_cldana'
     if do_spinup:
-        cycledefs = 'spinup'
+        if nocoldda:
+            cycledefs = 'da_nocold'
+        else:
+            cycledefs = 'spinup'
     else:
-        cycledefs = 'prod'
+        if spinup_mode == 0 and nocoldda:
+            cycledefs = 'da_nocold'
+        else:
+            cycledefs = 'prod'
     # Task-specific EnVars beyond the task_common_vars
     extrn_mdl_source = os.getenv('IC_EXTRN_MDL_NAME', 'IC_PREFIX_not_defined')
     dcTaskEnv = {
