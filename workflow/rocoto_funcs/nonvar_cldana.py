@@ -44,10 +44,13 @@ def nonvar_cldana(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
     # dependencies
     timedep = ""
+    taskdep = ""
     realtime = os.getenv("REALTIME", "false")
     if realtime.upper() == "TRUE":
         starttime = get_cascade_env(f"STARTTIME_{task_id}".upper())
         timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
+    else:
+        taskdep = f'\n    <taskdep task="nonvar_bufrobs"/>\n    <taskdep task="nonvar_reflobs"/>'
     #
     prep_ic_dep = ""
     jedidep = ""
@@ -65,9 +68,7 @@ def nonvar_cldana(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     #
     dependencies = f'''
   <dependency>
-  <and>{timedep}{prep_ic_dep}{jedidep}
-    <taskdep task="nonvar_bufrobs"/>
-    <taskdep task="nonvar_reflobs"/>
+  <and>{timedep}{prep_ic_dep}{jedidep}{taskdep}
   </and>
   </dependency>'''
     #
