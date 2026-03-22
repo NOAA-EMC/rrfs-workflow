@@ -21,6 +21,7 @@ export KEEPDATA=${KEEPDATA:-"NO"}
 export MPI_RUN_CMD=${MPI_RUN_CMD:-"srun"}
 export USE_CONV_SAT_INFO=${USE_CONV_SAT_INFO:-true}
 export EMPTY_OBS_SPACE_ACTION=${EMPTY_OBS_SPACE_ACTION:-"skip output"}
+export MPASOUT_TIMELEVELS=${MPASOUT_TIMELEVELS:-"0 1"}
 export MPASOUT_SAVE2COM_HRS=${MPASOUT_SAVE2COM_HRS:-""}  # cycling mpasout.nc is saved by the 'save_for_next' task; specify other mpasout hours if needed, e.g. "02 03", "24", "24 48"
 #export POST_GROUP_SPEC="0-10 11-20 21-30 31-36" # customized group specification; setting this variable will overwrite POST_GROUP_TOT_NUM
 
