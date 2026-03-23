@@ -21,6 +21,7 @@ export KEEPDATA=${KEEPDATA:-"NO"}
 export MPI_RUN_CMD=${MPI_RUN_CMD:-"srun"}
 export USE_CONV_SAT_INFO=${USE_CONV_SAT_INFO:-true}
 export EMPTY_OBS_SPACE_ACTION=${EMPTY_OBS_SPACE_ACTION:-"skip output"}
+export MPASOUT_TIMELEVELS=${MPASOUT_TIMELEVELS:-"0 1"}
 export MPASOUT_SAVE2COM_HRS=${MPASOUT_SAVE2COM_HRS:-""}  # cycling mpasout.nc is saved by the 'save_for_next' task; specify other mpasout hours if needed, e.g. "02 03", "24", "24 48"
 #export POST_GROUP_SPEC="0-10 11-20 21-30 31-36" # customized group specification; setting this variable will overwrite POST_GROUP_TOT_NUM
 
@@ -55,13 +56,13 @@ export NODES_IODA_AIRNOW=${NODES_IODA_AIRNOW:-"<nodes>1:ppn=1</nodes>"}
 export NODES_IODA_BUFR=${NODES_IODA_BUFR:-"<nodes>1:ppn=1</nodes>"}
 
 # ioda_mrms_refl
-export NODES_IODA_MRMS_REFL=${NODES_IODA_MRMS_REFL:-"<nodes>1:ppn=20</nodes>"}
+export NODES_IODA_MRMS_REFL=${NODES_IODA_MRMS_REFL:-"<nodes>1:ppn=40</nodes>"}
 
 # nonvar_bufrobs
 export WALLTIME_NONVAR_BUFROBS=${WALLTIME_NONVAR_BUFROBS:-"00:25:00"}
 
 # nonvar_reflobs
-export NODES_NONVAR_REFLOBS=${NODES_NONVAR_REFLOBS:-"<nodes>2:ppn=24</nodes>"}
+export NODES_NONVAR_REFLOBS=${NODES_NONVAR_REFLOBS:-"<nodes>1:ppn=40</nodes>"}
 export WALLTIME_NONVAR_REFLOBS=${WALLTIME_NONVAR_REFLOBS:-"00:25:00"}
 
 # ic
@@ -86,7 +87,7 @@ export WALLTIME_PREP_LBC=${WALLTIME_PREP_LBC:-"00:30:00"}
 export NODES_DA=${NODES_DA:-"<nodes>1:ppn=40</nodes>"}
 
 # nonvar_cldana
-export NODES_NONVAR_CLDANA=${NODES_NONVAR_CLDANA:-"<nodes>2:ppn=20</nodes>"}
+export NODES_NONVAR_CLDANA=${NODES_NONVAR_CLDANA:-"<nodes>1:ppn=40</nodes>"}
 export WALLTIME_NONVAR_CLDANA=${WALLTIME_NONVAR_CLDANA:-"00:20:00"}
 
 # fcst

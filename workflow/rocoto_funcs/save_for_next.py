@@ -26,9 +26,9 @@ def save_for_next(xmlFile, expdir, do_ensemble=False, do_spinup=False):
         datadep = ""
         for i in range(1, int(ens_size) + 1):
             memdirstr = f'/mem{i:03d}'
-            datadep = datadep + f'''\n    <datadep age="00:01:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_@H_&rrfs_ver;/&WGF;{memdirstr}</cyclestr><cyclestr offset="{cyc_interval}:00:00">/mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'''
+            datadep = datadep + f'''\n    <datadep age="00:00:10"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_@H_&rrfs_ver;/&WGF;{memdirstr}</cyclestr><cyclestr offset="{cyc_interval}:00:00">/mpasout.@Y-@m-@d_@H.@M.@S.nc.done</cyclestr></datadep>'''
     else:
-        datadep = f'''\n    <datadep age="00:01:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_@H_&rrfs_ver;/&WGF;</cyclestr><cyclestr offset="{cyc_interval}:00:00">/mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'''
+        datadep = f'''\n    <datadep age="00:00:10"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_@H_&rrfs_ver;/&WGF;</cyclestr><cyclestr offset="{cyc_interval}:00:00">/mpasout.@Y-@m-@d_@H.@M.@S.nc.done</cyclestr></datadep>'''
 
     timedep = ""
     realtime = os.getenv("REALTIME", "false")

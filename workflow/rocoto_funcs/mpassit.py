@@ -76,7 +76,8 @@ def mpassit(xmlFile, expdir, index, dcGrpInfo, do_ensemble=False, do_ensmean_pos
     #
     extra_dep = f'''
     <or>
-      <datadep age="00:02:00"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_@H_&rrfs_ver;/&WGF;{memdir}</cyclestr><cyclestr offset="{end_hr}:00:00">/diag.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>
+      <datadep age="00:00:10"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_@H_&rrfs_ver;/&WGF;{memdir}</cyclestr><cyclestr offset="{end_hr}:00:00">/history.@Y-@m-@d_@H.@M.@S.nc.done</cyclestr></datadep>
+      <datadep age="00:00:10"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_@H_&rrfs_ver;/&WGF;{memdir}</cyclestr><cyclestr offset="{end_hr}:00:00">/diag.@Y-@m-@d_@H.@M.@S.nc.done</cyclestr></datadep>
       <taskdep task="fcst{ensindexstr}"/>
     </or>'''
     #
