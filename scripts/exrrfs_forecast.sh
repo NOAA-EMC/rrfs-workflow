@@ -191,7 +191,7 @@ if [[ "${DA_SYSTEM}" = "JEDI" || "${DO_PARALLEL_DA}" = "TRUE" ]]; then
     bkdir=INPUT
   fi
 
-  if [[ ${ensmem_indx} -ge 1 ]] && [[ "${BKTYPE}" -eq 0 || "${DO_DACOLD}" = "TRUE" ]]; then
+  if [[ 10#${ensmem_indx} -ge 1 ]] && [[ "${BKTYPE}" -eq 0 || "${DO_DACOLD}" = "TRUE" ]]; then
 
     # Convert A-grid wind increments to D-grid
     cd ${run_dir}/${bkdir}
