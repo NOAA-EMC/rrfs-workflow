@@ -55,13 +55,13 @@ export NODES_IODA_AIRNOW=${NODES_IODA_AIRNOW:-"<nodes>1:ppn=1</nodes>"}
 export NODES_IODA_BUFR=${NODES_IODA_BUFR:-"<nodes>1:ppn=1</nodes>"}
 
 # ioda_mrms_refl
-export NODES_IODA_MRMS_REFL=${NODES_IODA_MRMS_REFL:-"<nodes>1:ppn=20</nodes>"}
+export NODES_IODA_MRMS_REFL=${NODES_IODA_MRMS_REFL:-"<nodes>1:ppn=40</nodes>"}
 
 # nonvar_bufrobs
 export WALLTIME_NONVAR_BUFROBS=${WALLTIME_NONVAR_BUFROBS:-"00:25:00"}
 
 # nonvar_reflobs
-export NODES_NONVAR_REFLOBS=${NODES_NONVAR_REFLOBS:-"<nodes>2:ppn=24</nodes>"}
+export NODES_NONVAR_REFLOBS=${NODES_NONVAR_REFLOBS:-"<nodes>1:ppn=40</nodes>"}
 export WALLTIME_NONVAR_REFLOBS=${WALLTIME_NONVAR_REFLOBS:-"00:25:00"}
 
 # ic
@@ -86,7 +86,7 @@ export WALLTIME_PREP_LBC=${WALLTIME_PREP_LBC:-"00:30:00"}
 export NODES_DA=${NODES_DA:-"<nodes>1:ppn=40</nodes>"}
 
 # nonvar_cldana
-export NODES_NONVAR_CLDANA=${NODES_NONVAR_CLDANA:-"<nodes>2:ppn=20</nodes>"}
+export NODES_NONVAR_CLDANA=${NODES_NONVAR_CLDANA:-"<nodes>1:ppn=40</nodes>"}
 export WALLTIME_NONVAR_CLDANA=${WALLTIME_NONVAR_CLDANA:-"00:20:00"}
 
 # fcst

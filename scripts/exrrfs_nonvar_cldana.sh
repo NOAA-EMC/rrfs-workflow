@@ -31,8 +31,8 @@ HH=${CDATE:8:2}
 
 # Model background
 if [[ -r "${UMBRELLA_PREP_IC_DATA}/init.nc" ]]; then
-  echo "INFO: Skipping nonvar cloud analysis because this is a cold start"
-  echo "INFO: The 'cldfrac' field, which is required, is not available for cold starts"
+  echo "WARNING: Skipping nonvar cloud analysis because this is a cold start"
+  echo "WARNING: The 'cldfrac' field, which is required, is not available for cold starts"
   exit 0
 else
   initial_file=mpasout.nc
@@ -45,10 +45,18 @@ nlevel=$(wc -l < "${zeta_levels}")
 ln -snf "${FIXrrfs}/${MESH_NAME}/${MESH_NAME}.invariant.nc_L${nlevel}_${prefix}" ./invariant.nc
 
 # Processed observations
-${cpreq} "${COMOUT}/nonvar_bufrobs/${WGF}/NASALaRC_cloud4mpas.bin" .
-${cpreq} "${COMOUT}/nonvar_bufrobs/${WGF}/LightningInMPAS.dat" .
-${cpreq} "${COMOUT}/nonvar_bufrobs/${WGF}/mpas_metarcloud.bin" .
-${cpreq} "${COMOUT}/nonvar_reflobs/${WGF}/RefInGSI3D.dat" .
+all_obs=( "${COMOUT}/nonvar_bufrobs/${WGF}/NASALaRC_cloud4mpas.bin" 
+          "${COMOUT}/nonvar_bufrobs/${WGF}/LightningInMPAS.dat"
+          "${COMOUT}/nonvar_bufrobs/${WGF}/mpas_metarcloud.bin"
+          "${COMOUT}/nonvar_reflobs/${WGF}/RefInGSI3D.dat" )
+for ob in ${all_obs[@]}; do
+  if [[ -s ${ob} ]]; then
+    ${cpreq} ${ob} .
+  else
+    echo "WARNING: The following processed observations are NOT available"
+    echo ${ob}
+  fi
+done
 
 #
 #-----------------------------------------------------------------------
@@ -102,9 +110,9 @@ err_chk
 
 # Copy log files to COM directory
 if [[ "${DO_SPINUP:-FALSE}" == "TRUE" ]];  then
-  ${cpreq} stdout_cloudanalysis* "${COMOUT}/nonvar_cldana_spinup/${WGF}${MEMDIR}/"
+  cp stdout_cloudanalysis* "${COMOUT}/nonvar_cldana_spinup/${WGF}${MEMDIR}/"
 else
-  ${cpreq} stdout_cloudanalysis* "${COMOUT}/nonvar_cldana/${WGF}${MEMDIR}/"
+  cp stdout_cloudanalysis* "${COMOUT}/nonvar_cldana/${WGF}${MEMDIR}/"
 fi
 
 exit 0

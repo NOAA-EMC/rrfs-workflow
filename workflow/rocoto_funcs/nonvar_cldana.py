@@ -5,12 +5,20 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 # begin of nonvar_cldana --------------------------------------------------------
 
 
-def nonvar_cldana(xmlFile, expdir, do_ensemble=False, do_spinup=False):
+def nonvar_cldana(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
     meta_id = 'nonvar_cldana'
+    nocoldda = os.getenv('COLDSTART_CYCS_DO_DA', 'TRUE').upper() == 'FALSE'
+    do_spinup = spinup_mode == 1
     if do_spinup:
-        cycledefs = 'spinup'
+        if nocoldda:
+            cycledefs = 'da_nocold'
+        else:
+            cycledefs = 'spinup'
     else:
-        cycledefs = 'prod'
+        if spinup_mode == 0 and nocoldda:
+            cycledefs = 'da_nocold'
+        else:
+            cycledefs = 'prod'
     # Task-specific EnVars beyond the task_common_vars
     extrn_mdl_source = os.getenv('IC_EXTRN_MDL_NAME', 'IC_PREFIX_not_defined')
     dcTaskEnv = {
@@ -44,10 +52,13 @@ def nonvar_cldana(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
     # dependencies
     timedep = ""
+    taskdep = ""
     realtime = os.getenv("REALTIME", "false")
     if realtime.upper() == "TRUE":
         starttime = get_cascade_env(f"STARTTIME_{task_id}".upper())
         timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
+    else:
+        taskdep = f'\n    <taskdep task="nonvar_bufrobs"/>\n    <taskdep task="nonvar_reflobs"/>'
     #
     prep_ic_dep = ""
     jedidep = ""
@@ -65,9 +76,7 @@ def nonvar_cldana(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     #
     dependencies = f'''
   <dependency>
-  <and>{timedep}{prep_ic_dep}{jedidep}
-    <taskdep task="nonvar_bufrobs"/>
-    <taskdep task="nonvar_reflobs"/>
+  <and>{timedep}{prep_ic_dep}{jedidep}{taskdep}
   </and>
   </dependency>'''
     #
