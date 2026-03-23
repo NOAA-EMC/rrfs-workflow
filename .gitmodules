@@ -38,3 +38,4 @@
 [submodule "sorc/MPASBlend"]
 	path = sorc/MPASBlend
 	url = https://github.com/RRFSx/mpas_blending.git
+        ignore = all
