@@ -103,6 +103,7 @@ for index in "${mem_list[@]}"; do # loop through all the members
   #
   for hr in ${SFC_UPDATE_CYCS:-"99"}; do
     shr=$(printf '%02d' $((10#$hr)) )
+    var_list="smois,snow,snowh,snowc,tslb"
     if [ "${cyc}" == "${shr}" ]; then
       source_file=""
       var_list=""
@@ -115,7 +116,6 @@ for index in "${mem_list[@]}"; do # loop through all the members
         file_mpasout="${COMINsfc}/${RUN}.${PDYii}/${cycii}/fcst/${WGF}${memdir}/mpasout.${timestr}.nc"
         if [[ -s "${file_mpasout}" ]]; then
           source_file="${file_mpasout}"
-          var_list="ter,tmn,xice,seaice,vegfra,xland,smois,snow,snowh,snowc,sst,canwat,tslb,skintemp,isltyp,ivgtyp,soilt1"
           break
 	else
           echo "SFC_UPDATE: cannot find source file for sfc state: ${file_mpasout}"
@@ -131,7 +131,6 @@ for index in "${mem_list[@]}"; do # loop through all the members
           file_init="${COMINsfc}/${RUN}.${PDYii}/${cycii}/ic/${WGF}${memdir}/init.nc"
           if [[ -s "${file_init}" ]]; then
             source_file="${file_init}"
-            var_list="ter,tmn,xice,seaice,vegfra,xland,smois,snow,snowh,snowc,sst,tslb,skintemp,isltyp,ivgtyp"
 	  else
             echo "SFC_UPDATE: cannot find source file for sfc state: ${file_init}"
           fi
