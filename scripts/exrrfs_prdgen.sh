@@ -342,12 +342,10 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
         wgrib2 ${COMOUT}/${prslev_subh_dom} -s > ${COMOUT}/${prslev_subh_dom}.idx
 
 	if [[ $SENDDBN = 'YES' ]]; then
-           if (( 10#$cyc % 3 == 0 )); then
              $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBH $job \
                   ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.subh.f${fhr}.${domain}.grib2
              $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBH_IDX $job \
                   ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.subh.f${fhr}.${domain}.grib2.idx
-	   fi
 	fi
       fi
     done
