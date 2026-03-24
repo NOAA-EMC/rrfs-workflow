@@ -115,7 +115,7 @@ for index in "${mem_list[@]}"; do # loop through all the members
         file_mpasout="${COMINsfc}/${RUN}.${PDYii}/${cycii}/fcst/${WGF}${memdir}/mpasout.${timestr}.nc"
         if [[ -s "${file_mpasout}" ]]; then
           source_file="${file_mpasout}"
-          var_list="smois,snow,snowh,snowc,sst,canwat,tslb,skintemp,landmask,isltyp,ivgtyp,soilt1"
+          var_list="ter,tmn,xice,seaice,vegfra,xland,smois,snow,snowh,snowc,sst,canwat,tslb,skintemp,isltyp,ivgtyp,soilt1"
           break
 	else
           echo "SFC_UPDATE: cannot find source file for sfc state: ${file_mpasout}"
@@ -131,7 +131,7 @@ for index in "${mem_list[@]}"; do # loop through all the members
           file_init="${COMINsfc}/${RUN}.${PDYii}/${cycii}/ic/${WGF}${memdir}/init.nc"
           if [[ -s "${file_init}" ]]; then
             source_file="${file_init}"
-            var_list="smois,snow,snowh,snowc,sst,canwat,tslb,skintemp,landmask,isltyp,ivgtyp"
+            var_list="ter,tmn,xice,seaice,vegfra,xland,smois,snow,snowh,snowc,sst,tslb,skintemp,isltyp,ivgtyp"
 	  else
             echo "SFC_UPDATE: cannot find source file for sfc state: ${file_init}"
           fi
@@ -140,20 +140,13 @@ for index in "${mem_list[@]}"; do # loop through all the members
       #
       to_file=""
       if [[ -s "${source_file}" ]]; then
-        echo "${cpreq} ${source_file} ${umbrella_prep_ic_mem}/mpas_sfc.nc" >> "$CMDFILE"
-        if [[ -s "${umbrella_prep_ic_mem}/init.nc" ]]; then
+	if [[ "${start_type}" == "cold" ]]; then
           to_file="${umbrella_prep_ic_mem}/init.nc"
-        elif [[ -s "${umbrella_prep_ic_mem}/mpasout.nc" ]]; then
+	elif [[ "${start_type}" == "warm" ]]; then
           to_file="${umbrella_prep_ic_mem}/mpasout.nc"
         fi
-        if [[ -s "${to_file}" ]]; then
-          echo "surface update from ${source_file} to ${to_file}"
-          echo " ncks -O -C -x -v ${var_list} \"${to_file}\"  tmp.nc ; \
-               ncks -A -v ${var_list} \"${umbrella_prep_ic_mem}/mpas_sfc.nc\" tmp.nc ; \
-               mv tmp.nc \"${to_file}\" " >>  "$CMDFILE"
-        else
-          echo "SFC_UPDATE ERROR: No target file (init.nc or mpasout.nc) found in ${umbrella_prep_ic_mem}"
-        fi
+        echo "surface update from ${source_file} to ${to_file}"
+	echo ncks -A -v  "${var_list}"  "${source_file}"  "${to_file}" >>  "$CMDFILE"
       else
         echo "SFC_UPDATE failed, cannot find source file for sfc state: ${source_file}"
       fi
