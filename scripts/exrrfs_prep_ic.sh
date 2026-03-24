@@ -146,7 +146,7 @@ for index in "${mem_list[@]}"; do # loop through all the members
           to_file="${umbrella_prep_ic_mem}/mpasout.nc"
         fi
         echo "surface update from ${source_file} to ${to_file}"
-	echo ncks -A -v  "${var_list}"  "${source_file}"  "${to_file}" >>  "$CMDFILE"
+        echo ncks -A -v  "${var_list}"  "${source_file}"  "${to_file}" >>  "$CMDFILE"
       else
         echo "SFC_UPDATE failed, cannot find source file for sfc state: ${source_file}"
       fi
