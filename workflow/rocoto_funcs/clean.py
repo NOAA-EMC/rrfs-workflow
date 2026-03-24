@@ -37,7 +37,12 @@ def clean(xmlFile, expdir):
   </and>
   </dependency>'''
     if clean_mode == 1:
-        dependencies = ""
+        dependencies = f'''
+  <dependency>
+  <and>
+    <taskdep task="prep_ic"/>
+  </and>
+  </dependency>'''
     #
     xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv, dependencies)
 # end of clean --------------------------------------------------------
