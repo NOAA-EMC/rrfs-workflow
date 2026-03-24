@@ -411,6 +411,13 @@ EOF
    -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
    -new_grid ${grid_specs_firewx} ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2
   wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2.idx
+  if [[ ${SENDDBN} = "YES" ]] ; then
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_FIREWX $job \
+                  ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_FIREWX_IDX $job \
+                  ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2.idx
+  fi
+
 
 fi
 #
