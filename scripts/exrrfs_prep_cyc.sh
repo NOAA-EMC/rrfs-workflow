@@ -656,8 +656,8 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
 
     # check if there are surface file in continue cycle data space:
     if [ "${restart_suffix_find}" = "missing" ] || [ "${restart_prefix_find}" = "missing" ]; then
-      surface_file_path=${COMOUT}/surface/surface.${PDY}
-      surface_file_path_m1=${COMOUT}/surface/surface.${PDYm1}
+      surface_file_path=${COMrrfs}/surface/surface.${PDY}
+      surface_file_path_m1=${COMrrfs}/surface/surface.${PDYm1}
 
 
       # logic here needs thought
@@ -682,6 +682,7 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
               print_info_msg "$VERBOSE" "Found ${checkfile}; Use it as surface for analysis "
 	    elif [ -r "${checkfile_m1}" ]  && [ "${restart_suffix_find}" == "missing" ]; then
 		   
+             echo "not sure what doing here"
             fi
  
             n=$((n + ${DA_CYCLE_INTERV}))
