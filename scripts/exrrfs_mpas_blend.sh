@@ -14,7 +14,7 @@ for hr in ${BLENDING_CYCS:-"99"}; do
   shr=$(printf '%02d' $((10#$hr)) )
   if [ "${cyc}" == "${shr}" ]; then
     timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)
-    CDATEp=$(${NDATE} -${cyc_interval} "${CDATE}" )
+    CDATEp=$("${NDATE}" -"${cyc_interval}" "${CDATE}" )
     PDYii=${CDATEp:0:8}
     cycii=${CDATEp:8:2}
     fcststr="fcst"
@@ -27,18 +27,16 @@ for hr in ${BLENDING_CYCS:-"99"}; do
       blend_parm=${PARMrrfs}/mpas_blend
       grid_info_file=${blend_parm}/grid_weight
 
-      ln -sfn ${small_scale_file} .
-      ln -sfn ${large_scale_file} .
-      ln -sfn ${grid_info_file} .
-      ln -sfn ${blend_fix}/global*grid.nc .
-      ln -sfn ${blend_fix}/${MESH_NAME}/conus*grid.nc .
-      ln -sfn ${FIXrrfs}/${MESH_NAME}/conus3km.grid.nc .
+      ln -sfn "${small_scale_file}" .
+      ln -sfn "${large_scale_file}" .
+      ln -sfn "${grid_info_file}" .
+      ln -sfn "${blend_fix}"/global*grid.nc .
+      ln -sfn "${blend_fix}/${MESH_NAME}"/conus*grid.nc .
+      ln -sfn "${FIXrrfs}/${MESH_NAME}/conus3km.grid.nc" .
 
-      #${cpreq} ${small_scale_file} ${UMBRELLA_PREP_IC_DATA}/mpas_out.nc # check the blending run time, may remove this line in future
-
-      small_file="`basename ${small_scale_file}`"
-      large_file="`basename ${large_scale_file}`"
-      grid_file="`basename ${grid_info_file}`"
+      small_file=$(basename "${small_scale_file}")
+      large_file=$(basename "${large_scale_file}")
+      grid_file=$(basename "${grid_info_file}")
 
       # generate the naemlist on fly
       sed -e "s/@grid_file@/${grid_file}/" -e "s/@large_file@/${large_file}/" -e "s/@small_file@/${small_file}/"  \
@@ -52,9 +50,9 @@ for hr in ${BLENDING_CYCS:-"99"}; do
 
       # check the status, copy output to UMBRELLA_MPASSIT_DATA
       if [[ -s "./${blend_fields}" ]]; then
-        ${cpreq} ${small_scale_file} ${blend_file}  
-        ncks -A  ${blend_fields}     ${blend_file}
-        ${cpreq} ${blend_file}       ${large_scale_file}
+        ${cpreq} "${small_scale_file}" "${blend_file}"  
+        ncks -A  "${blend_fields}"     "${blend_file}"
+        ${cpreq} "${blend_file}"       "${large_scale_file}"
         echo "INFO: mpas blending finished successfully at ${timestr}"
       else
         echo "INFO: failed to genereate ${blend_fields}, no blending at ${timestr} "
