@@ -3,9 +3,18 @@
 # and compiles these into a single definition file.
 
 # get existing definitions for each cycle from ecflow
+#
+# Usage:
+#   ./make_new_def_file.sh decflow01
+#
+if [ -z "$1" ]; then
+  echo "Usage: $0 <ECF_HOST>"
+  exit 1
+fi
+
 echo "Getting definitions from ecflow server..."
 for cyc in {00,06,12,18}; do
-  ecflow_client --host=decflow02 --port=14142 --get=/para/primary/$cyc/rrfs/v1.0 > ${cyc}_rrfs
+  ecflow_client --host=$1 --port=14142 --get=/para/primary/$cyc/rrfs/v1.0 > ${cyc}_rrfs
 done
 
 newdefn="rrfs_nco_para.def"
@@ -25,9 +34,7 @@ suite para
         edit ECF_TRIES '3'
         limit rrfs_submission 50
 EOF
-while IFS= read -r line; do
-    echo "      ${line}" >> $newdefn
-done < 00_rrfs
+sed "s/^/      /g" 00_rrfs >> $newdefn
 
 echo "Building 06 cycle info..."
 cat << EOF >> $newdefn
@@ -41,9 +48,7 @@ cat << EOF >> $newdefn
         edit ECF_TRIES '3'
         limit rrfs_submission 50
 EOF
-while IFS= read -r line; do
-    echo "      ${line}" >> $newdefn
-done < 06_rrfs
+sed "s/^/      /g" 06_rrfs >> $newdefn
 
 echo "Building 12 cycle info..."
 cat << EOF >> $newdefn
@@ -57,9 +62,7 @@ cat << EOF >> $newdefn
         edit ECF_TRIES '3'
         limit rrfs_submission 50
 EOF
-while IFS= read -r line; do
-    echo "      ${line}" >> $newdefn
-done < 12_rrfs
+sed "s/^/      /g" 12_rrfs >> $newdefn
 
 echo "Building 18 cycle info..."
 cat << EOF >> $newdefn
@@ -73,9 +76,7 @@ cat << EOF >> $newdefn
         edit ECF_TRIES '3'
         limit rrfs_submission 50
 EOF
-while IFS= read -r line; do
-    echo "      ${line}" >> $newdefn
-done < 18_rrfs
+sed "s/^/      /g" 18_rrfs >> $newdefn
 
 
 cat << EOF >> $newdefn

@@ -10069,7 +10069,7 @@ suite para
                 edit MEM_TYPE 'MEMBER'
                 edit GSI_TYPE 'ANALYSIS'
                 task jrrfs_det_analysis_gsi
-                  trigger ../prep/jrrfs_det_prep_cyc==complete and /prod_clone/primary/00/obsproc/v1.2/rrfs/04z/dump/jobsproc_rrfs_dump==complete and /prod_clone/primary/00/obsproc/v1.2/rrfs/04z/prep/jobsproc_rrfs_prep==complete and ( /para/primary/00/rrfs/v1.0/03z/enkf/forecast==complete or /para/primary/00/rrfs/v1.0/02z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete)
+                  trigger ../prep/jrrfs_det_prep_cyc==complete and /prod_clone/primary/00/obsproc/v1.2/rrfs/04z/dump/jobsproc_rrfs_dump==complete and /prod_clone/primary/00/obsproc/v1.2/rrfs/04z/prep/jobsproc_rrfs_prep==complete and ( /para/primary/00/rrfs/v1.0/03z/enkf/forecast==complete or /para/primary/00/rrfs/v1.0/02z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete)
                 task jrrfs_det_update_lbc_soil
                   trigger ./jrrfs_det_analysis_gsi==complete
                 task jrrfs_det_analysis_gsi_diag
@@ -10077,7 +10077,7 @@ suite para
                 task jrrfs_det_analysis_nonvarcld
                   trigger ./jrrfs_det_update_lbc_soil==complete and ../init/jrrfs_det_process_bufr==complete
                 task jrrfs_det_analysis_gsi_spinup
-                  trigger ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod_clone/primary/00/obsproc/v1.2/rrfs/04z/prep/jobsproc_rrfs_prep==complete and /para/primary/00/rrfs/v1.0/03z/enkf/forecast==complete
+                  trigger ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod_clone/primary/00/obsproc/v1.2/rrfs/04z/prep/jobsproc_rrfs_prep==complete and ( /para/primary/00/rrfs/v1.0/03z/enkf/forecast==complete or /para/primary/00/rrfs/v1.0/02z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete)
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_update_lbc_soil_spinup
                   trigger ./jrrfs_det_analysis_gsi_spinup==complete
@@ -11407,7 +11407,7 @@ suite para
                 task jrrfs_det_analysis_nonvarcld
                   trigger ./jrrfs_det_update_lbc_soil==complete and ../init/jrrfs_det_process_bufr==complete
                 task jrrfs_det_analysis_gsi_spinup
-                  trigger ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod_clone/primary/00/obsproc/v1.2/rrfs/05z/prep/jobsproc_rrfs_prep==complete and /para/primary/00/rrfs/v1.0/04z/enkf/forecast==complete
+                  trigger ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod_clone/primary/00/obsproc/v1.2/rrfs/05z/prep/jobsproc_rrfs_prep==complete and ( /para/primary/00/rrfs/v1.0/04z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /para/primary/00/rrfs/v1.0/02z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete)
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_update_lbc_soil_spinup
                   trigger ./jrrfs_det_analysis_gsi_spinup==complete
@@ -12669,7 +12669,7 @@ suite para
                 task jrrfs_det_analysis_nonvarcld
                   trigger ./jrrfs_det_update_lbc_soil==complete and ../init/jrrfs_det_process_bufr==complete
                 task jrrfs_det_analysis_gsi_spinup
-                  trigger ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod_clone/primary/06/obsproc/v1.2/rrfs/06z/prep/jobsproc_rrfs_prep==complete and /para/primary/00/rrfs/v1.0/05z/enkf/forecast==complete
+                  trigger ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod_clone/primary/06/obsproc/v1.2/rrfs/06z/prep/jobsproc_rrfs_prep==complete and (/para/primary/00/rrfs/v1.0/05z/enkf/forecast==complete or /para/primary/00/rrfs/v1.0/04z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete )
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_update_lbc_soil_spinup
                   trigger ./jrrfs_det_analysis_gsi_spinup==complete
@@ -48405,7 +48405,7 @@ suite para
                   trigger ((:TIME >= 2235 and :TIME < 2359 ) or :TIME < 0135) and ../../det/init/jrrfs_det_process_bufr==complete
               endfamily
               family prep
-                trigger ((:TIME >= 2220 and :TIME < 2359 ) or :TIME < 0120) and /para/primary/18/rrfs/v1.0/21z/enkf/forecast == complete
+                trigger (:TIME >= 2220 and :TIME < 2359 ) or :TIME < 0120
                 edit GSI_TYPE 'OBSERVER'
                 edit MEM_TYPE 'MEAN'
                 task jrrfs_enkf_prep_cyc_ensmean

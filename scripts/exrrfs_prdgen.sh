@@ -296,12 +296,10 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
 
       if [[ ${SENDDBN} = "YES" ]] ; then
         if (( 10#$cyc % 3 == 0 )); then
-          if (( 10#$fhr <= 60 || 10#$fhr%3 == 0 )) ; then
             $DBNROOT/bin/dbn_alert MODEL RRFS_DET $job \
                 ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2
 	    $DBNROOT/bin/dbn_alert MODEL RRFS_DET_IDX $job \
                 ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
-          fi
         fi
       fi  #SENDDBN
     fi
@@ -344,12 +342,10 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
         wgrib2 ${COMOUT}/${prslev_subh_dom} -s > ${COMOUT}/${prslev_subh_dom}.idx
 
 	if [[ $SENDDBN = 'YES' ]]; then
-           if (( 10#$cyc % 3 == 0 )); then
              $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBH $job \
                   ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.subh.f${fhr}.${domain}.grib2
              $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBH_IDX $job \
                   ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.subh.f${fhr}.${domain}.grib2.idx
-	   fi
 	fi
       fi
     done
@@ -415,6 +411,13 @@ EOF
    -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
    -new_grid ${grid_specs_firewx} ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2
   wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2.idx
+  if [[ ${SENDDBN} = "YES" ]] ; then
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_FIREWX $job \
+                  ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_FIREWX_IDX $job \
+                  ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2.idx
+  fi
+
 
 fi
 #
