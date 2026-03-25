@@ -99,7 +99,8 @@ def fcst(xmlFile, expdir, do_ensemble=False, dcEnsGrpInfo=None, do_spinup=False)
             cloudana_dep = f'\n    <taskdep task="nonvar_cldana_spinup"/>'
         else:
             cloudana_dep = f'\n    <taskdep task="nonvar_cldana{ensindexstr}"/>'
-    elif os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
+
+    if os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
         do_da = True
         if os.getenv("DO_ENSEMBLE", "FALSE").upper() == "TRUE":
             jedidep = f'\n    <taskdep task="getkf_solver"/>'
@@ -108,7 +109,7 @@ def fcst(xmlFile, expdir, do_ensemble=False, dcEnsGrpInfo=None, do_spinup=False)
         else:
             jedidep = f'\n    <taskdep task="jedivar"/>'
 
-    elif os.getenv("DO_RECENTER", "FALSE").upper() == "TRUE":
+    if os.getenv("DO_RECENTER", "FALSE").upper() == "TRUE":
         if os.getenv("DO_ENSEMBLE", "FALSE").upper() == "TRUE":
             recenterhrs = recenter_cycs.split(' ')
             recenterdep = f'\n<taskdep task="recenter"/>'

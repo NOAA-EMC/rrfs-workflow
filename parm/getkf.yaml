@@ -143,7 +143,7 @@ observations:
              obsfile: jdiag_adpsfc_t181.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [airTemperature]
          simulated variables: [airTemperature]
 
@@ -419,7 +419,7 @@ observations:
              obsfile: jdiag_adpsfc_t183.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [airTemperature]
          simulated variables: [airTemperature]
 
@@ -693,7 +693,7 @@ observations:
              obsfile: jdiag_adpsfc_t187.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [airTemperature]
          simulated variables: [airTemperature]
 
@@ -971,7 +971,7 @@ observations:
              obsfile: jdiag_adpsfc_q181.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [specificHumidity]
          simulated variables: [specificHumidity]
 
@@ -1246,7 +1246,7 @@ observations:
              obsfile: jdiag_adpsfc_q183.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [specificHumidity]
          simulated variables: [specificHumidity]
 
@@ -1520,7 +1520,7 @@ observations:
              obsfile: jdiag_adpsfc_q187.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [specificHumidity]
          simulated variables: [specificHumidity]
 
@@ -1792,7 +1792,7 @@ observations:
              obsfile: jdiag_adpsfc_ps181.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [stationPressure]
          simulated variables: [stationPressure]
 
@@ -2063,7 +2063,7 @@ observations:
              obsfile: jdiag_adpsfc_ps187.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [stationPressure]
          simulated variables: [stationPressure]
 
@@ -2334,7 +2334,7 @@ observations:
              obsfile: jdiag_adpsfc_uv281.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -2651,7 +2651,7 @@ observations:
              obsfile: jdiag_adpsfc_uv284.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -2967,7 +2967,7 @@ observations:
              obsfile: jdiag_adpsfc_uv287.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -3277,7 +3277,7 @@ observations:
              obsfile: jdiag_adpupa_t120.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [airTemperature]
          simulated variables: [airTemperature]
 
@@ -3551,7 +3551,7 @@ observations:
              obsfile: jdiag_adpupa_t132.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [airTemperature]
          simulated variables: [airTemperature]
 
@@ -3825,7 +3825,7 @@ observations:
              obsfile: jdiag_adpupa_q120.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [specificHumidity]
          simulated variables: [specificHumidity]
 
@@ -4099,7 +4099,7 @@ observations:
              obsfile: jdiag_adpupa_q132.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [specificHumidity]
          simulated variables: [specificHumidity]
 
@@ -4373,7 +4373,7 @@ observations:
              obsfile: jdiag_adpupa_ps120.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [stationPressure]
          simulated variables: [stationPressure]
 
@@ -4643,7 +4643,7 @@ observations:
              obsfile: jdiag_adpupa_uv220.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -4953,7 +4953,7 @@ observations:
              obsfile: jdiag_adpupa_uv232.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -5263,7 +5263,7 @@ observations:
              obsfile: jdiag_aircar_t133.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [airTemperature]
          simulated variables: [airTemperature]
 
@@ -5537,7 +5537,7 @@ observations:
              obsfile: jdiag_aircar_q133.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [specificHumidity]
          simulated variables: [specificHumidity]
 
@@ -5811,7 +5811,7 @@ observations:
              obsfile: jdiag_aircar_uv233.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -6121,7 +6121,7 @@ observations:
              obsfile: jdiag_aircft_t130.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [airTemperature]
          simulated variables: [airTemperature]
 
@@ -6395,7 +6395,7 @@ observations:
              obsfile: jdiag_aircft_t131.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [airTemperature]
          simulated variables: [airTemperature]
 
@@ -6669,7 +6669,7 @@ observations:
              obsfile: jdiag_aircft_t134.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [airTemperature]
          simulated variables: [airTemperature]
 
@@ -6943,7 +6943,7 @@ observations:
              obsfile: jdiag_aircft_t135.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [airTemperature]
          simulated variables: [airTemperature]
 
@@ -7217,7 +7217,7 @@ observations:
              obsfile: jdiag_aircft_q134.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [specificHumidity]
          simulated variables: [specificHumidity]
 
@@ -7491,7 +7491,7 @@ observations:
              obsfile: jdiag_aircft_uv230.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -7801,7 +7801,7 @@ observations:
              obsfile: jdiag_aircft_uv231.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -8111,7 +8111,7 @@ observations:
              obsfile: jdiag_aircft_uv234.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -8421,7 +8421,7 @@ observations:
              obsfile: jdiag_aircft_uv235.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -8734,7 +8734,7 @@ observations:
              obsfile: jdiag_gnss_ztd.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          simulated variables: [zenithTotalDelay]
          observed variables: [zenithTotalDelay]
 
@@ -8805,7 +8805,7 @@ observations:
              obsfile: jdiag_msonet_t188.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [airTemperature]
          simulated variables: [airTemperature]
 
@@ -9079,7 +9079,7 @@ observations:
              obsfile: jdiag_msonet_q188.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [specificHumidity]
          simulated variables: [specificHumidity]
 
@@ -9353,7 +9353,7 @@ observations:
              obsfile: jdiag_msonet_ps188.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [stationPressure]
          simulated variables: [stationPressure]
 
@@ -9620,7 +9620,7 @@ observations:
              obsfile: jdiag_msonet_uv288.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -10198,7 +10198,7 @@ observations:
              obsfile: jdiag_proflr_uv227.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -10552,7 +10552,7 @@ observations:
              obsfile: jdiag_rassda_t126.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [airTemperature]
          simulated variables: [airTemperature]
 
@@ -10826,7 +10826,7 @@ observations:
              obsfile: jdiag_sfcshp_t180.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [airTemperature]
          simulated variables: [airTemperature]
 
@@ -11100,7 +11100,7 @@ observations:
              obsfile: jdiag_sfcshp_t182.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [airTemperature]
          simulated variables: [airTemperature]
 
@@ -11375,7 +11375,7 @@ observations:
              obsfile: jdiag_sfcshp_t183.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [airTemperature]
          simulated variables: [airTemperature]
 
@@ -11649,7 +11649,7 @@ observations:
              obsfile: jdiag_sfcshp_q180.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [specificHumidity]
          simulated variables: [specificHumidity]
 
@@ -11923,7 +11923,7 @@ observations:
              obsfile: jdiag_sfcshp_q182.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [specificHumidity]
          simulated variables: [specificHumidity]
 
@@ -12198,7 +12198,7 @@ observations:
              obsfile: jdiag_sfcshp_q183.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [specificHumidity]
          simulated variables: [specificHumidity]
 
@@ -12472,7 +12472,7 @@ observations:
              obsfile: jdiag_sfcshp_ps180.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [stationPressure]
          simulated variables: [stationPressure]
 
@@ -12751,7 +12751,7 @@ observations:
              obsfile: jdiag_sfcshp_uv280.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -13067,7 +13067,7 @@ observations:
              obsfile: jdiag_sfcshp_uv282.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -13384,7 +13384,7 @@ observations:
              obsfile: jdiag_sfcshp_uv284.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -13700,7 +13700,7 @@ observations:
              obsfile: jdiag_vadwnd_uv224.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -14058,7 +14058,7 @@ observations:
              obsfile: jdiag_satwnd_uv245_270.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -14465,7 +14465,7 @@ observations:
              obsfile: jdiag_satwnd_uv245_272.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -14872,7 +14872,7 @@ observations:
              obsfile: jdiag_satwnd_uv246_270.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -15245,7 +15245,7 @@ observations:
              obsfile: jdiag_satwnd_uv246_272.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -15618,7 +15618,7 @@ observations:
              obsfile: jdiag_satwnd_uv247_270.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -16019,7 +16019,7 @@ observations:
              obsfile: jdiag_satwnd_uv247_272.nc
              allow overwrite: true
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -18024,7 +18024,7 @@ observations:
              type: H5File
              obsfile: jdiag_abi_g16.nc
          io pool:
-           max pool size: 1
+           max pool size: 80
          simulated variables: [brightnessTemperature]
          observed variables: [brightnessTemperature]
          channels: *abi_g16_channels
@@ -18532,7 +18532,7 @@ observations:
              type: H5File
              obsfile: jdiag_abi_g18.nc
          io pool:
-           max pool size: 1
+           max pool size: 80
          simulated variables: [brightnessTemperature]
          observed variables: [brightnessTemperature]
          channels: *abi_g18_channels
@@ -20472,7 +20472,7 @@ observations:
              type: H5File
              obsfile: jdiag_cris-fsr_n20.nc
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [radiance]
          simulated variables: [brightnessTemperature]
          derived variables: [brightnessTemperature]
@@ -21020,7 +21020,7 @@ observations:
              type: H5File
              obsfile: jdiag_cris-fsr_n21.nc
          io pool:
-           max pool size: 1
+           max pool size: 80
          observed variables: [radiance]
          simulated variables: [brightnessTemperature]
          derived variables: [brightnessTemperature]
