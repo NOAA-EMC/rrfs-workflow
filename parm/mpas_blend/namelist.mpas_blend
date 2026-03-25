@@ -1,0 +1,28 @@
+&share
+   grid_info_file = "@grid_file@"
+   large_scale_file = "@large_file@"
+   small_scale_file = "@small_file@"
+   output_blended_filename = "@blend_fields@"
+   variables_to_blend = 'theta','qv','uReconstructZonal','uReconstructMeridional','rho'
+   average_upscale_before_interp = .true.
+   interp_method = 'conserve1'
+   extrap_method = 'mpas_nearest'
+   extrap_num_levels_creep = 64
+   output_intermediate_files_up   = .true.
+   output_intermediate_files_down = .true.
+   output_blended_edge_normal_wind = .true.
+   smooth_going_downscale = .false.
+   smoother_dimensionless_coefficient = 0.1
+   esmf_log = .true.
+/
+
+&latlon_output
+   output_latlon_grid = .false.
+   is_regional = .true.
+   nlat = 721
+   nlon = 1440
+   lat_ll = 23.5
+   lon_ll = -120.5
+   dx_in_degrees = 0.03
+   extrap_method_latlon = 'none'
+/

@@ -1,0 +1,33 @@
+# This file contains information about the grid hierarchy.
+# Comments are allowed (start the line with "#" or "!").
+# The idea is to make a list with a hierarchy of MPAS grid meshes,
+#   with the highest resolution mesh listed first, and the
+#   meshes coarsening with each successive line.
+# There are three columns of data per line:
+#    1) Path to a file with MPAS grid information. Should work with "grid.nc" files,
+#       but "static.nc" or "init.nc" files might be safer.
+#       ENCLOSE WITHIN QUOTES IF USING "/" CHARACTER IN THE PATH
+#    2) Nominal horizontal cell spacing of the mesh (used for output file names and
+#        for averaging when average_upscale_before_interp = .true. )
+#    3) Weight (between 0 and 1) to give to the data providing LARGE SCALES
+#          for the given spatial scale during blending.
+#
+# You can download various grid meshes from the MPAS download page:
+#   https://mpas-dev.github.io/atmosphere/atmosphere_meshes.html
+#
+# Filename of grid mesh |  Nominal grid spacing (km) of mesh | Weight of large-scale file for blending
+
+# e.g., 3-km CONUS regional mesh, interpolated up a hierarchy of meshes
+# change x1.*.grid.nc to global*.grid.nc for RRFSv2
+
+'./conus3km.grid.nc'        3     0.0
+'./conus7.5km.grid.nc'      7.5   0.0
+'./conus15km.grid.nc'       15    0.1
+'./conus30km.grid.nc'       30    0.2
+'./global60km.grid.nc'      60    0.4
+'./global120km.grid.nc'     120   0.5
+'./global240km.grid.nc'     240   0.6
+'./global384km.grid.nc'     384   0.75
+'./global480km.grid.nc'     480   1.0
+'./global960km.grid.nc'     960   1.0
+'./global1920km.grid.nc'    1920  1.0

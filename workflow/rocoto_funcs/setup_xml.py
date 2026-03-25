@@ -12,6 +12,7 @@ from rocoto_funcs.ic import ic
 from rocoto_funcs.lbc import lbc
 from rocoto_funcs.prep_ic import prep_ic
 from rocoto_funcs.prep_lbc import prep_lbc
+from rocoto_funcs.mpas_blend import mpas_blend
 from rocoto_funcs.jedivar import jedivar
 from rocoto_funcs.fcst import fcst
 from rocoto_funcs.smart_ens_groups import smart_ens_groups
@@ -107,6 +108,8 @@ def setup_xml(HOMErrfs, expdir):
                     prep_lbc(xmlFile, expdir)
                 if do_chemistry == "TRUE":
                     prep_chem(xmlFile, expdir)
+                if os.getenv("DO_BLENDING", "FALSE").upper() == "TRUE":
+                    mpas_blend(xmlFile, expdir)
                 if os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
                     jedivar(xmlFile, expdir)
                 if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":

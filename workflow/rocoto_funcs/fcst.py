@@ -129,22 +129,30 @@ def fcst(xmlFile, expdir, do_ensemble=False, dcEnsGrpInfo=None, do_spinup=False)
     </and>
     </or>'''
 
+    mpasblend_dep = ""
+    if os.getenv("DO_BLENDING", "FALSE").upper() == "TRUE":
+         if do_spinup:
+            mpasblend_dep = f'\n        <taskdep task="mpas_blend_spinup"/>'
+         else:
+            mpasblend_dep = f'\n        <taskdep task="mpas_blend"/>'
+
     coldhrs = coldhrs.split(' ')
     streqs = ""
     strneqs = ""
     if do_da:
         if coldstart_cyc_do_da.upper() == "FALSE":  # if no DA at coldstart cycs, skip checking DA tasks
-            streqs = "<or>"
+            streqs = "\n        <or>"
             for hr in coldhrs:
                 hr = f"{int(hr):02d}"
-                streqs += '\n' + spaces + f'  <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>'
+                streqs += '\n  ' + spaces + f'  <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>'
                 strneqs += '\n' + spaces + f'  <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>'
-            streqs += '\n' + spaces + '</or>'
+            streqs += '\n  ' + spaces + '</or>'
             jedidep_indented = textwrap.indent(jedidep, "    ")  # four extra spaces
             cloudana_dep_indented = textwrap.indent(cloudana_dep, "    ")  # four extra spaces
             da_dep = f'''
     <or>
-      {streqs}
+      <and>{streqs}{mpasblend_dep}
+      </and>
       <and>{strneqs}{jedidep_indented}{cloudana_dep_indented}
       </and>
     </or>'''
