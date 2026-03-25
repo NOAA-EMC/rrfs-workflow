@@ -106,7 +106,6 @@ for index in "${mem_list[@]}"; do # loop through all the members
     var_list="smois,snow,snowh,snowc,tslb"
     if [ "${cyc}" == "${shr}" ]; then
       source_file=""
-      var_list=""
       # look back ${NUM} cycles to find mpasout files for surface cycling
       NUM=3
       for (( ii=cyc_interval; ii<=$(( NUM*cyc_interval )); ii=ii+cyc_interval )); do
