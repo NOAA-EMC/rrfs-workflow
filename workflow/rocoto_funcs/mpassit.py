@@ -22,6 +22,7 @@ def mpassit(xmlFile, expdir, index, dcGrpInfo, do_ensemble=False, do_ensmean_pos
         str_hours = " ".join(str(i) for i in range(bgn_hr, end_hr + step, step))
     #
     # Task-specific EnVars beyond the task_common_vars
+    extrn_mdl_source = os.getenv('IC_EXTRN_MDL_NAME', 'IC_PREFIX_not_defined')
     dcTaskEnv = {
         'FCST_LEN_HRS_CYCLES': os.getenv('FCST_LEN_HRS_CYCLES', '03 03'),
         'GROUP_INDEX': f'{index:02d}',
@@ -31,6 +32,7 @@ def mpassit(xmlFile, expdir, index, dcGrpInfo, do_ensemble=False, do_ensmean_pos
         'MPASSIT_DX': os.getenv('MPASSIT_DX', 'MPASSIT_DX_not_defined'),
         'MPASSIT_REF_LAT': os.getenv('MPASSIT_REF_LAT', 'MPASSIT_REF_LAT_not_defined'),
         'MPASSIT_REF_LON': os.getenv('MPASSIT_REF_LON', 'MPASSIT_REF_LON_not_defined'),
+        'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
     }
 
     if os.getenv('DO_CHEMISTRY', 'FALSE').upper() == "TRUE":
