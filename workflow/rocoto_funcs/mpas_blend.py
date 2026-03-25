@@ -15,16 +15,14 @@ def mpas_blend(xmlFile, expdir, spinup_mode=0):
         task_id = 'mpas_blend'
 
     cyc_interval = os.getenv('CYC_INTERVAL')
-    sfc_update_cycs = os.getenv('SFC_UPDATE_CYCS', '99')
     blending_cycs = os.getenv('BLENDING_CYCS', '99')
 
     # Task-specific EnVars beyond the task_common_vars
     dcTaskEnv = {
-            'BLENDING_CYCS': f'{blending_cycs}',
+        'BLENDING_CYCS': f'{blending_cycs}',
     }
 
     dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
-
 
     # dependencies
     timedep = ""
@@ -35,7 +33,7 @@ def mpas_blend(xmlFile, expdir, spinup_mode=0):
 
     blendhrs = blending_cycs.split(' ')
     streqs = ""
-    strneqs = "" 
+    strneqs = ""
     for hr in blendhrs:
         hr = f"{hr:0>2}"
         streqs = streqs + f"\n        <streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>"
@@ -49,11 +47,11 @@ def mpas_blend(xmlFile, expdir, spinup_mode=0):
         prep_ic_dep = f'''\n   <taskdep task="prep_ic"/>'''
 
     if os.getenv("DO_BLENDING", "FALSE").upper() == "TRUE":
-       if do_spinup:
-           datadep = ""
-       else:
-           datadep_neqs = ""
-           datadep_eqs = f'''      <datadep age="00:01:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
+        if do_spinup:
+            datadep = ""
+        else:
+            datadep_neqs = ""
+            datadep_eqs = f'''      <datadep age="00:01:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
 
     dependencies = f'''
   <dependency>
@@ -73,5 +71,4 @@ def mpas_blend(xmlFile, expdir, spinup_mode=0):
   </dependency>'''
     #
     xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv, dependencies)
-             
 # end of mpas_blend --------------------------------------------------------
