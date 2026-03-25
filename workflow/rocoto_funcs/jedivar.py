@@ -108,9 +108,9 @@ def jedivar(xmlFile, expdir, spinup_mode=0):
 
     mpas_blend_dep = ""
     if os.getenv("DO_BLENDING", "FALSE").upper() == "TRUE":
-       if do_spinup:
+        if do_spinup:
             mpas_blend_dep = '<taskdep task="mpas_blend_spinup"/>'
-       else:
+        else:
             mpas_blend_dep = f'\n    <taskdep task="mpas_blend"/>'
 
     if os.getenv("DO_IODA", "FALSE").upper() == "TRUE":

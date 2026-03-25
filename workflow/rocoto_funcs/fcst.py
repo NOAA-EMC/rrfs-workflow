@@ -132,9 +132,9 @@ def fcst(xmlFile, expdir, do_ensemble=False, dcEnsGrpInfo=None, do_spinup=False)
 
     mpasblend_dep = ""
     if os.getenv("DO_BLENDING", "FALSE").upper() == "TRUE":
-         if do_spinup:
+        if do_spinup:
             mpasblend_dep = f'\n        <taskdep task="mpas_blend_spinup"/>'
-         else:
+        else:
             mpasblend_dep = f'\n        <taskdep task="mpas_blend"/>'
 
     coldhrs = coldhrs.split(' ')
