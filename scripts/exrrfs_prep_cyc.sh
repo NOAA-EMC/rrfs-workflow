@@ -620,6 +620,7 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
     restart_prefix_find="missing"
     restart_suffix_find="missing"
     bkpath=${LBCS_ROOT}/${surface_file_dir_name}/surface.${PDY}
+    bkpathroot=${LBCS_ROOT}/${surface_file_dir_name}
 
     restart_prefix="${YYYYMMDD}.${HH}0000."
     if [ -r "${bkpath}/${restart_prefix}sfc_data.nc.sync" ]; then
@@ -637,7 +638,7 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
 
           n=${DA_CYCLE_INTERV}
           while [[ $n -le 13 ]] ; do
-            checkfile=${bkpath}/${restart_prefix}sfc_data.nc.${YYYYMMDDHHmInterv}
+            checkfile=${bkpathroot}/surface.${yyyymmddhh_prev:0:8}/${restart_prefix}sfc_data.nc.${YYYYMMDDHHmInterv}
             if [ -r "${checkfile}" ] && [ "${restart_suffix_find}" == "missing" ]; then
               restart_prefix_find=${restart_prefix}
               restart_suffix_find=${YYYYMMDDHHmInterv}
@@ -660,8 +661,6 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
       surface_file_path_m1=${COMrrfs}/surface/surface.${PDYm1}
 
 
-      # logic here needs thought
-      #
       for ndayinhour in 00 24
       do 
         if [ "${restart_suffix_find}" = "missing" ]; then
@@ -681,8 +680,8 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
               restart_suffix_find=${YYYYMMDDHHmInterv}
               print_info_msg "$VERBOSE" "Found ${checkfile}; Use it as surface for analysis "
 	    elif [ -r "${checkfile_m1}" ]  && [ "${restart_suffix_find}" == "missing" ]; then
-		   
-             echo "not sure what doing here"
+              restart_prefix_find=${restart_prefix}
+              restart_suffix_find=${YYYYMMDDHHmInterv}
             fi
  
             n=$((n + ${DA_CYCLE_INTERV}))
