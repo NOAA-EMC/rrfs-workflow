@@ -623,10 +623,6 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
     bkpathroot=${LBCS_ROOT}/${surface_file_dir_name}
 
     restart_prefix="${YYYYMMDD}.${HH}0000."
-    if [ -r "${bkpath}/${restart_prefix}sfc_data.nc.sync" ]; then
-      restart_prefix_find=${restart_prefix}
-      restart_suffix_find="sync"
-    else
       for ndayinhour in 00 24 48 72
       do 
         if [ "${restart_suffix_find}" = "missing" ]; then
@@ -652,7 +648,6 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
           done
         fi
       done
-    fi
     surface_file_path=$bkpath
 
     # check if there are surface file in continue cycle data space:
