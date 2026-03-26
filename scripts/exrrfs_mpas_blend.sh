@@ -32,7 +32,7 @@ for hr in ${BLENDING_CYCS:-"99"}; do
       ln -sfn "${grid_info_file}" .
       ln -sfn "${blend_fix}"/global*grid.nc .
       ln -sfn "${blend_fix}/${MESH_NAME}"/conus*grid.nc .
-      ln -sfn "${FIXrrfs}/${MESH_NAME}/conus3km.grid.nc" .
+      ln -sfn "${FIXrrfs}/${MESH_NAME}/${MESH_NAME}.grid.nc" .
 
       small_file=$(basename "${small_scale_file}")
       large_file=$(basename "${large_scale_file}")
@@ -48,7 +48,7 @@ for hr in ${BLENDING_CYCS:-"99"}; do
       ${MPI_RUN_CMD} ./mpas_blending.x
       export err=$?; err_chk
 
-      # check the status, copy output to UMBRELLA_MPASSIT_DATA
+      # check the status, copy output to UMBRELLA_PREP_IC_DATA
       if [[ -s "./${blend_fields}" ]]; then
         ${cpreq} "${small_scale_file}" "${blend_file}"  
         ncks -A  "${blend_fields}"     "${blend_file}"

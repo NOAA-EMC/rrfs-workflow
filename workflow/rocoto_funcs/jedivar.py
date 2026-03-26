@@ -109,7 +109,7 @@ def jedivar(xmlFile, expdir, spinup_mode=0):
     mpas_blend_dep = ""
     if os.getenv("DO_BLENDING", "FALSE").upper() == "TRUE":
         if do_spinup:
-            mpas_blend_dep = '<taskdep task="mpas_blend_spinup"/>'
+            mpas_blend_dep = f'\n    <taskdep task="mpas_blend_spinup"/>'
         else:
             mpas_blend_dep = f'\n    <taskdep task="mpas_blend"/>'
 
@@ -121,7 +121,7 @@ def jedivar(xmlFile, expdir, spinup_mode=0):
     dependencies = f'''
   <dependency>
   <and>{timedep}
-    {prep_ic_dep} {mpas_blend_dep}
+    {prep_ic_dep}{mpas_blend_dep}
     {iodadep}{ens_dep}
   </and>
   </dependency>'''
