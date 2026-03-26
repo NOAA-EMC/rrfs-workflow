@@ -47,11 +47,8 @@ def mpas_blend(xmlFile, expdir, spinup_mode=0):
         prep_ic_dep = f'''\n   <taskdep task="prep_ic"/>'''
 
     if os.getenv("DO_BLENDING", "FALSE").upper() == "TRUE":
-        if do_spinup:
-            datadep = ""
-        else:
-            datadep_neqs = ""
-            datadep_eqs = f'''      <datadep age="00:01:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
+        datadep_neqs = ""
+        datadep_eqs = f'''      <datadep age="00:01:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
 
     dependencies = f'''
   <dependency>
