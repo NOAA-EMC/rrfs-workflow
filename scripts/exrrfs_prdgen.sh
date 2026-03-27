@@ -269,6 +269,7 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
   for domain in ${domains[@]}
   do
 
+    DBNDOM="${domain^^}"
     outspacing=${gridspacing}
     if [[ $domain = "hi" || $domain = "pr" ]]
      then
@@ -296,9 +297,9 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
 
       if [[ ${SENDDBN} = "YES" ]] ; then
         if (( 10#$cyc % 3 == 0 )); then
-            $DBNROOT/bin/dbn_alert MODEL RRFS_DET $job \
+            $DBNROOT/bin/dbn_alert MODEL RRFS_DET_${DBNDOM} $job \
                 ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2
-	    $DBNROOT/bin/dbn_alert MODEL RRFS_DET_IDX $job \
+	    $DBNROOT/bin/dbn_alert MODEL RRFS_DET_${DBNDOM}_IDX $job \
                 ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
         fi
       fi  #SENDDBN
@@ -311,6 +312,7 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
     for domain in ${domains[@]}
     do
 
+    DBNDOM="${domain^^}"
     outspacing=${gridspacing}
     if [[ $domain = "hi" || $domain = "pr" ]]
      then
@@ -342,9 +344,9 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
         wgrib2 ${COMOUT}/${prslev_subh_dom} -s > ${COMOUT}/${prslev_subh_dom}.idx
 
 	if [[ $SENDDBN = 'YES' ]]; then
-             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBH $job \
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_${DBNDOM}_SUBH $job \
                   ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.subh.f${fhr}.${domain}.grib2
-             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBH_IDX $job \
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_${DBNDOM}_SUBH_IDX $job \
                   ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.subh.f${fhr}.${domain}.grib2.idx
 	fi
       fi
