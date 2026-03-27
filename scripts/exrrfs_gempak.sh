@@ -34,7 +34,7 @@ cd $DATA
 export GRIB=prslev
 export type=rrfs_conus
 export DBN_ALERT_TYPE=RRFS_DET_CONUS_GEMPAK
-echo "$USHrrfs/prdgen_gempak.sh $type $GRIB $FHR" > $DATA/poescript
+echo "$USHrrfs/prdgen_gempak.sh $type $GRIB $FHR $DBN_ALERT_TYPE" > $DATA/poescript
 #################################################################
 
 #################################################################
@@ -56,7 +56,7 @@ cd $DATA
 export GRIB=prslev
 export type=rrfs_conus_subh
 export DBN_ALERT_TYPE=RRFS_DET_CONUS_SUBH_GEMPAK
-echo "$USHrrfs/prdgen_gempak.sh $type $GRIB $FHR" >> $DATA/poescript
+echo "$USHrrfs/prdgen_gempak.sh $type $GRIB $FHR $DBN_ALERT_TYPE" >> $DATA/poescript
 fi
 
 #################################################################
@@ -75,7 +75,7 @@ cd $DATA
 export GRIB=prslev
 export DBN_ALERT_TYPE=RRFS_DET_AK_GEMPAK
 export type=rrfs_alaska
-echo "$USHrrfs/prdgen_gempak.sh $type $GRIB $FHR" >> $DATA/poescript
+echo "$USHrrfs/prdgen_gempak.sh $type $GRIB $FHR $DBN_ALERT_TYPE" >> $DATA/poescript
 #################################################################
 # Execute the script to make Puerto Rico GEMPAK grids
 mkdir -p $DATA/rrfs_prico
@@ -92,7 +92,7 @@ cd $DATA
 export GRIB=prslev
 export DBN_ALERT_TYPE=RRFS_DET_PR_GEMPAK
 export type=rrfs_prico
-echo "$USHrrfs/prdgen_gempak.sh $type $GRIB $FHR" >> $DATA/poescript
+echo "$USHrrfs/prdgen_gempak.sh $type $GRIB $FHR $DBN_ALERT_TYPE" >> $DATA/poescript
 #################################################################
 # Execute the script to make Hawaii GEMPAK grids
 mkdir -p $DATA/rrfs_hawaii
@@ -109,7 +109,7 @@ cd $DATA
 export GRIB=prslev
 export DBN_ALERT_TYPE=RRFS_DET_HI_GEMPAK
 export type=rrfs_hawaii
-echo "$USHrrfs/prdgen_gempak.sh $type $GRIB $FHR" >> $DATA/poescript
+echo "$USHrrfs/prdgen_gempak.sh $type $GRIB $FHR $DBN_ALERT_TYPE" >> $DATA/poescript
 #################################################################
 cat poescript
 
