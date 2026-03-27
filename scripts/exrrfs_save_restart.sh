@@ -54,6 +54,7 @@ save_yyyy=${save_time:0:4}
 save_mm=${save_time:4:2}
 save_dd=${save_time:6:2}
 save_hh=${save_time:8:2}
+#cdate_crnt_fhr=$( date --utc --date "${yyyymmdd} ${hh} UTC" "+%Y%m%d%H" )
 export CYCLE_DIR="${DATAROOT}/${RUN}/${WGF}/${PDY}${cyc}"
 #
 #-----------------------------------------------------------------------
@@ -160,12 +161,12 @@ fi
 #
 if [ "${CYCLE_TYPE}" = "prod" ] && [ "${CYCLE_SUBTYPE}" = "control" ]; then
   if [ "${IO_LAYOUT_Y}" = "1" ]; then
-    cpreq ${COMOUT}/RESTART/${restart_prefix}.sfc_data.nc ${SURFACE_DIR}/${restart_prefix}.sfc_data.nc.${CDATE}
+    cpreq ${COMOUT}/RESTART/${restart_prefix}.sfc_data.nc ${SURFACE_DIR}/surface.${PDY}/${restart_prefix}.sfc_data.nc.${CDATE}
   else
     for ii in ${list_iolayout}
     do
       iii=$(printf %4.4i $ii)
-      cpreq ${COMOUT}/RESTART/${restart_prefix}.sfc_data.nc.${iii} ${SURFACE_DIR}/${restart_prefix}.sfc_data.nc.${CDATE}.${iii}
+      cpreq ${COMOUT}/RESTART/${restart_prefix}.sfc_data.nc.${iii} ${SURFACE_DIR}/surface.${PDY}/${restart_prefix}.sfc_data.nc.${CDATE}.${iii}
     done
   fi
 fi

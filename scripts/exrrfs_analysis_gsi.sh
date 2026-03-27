@@ -885,12 +885,14 @@ if [ "${DO_RADDA}" = "TRUE" ]; then
 	  
 #    else
     # For EnVar
-    if [ -r ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ]; then
-      echo " using satellite bias files from ${SATBIAS_DIR} ${spinup_or_prod_rrfs}.${SAT_TIME}"
-      cpreq -p ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ./satbias_in
-      cpreq -p ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias_pc ./satbias_pc
-      if [ -r ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_radstat ]; then
-         cpreq -p ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_radstat ./radstat.rrfs
+    #
+
+    if [ -r ${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ]; then
+      echo " using satellite bias files from ${SATBIAS_OUT} ${spinup_or_prod_rrfs}.${SAT_TIME}"
+      cpreq -p ${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ./satbias_in
+      cpreq -p ${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias_pc ./satbias_pc
+      if [ -r ${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_radstat ]; then
+         cpreq -p ${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_radstat ./radstat.rrfs
       fi
 
       break
@@ -899,7 +901,7 @@ if [ "${DO_RADDA}" = "TRUE" ]; then
     satcounter=` expr $satcounter + 1 `
   done
 
-  ## if satbias files (go back to previous 10 days) are not available from ${SATBIAS_DIR}, use satbias files from the ${FIX_GSI} 
+  ## if satbias files (go back to previous 10 days) are not available from ${SATBIAS_OUT}, use satbias files from the ${FIX_GSI} 
   if [ $satcounter -eq $maxcounter ]; then
     # satbias_in
     if [ -r ${FIX_GSI}/rrfs.starting_satbias ]; then
@@ -1134,20 +1136,20 @@ if [ "${DO_GSIDIAG_OFFLINE}" = "FALSE" ]; then
     fi
     if [ ${numfile_cnv} -gt 0 ]; then
       tar -cvzf rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_cnvstat_nc `cat listcnv`
-      cpreq ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_cnvstat_nc  ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_cnvstat
+      cpreq ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_cnvstat_nc  ${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_cnvstat
     fi
     if [ ${numfile_rad} -gt 0 ]; then
       tar -cvzf rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat_nc `cat listrad`
-      cpreq ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat_nc  ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat
+      cpreq ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat_nc  ${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat
     fi
     if [ ${numfile_rad_bin} -gt 0 ]; then
       tar -cvzf rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat `cat listrad_bin`
-      cpreq ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat  ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat
+      cpreq ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat  ${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat
     fi
 
     # For EnVar DA  
-    cpreq ./satbias_out ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
-    cpreq ./satbias_pc.out ${SATBIAS_DIR}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
+    cpreq ./satbias_out ${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
+    cpreq ./satbias_pc.out ${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
     cpreq ./satbias_out ${COMOUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
     cpreq ./satbias_pc.out ${COMOUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
   fi

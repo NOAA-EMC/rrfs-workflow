@@ -54,7 +54,6 @@ fi
 
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/${rrfs_ver})}
-export SATBIAS_DIR=$(compath.py -o ${NET}/${rrfs_ver}/satbias)
 
 export COMINgfs=${COMINgfs:-$(compath.py gfs/${gfs_ver})}
 export COMINobsproc=${COMINobsproc:-$(compath.py obsproc/${obsproc_ver})}
@@ -130,7 +129,9 @@ else
     fi
   fi
 fi 
-mkdir -p ${COMOUT}
+
+mkdir -p ${COMOUT} 
+export SATBIAS_OUT=$(compath.py -o ${NET}/${rrfs_ver}/satbias/satbias.${PDY})
 
 #-----------------------------------------------------------------------
 # Define forecast INPUT directories

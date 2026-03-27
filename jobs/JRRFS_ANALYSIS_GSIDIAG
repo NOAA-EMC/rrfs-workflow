@@ -91,9 +91,10 @@ else
 fi
 mkdir -p "${COMOUT}"
 
-# SATBIAS_DIR directory for cycling bias correction files
-SATBIAS_DIR=$(compath.py -o ${NET}/${rrfs_ver}/satbias)
-mkdir -p ${SATBIAS_DIR}
+# SATBIAS_OUT directory for cycling bias correction files
+
+export SATBIAS_OUT=$(compath.py -o ${NET}/${rrfs_ver}/satbias/satbias.${PDY})
+mkdir -p ${SATBIAS_OUT}
 
 #-----------------------------------------------------------------------
 # Execute the script.

@@ -619,13 +619,10 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
     surface_file_dir_name=surface
     restart_prefix_find="missing"
     restart_suffix_find="missing"
-    bkpath=${LBCS_ROOT}/${surface_file_dir_name}
+    bkpath=${LBCS_ROOT}/${surface_file_dir_name}/surface.${PDY}
+    bkpathroot=${LBCS_ROOT}/${surface_file_dir_name}
 
     restart_prefix="${YYYYMMDD}.${HH}0000."
-    if [ -r "${bkpath}/${restart_prefix}sfc_data.nc.sync" ]; then
-      restart_prefix_find=${restart_prefix}
-      restart_suffix_find="sync"
-    else
       for ndayinhour in 00 24 48 72
       do 
         if [ "${restart_suffix_find}" = "missing" ]; then
@@ -637,7 +634,7 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
 
           n=${DA_CYCLE_INTERV}
           while [[ $n -le 13 ]] ; do
-            checkfile=${bkpath}/${restart_prefix}sfc_data.nc.${YYYYMMDDHHmInterv}
+            checkfile=${bkpathroot}/surface.${yyyymmddhh_prev:0:8}/${restart_prefix}sfc_data.nc.${YYYYMMDDHHmInterv}
             if [ -r "${checkfile}" ] && [ "${restart_suffix_find}" == "missing" ]; then
               restart_prefix_find=${restart_prefix}
               restart_suffix_find=${YYYYMMDDHHmInterv}
@@ -651,12 +648,14 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
           done
         fi
       done
-    fi
     surface_file_path=$bkpath
 
     # check if there are surface file in continue cycle data space:
     if [ "${restart_suffix_find}" = "missing" ] || [ "${restart_prefix_find}" = "missing" ]; then
-      surface_file_path=${COMOUT}/surface
+      surface_file_path=${COMrrfs}/surface/surface.${PDY}
+      surface_file_path_m1=${COMrrfs}/surface/surface.${PDYm1}
+
+
       for ndayinhour in 00 24
       do 
         if [ "${restart_suffix_find}" = "missing" ]; then
@@ -669,10 +668,15 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
           n=${DA_CYCLE_INTERV}
           while [[ $n -le 2 ]] ; do
             checkfile=${surface_file_path}/${restart_prefix}sfc_data.nc.${YYYYMMDDHHmInterv}
+            checkfile_m1=${surface_file_path_m1}/${restart_prefix}sfc_data.nc.${YYYYMMDDHHmInterv}
+
             if [ -r "${checkfile}" ] && [ "${restart_suffix_find}" == "missing" ]; then
               restart_prefix_find=${restart_prefix}
               restart_suffix_find=${YYYYMMDDHHmInterv}
               print_info_msg "$VERBOSE" "Found ${checkfile}; Use it as surface for analysis "
+	    elif [ -r "${checkfile_m1}" ]  && [ "${restart_suffix_find}" == "missing" ]; then
+              restart_prefix_find=${restart_prefix}
+              restart_suffix_find=${YYYYMMDDHHmInterv}
             fi
  
             n=$((n + ${DA_CYCLE_INTERV}))
@@ -684,7 +688,7 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
       done
     fi
 
-    # rename the soil mositure and temperature fields in restart file
+    # rename the soil moisture and temperature fields in restart file
       rm -f cycle_surface.done
       if [ "${restart_suffix_find}" = "missing" ] || [ "${restart_prefix_find}" = "missing" ]; then
         print_info_msg "WARNING: cannot find surface from previous cycle"

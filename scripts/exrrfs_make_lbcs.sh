@@ -210,7 +210,7 @@ case "$MACHINE" in
 esac
 
 if [ ${WGF} = "firewx" ]; then
-  export FIXLAM=${firewx_input_dir}/${PDY}${cyc}
+  export FIXLAM=${COMIN}/${RUN}.${PDY}/${cyc}/input
 else
   export FIXLAM=${FIXLAM:-${FIXrrfs}/lam/${PREDEF_GRID_NAME}}
 fi
