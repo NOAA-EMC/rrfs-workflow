@@ -11,7 +11,6 @@ export GEMPAK_FIX=${GEMPAK_FIX:-${FIXrrfs}/gempak/fix}
 
 export model=`echo $RUN | awk '{print tolower($0)}'`
 export GRIB=prslev
-export DBN_ALERT_TYPE=RRFS_GEMPAK
 FHR=$(echo $FHR | cut -c1-3)
 #################################################################
 # Execute the script to make conus GEMPAK grids
@@ -34,6 +33,7 @@ cpreq ${GEMPAK_FIX}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
 cd $DATA
 export GRIB=prslev
 export type=rrfs_conus
+export DBN_ALERT_TYPE=RRFS_DET_CONUS_GEMPAK
 echo "$USHrrfs/prdgen_gempak.sh $type $GRIB $FHR" > $DATA/poescript
 #################################################################
 
@@ -55,6 +55,7 @@ cpreq ${GEMPAK_FIX}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
 cd $DATA
 export GRIB=prslev
 export type=rrfs_conus_subh
+export DBN_ALERT_TYPE=RRFS_DET_CONUS_SUBH_GEMPAK
 echo "$USHrrfs/prdgen_gempak.sh $type $GRIB $FHR" >> $DATA/poescript
 fi
 
@@ -72,6 +73,7 @@ cpreq ${GEMPAK_FIX}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
 
 cd $DATA
 export GRIB=prslev
+export DBN_ALERT_TYPE=RRFS_DET_AK_GEMPAK
 export type=rrfs_alaska
 echo "$USHrrfs/prdgen_gempak.sh $type $GRIB $FHR" >> $DATA/poescript
 #################################################################
@@ -88,6 +90,7 @@ cpreq ${GEMPAK_FIX}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
 
 cd $DATA
 export GRIB=prslev
+export DBN_ALERT_TYPE=RRFS_DET_PR_GEMPAK
 export type=rrfs_prico
 echo "$USHrrfs/prdgen_gempak.sh $type $GRIB $FHR" >> $DATA/poescript
 #################################################################
@@ -104,6 +107,7 @@ cpreq ${GEMPAK_FIX}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
 
 cd $DATA
 export GRIB=prslev
+export DBN_ALERT_TYPE=RRFS_DET_HI_GEMPAK
 export type=rrfs_hawaii
 echo "$USHrrfs/prdgen_gempak.sh $type $GRIB $FHR" >> $DATA/poescript
 #################################################################
