@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # this file hosts all tasks that will not be needed by NCO
 import os
-from rocoto_funcs.base import xml_task
+from rocoto_funcs.base import xml_task, get_cascade_env
 
 # begin of pyDAmonitor --------------------------------------------------------
 
@@ -29,7 +29,7 @@ def pyDAmonitor(xmlFile, expdir, spinup_mode=0):
     timedep = ""
     realtime = os.getenv("REALTIME", "false")
     if realtime.upper() == "TRUE":
-        starttime = get_cascade_env(f"STARTTIME_{meta_id}".upper())
+        starttime = get_cascade_env(f"STARTTIME_{task_id}".upper())
         timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
     #
     #
