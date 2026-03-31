@@ -48,7 +48,17 @@ for tile in ${tiles[@]}; do
   done
 done
 #
-# zip the files if requested and the last group
+# zip the graphics if requested and it is the last group
+if [[ "${GRAPHICS_ZIP^^}" == "TRUE" ]] && [[ "${LAST_GROUP^^}" == "TRUE"   ]]; then
+  mkdir -p "${COMOUT}/nclprd"
+  for tile in ${tiles[@]}; do
+    cd "${COMOUT}/graphics/${tile}"
+    zip files.zip *.png
+    mkdir -p "${COMOUT}/nclprd/${tile}"
+    mv files.zip "${COMOUT}/nclprd/${tile}"
+    rm -rf "${COMOUT}/graphics/${tile}"
+  done
+fi
 
 export err=$?; err_chk
 exit 0
