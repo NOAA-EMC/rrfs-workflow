@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC1090,SC1091,SC2034,SC2154,SC2153
+# shellcheck disable=all
 declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
 set -x
 date
@@ -40,6 +40,6 @@ for tile in ${tiles[@]}; do
   done
 done
 #
-# zip the files if requested
+# zip the files if requested and the last group
 
 exit 0

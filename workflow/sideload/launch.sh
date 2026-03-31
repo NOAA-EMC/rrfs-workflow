@@ -162,7 +162,9 @@ case ${task_id} in
       exit 0
     fi
     ;;
-  graphics|misc)
+  graphics)
+    module purge
+    source "${HOMErrfs}/workflow/tools/load_pygraf.sh"
     "${HOMErrfs}/workflow/sideload/${task_id}.sh"
     ;;
   *)
