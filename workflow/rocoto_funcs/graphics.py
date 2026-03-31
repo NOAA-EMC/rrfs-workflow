@@ -6,38 +6,43 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 # begin of graphics --------------------------------------------------------
 
 
-def graphics(xmlFile, expdir):
-    meta_id = 'graphics'
-    cycledefs = 'prod'
-    # metatask (nested or not)
-    meta_bgn = \
-        f'''
-<metatask name="{meta_id}">
-<var name="area">full NE NC NW SE SC SW EastCO</var>'''
-    meta_end = f'\
-</metatask>\n'
-
+def graphics(xmlFile, expdir, index, dcGrpInfo):
+    task_id = f'graphics_g{index:02d}'
+    cycledefs = dcGrpInfo['cycledef']
+    group_hours = dcGrpInfo["hours"]
+    parts = group_hours.split('-')
+    if len(parts) == 1:
+        str_hours = parts[0]
+    else:
+        step = 1
+        if len(parts) == 3:
+            step = int(parts[2])
+        bgn_hr = int(parts[0])
+        end_hr = int(parts[1])
+        str_hours = " ".join(str(i) for i in range(bgn_hr, end_hr + step, step))
+    #
     # Task-specific EnVars beyond the task_common_vars
     dcTaskEnv = {
         'FCST_LEN_HRS_CYCLES': os.getenv('FCST_LEN_HRS_CYCLES', '03 03'),
-        'AREA': '#area#',
+        'GROUP_INDEX': f'{index:02d}',
+        'GROUP_HOURS': f'{str_hours}',
+        'TILES': os.getenv('GRAPHICS_TILES', 'full'),
     }
-    task_id = f'{meta_id}_#area#'
-
+    # dependencies
     timedep = ""
     realtime = os.getenv("REALTIME", "false")
     if realtime.upper() == "TRUE":
-        starttime = get_cascade_env(f"STARTTIME_{meta_id}".upper())
+        starttime = get_cascade_env(f"STARTTIME_{task_id}".upper())
         timedep = f'\n  <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
     #
     dependencies = f'''
   <dependency>
   <and>{timedep}
-  <metataskdep metatask="upp"/>
+    <taskdep task="upp_g{index:02d}"/>
   </and>
   </dependency>'''
 
     #
-    xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv, dependencies, True, meta_id, meta_bgn, meta_end)
+    xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv, dependencies)
 
 # end of graphics --------------------------------------------------------

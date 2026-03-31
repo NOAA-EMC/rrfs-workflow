@@ -122,6 +122,9 @@ def setup_xml(HOMErrfs, expdir):
                 for index, dcGrpInfo in enumerate(listPostGrpInfo):
                     mpassit(xmlFile, expdir, index, dcGrpInfo)
                     upp(xmlFile, expdir, index, dcGrpInfo)
+            if os.getenv("DO_GRAPHICS", 'FALSE').upper() == "TRUE":
+                for index, dcGrpInfo in enumerate(listPostGrpInfo):
+                    graphics(xmlFile, expdir, index, dcGrpInfo)
             if os.getenv("DO_HOFX", "FALSE").upper() == "TRUE":
                 hofx(xmlFile, expdir)
 
@@ -179,8 +182,6 @@ def setup_xml(HOMErrfs, expdir):
             clean(xmlFile, expdir)
         if os.getenv("DO_MISC", 'FALSE').upper() == "TRUE":
             misc(xmlFile, expdir)
-        if os.getenv("DO_GRAPHICS", 'FALSE').upper() == "TRUE":
-            graphics(xmlFile, expdir)
         #
         wflow_end(xmlFile)
 # ---------------------------------------------------------------------------
