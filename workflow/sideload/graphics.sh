@@ -4,38 +4,42 @@ declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LI
 set -x
 date
 #
-export task_id=${task_id:-'graphics'}
-mkdir -p "${DATA}/nclprd"
-
-fhr=${FHR:-0}  # use this line or the next line
-#fhr=$((10#${FHR:-0})) # remove leading zeros
-area=${AERA:-full}
-grafdir=/lfs5/BMC/nrtrr/FIX_RRFS2/exec/pygraf
-YYJJJHH=$(date +%y%j%H -d "${CDATE:0:8} ${CDAE:8:2}")
-
-cd "${grafdir}" || exit 1
-set +x # supress messy module load information
-source pre.sh
-module use /lfs5/BMC/nrtrr/FIX_RRFS2/modulefiles
-module load prod_util/2.1.1
-set -x
-# can pygraf handle fhr in 3 digits, e.g. 000, 100?
-python create_graphics.py \
-  maps \
-  --all_leads \
-  -d "${COMINrrfs}/${RUN}.${PDY}/${cyc}/upp" \
-  -f "${fhr}" \
-  --file_type prs \
-  --file_tmpl "${YYJJJHH}0000{FCST_TIME:02d}" \
-  --images "${grafdir}/image_lists/hrrr_subset.yml hourly" \
-  -m "${NET}" \
-  -n "${SLURM_CPUS_ON_NODE:-12}" \
-  -o "${DATA}" \
-  -s "${CDATE}" \
-  --tiles "${AREA}" \
-  -z "${DATA}/nclprd"
-export err=$?; err_chk
-# link results to ${COMOUT}
-ln -snf "${DATA}" "${COMOUT}"
+pygrafdir="${HOMErrfs}/workflow/sideload/pygraf"
+image_list="${pygrafdir}/image_lists/regional_mpas_subset.yml"
+file_tmpl="rrfs.t${cyc}z.prslev.f0{FCST_TIME:02d}.conus.grib2"
+model=${NET}
+ntasks=${SLURM_CPUS_ON_NODE:-12}
+grib2_dir="${COMOUT}/upp/det"
+workdir="${COMOUT}/graphics"
+mkdir -p "${workdir}"
+cd "${pygrafdir}" || exit 1
+#
+# find forecst length for this cycle
+#
+fcst_len_hrs_cycles=${FCST_LEN_HRS_CYCLES:-"01 01"}
+fcst_len_hrs_thiscyc=$( "${USHrrfs}/find_fcst_length.sh"  "${fcst_len_hrs_cycles}"  "${cyc}" )
+echo "forecast length for this cycle is ${fcst_len_hrs_thiscyc}"
+read -ra fhr_all <<< "${GROUP_HOURS}"  # convert string to array
+fhr1=${fhr_all[0]}
+fhr2=${fhr_all[${#fhr_all[@]}-1]}
+if (( fcst_len_hrs_thiscyc <= fhr2 )); then 
+  fhr2=fcst_len_hrs_thiscyc
+fi
+#
+read -ra tiles <<< "${TILES}"
+for tile in ${tiles[@]}; do
+  tmpdir="${workdir}/tmp"
+  python create_graphics.py maps --all_leads -d ${grib2_dir} -f ${fhr1} ${fhr2} --file_type prs --file_tmpl ${file_tmpl} -m ${model} \
+      --images ${image_list} hourly -n ${ntasks} -o ${tmpdir} -s ${CDATE} --tiles ${tile}
+  export err=$?; err_chk
+  #
+  mkdir -p "${tmpdir}/${tile}"
+  dirs=(${tmpdir}/*/)
+  for i in ${dirs[@]}; do
+    mv ${i}/* "${tmpdir}/${tile}"
+  done
+done
+#
+# zip the files if requested
 
 exit 0
