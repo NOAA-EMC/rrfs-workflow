@@ -163,8 +163,9 @@ case ${task_id} in
     fi
     ;;
   graphics)
-    module purge
+    set +x
     source "${HOMErrfs}/workflow/tools/load_pygraf.sh"
+    set -x
     "${HOMErrfs}/workflow/sideload/${task_id}.sh"
     ;;
   *)

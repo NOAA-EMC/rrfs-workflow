@@ -128,7 +128,7 @@ def setup_xml(HOMErrfs, expdir):
                     print("  *** DO_GRAPHICS=true but pygraf not cloned yet!!! ***\n  run `tools/clone_pygraf.sh` first\n")
                     sys.exit(1)
                 for index, dcGrpInfo in enumerate(listPostGrpInfo):
-                    graphics(xmlFile, expdir, index, dcGrpInfo)
+                    graphics(xmlFile, expdir, index, dcGrpInfo, index == len(listPostGrpInfo) - 1)
             if os.getenv("DO_HOFX", "FALSE").upper() == "TRUE":
                 hofx(xmlFile, expdir)
 

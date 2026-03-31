@@ -6,7 +6,7 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 # begin of graphics --------------------------------------------------------
 
 
-def graphics(xmlFile, expdir, index, dcGrpInfo):
+def graphics(xmlFile, expdir, index, dcGrpInfo, lastGrp=False):
     task_id = f'graphics_g{index:02d}'
     cycledefs = dcGrpInfo['cycledef']
     group_hours = dcGrpInfo["hours"]
@@ -27,6 +27,8 @@ def graphics(xmlFile, expdir, index, dcGrpInfo):
         'GROUP_INDEX': f'{index:02d}',
         'GROUP_HOURS': f'{str_hours}',
         'TILES': os.getenv('GRAPHICS_TILES', 'full'),
+        'GRAPHICS_ZIP': os.getenv('GRAPHICS_ZIP', 'FALSE').upper(),
+        'LAST_GROUP': f'{lastGrp}'.upper(),
     }
     # dependencies
     timedep = ""
@@ -43,6 +45,6 @@ def graphics(xmlFile, expdir, index, dcGrpInfo):
   </dependency>'''
 
     #
-    xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv, dependencies)
+    xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv, dependencies, command_id="GRAPHICS")
 
 # end of graphics --------------------------------------------------------
