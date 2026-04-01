@@ -18,7 +18,7 @@ if  [[ "${MPASOUT_TIMELEVELS}" != "" ]]; then
      fi
     done
   fi
-  mpasout_list=$(echo "${MPASOUT_TIMELEVELS}" | sed 's/^0 //')
+  mpasout_list="${MPASOUT_TIMELEVELS#0 }"
 else
   mpasout_list=${MPASOUT_INTERVAL:-1}
 fi
@@ -28,7 +28,7 @@ if [[ "${mpasout_interval,,}" = "none"  ]]; then
  exit 0
 fi
 
-read -a mpasout_list <<< "$mpasout_list"
+read -ra mpasout_list <<< "$mpasout_list"
 
 for mpasout_interval in "${mpasout_list[@]}"; do
 
