@@ -82,6 +82,7 @@ export WALLTIME_JEDIVAR="00:30:00"
 #
 export KEEPDATA=YES
 export STMP_RETENTION_CYCS=24
+export CYCLETHROTTLE=3600
 #
 # local.setup: setup some local options specific to a platform or an experiment
 #

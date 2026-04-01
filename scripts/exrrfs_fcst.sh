@@ -45,7 +45,7 @@ ${cpreq} "${FIXrrfs}/stream_list/${PHYSICS_SUITE}"/* stream_list/
 
 # generate the namelist on the fly
 # do_restart already defined in the above
-start_time=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H:%M:%S) 
+start_time=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H:%M:%S)
 run_duration=${fcst_len_hrs_thiscyc:-1}:00:00
 physics_suite=${PHYSICS_SUITE:-'mesoscale_reference'}
 jedi_da="true" #true
@@ -73,6 +73,13 @@ mpasout_interval=${MPASOUT_INTERVAL:-1}
 [[ ${diag_interval} =~ ^[0-9]+$ ]] && diag_interval="${diag_interval}:00:00"
 [[ ${mpasout_interval} =~ ^[0-9]+$ ]] && mpasout_interval="${mpasout_interval}:00:00"
 if [[ "${MPASOUT_TIMELEVELS}" != "" ]]; then # prioritize MPASOUT_TIMELEVELS
+  if  [[ "${MPASOUT_TIMELEVELS_MORE}" != "" ]]; then
+    for hr in ${MPASOUT_TIMELEVELS_MORE_CYCS:-"99"}; do
+     if [ "${cyc}" == "${hr}" ]; then
+      MPASOUT_TIMELEVELS="${MPASOUT_TIMELEVELS_MORE}"
+     fi
+    done
+  fi
   mpasout_replacement="s|output_interval=\"@mpasout_interval@\"|output_timelevels=\"${MPASOUT_TIMELEVELS}\"|"
 else
   mpasout_replacement="s/@mpasout_interval@/${mpasout_interval}/"

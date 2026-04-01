@@ -20,6 +20,7 @@ export ZETA_LEVELS="L60.txt"
 #
 export DO_IODA=true
 export DO_JEDI=true
+export SNUDGETYPES="GGG" # G=gsd_update_soiltq from GSI; P=2022 J Hydro paper; chars=SoilT,SnowT,SoilQ
 export COLDSTART_CYCS_DO_DA=false #true
 export DO_NONVAR_CLOUD_ANA=true
 export DO_CHEMISTRY=false
@@ -48,6 +49,8 @@ for i in 00; do arr[$i]="36"; done # 36hr fcst at 00Z
 export FCST_LEN_HRS_CYCLES="${arr[*]}"
 export HISTORY_INTERVAL=1
 export MPASOUT_TIMELEVELS='0 1'
+export MPASOUT_TIMELEVELS_MORE='0 1 2 3'
+export MPASOUT_TIMELEVELS_MORE_CYCS='00 12'
 export POST_GROUP_TOT_NUM=10
 
 export IC_OFFSET=3
@@ -77,7 +80,7 @@ export WALLTIME_FCST="5:00:00"
 export WALLTIME_SAVE_FCST="0:30:00"
 export WALLTIME_MPASSIT="3:00:00"
 export WALLTIME_UPP="3:00:00"
-export WALLTIME_JEDIVAR="00:15:00"
+export WALLTIME_JEDIVAR="00:25:00"
 # Ursa
 export QUEUE="batch"
 export PARTITION="u1-compute"
@@ -87,13 +90,13 @@ export NODES_LBC="<nodes>2:ppn=192</nodes>"
 export NODES_FCST="<nodes>10:ppn=160</nodes>"
 export NODES_MPASSIT="<nodes>1:ppn=160</nodes>"
 export NODES_UPP="<nodes>1:ppn=160</nodes>"
-export NODES_JEDIVAR="<nodes>20:ppn=40</nodes>"
+export NODES_JEDIVAR="<nodes>16:ppn=50</nodes>"
 export NODES_IODA_MRMS_REFL="<nodes>1:ppn=40</nodes>"
 #
 export KEEPDATA=YES
 export MAXTRIES=3
 export STMP_RETENTION_CYCS=26
-export COM_RETENTION_CYCS=72
+export COM_RETENTION_CYCS=84
 export COM_LBC_RETENTION_CYCS=42
 export CYCLETHROTTLE=3600
 export CYCLELIFESPAN=2

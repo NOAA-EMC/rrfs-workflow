@@ -117,8 +117,6 @@ for index in "${mem_list[@]}"; do # loop through all the members
           if [[ -s "${file_mpasout}" ]]; then
             source_file="${file_mpasout}"
             break
-	  else
-            echo "SFC_UPDATE: cannot find source file for sfc state: ${file_mpasout}"
           fi
         done
         # if no mpasout files, use init.nc from another run
@@ -131,8 +129,6 @@ for index in "${mem_list[@]}"; do # loop through all the members
             file_init="${COMINsfc}/${RUN}.${PDYii}/${cycii}/ic/${WGF}${memdir}/init.nc"
             if [[ -s "${file_init}" ]]; then
               source_file="${file_init}"
-	    else
-              echo "SFC_UPDATE: cannot find source file for sfc state: ${file_init}"
             fi
           fi
         fi
@@ -199,6 +195,7 @@ if (( err != 0 )); then
   err_exit
 else
   echo "prep_ic completed successfully"
+  touch "${umbrella_prep_ic_mem}"/prep_ic_complete
 fi
 
 exit 0
