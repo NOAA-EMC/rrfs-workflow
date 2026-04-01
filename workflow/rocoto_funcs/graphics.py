@@ -8,7 +8,7 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 
 
 def graphics(xmlFile, expdir):
-    task_id = f'graphics'
+    task_id = 'graphics'
     cycledefs = 'prod'
     #
     # Task-specific EnVars beyond the task_common_vars
@@ -37,6 +37,6 @@ def graphics(xmlFile, expdir):
   </dependency>'''
 
     #
-    xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv, dependencies, command_id="GRAPHICS")
+    xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv, dependencies)
 
 # end of graphics --------------------------------------------------------
