@@ -19,3 +19,5 @@ nifa                            QNIFA
 pressure			P_HYD
 rho				MUB
 cldfrac_bl                      CLDFRA_BL
+qke                             QKE
+el_pbl                          EL_PBL

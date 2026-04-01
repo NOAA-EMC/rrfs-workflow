@@ -140,3 +140,7 @@ swupt
 swddir
 swddni
 swddif
+max_hail_diameter_sfc
+max_hail_diameter_sfc_acc
+max_hail_diameter_column
+max_hail_diameter_column_acc
