@@ -14,9 +14,9 @@ pygrafdir="${HOMErrfs}/workflow/sideload/pygraf"
 image_list="${pygrafdir}/image_lists/regional_mpas_subset.yml"
 file_tmpl="rrfs.t${cyc}z.prslev.f0{FCST_TIME:02d}.conus.grib2"
 model=${NET}
-ntasks=${SLURM_CPUS_ON_NODE:-12}
+ntasks=${NTASKS:-12}
 grib2_dir="${COMOUT}/upp/det"
-workdir="${COMOUT}/graphics/g${GROUP_INDEX}"
+workdir="${COMOUT}/graphics/tmp"
 rm -rf "${workdir}"
 mkdir -p "${workdir}"
 cd "${pygrafdir}" || exit 1
@@ -26,19 +26,16 @@ cd "${pygrafdir}" || exit 1
 fcst_len_hrs_cycles=${FCST_LEN_HRS_CYCLES:-"01 01"}
 fcst_len_hrs_thiscyc=$( "${USHrrfs}/find_fcst_length.sh"  "${fcst_len_hrs_cycles}"  "${cyc}" )
 echo "forecast length for this cycle is ${fcst_len_hrs_thiscyc}"
-read -ra fhr_all <<< "${GROUP_HOURS}"  # convert string to array
-fhr1=${fhr_all[0]}
-fhr2=${fhr_all[${#fhr_all[@]}-1]}
-if (( fcst_len_hrs_thiscyc <= fhr2 )); then 
-  fhr2=${fcst_len_hrs_thiscyc}
-fi
+fhr1=0
+fhr2=${fcst_len_hrs_thiscyc}
+wait_minutes=${WAIT_MINUTES:-1}
 #
 # generate the graphics under workdir and then move to graphics/{tile}
 #
 read -ra tiles <<< "${TILES}"
 for tile in ${tiles[@]}; do
   python create_graphics.py maps --all_leads -d ${grib2_dir} -f ${fhr1} ${fhr2} --file_type prs --file_tmpl ${file_tmpl} -m ${model} \
-      --images ${image_list} hourly -n ${ntasks} -o ${workdir} -s ${CDATE} --tiles ${tile}
+      --images ${image_list} hourly -n ${ntasks} -o ${workdir} -s ${CDATE} --tiles ${tile} -w ${wait_minutes}
   export err=$?; err_chk
   #
   mkdir -p "${COMOUT}/graphics/${tile}"
@@ -48,8 +45,8 @@ for tile in ${tiles[@]}; do
   done
 done
 #
-# zip the graphics if requested and it is the last group
-if [[ "${GRAPHICS_ZIP^^}" == "TRUE" ]] && [[ "${LAST_GROUP^^}" == "TRUE"   ]]; then
+# zip the graphics if requested
+if [[ "${GRAPHICS_ZIP^^}" == "TRUE" ]]; then
   mkdir -p "${COMOUT}/nclprd"
   for tile in ${tiles[@]}; do
     cd "${COMOUT}/graphics/${tile}"
