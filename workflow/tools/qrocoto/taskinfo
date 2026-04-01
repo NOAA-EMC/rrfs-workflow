@@ -31,7 +31,7 @@ echo "${logroot}/${RUN}.${PDY}/${cyc}/${WGF}/rrfs.log"
 
 echo -e  "\n---com output:"
 comout="${COMROOT}/${NET}/${VERSION}/${RUN}.${PDY}/${cyc}/${task}/${WGF}"
-if [[ "${task}" == *pyDAmonitor* ]]; then
+if [[ "${task}" == *pyDAmonitor* ]] || [[ "${task}" == *graphics* ]]; then
   comout=${comout%/*}
 fi
 echo "${comout}"
