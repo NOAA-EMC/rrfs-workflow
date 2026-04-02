@@ -19,7 +19,7 @@ fhr=$1
 cyc=$2
 subpiece=$3
 domain=$4
-prslev=$5
+inputfile=$5
 DATA=$6
 comout=$7
 export compress_type=c3
@@ -45,8 +45,13 @@ elif [ $domain == "pr" ]; then
 fi
 
 # Use different parm file for each subpiece
-wgrib2 $comout/${prslev} | grep -F -f ${parmfile} | wgrib2 -i -grib inputs.grib${domain} $comout/${prslev}
-wgrib2 inputs.grib${domain} -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv inputs.grib${domain}.uv
+if [[ "$inputfile" =~ "prslev" ]]; then
+  wgrib2 $comout/${inputfile} | grep -F -f ${parmfile} | wgrib2 -i -grib inputs.grib${domain} $comout/${inputfile}
+  wgrib2 inputs.grib${domain} -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv inputs.grib${domain}.uv
+else
+  wgrib2 $comout/${inputfile} -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv inputs.grib${domain}.uv
+fi
+
 wgrib2 inputs.grib${domain}.uv -set_bitmap 1 -set_grib_type ${compress_type} \
   -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
   -new_grid_interpolation neighbor \

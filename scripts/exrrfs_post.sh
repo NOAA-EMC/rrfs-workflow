@@ -416,10 +416,12 @@ net4=$(echo ${NET:0:4} | tr '[:upper:]' '[:lower:]')
 if [ ${DO_ENSFCST} = "TRUE" ]; then
   prslev=${DATA}/${net4}.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.${gridname}.grib2
   natlev=${DATA}/${net4}.t${cyc}z.${mem_num}.natlev.${gridspacing}.f${fhr}.${gridname}.grib2
+  fld2d=${DATA}/${net4}.t${cyc}z.${mem_num}.2dfld.${gridspacing}.f${fhr}.${gridname}.grib2
   nbmfld=${DATA}/${net4}.t${cyc}z.${mem_num}.nbmfld.${gridspacing}.f${fhr}.${gridname}.grib2
 else
   prslev=${DATA}/${net4}.t${cyc}z.prslev.${gridspacing}.f${fhr}.${gridname}.grib2
   natlev=${DATA}/${net4}.t${cyc}z.natlev.${gridspacing}.f${fhr}.${gridname}.grib2
+  fld2d=${DATA}/${net4}.t${cyc}z.2dfld.${gridspacing}.f${fhr}.${gridname}.grib2
   nbmfld=${DATA}/${net4}.t${cyc}z.nbmfld.${gridspacing}.f${fhr}.${gridname}.grib2
 fi
 
@@ -491,6 +493,10 @@ if [ -f NATLEV.GrbF${post_fhr} ]; then
   wgrib2 NATLEV.GrbF${post_fhr} -set center 7 -grib ${natlev} >>$pgmout 2>>errfile
 fi
 
+if [ -f 2DFLD.GrbF${post_fhr} ]; then
+  wgrib2 2DFLD.GrbF${post_fhr} -set center 7 -grib ${fld2d} >>$pgmout 2>>errfile
+fi
+
 if [ -f NBMFLD_new.GrbF${post_fhr} ]; then
   wgrib2 NBMFLD_new.GrbF${post_fhr} -set center 7 -grib ${nbmfld} >>$pgmout 2>>errfile
 fi
@@ -503,6 +509,7 @@ fi
 if [[ $SENDCOM = "YES" ]]; then
 
 cpreq -p ${prslev} ${COMOUT}
+cpreq -p ${fld2d} ${COMOUT}
 # Native level output is disabled for ensemble forecasts after f00
 if [[ -f ${natlev} ]]; then
   cpreq -p ${natlev} ${COMOUT}
