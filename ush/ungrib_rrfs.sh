@@ -3,16 +3,73 @@
 #
 # shellcheck disable=SC2154,SC2153,SC2086
 
-budget_fields=":(WEASD|APCP|NCPCP|ACPCP|SNOD):"
-neighbor_fields=":(NCONCD|NCCICE|SPNCR|CLWMR|CICE|RWMR|SNMR|GRLE|PMTF|PMTC|REFC|CSNOW|CICEP|CFRZR|CRAIN|LAND|ICEC|TMP:surface|VEG|CCOND|SFEXC|MSLMA|PRES:tropopause|LAI|HPBL|HGT:planetary boundary layer): "
-grid_specs="lambert:266:25.000000 234.862000:2000:3000.000000 18.281000:1450:3000.000000"
-
-wgrib2 "${GRIBFILE}" -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
-       -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH"               \
-       -new_grid_interpolation bilinear \
-       -if "${budget_fields}"   -new_grid_interpolation budget -fi \
-       -if "${neighbor_fields}" -new_grid_interpolation neighbor -fi \
-       -new_grid ${grid_specs} "tmp.${GRIBFILE_LOCAL}"
-
-# store vector records together in the sam GRIB2 message as submessages
-wgrib2 "tmp.${GRIBFILE_LOCAL}" -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" -submsg_uv "${GRIBFILE_LOCAL}"
+echo "${knt}"
+wgrib2 -s -d 1 ${GRIBFILE} -GRIB ${GRIBFILE_LOCAL}
+i=2
+while [[ ${i} -le 330 ]] ;
+do
+	wgrib2 -s -d ${i} ${GRIBFILE} -append -GRIB ${GRIBFILE_LOCAL}
+	i=$((i + 1))
+done
+knt=$(( 10#${knt} + 1 ))
+GRIBFILE_LOCAL=$( "${USHrrfs}/num_to_GRIBFILE.XXX.sh"  "${knt}" )
+echo "${knt}"
+wgrib2 -s -d 331 ${GRIBFILE} -GRIB ${GRIBFILE_LOCAL}
+i=332
+while [[ ${i} -le 660 ]] ;
+do
+	wgrib2 -s -d ${i} ${GRIBFILE} -append -GRIB ${GRIBFILE_LOCAL}
+	i=$((i + 1))
+done
+knt=$(( 10#${knt} + 1 ))
+GRIBFILE_LOCAL=$( "${USHrrfs}/num_to_GRIBFILE.XXX.sh"  "${knt}" )
+echo "${knt}"
+wgrib2 -s -d 661 ${GRIBFILE} -GRIB ${GRIBFILE_LOCAL}
+i=662
+while [[ ${i} -le 990 ]] ;
+do
+	wgrib2 -s -d ${i} ${GRIBFILE} -append -GRIB ${GRIBFILE_LOCAL}
+	i=$((i + 1))
+done
+knt=$(( 10#${knt} + 1 ))
+GRIBFILE_LOCAL=$( "${USHrrfs}/num_to_GRIBFILE.XXX.sh"  "${knt}" )
+echo "${knt}"
+wgrib2 -s -d 991 ${GRIBFILE} -GRIB ${GRIBFILE_LOCAL}
+i=992
+while [[ ${i} -le 1320 ]] ;
+do
+	wgrib2 -s -d ${i} ${GRIBFILE} -append -GRIB ${GRIBFILE_LOCAL}
+	i=$((i + 1))
+done
+knt=$(( 10#${knt} + 1 ))
+GRIBFILE_LOCAL=$( "${USHrrfs}/num_to_GRIBFILE.XXX.sh"  "${knt}" )
+echo "${knt}"
+wgrib2 -s -d 1321 ${GRIBFILE} -GRIB ${GRIBFILE_LOCAL}
+i=1322
+while [[ ${i} -le 1430 ]] ;
+do
+	wgrib2 -s -d ${i} ${GRIBFILE} -append -GRIB ${GRIBFILE_LOCAL}
+	i=$((i + 1))
+done
+knt=$(( 10#${knt} + 1 ))
+GRIBFILE_LOCAL=$( "${USHrrfs}/num_to_GRIBFILE.XXX.sh"  "${knt}" )
+echo "${knt}"
+wgrib2 -s -match_fs 'TMP:2 m' ${GRIBFILE} -append -GRIB ${GRIBFILE_LOCAL}
+wgrib2 -s -match_fs 'SPFH:2 m' ${GRIBFILE} -append -GRIB ${GRIBFILE_LOCAL}
+wgrib2 -s -match_fs 'RH:2 m' ${GRIBFILE} -append -GRIB ${GRIBFILE_LOCAL}
+wgrib2 -s -match_fs 'UGRD:10 m' ${GRIBFILE} -append -GRIB ${GRIBFILE_LOCAL}
+wgrib2 -s -match_fs 'VGRD:10 m' ${GRIBFILE} -append -GRIB ${GRIBFILE_LOCAL}
+wgrib2 -s -match_fs 'PRES:surface' ${GRIBFILE} -append -GRIB ${GRIBFILE_LOCAL}
+wgrib2 -s -match_fs 'MSLET' ${GRIBFILE} -append -GRIB ${GRIBFILE_LOCAL}
+wgrib2 -s -match_fs 'WEASD' ${GRIBFILE} -append -GRIB ${GRIBFILE_LOCAL}
+wgrib2 -s -match_fs 'SNOD' ${GRIBFILE} -append -GRIB ${GRIBFILE_LOCAL}
+wgrib2 -s -match_fs 'TMP:surface' ${GRIBFILE} -append -GRIB ${GRIBFILE_LOCAL}
+wgrib2 -s -match_fs 'CNWAT' ${GRIBFILE} -append -GRIB ${GRIBFILE_LOCAL}
+wgrib2 -s -match_fs 'TSOIL' ${GRIBFILE} -append -GRIB ${GRIBFILE_LOCAL}
+wgrib2 -s -match_fs 'SOILW' ${GRIBFILE} -append -GRIB ${GRIBFILE_LOCAL}
+wgrib2 -s -match_fs 'ICEC' ${GRIBFILE} -append -GRIB ${GRIBFILE_LOCAL}
+wgrib2 -s -match_fs 'LAND' ${GRIBFILE} -append -GRIB ${GRIBFILE_LOCAL}
+wgrib2 -s -match_fs 'HGT:surface' ${GRIBFILE} -append -GRIB ${GRIBFILE_LOCAL}
+wgrib2 -s -match_fs 'VEG:surface' ${GRIBFILE} -append -GRIB ${GRIBFILE_LOCAL}
+wgrib2 -s -match_fs 'VEGMIN' ${GRIBFILE} -append -GRIB ${GRIBFILE_LOCAL}
+wgrib2 -s -match_fs 'VEGMAX' ${GRIBFILE} -append -GRIB ${GRIBFILE_LOCAL}
