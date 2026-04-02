@@ -66,20 +66,13 @@ fi
 lbc_interval=${LBC_INTERVAL:-3}
 restart_interval=${RESTART_INTERVAL:-none}
 history_interval=${HISTORY_INTERVAL:-1}
-diag_interval=${HISTORY_INTERVAL:-1}
+diag_interval=${DIAG_INTERVAL:-${HISTORY_INTERVAL:-1}}
 mpasout_interval=${MPASOUT_INTERVAL:-1}
 [[ ${restart_interval} =~ ^[0-9]+$ ]] && restart_interval="${restart_interval}:00:00"
 [[ ${history_interval} =~ ^[0-9]+$ ]] && history_interval="${history_interval}:00:00"
 [[ ${diag_interval} =~ ^[0-9]+$ ]] && diag_interval="${diag_interval}:00:00"
 [[ ${mpasout_interval} =~ ^[0-9]+$ ]] && mpasout_interval="${mpasout_interval}:00:00"
 if [[ "${MPASOUT_TIMELEVELS}" != "" ]]; then # prioritize MPASOUT_TIMELEVELS
-  if  [[ "${MPASOUT_TIMELEVELS_MORE}" != "" ]]; then
-    for hr in ${MPASOUT_TIMELEVELS_MORE_CYCS:-"99"}; do
-     if [ "${cyc}" == "${hr}" ]; then
-      MPASOUT_TIMELEVELS="${MPASOUT_TIMELEVELS_MORE}"
-     fi
-    done
-  fi
   mpasout_replacement="s|output_interval=\"@mpasout_interval@\"|output_timelevels=\"${MPASOUT_TIMELEVELS}\"|"
 else
   mpasout_replacement="s/@mpasout_interval@/${mpasout_interval}/"
@@ -106,6 +99,15 @@ if [[ "${history_interval,,}" != "none" ]]; then
     if [[ "${DO_SPINUP:-FALSE}" != "TRUE" ]];  then
       ln -snf "${UMBRELLA_FCST_DATA}/history.${timestr}.nc" "${DATA}/"
       ln -snf "${UMBRELLA_FCST_DATA}/history.${timestr}.nc.done" "${DATA}/"
+    fi
+  done
+fi
+if [[ "${diag_interval,,}" != "none" ]]; then
+  diag_all=$(seq 0 $((10#${diag_interval%%:*})) $((10#${fcst_len_hrs_thiscyc} )) )
+  for fhr in ${diag_all}; do
+    CDATEp=$( ${NDATE} "${fhr}" "${CDATE}" )
+    timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
+    if [[ "${DO_SPINUP:-FALSE}" != "TRUE" ]];  then
       ln -snf "${UMBRELLA_FCST_DATA}/diag.${timestr}.nc" "${DATA}/"
       ln -snf "${UMBRELLA_FCST_DATA}/diag.${timestr}.nc.done" "${DATA}/"
     fi

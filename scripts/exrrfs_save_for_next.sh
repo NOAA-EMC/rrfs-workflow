@@ -5,35 +5,15 @@ set -x
 cpreq=${cpreq:-cpreq}
 
 cd "${DATA}" || exit 1
+mpasout_interval=${MPASOUT_INTERVAL:-1}
+cyc_interval=${CYC_INTERVAL:-1}
+#
+CDATEp=$( ${NDATE}  "${cyc_interval}"  "${CDATE}" )
+timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
 #
 export CMDFILE="${DATA}/poescript_savefcst"
 mkdir -p "$(dirname "$CMDFILE")"
 : > "$CMDFILE"
-#
-if  [[ "${MPASOUT_TIMELEVELS}" != "" ]]; then
-  if  [[ "${MPASOUT_TIMELEVELS_MORE}" != "" ]]; then
-    for hr in ${MPASOUT_TIMELEVELS_MORE_CYCS:-"99"}; do
-     if [ "${cyc}" == "${hr}" ]; then
-       MPASOUT_TIMELEVELS="${MPASOUT_TIMELEVELS_MORE}"
-     fi
-    done
-  fi
-  mpasout_list="${MPASOUT_TIMELEVELS#0 }"
-else
-  mpasout_list=${MPASOUT_INTERVAL:-1}
-fi
-#
-if [[ "${mpasout_interval,,}" = "none"  ]]; then
- echo Not saving mpasout files since mpasout_interval="${mpasout_interval,,}"
- exit 0
-fi
-
-read -ra mpasout_list <<< "$mpasout_list"
-
-for mpasout_interval in "${mpasout_list[@]}"; do
-
-CDATEp=$( ${NDATE}  "${mpasout_interval}"  "${CDATE}" )
-timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
 
 # Populate the list for the ensemble members, or deterministic member
 if [[ "${ENS_SIZE:-0}" -gt 2 ]]; then
@@ -56,23 +36,11 @@ for memdir in "${mem_list[@]}"; do
 
 #
 # save to com
-timeout=1200  # Maximum seconds to wait
-elapsed=0
-
-until [[ -s "${mpasout_file}" || $elapsed -ge $timeout ]]; do
-  sleep 10
-  ((elapsed++))
-done
-
-if [[ -s "${mpasout_file}" ]]; then
+if [[ "${mpasout_interval,,}" != "none"  ]]; then
   mpasout_path=$(realpath "${mpasout_file}")
   echo "${cpreq} ${mpasout_path} ${comoutdir}/." >> "${CMDFILE}"
-else
-  echo "Error: ${mpasout_file} not found or empty after ${timeout} seconds." >&2
-  exit 1
 fi
 
-done
 done
 
 #

@@ -48,9 +48,9 @@ for i in {0..23..12}; do arr[$i]="48"; done # 24hr fcst every 12hrs
 for i in 00; do arr[$i]="36"; done # 36hr fcst at 00Z
 export FCST_LEN_HRS_CYCLES="${arr[*]}"
 export HISTORY_INTERVAL=1
-export MPASOUT_TIMELEVELS='0 1'
-export MPASOUT_TIMELEVELS_MORE='0 1 2 3'
-export MPASOUT_TIMELEVELS_MORE_CYCS='00 12'
+export DIAG_INTERVAL=1
+export MPASOUT_TIMELEVELS='0 1 3 15 27'
+export MPASOUT_SAVE2COM_HRS='15 27'
 export POST_GROUP_TOT_NUM=10
 
 export IC_OFFSET=3
@@ -87,7 +87,7 @@ export PARTITION="u1-compute"
 export NODES_PREP_IC="<nodes>1:ppn=10</nodes>"
 export NODES_IC="<nodes>2:ppn=192</nodes>"
 export NODES_LBC="<nodes>2:ppn=192</nodes>"
-export NODES_FCST="<nodes>10:ppn=160</nodes>"
+export NODES_FCST="<nodes>16:ppn=160</nodes>"
 export NODES_MPASSIT="<nodes>1:ppn=160</nodes>"
 export NODES_UPP="<nodes>1:ppn=160</nodes>"
 export NODES_JEDIVAR="<nodes>16:ppn=50</nodes>"
@@ -119,20 +119,20 @@ export OBSPATH_NSSLMOSIAC="/public/data/radar/mrms"
 export ACCOUNT="rtwrfruc"
 export RESERVATION="rrfsens"
 #
-export STARTTIME_UNGRIB_IC="00:00:01"
-export STARTTIME_UNGRIB_LBC="00:00:01"
-export STARTTIME_IC="00:00:01"
-export STARTTIME_LBC="00:00:01"
-export STARTTIME_IODA_BUFR="00:30:00"
-export STARTTIME_NONVAR_REFLOBS="00:30:00"
-export STARTTIME_NONVAR_BUFROBS="00:30:00"
-export STARTTIME_IODA_MRMS_REFL="00:30:00"
-export STARTTIME_JEDIVAR="00:30:00"
-export STARTTIME_FCST="00:02:00"
-export STARTTIME_MPASSIT="00:05:00"
-export STARTTIME_UPP="00:05:00"
-export STARTTIME_PREP_IC="00:01:00"
-export STARTTIME_PREP_LBC="00:03:00"
+export STARTTIME_UNGRIB_IC="00:05:00"
+export STARTTIME_UNGRIB_LBC="00:05:00"
+export STARTTIME_IC="00:10:00"
+export STARTTIME_LBC="00:10:00"
+export STARTTIME_IODA_BUFR="00:40:00"
+export STARTTIME_NONVAR_REFLOBS="00:40:00"
+export STARTTIME_NONVAR_BUFROBS="00:40:00"
+export STARTTIME_IODA_MRMS_REFL="00:40:00"
+export STARTTIME_JEDIVAR="00:40:00"
+export STARTTIME_FCST="00:10:00"
+export STARTTIME_MPASSIT="00:15:00"
+export STARTTIME_UPP="00:15:00"
+export STARTTIME_PREP_IC="01:30:00"
+export STARTTIME_PREP_LBC="00:15:00"
 export MORE_XML_ENTITIES=true
 export DO_CLEAN=true
 export USE_THE_LATEST_SATBIAS=false

@@ -15,8 +15,6 @@ def save_for_next(xmlFile, expdir, do_ensemble=False, do_spinup=False):
         'MPASOUT_INTERVAL': os.getenv('MPASOUT_INTERVAL', '1'),
         'CYC_INTERVAL': os.getenv('CYC_INTERVAL', '3'),
         'MPASOUT_TIMELEVELS': os.getenv('MPASOUT_TIMELEVELS', ''),
-        'MPASOUT_TIMELEVELS_MORE': os.getenv('MPASOUT_TIMELEVELS_MORE', ''),
-        'MPASOUT_TIMELEVELS_MORE_CYCS': os.getenv('MPASOUT_TIMELEVELS_MORE_CYCS', ''),
     }
 
     if do_ensemble:

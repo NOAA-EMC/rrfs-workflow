@@ -104,18 +104,19 @@ for index in "${mem_list[@]}"; do # loop through all the members
   if [[ "${DO_BLENDING^^}" == "FALSE" ]]; then
     for hr in ${SFC_UPDATE_CYCS:-"99"}; do
       shr=$(printf '%02d' $((10#$hr)) )
-      var_list="smois,snow,snowh,snowc,tslb"
       if [ "${cyc}" == "${shr}" ]; then
         source_file=""
         # look back ${NUM} cycles to find mpasout files for surface cycling
-        NUM=3
-        for (( ii=cyc_interval; ii<=$(( NUM*cyc_interval )); ii=ii+cyc_interval )); do
+    #    NUM=3
+    #    for (( ii=cyc_interval; ii<=$(( NUM*cyc_interval )); ii=ii+cyc_interval )); do
+        for ii in 3 15 27; do
           CDATEp=$(${NDATE} -${ii} "${CDATE}" )
           PDYii=${CDATEp:0:8}
           cycii=${CDATEp:8:2}
-          file_mpasout="${COMINsfc}/${RUN}.${PDYii}/${cycii}/fcst/${WGF}${memdir}/mpasout.${timestr}.nc"
+          file_mpasout="${COMINrrfs}/${RUN}.${PDYii}/${cycii}/fcst/${WGF}${memdir}/mpasout.${timestr}.nc"
           if [[ -s "${file_mpasout}" ]]; then
             source_file="${file_mpasout}"
+	    var_list="smois,snow,snowh,snowc,sst,canwat,tslb,skintemp,landmask,isltyp,ivgtyp,soilt1,sh2o"
             break
           fi
         done
@@ -129,6 +130,7 @@ for index in "${mem_list[@]}"; do # loop through all the members
             file_init="${COMINsfc}/${RUN}.${PDYii}/${cycii}/ic/${WGF}${memdir}/init.nc"
             if [[ -s "${file_init}" ]]; then
               source_file="${file_init}"
+	      var_list="smois,snow,snowh,snowc,sst,canwat,tslb,skintemp,landmask,isltyp,ivgtyp"
             fi
           fi
         fi
