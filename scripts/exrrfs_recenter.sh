@@ -23,7 +23,7 @@ if [[ -s "${UMBRELLA_PREP_IC_DATA}/mem001/init.nc" ]]; then
   varlist1="rho qv qc qr qi qs qg theta u tslb smois"
 else
   initial_file='mpasout.nc'
-  varlist1="pressure_p rho qv qc qr qi qs qg ni nr ng nc nifa nwfa volg surface_pressure theta smois sh2o snow snowh tslb q2 u uReconstructZonal uReconstructMeridional refl10cm w"
+  varlist1="pressure_p rho qv qc qr qi qs qg ni nr ng nc nifa nwfa volg surface_pressure theta smois sh2o tslb q2 u uReconstructZonal uReconstructMeridional refl10cm w"
 fi
 
 numvar1=$(wc -w <<< "${varlist1}")
