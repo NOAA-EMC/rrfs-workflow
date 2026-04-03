@@ -113,10 +113,10 @@ def setup_xml(HOMErrfs, expdir):
                     mpas_blend(xmlFile, expdir)
                 if os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
                     jedivar(xmlFile, expdir)
-                if os.getenv("DO_PYDAMONITOR", "FALSE").upper() == "TRUE":
-                    pyDAmonitor(xmlFile, expdir)
                 if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
                     nonvar_cldana(xmlFile, expdir)
+                if os.getenv("DO_PYDAMONITOR", "FALSE").upper() == "TRUE":
+                    pyDAmonitor(xmlFile, expdir)
                 fcst(xmlFile, expdir)
                 if os.getenv('DO_CYC', 'FALSE').upper() == "TRUE":
                     save_for_next(xmlFile, expdir)
