@@ -107,10 +107,8 @@ for index in "${mem_list[@]}"; do # loop through all the members
       if [ "${cyc}" == "${shr}" ]; then
         source_file=""
         # look back ${NUM} cycles to find mpasout files for surface cycling
-    #    NUM=3
-    #    for (( ii=cyc_interval; ii<=$(( NUM*cyc_interval )); ii=ii+cyc_interval )); do
-    # for RRFSv2x, we do surface update at 03Z and 12Z, using forecast files from 00Z or 12Z
-        for ii in 3 15 27; do
+        NUM=27
+        for (( ii=cyc_interval; ii<=$(( NUM*cyc_interval )); ii=ii+cyc_interval )); do
           CDATEp=$(${NDATE} -${ii} "${CDATE}" )
           PDYii=${CDATEp:0:8}
           cycii=${CDATEp:8:2}
