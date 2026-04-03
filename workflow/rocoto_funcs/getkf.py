@@ -15,6 +15,7 @@ def getkf(xmlFile, expdir, taskType):
     extrn_mdl_source = os.getenv('IC_EXTRN_MDL_NAME', 'IC_PREFIX_not_defined')
     physics_suite = os.getenv('PHYSICS_SUITE', 'PHYSICS_SUITE_not_defined')
     recenter_cycs = os.getenv('RECENTER_CYCS', '99')
+    analysis_variables = os.getenv('ANALYSIS_VARIABLES', '0')
     dcTaskEnv = {
         'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
         'PHYSICS_SUITE': f'{physics_suite}',
@@ -34,6 +35,8 @@ def getkf(xmlFile, expdir, taskType):
         task_id = "getkf_solver"
     elif taskType.upper() == "POST":
         task_id = "getkf_post"
+    if analysis_variables != '0':
+        dcTaskEnv['ANALYSIS_VARIABLES'] = analysis_variables
 
     dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
     # dependencies

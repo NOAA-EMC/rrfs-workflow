@@ -26,6 +26,7 @@ def jedivar(xmlFile, expdir, spinup_mode=0):
     ens_size = int(os.getenv('ENS_SIZE', '2'))
     ens_bec_look_back_hrs = int(os.getenv('ENS_BEC_LOOK_BACK_HRS', '3'))
     snudgetype = os.getenv('SNUDGETYPES', '')
+    analysis_variables = os.getenv('ANALYSIS_VARIABLES', '0')
     dcTaskEnv = {
         'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
         'PHYSICS_SUITE': f'{physics_suite}',
@@ -57,6 +58,8 @@ def jedivar(xmlFile, expdir, spinup_mode=0):
         dcTaskEnv['DO_SPINUP'] = 'TRUE'
     if len(snudgetype) >= 3:
         dcTaskEnv['SNUDGETYPES'] = snudgetype
+    if analysis_variables != '0':
+        dcTaskEnv['ANALYSIS_VARIABLES'] = analysis_variables
 
     dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
     # dependencies
