@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #
 import os
+import sys
 import stat
 from rocoto_funcs.base import header_begin, header_entities, header_end, \
     wflow_begin, wflow_log, wflow_cycledefs, wflow_end
@@ -12,6 +13,7 @@ from rocoto_funcs.ic import ic
 from rocoto_funcs.lbc import lbc
 from rocoto_funcs.prep_ic import prep_ic
 from rocoto_funcs.prep_lbc import prep_lbc
+from rocoto_funcs.mpas_blend import mpas_blend
 from rocoto_funcs.jedivar import jedivar
 from rocoto_funcs.fcst import fcst
 from rocoto_funcs.smart_ens_groups import smart_ens_groups
@@ -107,6 +109,8 @@ def setup_xml(HOMErrfs, expdir):
                     prep_lbc(xmlFile, expdir)
                 if do_chemistry == "TRUE":
                     prep_chem(xmlFile, expdir)
+                if os.getenv("DO_BLENDING", "FALSE").upper() == "TRUE":
+                    mpas_blend(xmlFile, expdir)
                 if os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
                     jedivar(xmlFile, expdir)
                 if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
@@ -119,6 +123,11 @@ def setup_xml(HOMErrfs, expdir):
                 for index, dcGrpInfo in enumerate(listPostGrpInfo):
                     mpassit(xmlFile, expdir, index, dcGrpInfo)
                     upp(xmlFile, expdir, index, dcGrpInfo)
+            if os.getenv("DO_GRAPHICS", 'FALSE').upper() == "TRUE":
+                graphics(xmlFile, expdir)
+                if not os.path.exists(f"{HOMErrfs}/workflow/sideload/pygraf"):
+                    print("  *** DO_GRAPHICS=true but pygraf not cloned yet!!! ***\n  run `tools/clone_pygraf.sh` first\n")
+                    sys.exit(1)
             if os.getenv("DO_HOFX", "FALSE").upper() == "TRUE":
                 hofx(xmlFile, expdir)
 
@@ -176,8 +185,6 @@ def setup_xml(HOMErrfs, expdir):
             clean(xmlFile, expdir)
         if os.getenv("DO_MISC", 'FALSE').upper() == "TRUE":
             misc(xmlFile, expdir)
-        if os.getenv("DO_GRAPHICS", 'FALSE').upper() == "TRUE":
-            graphics(xmlFile, expdir)
         #
         wflow_end(xmlFile)
 # ---------------------------------------------------------------------------

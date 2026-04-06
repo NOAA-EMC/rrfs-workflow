@@ -21,6 +21,8 @@ export DO_NONVAR_CLOUD_ANA=false
 export COLDSTART_CYCS_DO_DA=false
 export DO_CHEMISTRY=false
 export DO_CLEAN=true
+export DO_BLENDING=true
+export BLENDING_CYCS="00 12"    # cycle to blend large and small scale .e.g. GFS/MPAS forecast
 export HYB_WGT_ENS=0.0
 export HYB_WGT_STATIC=1.0
 export HYB_ENS_TYPE=1      # 1.rrfs; 2.interpolated GEFS/GDAS; 0.TBD on the fly (rrfs->GDAS->3DVAR)
@@ -69,6 +71,7 @@ export NODES_FCST="<nodes>40:ppn=40</nodes>"
 export NODES_MPASSIT="<nodes>4:ppn=20</nodes>"
 export NODES_UPP="<nodes>4:ppn=20</nodes>"
 export NODES_JEDIVAR="<nodes>80:ppn=10</nodes>"
+export NODES_MPAS_BLEND="<nodes>40:ppn=40</nodes>"
 #
 export WALLTIME_FCST="2:00:00"
 export WALLTIME_MPASSIT="2:00:00"
@@ -112,6 +115,7 @@ case ${MACHINE} in
     export NODES_MPASSIT="<nodes>1:ppn=160</nodes>"
     export NODES_UPP="<nodes>1:ppn=80</nodes>"
     export NODES_JEDIVAR="<nodes>20:ppn=40</nodes>"
+    export NODES_MPAS_BLEND="<nodes>10:ppn=160</nodes>"
     ;;
   "jet")
     export IC_EXTRN_MDL_BASEDIR="/lfs5/BMC/nrtrr/RRFS2_RETRO_DATA/May2024/GFS"
@@ -150,6 +154,7 @@ case ${MACHINE} in
     export NODES_MPASSIT="<nodes>1:ppn=160</nodes>"
     export NODES_UPP="<nodes>1:ppn=80</nodes>"
     export NODES_JEDIVAR="<nodes>20:ppn=40</nodes>"
+    export NODES_MPAS_BLEND="<nodes>10:ppn=160</nodes>"
     ;;
   "wcoss2")
     export IC_EXTRN_MDL_BASEDIR="/lfs/h2/emc/lam/noscrub/RRFS2_RETRO_DATA/May2024/GFS"

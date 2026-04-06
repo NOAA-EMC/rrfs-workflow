@@ -105,6 +105,14 @@ def jedivar(xmlFile, expdir, spinup_mode=0):
     else:
         prep_ic_dep = '<taskdep task="prep_ic"/>'
     # ~~~~
+
+    mpas_blend_dep = ""
+    if os.getenv("DO_BLENDING", "FALSE").upper() == "TRUE":
+        if do_spinup:
+            mpas_blend_dep = f'\n    <taskdep task="mpas_blend_spinup"/>'
+        else:
+            mpas_blend_dep = f'\n    <taskdep task="mpas_blend"/>'
+
     if os.getenv("DO_IODA", "FALSE").upper() == "TRUE":
         iodadep = '<taskdep task="ioda_bufr"/>'
     else:
@@ -113,7 +121,7 @@ def jedivar(xmlFile, expdir, spinup_mode=0):
     dependencies = f'''
   <dependency>
   <and>{timedep}
-    {prep_ic_dep}
+    {prep_ic_dep}{mpas_blend_dep}
     {iodadep}{ens_dep}
   </and>
   </dependency>'''

@@ -23,6 +23,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
         'COLDSTART_CYCS': f'{coldhrs}',
         'SFC_UPDATE_CYCS': f'{sfc_update_cycs}',
         'SFC_UPDATE_SOURCE_DIR': os.getenv('SFC_UPDATE_SOURCE_DIR'),
+        'DO_BLENDING': os.getenv('DO_BLENDING', 'FALSE'),
     }
     if spinup_mode != 0:
         dcTaskEnv['SPINUP_MODE'] = f'{spinup_mode}'

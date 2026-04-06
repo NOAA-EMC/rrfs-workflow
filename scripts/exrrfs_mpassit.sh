@@ -4,6 +4,7 @@ declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LI
 set -x
 
 cpreq=${cpreq:-cpreq}
+prefix=${EXTRN_MDL_SOURCE%_NCO} # remove the trailing '_NCO' if any
 cd "${DATA}"  || exit 1
 #
 #  copy excutable and fix files for this mesh
@@ -25,6 +26,9 @@ dx=${MPASSIT_DX:-12000.0}
 ref_lat=${MPASSIT_REF_LAT:-"39.0"}
 ref_lon=${MPASSIT_REF_LON:-"-97.5"}
 #
+zeta_levels=${EXPDIR}/config/ZETA_LEVELS.txt
+nlevel=$(wc -l < "${zeta_levels}")
+ln -snf "${FIXrrfs}/${MESH_NAME}/${MESH_NAME}.invariant.nc_L${nlevel}_${prefix}" ./invariant.nc
 #
 # find forecst length for this cycle
 #
