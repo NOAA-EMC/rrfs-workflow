@@ -167,7 +167,10 @@ case ${task_id} in
     source "${HOMErrfs}/workflow/sideload/pyDAmonitor/ush/load_pyDAmonitor.sh"
     "${HOMErrfs}/workflow/sideload/pyDAmonitor/ush/drive.sh"
     ;;
-  graphics|misc)
+  graphics)
+    set +x
+    source "${HOMErrfs}/workflow/tools/load_pygraf.sh"
+    set -x
     "${HOMErrfs}/workflow/sideload/${task_id}.sh"
     ;;
   *)
