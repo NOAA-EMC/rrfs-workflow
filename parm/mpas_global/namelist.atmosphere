@@ -16,11 +16,12 @@
     config_apvm_upwinding = 0.0
 /
 &damping
-    config_mpas_cam_coef             = 2.0
+    config_mpas_cam_coef             = 1.0
     config_rayleigh_damp_u           = true
-    config_zd                        = 16000.0
+    config_rayleigh_damp_u_timescale_days = 5.0
+    config_zd                        = 30000.0
     config_xnutr                     = 0.2
-    config_number_cam_damping_levels = 8
+    config_number_cam_damping_levels = 7
 /
 &limited_area
     config_apply_lbcs = false
@@ -55,11 +56,11 @@
     config_radtsw_interval = '00:${radt}:00'
     config_bucket_update = 'none'
     config_physics_suite = 'hrrrv5'
-    config_convection_scheme = 'cu_grell_freitas'
-    config_gfl_sub3d = 1
+    config_convection_scheme = 'cu_grell_freitas_li'
+    config_gfl_sub3d = 0
     config_gwdo_scheme = 'bl_ugwp_gwdo'
-    config_lsm_scheme    = 'sf_ruc'
-    num_soil_layers      = 9
+    config_lsm_scheme    = 'sf_noah'
+    num_soil_layers      = 4
     config_pbl_scheme = 'bl_mynnedmf'
     config_mynn_mixscalars = 0
     config_mynn_mixaerosols = 1
