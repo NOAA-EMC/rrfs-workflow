@@ -162,7 +162,10 @@ case ${task_id} in
       exit 0
     fi
     ;;
-  graphics|misc)
+  graphics)
+    set +x
+    source "${HOMErrfs}/workflow/tools/load_pygraf.sh"
+    set -x
     "${HOMErrfs}/workflow/sideload/${task_id}.sh"
     ;;
   *)
