@@ -302,7 +302,7 @@ if [[ "${SENDCOM}" = "YES" ]]; then
  if [ ${WGF} = "det" ]; then
    $DBNROOT/bin/dbn_alert MODEL RRFS_BUFR $job ${COMOUT}/rrfs.t${cyc}z.class1.bufr
 elif [ ${WGF} = "ensf" ]; then
-   $DBNROOT/bin/dbn_alert MODEL RRFS_BUFR $job ${COMOUT}/rrfs.m${ENSMEM_INDX}.t${cyc}z.class1.bufr
+   $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_BUFR $job ${COMOUT}/rrfs.m${ENSMEM_INDX}.t${cyc}z.class1.bufr
  fi
  fi
 
