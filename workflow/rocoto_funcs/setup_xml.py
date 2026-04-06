@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #
 import os
+import sys
 import stat
 from rocoto_funcs.base import header_begin, header_entities, header_end, \
     wflow_begin, wflow_log, wflow_cycledefs, wflow_end
@@ -122,6 +123,11 @@ def setup_xml(HOMErrfs, expdir):
                 for index, dcGrpInfo in enumerate(listPostGrpInfo):
                     mpassit(xmlFile, expdir, index, dcGrpInfo)
                     upp(xmlFile, expdir, index, dcGrpInfo)
+            if os.getenv("DO_GRAPHICS", 'FALSE').upper() == "TRUE":
+                graphics(xmlFile, expdir)
+                if not os.path.exists(f"{HOMErrfs}/workflow/sideload/pygraf"):
+                    print("  *** DO_GRAPHICS=true but pygraf not cloned yet!!! ***\n  run `tools/clone_pygraf.sh` first\n")
+                    sys.exit(1)
             if os.getenv("DO_HOFX", "FALSE").upper() == "TRUE":
                 hofx(xmlFile, expdir)
 
@@ -179,8 +185,6 @@ def setup_xml(HOMErrfs, expdir):
             clean(xmlFile, expdir)
         if os.getenv("DO_MISC", 'FALSE').upper() == "TRUE":
             misc(xmlFile, expdir)
-        if os.getenv("DO_GRAPHICS", 'FALSE').upper() == "TRUE":
-            graphics(xmlFile, expdir)
         #
         wflow_end(xmlFile)
 # ---------------------------------------------------------------------------
