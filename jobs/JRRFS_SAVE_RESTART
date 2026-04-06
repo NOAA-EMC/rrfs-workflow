@@ -68,7 +68,7 @@ export shared_forecast_output_data=${umbrella_forecast_data}/output
 export shared_forecast_restart_data=${umbrella_forecast_data}/RESTART
 
 export DATA=${DATA:-${DATAROOT}/${jobid}}
-mkdir -p ${DATA} ${SURFACE_DIR}/surface.${PDY}
+mkdir -p ${DATA}
 cd ${DATA}
 
 #-----------------------------------------------------------------------
@@ -94,6 +94,7 @@ fi
 
 export COMOUT=${COMOUT}/forecast
 mkdir -p ${COMOUT}/RESTART ${COMOUT}/INPUT
+mkdir -p ${SURFACE_DIR}/surface.${PDY}
 
 #-----------------------------------------------------------------------
 # Source the bash utility functions.
