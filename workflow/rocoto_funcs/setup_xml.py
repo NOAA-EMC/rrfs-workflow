@@ -34,6 +34,7 @@ from rocoto_funcs.clean import clean
 from rocoto_funcs.graphics import graphics
 from rocoto_funcs.misc import misc
 from rocoto_funcs.hofx import hofx
+from rocoto_funcs.pyDAmonitor import pyDAmonitor
 
 # setup_xml
 
@@ -115,6 +116,8 @@ def setup_xml(HOMErrfs, expdir):
                     jedivar(xmlFile, expdir)
                 if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
                     nonvar_cldana(xmlFile, expdir)
+                if os.getenv("DO_PYDAMONITOR", "FALSE").upper() == "TRUE":
+                    pyDAmonitor(xmlFile, expdir)
                 fcst(xmlFile, expdir)
                 if os.getenv('DO_CYC', 'FALSE').upper() == "TRUE":
                     save_for_next(xmlFile, expdir)
