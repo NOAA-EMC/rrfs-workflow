@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #
 import os
+import sys
 import stat
 from rocoto_funcs.base import header_begin, header_entities, header_end, \
     wflow_begin, wflow_log, wflow_cycledefs, wflow_end
@@ -33,6 +34,7 @@ from rocoto_funcs.clean import clean
 from rocoto_funcs.graphics import graphics
 from rocoto_funcs.misc import misc
 from rocoto_funcs.hofx import hofx
+from rocoto_funcs.pyDAmonitor import pyDAmonitor
 
 # setup_xml
 
@@ -114,6 +116,8 @@ def setup_xml(HOMErrfs, expdir):
                     jedivar(xmlFile, expdir)
                 if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
                     nonvar_cldana(xmlFile, expdir)
+                if os.getenv("DO_PYDAMONITOR", "FALSE").upper() == "TRUE":
+                    pyDAmonitor(xmlFile, expdir)
                 fcst(xmlFile, expdir)
                 if os.getenv('DO_CYC', 'FALSE').upper() == "TRUE":
                     save_for_next(xmlFile, expdir)
@@ -122,6 +126,11 @@ def setup_xml(HOMErrfs, expdir):
                 for index, dcGrpInfo in enumerate(listPostGrpInfo):
                     mpassit(xmlFile, expdir, index, dcGrpInfo)
                     upp(xmlFile, expdir, index, dcGrpInfo)
+            if os.getenv("DO_GRAPHICS", 'FALSE').upper() == "TRUE":
+                graphics(xmlFile, expdir)
+                if not os.path.exists(f"{HOMErrfs}/workflow/sideload/pygraf"):
+                    print("  *** DO_GRAPHICS=true but pygraf not cloned yet!!! ***\n  run `tools/clone_pygraf.sh` first\n")
+                    sys.exit(1)
             if os.getenv("DO_HOFX", "FALSE").upper() == "TRUE":
                 hofx(xmlFile, expdir)
 
@@ -179,8 +188,6 @@ def setup_xml(HOMErrfs, expdir):
             clean(xmlFile, expdir)
         if os.getenv("DO_MISC", 'FALSE').upper() == "TRUE":
             misc(xmlFile, expdir)
-        if os.getenv("DO_GRAPHICS", 'FALSE').upper() == "TRUE":
-            graphics(xmlFile, expdir)
         #
         wflow_end(xmlFile)
 # ---------------------------------------------------------------------------

@@ -117,9 +117,10 @@ export WALLTIME_UPP=${WALLTIME_UPP:-"00:50:00"}
 export NATIVE_UPP=${NATIVE_UPP:-""}
 
 # graphics
-export NODES_GRAPHICS="<nodes>1:ppn=20</nodes>"
-export WALLTIME_GRAPHICS="04:00:00"
-export NATIVE_GRAPHICS="--exclusive"
+export NODES_GRAPHICS=${NODES_GRAPHICS:-"<nodes>1:ppn=20</nodes>"}
+export WALLTIME_GRAPHICS=${WALLTIME_GRAPHICS:-"01:00:00"}
+export GRAPHICS_TILES=${GRAPHICS_TILES:-"full"}  # "full NE NC NW SE SC SW EastCO"
+export GRAPHICS_ZIP=${GRAPHICS_ZIP:-false}
 
 # clean
 export ACCOUNT_CLEAN=${ACCOUNT_CLEAN:-$ACCOUNT}
@@ -127,5 +128,3 @@ export QUEUE_CLEAN=${QUEUE_CLEAN:-$QUEUE}
 export PARTITION_CLEAN=${PARTITION_CLEAN:-$PARTITION}
 export RESERVATION_CLEAN=${RESERVATION_CLEAN:-""}
 export NODES_CLEAN="<nodes>1:ppn=1</nodes>"
-# misc
-export NODES_MISC="<nodes>1:ppn=1</nodes>"
