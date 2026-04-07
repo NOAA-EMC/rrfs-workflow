@@ -162,6 +162,11 @@ case ${task_id} in
       exit 0
     fi
     ;;
+  pydamonitor)
+    module purge
+    source "${HOMErrfs}/workflow/sideload/pyDAmonitor/ush/load_pyDAmonitor.sh"
+    "${HOMErrfs}/workflow/sideload/pyDAmonitor/ush/drive.sh"
+    ;;
   graphics)
     set +x
     source "${HOMErrfs}/workflow/tools/load_pygraf.sh"
