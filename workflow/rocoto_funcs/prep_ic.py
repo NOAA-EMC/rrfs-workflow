@@ -17,6 +17,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
     coldhrs = os.getenv('COLDSTART_CYCS', '03 15')
     cyc_interval = os.getenv('CYC_INTERVAL')
     sfc_update_cycs = os.getenv('SFC_UPDATE_CYCS', '99')
+    sfc_update_look_back_hrs = os.getenv('SFC_UPDATE_LOOK_BACK_HRS', cyc_interval)
 
     # Task-specific EnVars beyond the task_common_vars
     dcTaskEnv = {
@@ -76,6 +77,26 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
         datadep = datadep_spinup
     else:  # spinup_mode == -1, i.e. a prod cycle paralle to spinup cycles
         datadep = "whatever"  # dependencies will be rewritten near the end of this file
+    # sfc update dependencies
+    sfc_dep = ""
+    sfc_streqs = ""
+    if sfc_update_cycs != '99':
+        dcTaskEnv['SFC_UPDATE_LOOK_BACK_HRS'] = sfc_update_look_back_hrs
+        datadep_sfc = ""
+        for hr in sfc_update_cycs.split(' '):
+            hr = f"{hr:0>2}"
+            sfc_streqs = sfc_streqs + f"\n<streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>"
+        sfc_streqs = sfc_streqs.lstrip('\n')
+        for i in range(1, int(sfc_update_look_back_hrs) + 1, 1):
+            datadep_sfc = datadep_sfc + f'''\n      <datadep age="00:01:00"><cyclestr offset="-{i}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
+        sfc_dep = f'''
+    <and>
+    <or>
+{streqs}
+    </or>
+    <or>{datadep_sfc}
+    </or>
+    </and>'''
 
     #
     satbias_dep = ""
@@ -100,9 +121,13 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
     else:
         icdep = ""
     #
+    sfc_timedep = f'''
+   <or>{timedep}{sfc_dep}
+   </or>'''
+    #
     dependencies = f'''
   <dependency>
-  <and>{timedep}
+  <and>{sfc_timedep}
    <or>
     <and>
       <or>
