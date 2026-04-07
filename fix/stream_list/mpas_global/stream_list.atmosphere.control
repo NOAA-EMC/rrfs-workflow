@@ -1,10 +1,1 @@
-scalars
-spechum
-stream_function
-surface_pressure
-temperature
-uReconstructZonal
-uReconstructMeridional
-velocity_potential
-refl10cm
-w
+../hrrrv5/stream_list.atmosphere.control
