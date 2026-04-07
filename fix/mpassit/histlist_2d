@@ -7,7 +7,11 @@ snowfallac			SNOWFALLAC
 sst				SST
 hfx				HFX
 lh				LH
+rmol                            RMOL
+br                              BR
 sfc_albedo                      ALBEDO
+znt                             ZNT
+ust                             UST
 hpbl                            PBLH
 ivgtyp                          IVGTYP
 isltyp                          ISLTYP
