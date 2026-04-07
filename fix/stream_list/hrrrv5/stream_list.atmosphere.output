@@ -1,4 +1,7 @@
 scalars
+initial_time
+xtime
+Time
 zgrid
 w
 pressure
