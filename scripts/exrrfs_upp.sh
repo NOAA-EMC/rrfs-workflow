@@ -101,6 +101,8 @@ EOF
       ln -snf  "${COMOUT}/upp/${WGF}${MEMDIR}/${RUN}.t${cyc}z.natlev.f${fhr3}.${domain}grib2"  "${COMOUT}/upp/${WGF}${MEMDIR}/${PDY}.${RUN}.t${cyc}z.natlev.f${fhr3}.${domain}grib2"
       ln -snf  "${COMOUT}/upp/${WGF}${MEMDIR}/${RUN}.t${cyc}z.testbed.f${fhr3}.${domain}grib2"  "${COMOUT}/upp/${WGF}${MEMDIR}/${PDY}.${RUN}.t${cyc}z.testbed.f${fhr3}.${domain}grib2"
 
+      echo "done" > "${COMOUT}/upp/${WGF}${MEMDIR}/done.upp_${fhr2}"
+
     else
       echo "FATAL ERROR: cannot find mpass file at ${timestr}"
       err_exit

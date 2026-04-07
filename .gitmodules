@@ -39,3 +39,7 @@
 	path = sorc/MPASBlend
 	url = https://github.com/RRFSx/mpas_blending.git
         ignore = all
+[submodule "workflow/sideload/pyDAmonitor"]
+	path = workflow/sideload/pyDAmonitor
+	url = https://github.com/pyDAmonitor/pyDAmonitor.git
+        ignore = all
