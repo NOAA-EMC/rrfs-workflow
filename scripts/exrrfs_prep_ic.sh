@@ -196,7 +196,7 @@ if (( err != 0 )); then
   err_exit
 else
   echo "prep_ic completed successfully"
-  touch "${umbrella_prep_ic_mem}"/prep_ic_complete
+  touch "${umbrella_prep_ic_mem}"/prep_ic.done
 fi
 
 exit 0
