@@ -433,7 +433,7 @@ if [ -f PRSLEV.GrbF${post_fhr} ]; then
     exit
   fi
 
-  wgrib2 PRSLEV.GrbF${post_fhr} -set center 7 -grib ${prslev} >>$pgmout 2>>errfile
+  wgrib2 PRSLEV.GrbF${post_fhr} -set center 7 -not "UGRD:30 m above ground" -grib ${prslev} >>$pgmout 2>>errfile
 
   if [ $SUBH_GEN = 1 ]
   then
@@ -483,7 +483,7 @@ if [ $WGF = "det" ] || [ $WGF = "ensf" ]; then
   export pgm="rrfs_util_dpt2m_post.exe"
   . prep_step
 
-  $EXECrrfs/$pgm PRSLEV.GrbF${post_fhr} DPT2M.GrbF${post_fhr} >>$pgmout 2>errfile
+  $EXECrrfs/$pgm NATLEV.GrbF${post_fhr} DPT2M.GrbF${post_fhr} >>$pgmout 2>errfile
   export err=$?; err_chk
 
   cat NBMFLD.GrbF${post_fhr} DPT2M.GrbF${post_fhr} > NBMFLD_new.GrbF${post_fhr}
