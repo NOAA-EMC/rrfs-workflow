@@ -54,7 +54,9 @@ do
         fi
 
 # Copy output file to umbrella directory for post processing.  These individual files will then be combined into one file at forecast hour 72.
-        cpreq -p ${OUTPUTfile} ${umbrella_post_data}
-        echo "${OUTPUTfile} copied to umbrella data directory"
+        if [ -f ${OUTPUTfile} ]; then
+            cpreq -p ${OUTPUTfile} ${umbrella_post_data}
+            echo "${OUTPUTfile} copied to umbrella data directory"
+        fi
     done
 done
