@@ -241,13 +241,13 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
   done
 # Add 2dfld tasks to the parallel script
   mkdir -p $DATAprdgen/prdgen_conus_4
-  echo "$USHrrfs/prdgen/rrfs_prdgen_subpiece.sh $fhr $cyc 4 conus $fld2d ${DATAprdgen} ${DATA}" >> $DATAprdgen/poescript_${fhr}
+  echo "$USHrrfs/prdgen/rrfs_prdgen_subpiece.sh $fhr $cyc 4 conus $fld2d ${DATAprdgen} ${COMOUT}" >> $DATAprdgen/poescript_${fhr}
   mkdir -p $DATAprdgen/prdgen_ak_4
-  echo "$USHrrfs/prdgen/rrfs_prdgen_subpiece.sh $fhr $cyc 4 ak $fld2d ${DATAprdgen} ${DATA}" >> $DATAprdgen/poescript_${fhr}
+  echo "$USHrrfs/prdgen/rrfs_prdgen_subpiece.sh $fhr $cyc 4 ak $fld2d ${DATAprdgen} ${COMOUT}" >> $DATAprdgen/poescript_${fhr}
   mkdir -p $DATAprdgen/prdgen_hi_2
-  echo "$USHrrfs/prdgen/rrfs_prdgen_subpiece.sh $fhr $cyc 2 hi $fld2d ${DATAprdgen} ${DATA}" >> $DATAprdgen/poescript_${fhr}
+  echo "$USHrrfs/prdgen/rrfs_prdgen_subpiece.sh $fhr $cyc 2 hi $fld2d ${DATAprdgen} ${COMOUT}" >> $DATAprdgen/poescript_${fhr}
   mkdir -p $DATAprdgen/prdgen_pr_2
-  echo "$USHrrfs/prdgen/rrfs_prdgen_subpiece.sh $fhr $cyc 2 pr $fld2d ${DATAprdgen} ${DATA}" >> $DATAprdgen/poescript_${fhr}
+  echo "$USHrrfs/prdgen/rrfs_prdgen_subpiece.sh $fhr $cyc 2 pr $fld2d ${DATAprdgen} ${COMOUT}" >> $DATAprdgen/poescript_${fhr}
 
   chmod 775 $DATAprdgen/poescript_${fhr}
 
@@ -270,7 +270,7 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
       done
       if [[ $SENDCOM = 'YES' ]]; then
         cpreq ${DATAprdgen}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2 ${COMOUT}
-        wgrib2  ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
+        wgrib2 ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
       fi
     else
       for task in $(seq ${tasks[count]})
@@ -301,12 +301,12 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
     outspacing="2p5km"
     if [ ${DO_ENSFCST} = "TRUE" ]; then
       if [[ $SENDCOM = 'YES' ]]; then
-        cpreq ${DATAprdgen}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2 ${COMOUT}
-        wgrib2  ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
+        cpreq ${DATAprdgen}/prdgen_${domain}_1/${domain}_1.grib2 ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2
+        wgrib2 ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
       fi
     else
       if [[ $SENDCOM = 'YES' ]]; then
-        cpreq ${DATAprdgen}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2 ${COMOUT}
+        cpreq ${DATAprdgen}/prdgen_${domain}_1/${domain}_1.grib2 ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2
         wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
       fi
       if [[ ${SENDDBN} = "YES" ]] ; then
@@ -334,12 +334,12 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
 
     if [ ${DO_ENSFCST} = "TRUE" ]; then
       if [[ $SENDCOM = 'YES' ]]; then
-        cpreq ${DATAprdgen}/rrfs.t${cyc}z.${mem_num}.2dfld.${outspacing}.f${fhr}.${domain}.grib2 ${COMOUT}
-        wgrib2  ${COMOUT}/rrfs.t${cyc}z.${mem_num}.2dfld.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.${mem_num}.2dfld.${outspacing}.f${fhr}.${domain}.grib2.idx
+        cpreq ${DATAprdgen}/prdgen_${domain}_${task}/${domain}_${task}.grib2 ${COMOUT}/rrfs.t${cyc}z.${mem_num}.2dfld.${outspacing}.f${fhr}.${domain}.grib2
+        wgrib2 ${COMOUT}/rrfs.t${cyc}z.${mem_num}.2dfld.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.${mem_num}.2dfld.${outspacing}.f${fhr}.${domain}.grib2.idx
       fi
     else
       if [[ $SENDCOM = 'YES' ]]; then
-        cpreq ${DATAprdgen}/rrfs.t${cyc}z.2dfld.${outspacing}.f${fhr}.${domain}.grib2 ${COMOUT}
+        cpreq ${DATAprdgen}/prdgen_${domain}_${task}/${domain}_${task}.grib2 ${COMOUT}/rrfs.t${cyc}z.2dfld.${outspacing}.f${fhr}.${domain}.grib2
         wgrib2 ${COMOUT}/rrfs.t${cyc}z.2dfld.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.2dfld.${outspacing}.f${fhr}.${domain}.grib2.idx
       fi
       if [[ ${SENDDBN} = "YES" ]] ; then
