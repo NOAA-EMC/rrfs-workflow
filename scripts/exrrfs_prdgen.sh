@@ -241,13 +241,13 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
   done
 # Add 2dfld tasks to the parallel script
   mkdir -p $DATAprdgen/prdgen_conus_4
-  echo "$DATA/rrfs_prdgen_subpiece.sh $fhr $cyc 4 conus $fld2d ${DATAprdgen} ${DATA}" >> $DATAprdgen/poescript_${fhr}
+  echo "$USHrrfs/prdgen/rrfs_prdgen_subpiece.sh $fhr $cyc 4 conus $fld2d ${DATAprdgen} ${DATA}" >> $DATAprdgen/poescript_${fhr}
   mkdir -p $DATAprdgen/prdgen_ak_4
-  echo "$DATA/rrfs_prdgen_subpiece.sh $fhr $cyc 4 ak $fld2d ${DATAprdgen} ${DATA}" >> $DATAprdgen/poescript_${fhr}
+  echo "$USHrrfs/prdgen/rrfs_prdgen_subpiece.sh $fhr $cyc 4 ak $fld2d ${DATAprdgen} ${DATA}" >> $DATAprdgen/poescript_${fhr}
   mkdir -p $DATAprdgen/prdgen_hi_2
-  echo "$DATA/rrfs_prdgen_subpiece.sh $fhr $cyc 2 hi $fld2d ${DATAprdgen} ${DATA}" >> $DATAprdgen/poescript_${fhr}
+  echo "$USHrrfs/prdgen/rrfs_prdgen_subpiece.sh $fhr $cyc 2 hi $fld2d ${DATAprdgen} ${DATA}" >> $DATAprdgen/poescript_${fhr}
   mkdir -p $DATAprdgen/prdgen_pr_2
-  echo "$DATA/rrfs_prdgen_subpiece.sh $fhr $cyc 2 pr $fld2d ${DATAprdgen} ${DATA}" >> $DATAprdgen/poescript_${fhr}
+  echo "$USHrrfs/prdgen/rrfs_prdgen_subpiece.sh $fhr $cyc 2 pr $fld2d ${DATAprdgen} ${DATA}" >> $DATAprdgen/poescript_${fhr}
 
   chmod 775 $DATAprdgen/poescript_${fhr}
 
