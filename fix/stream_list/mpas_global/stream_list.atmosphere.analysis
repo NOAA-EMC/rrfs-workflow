@@ -1,10 +1,1 @@
-pressure_p
-rho
-scalars
-surface_pressure
-theta
-u
-uReconstructZonal
-uReconstructMeridional
-refl10cm
-w
+../hrrrv5/stream_list.atmosphere.analysis

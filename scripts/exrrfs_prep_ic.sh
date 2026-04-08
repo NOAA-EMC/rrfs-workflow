@@ -104,21 +104,19 @@ for index in "${mem_list[@]}"; do # loop through all the members
   if [[ "${DO_BLENDING^^}" == "FALSE" ]]; then
     for hr in ${SFC_UPDATE_CYCS:-"99"}; do
       shr=$(printf '%02d' $((10#$hr)) )
-      var_list="smois,snow,snowh,snowc,tslb"
       if [ "${cyc}" == "${shr}" ]; then
         source_file=""
         # look back ${NUM} cycles to find mpasout files for surface cycling
-        NUM=3
+        NUM=27
         for (( ii=cyc_interval; ii<=$(( NUM*cyc_interval )); ii=ii+cyc_interval )); do
           CDATEp=$(${NDATE} -${ii} "${CDATE}" )
           PDYii=${CDATEp:0:8}
           cycii=${CDATEp:8:2}
-          file_mpasout="${COMINsfc}/${RUN}.${PDYii}/${cycii}/fcst/${WGF}${memdir}/mpasout.${timestr}.nc"
+          file_mpasout="${COMINrrfs}/${RUN}.${PDYii}/${cycii}/fcst/${WGF}${memdir}/mpasout.${timestr}.nc"
           if [[ -s "${file_mpasout}" ]]; then
             source_file="${file_mpasout}"
+	    var_list="smois,snow,snowh,snowc,sst,canwat,tslb,skintemp,landmask,isltyp,ivgtyp,soilt1,sh2o"
             break
-	  else
-            echo "SFC_UPDATE: cannot find source file for sfc state: ${file_mpasout}"
           fi
         done
         # if no mpasout files, use init.nc from another run
@@ -131,8 +129,7 @@ for index in "${mem_list[@]}"; do # loop through all the members
             file_init="${COMINsfc}/${RUN}.${PDYii}/${cycii}/ic/${WGF}${memdir}/init.nc"
             if [[ -s "${file_init}" ]]; then
               source_file="${file_init}"
-	    else
-              echo "SFC_UPDATE: cannot find source file for sfc state: ${file_init}"
+	      var_list="smois,snow,snowh,snowc,sst,canwat,tslb,skintemp,landmask,isltyp,ivgtyp"
             fi
           fi
         fi
@@ -199,6 +196,7 @@ if (( err != 0 )); then
   err_exit
 else
   echo "prep_ic completed successfully"
+  touch "${umbrella_prep_ic_mem}"/prep_ic.done
 fi
 
 exit 0

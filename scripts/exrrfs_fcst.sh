@@ -45,7 +45,7 @@ ${cpreq} "${FIXrrfs}/stream_list/${PHYSICS_SUITE}"/* stream_list/
 
 # generate the namelist on the fly
 # do_restart already defined in the above
-start_time=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H:%M:%S) 
+start_time=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H:%M:%S)
 run_duration=${fcst_len_hrs_thiscyc:-1}:00:00
 physics_suite=${PHYSICS_SUITE:-'mesoscale_reference'}
 jedi_da="true" #true
@@ -66,7 +66,7 @@ fi
 lbc_interval=${LBC_INTERVAL:-3}
 restart_interval=${RESTART_INTERVAL:-none}
 history_interval=${HISTORY_INTERVAL:-1}
-diag_interval=${HISTORY_INTERVAL:-1}
+diag_interval=${DIAG_INTERVAL:-${HISTORY_INTERVAL:-1}}
 mpasout_interval=${MPASOUT_INTERVAL:-1}
 [[ ${restart_interval} =~ ^[0-9]+$ ]] && restart_interval="${restart_interval}:00:00"
 [[ ${history_interval} =~ ^[0-9]+$ ]] && history_interval="${history_interval}:00:00"
@@ -99,6 +99,15 @@ if [[ "${history_interval,,}" != "none" ]]; then
     if [[ "${DO_SPINUP:-FALSE}" != "TRUE" ]];  then
       ln -snf "${UMBRELLA_FCST_DATA}/history.${timestr}.nc" "${DATA}/"
       ln -snf "${UMBRELLA_FCST_DATA}/history.${timestr}.nc.done" "${DATA}/"
+    fi
+  done
+fi
+if [[ "${diag_interval,,}" != "none" ]]; then
+  diag_all=$(seq 0 $((10#${diag_interval%%:*})) $((10#${fcst_len_hrs_thiscyc} )) )
+  for fhr in ${diag_all}; do
+    CDATEp=$( ${NDATE} "${fhr}" "${CDATE}" )
+    timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
+    if [[ "${DO_SPINUP:-FALSE}" != "TRUE" ]];  then
       ln -snf "${UMBRELLA_FCST_DATA}/diag.${timestr}.nc" "${DATA}/"
       ln -snf "${UMBRELLA_FCST_DATA}/diag.${timestr}.nc.done" "${DATA}/"
     fi

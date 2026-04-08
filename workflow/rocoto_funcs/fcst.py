@@ -19,6 +19,7 @@ def fcst(xmlFile, expdir, do_ensemble=False, dcEnsGrpInfo=None, do_spinup=False)
     fcst_len_hrs_cycles = os.getenv('FCST_LEN_HRS_CYCLES', '03 03')
     lbc_interval = os.getenv('LBC_INTERVAL', '3')
     history_interval = os.getenv('HISTORY_INTERVAL', '1')
+    diag_interval = os.getenv('DIAG_INTERVAL', '1')
     restart_interval = os.getenv('RESTART_INTERVAL', 'none')
     physics_suite = os.getenv('PHYSICS_SUITE', 'PHYSICS_SUITE_not_defined')
     coldhrs = os.getenv('COLDSTART_CYCS', '03 15')
@@ -28,6 +29,7 @@ def fcst(xmlFile, expdir, do_ensemble=False, dcEnsGrpInfo=None, do_spinup=False)
         'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
         'LBC_INTERVAL': f'{lbc_interval}',
         'HISTORY_INTERVAL': f'{history_interval}',
+        'DIAG_INTERVAL': f'{diag_interval}',
         'RESTART_INTERVAL': f'{restart_interval}',
         'MPASOUT_INTERVAL': os.getenv('MPASOUT_INTERVAL', '1'),
         'MPASOUT_TIMELEVELS': os.getenv('MPASOUT_TIMELEVELS', ''),
