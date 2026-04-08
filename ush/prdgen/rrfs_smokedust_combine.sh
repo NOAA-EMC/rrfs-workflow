@@ -40,7 +40,7 @@ done
 for type in sfc pbl
 do
     export OUTPUTfile=rrfs.t${cyc}z.dust.${type}.1hr_227.grib2
-    cat ${umbrella_post_data}/rrfs.t${cyc}z.dust.${type}.f0*.${grid}.grib2 > ${OUTPUTfile}
+    cat ${umbrella_post_data}/rrfs.t${cyc}z.dust.${type}.f0*.227.grib2 > ${OUTPUTfile}
 
 
     if [[ $SENDCOM = "YES" ]] ; then
