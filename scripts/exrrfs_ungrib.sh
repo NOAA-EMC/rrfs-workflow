@@ -47,14 +47,7 @@ for fhr in  ${fhr_all}; do
   TARGET_FILE=${FILENAME_PATTERN/^HHH^/${HHH}}
   TARGET_FILE=${TARGET_FILE/^HH^/${HH}}
   GRIBFILE="${SOURCE_BASEDIR}/${TARGET_FILE}"
-  if [[ "${prefix}" == *RRFS*  ]]; then
-    if [[ -s "${GRIBFILE}" ]]; then
-      source "${USHrrfs}"/ungrib_rrfs.sh # prepare "${GRIBFILE_LOCAL}"
-    else
-      echo "FATAL ERROR: ${GRIBFILE} missing"
-      err_exit
-    fi
-  elif [[ -s "${GRIBFILE}" ]]; then
+  if [[ -s "${GRIBFILE}" ]]; then
     ${cpreq} "${GRIBFILE}"  "${GRIBFILE_LOCAL}"
     # if FILENAME_PATTERN_B is defined and non-empty
     if [ -n "${FILENAME_PATTERN_B+x}" ] && [ -n "${FILENAME_PATTERN_B}" ]; then
