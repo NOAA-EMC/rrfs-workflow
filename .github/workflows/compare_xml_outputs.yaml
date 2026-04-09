@@ -40,7 +40,7 @@ jobs:
         run: |
           mkdir -p base_branch/tests
           cd base_branch/tests
-          cp pr_branch/tests/generate_xml_files.sh .
+          cp ../../pr_branch/tests/generate_xml_files.sh .
           ./generate_xml_files.sh
 
       - name: Run tests in PR branch
