@@ -433,13 +433,15 @@ if [ -f PRSLEV.GrbF${post_fhr} ]; then
     exit
   fi
 
-  wgrib2 PRSLEV.GrbF${post_fhr} -set center 7 -not "UGRD:30 m above ground" -grib ${prslev} >>$pgmout 2>>errfile
+  wgrib2 2DFLD.GrbF${post_fhr} -set center 7 -grib ${fld2d} >>$pgmout 2>>errfile
 
   if [ $SUBH_GEN = 1 ]
   then
-    prslev_subh_combo=${DATA}/${net4}.t${cyc}z.prslev.${gridspacing}.subh.f${fhr}.${gridname}.grib2
-    prslev_subh=${DATA}/PRSLEV.GrbF${fhr}.00
-    wgrib2 ${prslev} -not_if 'ave fcst' | grep -F -f ${FIX_UPP}/subh_fields.txt | wgrib2 -i -grib ${prslev_subh}  ${prslev}
+    fld2d_subh_combo=${DATA}/${net4}.t${cyc}z.2dfld.${gridspacing}.subh.f${fhr}.${gridname}.grib2
+    fld2d_subh=${DATA}/PRSLEV.GrbF${fhr}.00
+
+    wgrib2 ${fld2d} -not_if 'ave fcst' | grep -F -f ${FIX_UPP}/subh_fields.txt | wgrib2 -i -grib ${fld2d_subh}  ${fld2d}
+
 
     fhrm1tmp="$((10#$fhr-1))"
     fhrm1=`printf "%02d\n" $fhrm1tmp`
@@ -467,12 +469,12 @@ if [ -f PRSLEV.GrbF${post_fhr} ]; then
       fi
     done
 
-    if [ -e $prslev_subh -a -e $tm15 -a -e $tm30 -a -e $tm45 ]
+    if [ -e $fld2d_subh -a -e $tm15 -a -e $tm30 -a -e $tm45 ]
     then
-      cat $tm45 $tm30 $tm15 $prslev_subh > PRSLEV.GrbF${fhr}_subh
-      wgrib2 PRSLEV.GrbF${fhr}_subh -set center 7 -grib $prslev_subh_combo >> $pgmout 2>> errfile
+      cat $tm45 $tm30 $tm15 $fld2d_subh > FLD2D.GrbF${fhr}_subh
+      wgrib2 FLD2D.GrbF${fhr}_subh -set center 7 -grib $fld2d_subh_combo >> $pgmout 2>> errfile
     else
-      msg="FATAL ERROR: ABORTING due to missing 15 minute UPP output $prslev_subh $tm15 $tm30 $tm45"
+      msg="FATAL ERROR: ABORTING due to missing 15 minute UPP output $fld2d_subh $tm15 $tm30 $tm45"
       err_exit $msg
     fi 
   fi # SUB_GEN=1 test
@@ -493,8 +495,8 @@ if [ -f NATLEV.GrbF${post_fhr} ]; then
   wgrib2 NATLEV.GrbF${post_fhr} -set center 7 -grib ${natlev} >>$pgmout 2>>errfile
 fi
 
-if [ -f 2DFLD.GrbF${post_fhr} ]; then
-  wgrib2 2DFLD.GrbF${post_fhr} -set center 7 -grib ${fld2d} >>$pgmout 2>>errfile
+if [ -f PRSLEV.GrbF${post_fhr} ]; then
+  wgrib2 PRSLEV.GrbF${post_fhr} -set center 7 -not "UGRD:30 m above ground" -grib ${prslev} >>$pgmout 2>>errfile
 fi
 
 if [ -f NBMFLD_new.GrbF${post_fhr} ]; then
@@ -529,7 +531,7 @@ if [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
   cpreq -p latlons_corners.txt.f${fhr} ${COMOUT}
 fi
 if [ ${SUBH_GEN} = 1 ]; then
-  cpreq -p ${prslev_subh_combo} ${COMOUT}
+  cpreq -p ${fld2d_subh_combo} ${COMOUT}
 fi
 
 fi #SENDCOM
