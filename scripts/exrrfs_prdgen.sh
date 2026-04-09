@@ -433,7 +433,7 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
         $USHrrfs/prdgen/rrfs_smokedust.sh $fhr 196
       fi
   #-- Files from forecast hours 0-72 are combined into one file
-      if (( 10#$fhr = 72 )); then
+      if (( 10#$fhr == 72 )); then
         $USHrrfs/prdgen/rrfs_smokedust_combine.sh
       fi
     fi
