@@ -39,6 +39,7 @@ jobs:
       - name: Run tests in base branch
         run: |
           cd base_branch/tests
+          cp pr_branch/tests/generate_xml_files.sh .
           ./generate_xml_files.sh
 
       - name: Run tests in PR branch
