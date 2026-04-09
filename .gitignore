@@ -22,3 +22,5 @@ fix/ea5km
 fix/global-15-3km
 fix/eu12km
 pygraf
+tests/xml
+workflow/OPSROOT
