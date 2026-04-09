@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import textwrap
 from rocoto_funcs.base import xml_task, get_cascade_env
 
 # begin of fcst --------------------------------------------------------
@@ -80,22 +81,28 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
     # sfc update dependencies
     sfc_dep = ""
     sfc_streqs = ""
+    sfc_strneqs = ""
     if sfc_update_cycs != '99':
         dcTaskEnv['SFC_UPDATE_LOOK_BACK_HRS'] = sfc_update_look_back_hrs
         datadep_sfc = ""
         for hr in sfc_update_cycs.split(' '):
             hr = f"{hr:0>2}"
             sfc_streqs = sfc_streqs + f"\n<streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>"
-        sfc_streqs = sfc_streqs.lstrip('\n')
+            sfc_strneqs = sfc_strneqs + f"\n<strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
+        sfc_streqs = textwrap.indent(sfc_streqs.lstrip('\n'), '        ')
+        sfc_strneqs = textwrap.indent(sfc_strneqs.lstrip('\n'), '      ')
         for i in range(1, int(sfc_update_look_back_hrs) + 1, 1):
-            datadep_sfc = datadep_sfc + f'''\n      <datadep age="00:01:00"><cyclestr offset="-{i}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
+            datadep_sfc = datadep_sfc + f'''\n        <datadep age="00:01:00"><cyclestr offset="-{i}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
         sfc_dep = f'''
     <and>
-    <or>
-{streqs}
-    </or>
-    <or>{datadep_sfc}
-    </or>
+      <or>
+{sfc_streqs}
+      </or>
+      <or>{datadep_sfc}
+      </or>
+    </and>
+    <and>
+{sfc_strneqs}
     </and>'''
 
     #
@@ -112,7 +119,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
     realtime = os.getenv("REALTIME", "false")
     if realtime.upper() == "TRUE":
         starttime = get_cascade_env(f"STARTTIME_{task_id}".upper())
-        timedep = f'\n   <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
+        timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
     if os.getenv('DO_IC_LBC', 'TRUE').upper() == "TRUE":
         if do_ensemble:
             icdep = f'\n      <metataskdep metatask="ic"/>'
@@ -121,13 +128,16 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
     else:
         icdep = ""
     #
-    sfc_timedep = f'''
+    if timedep == '' and sfc_dep == '':
+        sfc_time_dep = ''
+    else:
+        sfc_time_dep = f'''
    <or>{timedep}{sfc_dep}
    </or>'''
     #
     dependencies = f'''
   <dependency>
-  <and>{sfc_timedep}
+  <and>{sfc_time_dep}
    <or>
     <and>
       <or>
