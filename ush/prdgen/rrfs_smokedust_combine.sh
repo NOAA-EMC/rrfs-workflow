@@ -22,6 +22,28 @@ do
     for type in sfc pbl
     do    
         export OUTPUTfile=rrfs.t${cyc}z.smoke.${type}.1hr_${grid}.grib2
+
+# Safety check to ensure all individual smoke files are available
+# There should be 73 individual files (forecast hours 0-72)
+        looplim=30
+        loop=1
+        while [ $loop -le $looplim ]
+        do
+          numfiles=$(find ${umbrella_post_data}/rrfs.t${cyc}z.smoke.${type}.f0*.${grid}.grib2 | wc -l)
+          if [ $numfiles -eq 73 ]
+          then
+            break
+          else
+            loop=$((loop+1))
+            sleep 20
+          fi
+          if [ $loop -ge $looplim ]
+          then
+            msg="FATAL ERROR: ABORTING after 10 minutes of waiting for RRFS smoke output"
+            err_exit $msg
+          fi
+        done
+
         cat ${umbrella_post_data}/rrfs.t${cyc}z.smoke.${type}.f0*.${grid}.grib2 > ${OUTPUTfile}
 
         if [[ $SENDCOM = "YES" ]] ; then
@@ -40,6 +62,35 @@ done
 for type in sfc pbl
 do
     export OUTPUTfile=rrfs.t${cyc}z.dust.${type}.1hr_227.grib2
+
+# Safety check to ensure all individual dust files are available
+# There should be 72 individual sfc files (forecast hours 1-72)
+# There should be 73 individual pbl files (forecast hours 0-72)
+    if [ ${type} = "sfc" ]; then
+      files=72
+    elif [ ${type} = "pbl" ]; then
+      files=73
+    fi
+
+    looplim=30
+    loop=1
+    while [ $loop -le $looplim ]
+    do
+      numfiles=$(find ${umbrella_post_data}/rrfs.t${cyc}z.dust.${type}.f0*.227.grib2 | wc -l)
+      if [ $numfiles -eq $files ]
+      then
+        break
+      else
+        loop=$((loop+1))
+        sleep 20
+      fi
+      if [ $loop -ge $looplim ]
+      then
+        msg="FATAL ERROR: ABORTING after 10 minutes of waiting for RRFS dust output"
+        err_exit $msg
+      fi
+    done
+
     cat ${umbrella_post_data}/rrfs.t${cyc}z.dust.${type}.f0*.227.grib2 > ${OUTPUTfile}
 
 
