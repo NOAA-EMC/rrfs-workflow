@@ -174,7 +174,7 @@ else
   natlev=${net4}.t${cyc}z.natlev.${gridspacing}.f${fhr}.${gridname}.grib2
   fld2d=${net4}.t${cyc}z.2dfld.${gridspacing}.f${fhr}.${gridname}.grib2
   testbed=${net4}.t${cyc}z.testbed.${gridspacing}.f${fhr}.${gridname}.grib2
-  prslev_subh=${net4}.t${cyc}z.prslev.${gridspacing}.subh.f${fhr}.${gridname}.grib2
+  fld2d_subh=${net4}.t${cyc}z.2dfld.${gridspacing}.subh.f${fhr}.${gridname}.grib2
 fi
 
 # extract the output fields for the testbed files
@@ -200,8 +200,8 @@ if [ -s ${COMOUT}/${testbed} ]; then
   wgrib2 ${COMOUT}/${testbed} -s > ${COMOUT}/${testbed}.idx
 fi
 
-if [ "${DO_ENSFCST}" != "TRUE" ] && [ ${fhr} != '000' ] && [ -e $COMOUT/${prslev_subh} ]; then
-  wgrib2 ${COMOUT}/${prslev_subh} -s > ${COMOUT}/${prslev_subh}.idx
+if [ "${DO_ENSFCST}" != "TRUE" ] && [ ${fhr} != '000' ] && [ -e $COMOUT/${fld2d_subh} ]; then
+  wgrib2 ${COMOUT}/${fld2d_subh} -s > ${COMOUT}/${fld2d_subh}.idx
 fi
 
 #  Generate products
@@ -354,7 +354,7 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
   done
 
   # create subhourly files for CONUS, Alaska, Hawaii, Puerto Rico grids
-  if [ "${DO_ENSFCST}" != "TRUE" ] && [ ${fhr} != '000' ] && [ -e $COMOUT/${prslev_subh} ]; then
+  if [ "${DO_ENSFCST}" != "TRUE" ] && [ ${fhr} != '000' ] && [ -e $COMOUT/${fld2d_subh} ]; then
     for domain in ${domains[@]}
     do
 
@@ -363,7 +363,7 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
      then
       outspacing="2p5km"
     fi
-      prslev_subh_dom=${net4}.t${cyc}z.prslev.${outspacing}.subh.f${fhr}.${domain}.grib2
+      fld2d_subh_dom=${net4}.t${cyc}z.2dfld.${outspacing}.subh.f${fhr}.${domain}.grib2
       if [ $domain == "conus" ]; then
         # 3-km Lambert Conformal CONUS domain
         gridspecs="lambert:262.5:38.5:38.5 237.280472:1799:3000 21.138123:1059:3000"
@@ -380,19 +380,19 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
 
       if [[ $SENDCOM = 'YES' ]]; then
         
-        wgrib2 ${COMOUT}/${prslev_subh} -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv inputs.grib${domain}.uv
+        wgrib2 ${COMOUT}/${fld2d_subh} -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv inputs.grib${domain}.uv
         wgrib2 inputs.grib${domain}.uv -set_bitmap 1 -set_grib_type c3 \
           -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
           -new_grid_interpolation neighbor \
           -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
-          -new_grid ${gridspecs} ${COMOUT}/${prslev_subh_dom}
-        wgrib2 ${COMOUT}/${prslev_subh_dom} -s > ${COMOUT}/${prslev_subh_dom}.idx
+          -new_grid ${gridspecs} ${COMOUT}/${fld2d_subh_dom}
+        wgrib2 ${COMOUT}/${fld2d_subh_dom} -s > ${COMOUT}/${fld2d_subh_dom}.idx
 
 	if [[ $SENDDBN = 'YES' ]]; then
              $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBH $job \
-                  ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.subh.f${fhr}.${domain}.grib2
+                  ${COMOUT}/rrfs.t${cyc}z.2dfld.${outspacing}.subh.f${fhr}.${domain}.grib2
              $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBH_IDX $job \
-                  ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.subh.f${fhr}.${domain}.grib2.idx
+                  ${COMOUT}/rrfs.t${cyc}z.2dfld.${outspacing}.subh.f${fhr}.${domain}.grib2.idx
 	fi
       fi
     done
