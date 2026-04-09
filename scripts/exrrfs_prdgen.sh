@@ -465,19 +465,41 @@ EOF
   export err=$?; err_chk
 
   grid_specs_firewx=`head $DATA/copygb_gridnavfw.txt`
+
   eval infile=${COMOUT}/${net4}.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx.grib2
+
+# process firewx prslev file
 
   wgrib2 ${infile} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
    -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" \
    -new_grid_interpolation neighbor \
    -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
    -new_grid ${grid_specs_firewx} ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2
+
   wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2.idx
+
+# process firewx 2dfld file
+
+  eval infile2d=${COMOUT}/${net4}.t${cyc}z.2dfld.${gridspacing}.f${fhr}.firewx.grib2
+
+  wgrib2 ${infile2d} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
+   -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" \
+   -new_grid_interpolation neighbor \
+   -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
+   -new_grid ${grid_specs_firewx} ${COMOUT}/rrfs.t${cyc}z.2dfld.${gridspacing}.f${fhr}.firewx_lcc.grib2
+
+  wgrib2 ${COMOUT}/rrfs.t${cyc}z.2dfld.${gridspacing}.f${fhr}.firewx_lcc.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.2dfld.${gridspacing}.f${fhr}.firewx_lcc.grib2.idx
+
+
   if [[ ${SENDDBN} = "YES" ]] ; then
              $DBNROOT/bin/dbn_alert MODEL RRFS_DET_FIREWX $job \
                   ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2
              $DBNROOT/bin/dbn_alert MODEL RRFS_DET_FIREWX_IDX $job \
                   ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2.idx
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_FIREWX $job \
+                  ${COMOUT}/rrfs.t${cyc}z.2dfld.${gridspacing}.f${fhr}.firewx_lcc.grib2
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_FIREWX_IDX $job \
+                  ${COMOUT}/rrfs.t${cyc}z.2dfld.${gridspacing}.f${fhr}.firewx_lcc.grib2.idx
   fi
 
 
