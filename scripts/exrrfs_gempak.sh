@@ -53,7 +53,7 @@ cpreq ${GEMPAK_FIX}/rrfs_wmogrib2.tbl wmogrib2.tbl
 cpreq ${GEMPAK_FIX}/rrfs_vcrdgrib1.tbl vcrdgrib1.tbl
 
 cd $DATA
-export GRIB=prslev
+export GRIB=2dfld
 export type=rrfs_conus_subh
 echo "$USHrrfs/prdgen_gempak.sh $type $GRIB $FHR" >> $DATA/poescript
 fi
