@@ -42,14 +42,14 @@ jobs:
 
       - name: Run RRFS Code Norm Linting
         run: |
-          python3 workflow/tools/linter_rrfs_code_norm_check.py \
+          python3 workflow/tools/linter_rrfs_code_norms.py \
             jobs/ scripts/ ush/ || true
-          python3 workflow/tools/linter_rrfs_code_norm_check.py \
+          python3 workflow/tools/linter_rrfs_code_norms.py \
             --format sarif jobs/ scripts/ ush/ \
             > rrfs_code_norm_results.sarif; echo "RRFS_LINT_RC=$?" >> "$GITHUB_ENV"
 
       - name: Upload SARIF results
-        if: always()
+        if: hashFiles('rrfs_code_norm_results.sarif') != ''
         uses: github/codeql-action/upload-sarif@v4
         with:
           sarif_file: rrfs_code_norm_results.sarif
