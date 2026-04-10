@@ -181,8 +181,12 @@ fi
 if [ "${PREDEF_GRID_NAME}" != "RRFS_FIREWX_1.5km" ]; then
   wgrib2 ${COMOUT}/${fld2d} | grep -F -f ${FIX_UPP}/testbed_fields_2dfld.txt | wgrib2 -i -grib ${DATA}/${testbed} ${COMOUT}/${fld2d}
   wgrib2 ${COMOUT}/${prslev} | grep -F -f ${FIX_UPP}/testbed_fields_prslev.txt | wgrib2 -i -append -grib ${DATA}/${testbed} ${COMOUT}/${prslev}
+
+if [ ${DO_ENSFCST} != "TRUE" ]; then
   wgrib2 ${COMOUT}/${natlev} | grep -F -f ${FIX_UPP}/testbed_fields_natlev.txt | wgrib2 -i -append -grib ${DATA}/${testbed} ${COMOUT}/${natlev}
   export err=$?; err_chk
+fi
+
   cpreq ${DATA}/${testbed}  ${COMOUT}/${testbed}
 fi
 
