@@ -12,7 +12,7 @@ export cyc=${2:-${cyc:?}}
 # Set the required Directories 
 #################################################################################
 
-export FIXnam=${FIXnam:-${FIX_GSI}}
+export FIXrrfs=${FIXrrfs:-${FIX_GSI}}
 
 #################################################################################
 
@@ -65,7 +65,7 @@ if [[ -s ${radstat} && -s ${biascr} ]]; then
    #------------------------------------------------------------------
    #  SATYPE is the list of expected satellite/instrument sources
    #  in the radstat file.  It should be stored in the $TANKverf 
-   #  directory.  If it isn't there then use the $FIXnam copy.  In all 
+   #  directory.  If it isn't there then use the $FIXrrfs copy.  In all 
    #  cases write it back out to the radmon.$PDY directory.  Add any
    #  new sources to the list before writing back out.
    #------------------------------------------------------------------
@@ -73,12 +73,12 @@ if [[ -s ${radstat} && -s ${biascr} ]]; then
    echo 'radstat_satype= ' $radstat_satype
 
    #------------------------------------------------------------------
-   #  Look for the $satype_file from the info directory or $FIXnam
+   #  Look for the $satype_file from the info directory or $FIXrrfs
    #  in that order.  
    #------------------------------------------------------------------
    if [[ ! -e ${TANKverf}/info/${satype_file} ]]; then
       if [[ -e ${FIXnam}/${satype_file} ]]; then 
-         export SATYPE=`cat ${FIXnam}/${satype_file}`
+         export SATYPE=`cat ${FIXrrfs}/${satype_file}`
       else
          export SATYPE=${radstat_satype}
       fi
