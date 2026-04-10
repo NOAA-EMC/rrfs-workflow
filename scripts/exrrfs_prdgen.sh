@@ -266,6 +266,8 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
   count=0
   for domain in ${domains[@]}
   do
+
+    DBNDOM="${domain^^}"
     outspacing=${gridspacing}
     if [ ${DO_ENSFCST} = "TRUE" ]; then
       for task in $(seq ${tasks[count]})
@@ -288,9 +290,9 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
 
       if [[ ${SENDDBN} = "YES" ]] ; then
         if (( 10#$cyc % 3 == 0 )); then
-            $DBNROOT/bin/dbn_alert MODEL RRFS_DET $job \
+            $DBNROOT/bin/dbn_alert MODEL RRFS_DET_${DBNDOM} $job \
                 ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2
-	    $DBNROOT/bin/dbn_alert MODEL RRFS_DET_IDX $job \
+	    $DBNROOT/bin/dbn_alert MODEL RRFS_DET_${DBNDOM}_IDX $job \
                 ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
         fi
       fi  #SENDDBN
@@ -362,6 +364,7 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
     for domain in ${domains[@]}
     do
 
+    DBNDOM="${domain^^}"
     outspacing=${gridspacing}
     if [[ $domain = "hi" || $domain = "pr" ]]
      then
