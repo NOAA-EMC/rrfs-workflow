@@ -292,8 +292,8 @@ if [[ "${SENDCOM}" = "YES" ]]; then
   cpreq $DATA/class1.bufr $COMOUT/rrfs.t${cyc}z.class1.bufr
   cpreq $DATA/profilm.c1.${tmmark} ${COMOUT}/rrfs.t${cyc}z.profilm.c1
  elif [ ${WGF} = "ensf" ]; then
-  cpreq $DATA/class1.bufr $COMOUT/rrfs.m${ENSMEM_INDX}.t${cyc}z.class1.bufr
-  cpreq $DATA/profilm.c1.${tmmark} ${COMOUT}/rrfs.m${ENSMEM_INDX}.t${cyc}z.profilm.c1
+  cpreq $DATA/class1.bufr $COMOUT/rrfs.t${cyc}z.m${ENSMEM_INDX}.class1.bufr
+  cpreq $DATA/profilm.c1.${tmmark} ${COMOUT}/rrfs.t${cyc}z.m${ENSMEM_INDX}.profilm.c1
  else
   echo "WARNING: running BUFRSND task for $WGF"
  fi 
@@ -302,7 +302,7 @@ if [[ "${SENDCOM}" = "YES" ]]; then
  if [ ${WGF} = "det" ]; then
    $DBNROOT/bin/dbn_alert MODEL RRFS_BUFR $job ${COMOUT}/rrfs.t${cyc}z.class1.bufr
 elif [ ${WGF} = "ensf" ]; then
-   $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_BUFR $job ${COMOUT}/rrfs.m${ENSMEM_INDX}.t${cyc}z.class1.bufr
+   $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_BUFR $job ${COMOUT}/rrfs.t${cyc}z.m${ENSMEM_INDX}.class1.bufr
  fi
  fi
 
@@ -359,7 +359,7 @@ mkdir -p $COMOUT/gempak
  if [ ${WGF} = "det" ]; then
 INFILE=$COMOUT/rrfs.t${cyc}z.class1.bufr
  elif [  ${WGF} = "ensf" ]; then
-INFILE=$COMOUT/rrfs.m${ENSMEM_INDX}.t${cyc}z.class1.bufr
+INFILE=$COMOUT/rrfs.t${cyc}z.m${ENSMEM_INDX}.class1.bufr
  fi
 
 export INFILE
