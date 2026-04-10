@@ -287,11 +287,23 @@ export err=$?; err_chk
 mv errfile errfile_rrfs_sndp
 
 if [[ "${SENDCOM}" = "YES" ]]; then
+
+ if [ ${WGF} = "det" ]; then
   cpreq $DATA/class1.bufr $COMOUT/rrfs.t${cyc}z.class1.bufr
   cpreq $DATA/profilm.c1.${tmmark} ${COMOUT}/rrfs.t${cyc}z.profilm.c1
-
+ elif [ ${WGF} = "ensf" ]; then
+  cpreq $DATA/class1.bufr $COMOUT/rrfs.t${cyc}z.m${ENSMEM_INDX}.class1.bufr
+  cpreq $DATA/profilm.c1.${tmmark} ${COMOUT}/rrfs.t${cyc}z.m${ENSMEM_INDX}.profilm.c1
+ else
+  echo "WARNING: running BUFRSND task for $WGF"
+ fi 
+ 
  if [[ "${SENDDBN}" = "YES" ]]; then
+ if [ ${WGF} = "det" ]; then
    $DBNROOT/bin/dbn_alert MODEL RRFS_BUFR $job ${COMOUT}/rrfs.t${cyc}z.class1.bufr
+elif [ ${WGF} = "ensf" ]; then
+   $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_BUFR $job ${COMOUT}/rrfs.t${cyc}z.m${ENSMEM_INDX}.class1.bufr
+ fi
  fi
 
 fi #SENDCOM
@@ -344,10 +356,19 @@ cpreq -p ${GEMPAK_FIX}/sfrrfs.prm sfrrfs.prm
 mkdir -p $COMOUT/gempak
 
 #  Set input file name.
+ if [ ${WGF} = "det" ]; then
 INFILE=$COMOUT/rrfs.t${cyc}z.class1.bufr
+ elif [  ${WGF} = "ensf" ]; then
+INFILE=$COMOUT/rrfs.t${cyc}z.m${ENSMEM_INDX}.class1.bufr
+ fi
+
 export INFILE
 
+ if [ ${WGF} = "det" ]; then
 outfilbase=rrfs_${PDY}${cyc}
+elif [  ${WGF} = "ensf" ]; then
+outfilbase=rrfs_m${ENSMEM_INDX}_${PDY}${cyc}
+ fi
 
 namsnd << EOF > /dev/null
 SNBUFR   = $INFILE
@@ -365,9 +386,15 @@ if [[ "${SENDCOM}" = "YES" ]]; then
   cpreq ${outfilbase}.snd ${COMOUT}/gempak/
   cpreq ${outfilbase}.sfc* ${COMOUT}/gempak/
  if [[ "${SENDDBN}" = "YES" ]]; then
-  $DBNROOT/bin/dbn_alert MODEL RRFS_GEMPAK $job ${COMOUT}/gempak/${outfilbase}.snd
-  $DBNROOT/bin/dbn_alert MODEL RRFS_GEMPAK $job ${COMOUT}/gempak/${outfilbase}.sfc
-  $DBNROOT/bin/dbn_alert MODEL RRFS_GEMPAK $job ${COMOUT}/gempak/${outfilbase}.sfc_aux
+  if [ ${WGF} = "det" ]; then
+    $DBNROOT/bin/dbn_alert MODEL RRFS_DET_BUFR_GEMPAK $job ${COMOUT}/gempak/${outfilbase}.snd
+    $DBNROOT/bin/dbn_alert MODEL RRFS_DET_BUFR_GEMPAK $job ${COMOUT}/gempak/${outfilbase}.sfc
+    $DBNROOT/bin/dbn_alert MODEL RRFS_DET_BUFR_GEMPAK $job ${COMOUT}/gempak/${outfilbase}.sfc_aux
+  elif [  ${WGF} = "ensf" ]; then
+    $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_BUFR_GEMPAK $job ${COMOUT}/gempak/${outfilbase}.snd
+    $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_BUFR_GEMPAK $job ${COMOUT}/gempak/${outfilbase}.sfc
+    $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_BUFR_GEMPAK $job ${COMOUT}/gempak/${outfilbase}.sfc_aux
+  fi
  fi
 fi
 
