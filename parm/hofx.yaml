@@ -1,5 +1,5 @@
 time window:
-  begin: '@beginDate@'
+  begin: '@BEGIN_DATE@'
   length: PT4H
 
 geometry:
@@ -43,7 +43,7 @@ state:
   - snow_water
   - cldfrac
   filename: mpasout.nc
-  date: '@analysisDate@'
+  date: '@ANALYSIS_DATE@'
 
 observations:
   observers:
@@ -126,7 +126,7 @@ observations:
 #           - name: airTemperature
 #           min_spacing: PT90M
 #           tolerance: PT0H
-#           seed_time: "@analysisDate@"
+#           seed_time: "@ANALYSIS_DATE@"
 #           category_variable:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
@@ -402,7 +402,7 @@ observations:
 #           - name: airTemperature
 #           min_spacing: PT90M
 #           tolerance: PT0H
-#           seed_time: "@analysisDate@"
+#           seed_time: "@ANALYSIS_DATE@"
 #           category_variable:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
@@ -676,7 +676,7 @@ observations:
            - name: airTemperature
            min_spacing: PT90M
            tolerance: PT0H
-           seed_time: "@analysisDate@"
+           seed_time: "@ANALYSIS_DATE@"
            category_variable:
              name: MetaData/stationIdentification
            action:
@@ -954,7 +954,7 @@ observations:
 #           - name: specificHumidity
 #           min_spacing: PT90M
 #           tolerance: PT0H
-#           seed_time: "@analysisDate@"
+#           seed_time: "@ANALYSIS_DATE@"
 #           category_variable:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
@@ -1229,7 +1229,7 @@ observations:
 #           - name: specificHumidity
 #           min_spacing: PT90M
 #           tolerance: PT0H
-#           seed_time: "@analysisDate@"
+#           seed_time: "@ANALYSIS_DATE@"
 #           category_variable:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
@@ -1497,7 +1497,7 @@ observations:
            - name: specificHumidity
            min_spacing: PT90M
            tolerance: PT0H
-           seed_time: "@analysisDate@"
+           seed_time: "@ANALYSIS_DATE@"
            category_variable:
              name: MetaData/stationIdentification
            action:
@@ -1778,7 +1778,7 @@ observations:
 #           - name: windNorthward
 #           min_spacing: PT90M
 #           tolerance: PT0H
-#           seed_time: "@analysisDate@"
+#           seed_time: "@ANALYSIS_DATE@"
 #           category_variable:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
@@ -2095,7 +2095,7 @@ observations:
 #           - name: windNorthward
 #           min_spacing: PT90M
 #           tolerance: PT0H
-#           seed_time: "@analysisDate@"
+#           seed_time: "@ANALYSIS_DATE@"
 #           category_variable:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
@@ -2405,7 +2405,7 @@ observations:
            - name: windNorthward
            min_spacing: PT90M
            tolerance: PT0H
-           seed_time: "@analysisDate@"
+           seed_time: "@ANALYSIS_DATE@"
            category_variable:
              name: MetaData/stationIdentification
            action:
@@ -2718,7 +2718,7 @@ observations:
 #           - name: airTemperature
 #           min_spacing: PT90M
 #           tolerance: PT0H
-#           seed_time: "@analysisDate@"
+#           seed_time: "@ANALYSIS_DATE@"
 #           category_variable:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
@@ -2992,7 +2992,7 @@ observations:
 #           - name: airTemperature
 #           min_spacing: PT90M
 #           tolerance: PT0H
-#           seed_time: "@analysisDate@"
+#           seed_time: "@ANALYSIS_DATE@"
 #           category_variable:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
@@ -3266,7 +3266,7 @@ observations:
 #           - name: specificHumidity
 #           min_spacing: PT90M
 #           tolerance: PT0H
-#           seed_time: "@analysisDate@"
+#           seed_time: "@ANALYSIS_DATE@"
 #           category_variable:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
@@ -3540,7 +3540,7 @@ observations:
 #           - name: specificHumidity
 #           min_spacing: PT90M
 #           tolerance: PT0H
-#           seed_time: "@analysisDate@"
+#           seed_time: "@ANALYSIS_DATE@"
 #           category_variable:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
@@ -3817,7 +3817,7 @@ observations:
 #           - name: windNorthward
 #           min_spacing: PT90M
 #           tolerance: PT0H
-#           seed_time: "@analysisDate@"
+#           seed_time: "@ANALYSIS_DATE@"
 #           category_variable:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
@@ -4127,7 +4127,7 @@ observations:
 #           - name: windNorthward
 #           min_spacing: PT90M
 #           tolerance: PT0H
-#           seed_time: "@analysisDate@"
+#           seed_time: "@ANALYSIS_DATE@"
 #           category_variable:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
@@ -4434,7 +4434,7 @@ observations:
 #           - name: airTemperature
 #           min_spacing: PT90M
 #           tolerance: PT0H
-#           seed_time: "@analysisDate@"
+#           seed_time: "@ANALYSIS_DATE@"
 #           category_variable:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
@@ -4708,7 +4708,7 @@ observations:
 #           - name: specificHumidity
 #           min_spacing: PT90M
 #           tolerance: PT0H
-#           seed_time: "@analysisDate@"
+#           seed_time: "@ANALYSIS_DATE@"
 #           category_variable:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
@@ -4985,7 +4985,7 @@ observations:
 #           - name: windNorthward
 #           min_spacing: PT90M
 #           tolerance: PT0H
-#           seed_time: "@analysisDate@"
+#           seed_time: "@ANALYSIS_DATE@"
 #           category_variable:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
@@ -5292,7 +5292,7 @@ observations:
 #           - name: airTemperature
 #           min_spacing: PT90M
 #           tolerance: PT0H
-#           seed_time: "@analysisDate@"
+#           seed_time: "@ANALYSIS_DATE@"
 #           category_variable:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
@@ -5566,7 +5566,7 @@ observations:
 #           - name: airTemperature
 #           min_spacing: PT90M
 #           tolerance: PT0H
-#           seed_time: "@analysisDate@"
+#           seed_time: "@ANALYSIS_DATE@"
 #           category_variable:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
@@ -5840,7 +5840,7 @@ observations:
 #           - name: airTemperature
 #           min_spacing: PT90M
 #           tolerance: PT0H
-#           seed_time: "@analysisDate@"
+#           seed_time: "@ANALYSIS_DATE@"
 #           category_variable:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
@@ -6114,7 +6114,7 @@ observations:
 #           - name: airTemperature
 #           min_spacing: PT90M
 #           tolerance: PT0H
-#           seed_time: "@analysisDate@"
+#           seed_time: "@ANALYSIS_DATE@"
 #           category_variable:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
@@ -6388,7 +6388,7 @@ observations:
 #           - name: specificHumidity
 #           min_spacing: PT90M
 #           tolerance: PT0H
-#           seed_time: "@analysisDate@"
+#           seed_time: "@ANALYSIS_DATE@"
 #           category_variable:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
@@ -6665,7 +6665,7 @@ observations:
 #           - name: windNorthward
 #           min_spacing: PT90M
 #           tolerance: PT0H
-#           seed_time: "@analysisDate@"
+#           seed_time: "@ANALYSIS_DATE@"
 #           category_variable:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
@@ -6975,7 +6975,7 @@ observations:
 #           - name: windNorthward
 #           min_spacing: PT90M
 #           tolerance: PT0H
-#           seed_time: "@analysisDate@"
+#           seed_time: "@ANALYSIS_DATE@"
 #           category_variable:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
@@ -7285,7 +7285,7 @@ observations:
 #           - name: windNorthward
 #           min_spacing: PT90M
 #           tolerance: PT0H
-#           seed_time: "@analysisDate@"
+#           seed_time: "@ANALYSIS_DATE@"
 #           category_variable:
 #             name: MetaData/longitude_latitude_pressure
 #           action:
@@ -7595,7 +7595,7 @@ observations:
 #           - name: windNorthward
 #           min_spacing: PT90M
 #           tolerance: PT0H
-#           seed_time: "@analysisDate@"
+#           seed_time: "@ANALYSIS_DATE@"
 #           category_variable:
 #             name: MetaData/longitude_latitude_pressure
 #           action:

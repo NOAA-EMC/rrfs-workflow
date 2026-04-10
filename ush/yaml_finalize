@@ -16,8 +16,8 @@ ytype = yfile.split(".", 1)[0]  # get the yaml file type: jedivar, getkf, hofx, 
 is_pass2 = "pass2" in yfile
 
 # get environmental variables
-analysisDate = os.getenv("analysisDate", "@analysisDate@")
-beginDate = os.getenv("beginDate", "@beginDate@")
+ANALYSIS_DATE = os.getenv("ANALYSIS_DATE", "@ANALYSIS_DATE@")
+BEGIN_DATE = os.getenv("BEGIN_DATE", "@BEGIN_DATE@")
 ENS_SIZE = os.getenv("ENS_SIZE", "30")
 HYB_WGT_STATIC = os.getenv("HYB_WGT_STATIC", "@HYB_WGT_STATIC@")
 HYB_WGT_ENS = os.getenv("HYB_WGT_ENS", "@HYB_WGT_ENS@")
@@ -43,7 +43,7 @@ ANALYSIS_VARIABLES = os.getenv("ANALYSIS_VARIABLES", "0")  # 5, 12 or a list of 
 # determine the temporal grid for Gaussian Thinning
 time_mesh = 3
 THINNING_TIME_MESH = f"PT{time_mesh:02d}H"
-analysis_time = datetime.strptime(analysisDate, "%Y-%m-%dT%H:%M:%SZ")
+analysis_time = datetime.strptime(ANALYSIS_DATE, "%Y-%m-%dT%H:%M:%SZ")
 delta = timedelta(hours=time_mesh / 2)
 time_min = analysis_time - delta
 time_max = analysis_time + delta
@@ -52,8 +52,8 @@ THINNING_TIME_MAX = time_max.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 # replacements for the @VAR@ patterns
 replacements = {
-    "analysisDate": f"{analysisDate}",
-    "beginDate": f"{beginDate}",
+    "ANALYSIS_DATE": f"{ANALYSIS_DATE}",
+    "BEGIN_DATE": f"{BEGIN_DATE}",
     "ENS_SIZE": f"{ENS_SIZE}",
     "HYB_WGT_STATIC": f"{HYB_WGT_STATIC}",
     "HYB_WGT_ENS": f"{HYB_WGT_ENS}",

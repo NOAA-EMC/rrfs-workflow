@@ -75,9 +75,9 @@ radt=30
 file_content=$(< "${PARMrrfs}/${physics_suite}/namelist.atmosphere") # read in all content
 eval "echo \"${file_content}\"" > namelist.atmosphere
 ${cpreq} "${PARMrrfs}"/streams.atmosphere.getkf streams.atmosphere
-export analysisDate="${CDATE:0:4}-${CDATE:4:2}-${CDATE:6:2}T${CDATE:8:2}:00:00Z"
+export ANALYSIS_DATE="${CDATE:0:4}-${CDATE:4:2}-${CDATE:6:2}T${CDATE:8:2}:00:00Z"
 CDATEm2=$(${NDATE} -2 "${CDATE}")
-export beginDate="${CDATEm2:0:4}-${CDATEm2:4:2}-${CDATEm2:6:2}T${CDATEm2:8:2}:00:00Z"
+export BEGIN_DATE="${CDATEm2:0:4}-${CDATEm2:4:2}-${CDATEm2:6:2}T${CDATEm2:8:2}:00:00Z"
 #
 # generate getkf.yaml based on how YAML_GEN_METHOD is set
 case ${YAML_GEN_METHOD:-1} in
