@@ -14,7 +14,7 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0  # Ensures full commit history for diff comparison
 
@@ -23,17 +23,58 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
+  rrfs-code-norm:
+    name: RRFS Code Norm Linting
+    runs-on: ubuntu-latest
+
+    permissions:
+      security-events: write  # Required for SARIF upload (auto-close fixed alerts)
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Run RRFS Code Norm Linting
+        run: |
+          python3 workflow/tools/linter_rrfs_code_norms.py \
+            jobs/ scripts/ ush/ || true
+          python3 workflow/tools/linter_rrfs_code_norms.py \
+            --format sarif jobs/ scripts/ ush/ \
+            > rrfs_code_norm_results.sarif; echo "RRFS_LINT_RC=$?" >> "$GITHUB_ENV"
+
+      - name: Upload SARIF results
+        if: hashFiles('rrfs_code_norm_results.sarif') != ''
+        uses: github/codeql-action/upload-sarif@v4
+        with:
+          sarif_file: rrfs_code_norm_results.sarif
+          category: rrfs-code-norm
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fail if RRFS Code Norm violations found
+        if: always()
+        run: |
+          if [[ "${RRFS_LINT_RC}" != "0" ]]; then
+            echo "::error::RRFS Code Norm Linting found violations. See annotations above."
+            exit 1
+          fi
+
   python-lint:
     name: Python Linting
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.11'
 
       - name: Install Flake8
         run: pip install flake8
@@ -46,7 +87,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install Yamllint
         run: pip install yamllint

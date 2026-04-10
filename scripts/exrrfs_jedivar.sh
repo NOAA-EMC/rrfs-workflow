@@ -14,11 +14,11 @@ time_min="${subcyc:-00}"
 # determine whether to begin new cycles
 #
 if [[ -r "${UMBRELLA_PREP_IC_DATA}/init.nc" ]]; then
-  export start_type='cold'
+  export START_TYPE='cold'
   do_DAcycling='false'
   initial_file=init.nc
 else
-  export start_type='warm'
+  export START_TYPE='warm'
   do_DAcycling='true'
   initial_file=mpasout.nc
 fi
@@ -37,7 +37,7 @@ ${cpreq} "${FIXrrfs}"/jedi/obsop_name_map.yaml .
 ${cpreq} "${FIXrrfs}"/jedi/keptvars.yaml .
 ${cpreq} "${FIXrrfs}"/jedi/geovars.yaml .
 # if cold_start or not do_radar_ref, remove refl10cm and w from stream_list.atmosphere.analysis
-if [[ "${start_type}" == "cold"  ]] || [[ ${DO_RADAR_REF} == "FALSE" ]]; then
+if [[ "${START_TYPE}" == "cold"  ]] || [[ ${DO_RADAR_REF^^} == "FALSE" ]]; then
   sed -i '$d;N;$d' stream_list/stream_list.atmosphere.analysis
 fi
 #
@@ -102,7 +102,7 @@ fi
 #
 cd "${DATA}" || exit 1
 ln -snf "${UMBRELLA_PREP_IC_DATA}/${initial_file}" .
-if [[ ${start_type} == "warm" ]] && [[ ${SNUDGETYPES} != "" ]]; then
+if [[ ${START_TYPE} == "warm" ]] && [[ ${SNUDGETYPES} != "" ]]; then
     var_list="qv,surface_pressure,theta,tslb,smois,snowh,soilt1,skintemp"
     ncks -C -v ${var_list} ${initial_file} soilbg.nc
 fi
@@ -110,7 +110,7 @@ fi
 # generate namelist, streams, and jedivar.yaml on the fly
 run_duration=1:00:00
 physics_suite=${PHYSICS_SUITE:-'mesoscale_reference'}
-jedi_da="true" #true
+jedi_da=true #true
 pio_num_iotasks=${NODES}
 pio_stride=${PPN}
 
@@ -123,9 +123,9 @@ radt=30
 file_content=$(< "${PARMrrfs}/${physics_suite}/namelist.atmosphere") # read in all content
 eval "echo \"${file_content}\"" > namelist.atmosphere
 ${cpreq} "${PARMrrfs}"/streams.atmosphere.jedivar streams.atmosphere
-export analysisDate=""${CDATE:0:4}-${CDATE:4:2}-${CDATE:6:2}T${CDATE:8:2}:00:00Z""
+export ANALYSIS_DATE=""${CDATE:0:4}-${CDATE:4:2}-${CDATE:6:2}T${CDATE:8:2}:00:00Z""
 CDATEm2=$(${NDATE} -2 "${CDATE}")
-export beginDate=""${CDATEm2:0:4}-${CDATEm2:4:2}-${CDATEm2:6:2}T${CDATEm2:8:2}:00:00Z""
+export BEGIN_DATE=""${CDATEm2:0:4}-${CDATEm2:4:2}-${CDATEm2:6:2}T${CDATEm2:8:2}:00:00Z""
 #
 # generate jedivar.yaml based on how YAML_GEN_METHOD is set
 case ${YAML_GEN_METHOD:-1} in
@@ -136,7 +136,7 @@ case ${YAML_GEN_METHOD:-1} in
     cp "${USHrrfs}/hifiyaml4rrfs.py" .
     cp "${USHrrfs}/yamltools4rrfs.py" .
     cp "${USHrrfs}/yaml_finalize" .
-    if [[ ${DO_RADAR_REF} == "TRUE" ]]; then  # DO_RADAR_REF: run jedivar twice and use 5 analysis variables in the first pass
+    if [[ ${DO_RADAR_REF^^} == "TRUE" ]]; then  # DO_RADAR_REF: run jedivar twice and use 5 analysis variables in the first pass
       export ANALYSIS_VARIABLES="5"
     fi
     ./yaml_finalize jedivar.org.yaml jedivar.yaml
@@ -153,7 +153,7 @@ case ${YAML_GEN_METHOD:-1} in
     ;;
 esac
 
-if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CYCS_DO_DA^^} == "TRUE" ]]; then
+if [[ ${START_TYPE} == "warm" ]] || [[ ${START_TYPE} == "cold" && ${COLDSTART_CYCS_DO_DA^^} == "TRUE" ]]; then
   # run mpasjedi_variational.x
   #export OOPS_TRACE=1
   #export OOPS_DEBUG=1
@@ -168,7 +168,7 @@ if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CY
   #
   # Run jedivar in the 2nd pass for reflectivity DA
   #
-  if [[ ${start_type} == "warm" && ${DO_RADAR_REF} == "TRUE" ]]; then
+  if [[ ${START_TYPE} == "warm" && ${DO_RADAR_REF^^} == "TRUE" ]]; then
     export ANALYSIS_VARIABLES="12"
     ${cpreq}  "${EXPDIR}/config/bec_diffusion.yaml" "${DATA}"/bec_diffusion.yaml
     ln -sf "${FIXrrfs}/${MESH_NAME}/diffusionloc/${MESH_NAME}_L${nlevel}_15km11levels" data/diffusionloc
@@ -179,9 +179,9 @@ if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CY
     export err=$?
     err_chk
   fi
-  if [[ ${start_type} == "warm" ]] && [[ ${SNUDGETYPES} != "" ]]; then
+  if [[ ${START_TYPE} == "warm" ]] && [[ ${SNUDGETYPES} != "" ]]; then
       # pyioda libraries
-      PYIODALIB=$(echo "$HOMErdasapp"/build/lib/python3.*)
+      PYIODALIB=$(echo "${HOMErdasapp}"/build/lib/python3.*)
       export PYTHONPATH="${PYIODALIB}:${PYTHONPATH}"
       "${USHrrfs}"/snudge.py "${CDATE}" "${SNUDGETYPES}" "${DATA}/${initial_file}"
       if [[ ! -s "soil_analyzed.nc" ]]; then

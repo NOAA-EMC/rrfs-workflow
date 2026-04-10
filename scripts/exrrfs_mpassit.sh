@@ -52,7 +52,7 @@ for fhr in "${fhr_all[@]}"; do
     # wait for file available 
     for (( j=0; j < 20; j=j+1)); do
       if [[ -s ${diag_file} ]]; then
-	break
+        break
       fi
       sleep 60s
     done
@@ -69,7 +69,7 @@ for fhr in "${fhr_all[@]}"; do
       source prep_step
       ${MPI_RUN_CMD} ./mpassit.x namelist.mpassit
       # check the status, copy output to UMBRELLA_MPASSIT_DATA
-      if [[ -f "./mpassit.${timestr}.nc" ]] && (( $(stat -c%s "./mpassit.${timestr}.nc") > 104857600 )); then
+      if [[ -s "./mpassit.${timestr}.nc" ]] && (( $(stat -c%s "./mpassit.${timestr}.nc") > 104857600 )); then
         mv "./mpassit.${timestr}.nc" "${UMBRELLA_MPASSIT_DATA}/."
         mv namelist.mpassit "namelist.mpassit_${fhr}"
       else

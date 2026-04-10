@@ -40,14 +40,14 @@ fi
 #
 do_DAcycling='false'
 if [[ -r "${UMBRELLA_PREP_IC_DATA}/mem001/init.nc" ]]; then
-  export start_type='cold'
+  export START_TYPE='cold'
   initial_file='init.nc'
 else
-  export start_type='warm'
+  export START_TYPE='warm'
   initial_file='mpasout.nc'
 fi
 # if cold_start or not do_radar_ref, remove refl10cm and w from stream_list.atmosphere.analysis
-if [[ "${start_type}" == "cold"  ]] || [[ ${DO_RADAR_REF} == "FALSE" ]]; then
+if [[ "${START_TYPE}" == "cold"  ]] || [[ ${DO_RADAR_REF^^} == "FALSE" ]]; then
   sed -i '$d;N;$d' ../stream_list/stream_list.atmosphere.analysis
 fi
 # link ensembles to data/ens/
@@ -62,7 +62,7 @@ cd "${DATA}" || exit 1
 # generate namelist, streams, and getkf.yaml on the fly
 run_duration=1:00:00
 physics_suite=${PHYSICS_SUITE:-'mesoscale_reference'}
-jedi_da="true" #true
+jedi_da=true #true
 pio_num_iotasks=${NODES}
 pio_stride=${PPN}
 
@@ -75,9 +75,9 @@ radt=30
 file_content=$(< "${PARMrrfs}/${physics_suite}/namelist.atmosphere") # read in all content
 eval "echo \"${file_content}\"" > namelist.atmosphere
 ${cpreq} "${PARMrrfs}"/streams.atmosphere.getkf streams.atmosphere
-export analysisDate="${CDATE:0:4}-${CDATE:4:2}-${CDATE:6:2}T${CDATE:8:2}:00:00Z"
+export ANALYSIS_DATE="${CDATE:0:4}-${CDATE:4:2}-${CDATE:6:2}T${CDATE:8:2}:00:00Z"
 CDATEm2=$(${NDATE} -2 "${CDATE}")
-export beginDate="${CDATEm2:0:4}-${CDATEm2:4:2}-${CDATEm2:6:2}T${CDATEm2:8:2}:00:00Z"
+export BEGIN_DATE="${CDATEm2:0:4}-${CDATEm2:4:2}-${CDATEm2:6:2}T${CDATEm2:8:2}:00:00Z"
 #
 # generate getkf.yaml based on how YAML_GEN_METHOD is set
 case ${YAML_GEN_METHOD:-1} in
@@ -102,7 +102,7 @@ case ${YAML_GEN_METHOD:-1} in
     ;;
 esac
 
-if [[ ${start_type} == "warm" ]] || [[ ${start_type} == "cold" && ${COLDSTART_CYCS_DO_DA^^} == "TRUE" ]]; then
+if [[ ${START_TYPE} == "warm" ]] || [[ ${START_TYPE} == "cold" && ${COLDSTART_CYCS_DO_DA^^} == "TRUE" ]]; then
   # run mpasjedi_enkf.x
   #export OOPS_TRACE=1
   export OMP_NUM_THREADS=1

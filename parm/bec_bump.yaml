@@ -20,7 +20,7 @@
       read:
         model file:
           filename: data/static_bec/stddev.nc
-          date: *analysisDate
+          date: *ANALYSIS_DATE
           stream name: control
     - saber block name: BUMP_VerticalBalance
       read:

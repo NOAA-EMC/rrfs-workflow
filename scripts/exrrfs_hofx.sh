@@ -37,7 +37,7 @@ cd "${DATA}" || exit 1
 # generate namelist, streams, and hofx.yaml on the fly
 run_duration=1:00:00
 physics_suite=${PHYSICS_SUITE:-'mesoscale_reference'}
-jedi_da="true" #true
+jedi_da=true #true
 pio_num_iotasks=${NODES}
 pio_stride=${PPN}
 
@@ -71,12 +71,12 @@ for fhr in "${hofx_array[@]}"; do
   file_content=$(< "${PARMrrfs}/${physics_suite}/namelist.atmosphere") # read in all content
   eval "echo \"${file_content}\"" > namelist.atmosphere
   ${cpreq} "${PARMrrfs}"/streams.atmosphere.jedivar streams.atmosphere
-  export analysisDate=""${CDATEp:0:4}-${CDATEp:4:2}-${CDATEp:6:2}T${CDATEp:8:2}:00:00Z""
+  export ANALYSIS_DATE=""${CDATEp:0:4}-${CDATEp:4:2}-${CDATEp:6:2}T${CDATEp:8:2}:00:00Z""
   CDATEm2=$(${NDATE} -2 "${CDATEp}")
-  export beginDate=""${CDATEm2:0:4}-${CDATEm2:4:2}-${CDATEm2:6:2}T${CDATEm2:8:2}:00:00Z""
+  export BEGIN_DATE=""${CDATEm2:0:4}-${CDATEm2:4:2}-${CDATEm2:6:2}T${CDATEm2:8:2}:00:00Z""
   #
   # generate hofx.yaml
-  sed -e "s/@beginDate@/${beginDate}/" -e "s/@analysisDate@/${analysisDate}/" \
+  sed -e "s/@BEGIN_DATE@/${BEGIN_DATE}/" -e "s/@ANALYSIS_DATE@/${ANALYSIS_DATE}/" \
     -e "s/@emptyObsSpaceAction@/${EMPTY_OBS_SPACE_ACTION}/" "${EXPDIR}/config/hofx.yaml" > hofx.yaml
   # run mpasjedi_hofx3d.x
   export OMP_NUM_THREADS=1

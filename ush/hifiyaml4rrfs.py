@@ -171,8 +171,8 @@ def get_start_pos(data, querystr="", stop_on_error=False, linestr=""):
                     break
         if not found:
             errmsg = f"key error: '{s}' not found\n"
-            sys.stderr.write(f"{errmsg}\n")
             if stop_on_error:
+                sys.stderr.write(f"{errmsg}\n")
                 sys.exit(1)
     # ~~~~~~~~~~~~~~~~~
     return cur, errmsg

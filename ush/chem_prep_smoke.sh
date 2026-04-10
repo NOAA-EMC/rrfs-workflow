@@ -31,14 +31,14 @@ mv ./*.log ./*.ESMF_LogFile logs || echo "could not move logs"
 # TODO - Update variable names via outside script or within regrid.py -- mapping table?
 for ihour in $(seq 0 "${my_fcst_length}");
 do
-  if [[ ${ihour} -gt 24 ]]; then
+  if (( ihour > 24 )); then
     ihour2=$((ihour-24))
   else
     ihour2=${ihour}
   fi
-  timestr1=$(date +%Y%m%d%H -d "$previous_day + $ihour2 hours")
-  timestr2=$(date +%Y-%m-%d_%H -d "$current_day + $ihour hours")
-  timestr3=$(date +%Y-%m-%d_%H:00:00 -d "$current_day + $ihour hours")
+  timestr1=$(date +%Y%m%d%H -d "${previous_day} + ${ihour2} hours")
+  timestr2=$(date +%Y-%m-%d_%H -d "${current_day} + ${ihour} hours")
+  timestr3=$(date +%Y-%m-%d_%H:00:00 -d "${current_day} + ${ihour} hours")
   #
   EMISFILE=${UMBRELLA_PREP_CHEM_DATA}/smoke.init.retro.${timestr2}.00.00.nc
   EMISFILE2="${RAVE_OUTPUTDIR}/${MESH_NAME}-RAVE-${timestr1}.nc"
@@ -91,7 +91,7 @@ if [[ ! -r "${ECO_OUTPUTDIR}/ecoregions_${MESH_NAME}_mpas.nc" ]] && [[ -r "${ECO
 fi
 # 
 n_fmc=$(ls "${FMC_INPUTDIR}/fmc_${YYYY}${MM}${DD}"* | wc -l)
-if [[ ${n_fmc} -gt 0 ]]; then
+if (( n_fmc > 0 )); then
   echo "Have at least some soil moisture information, will interpolate"
      ln -s "${FMC_INPUTDIR}"/* "${DATA}"/
      srun python -u "${SCRIPT}"   \

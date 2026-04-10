@@ -16,14 +16,14 @@ ytype = yfile.split(".", 1)[0]  # get the yaml file type: jedivar, getkf, hofx, 
 is_pass2 = "pass2" in yfile
 
 # get environmental variables
-analysisDate = os.getenv("analysisDate", "@analysisDate@")
-beginDate = os.getenv("beginDate", "@beginDate@")
+ANALYSIS_DATE = os.getenv("ANALYSIS_DATE", "@ANALYSIS_DATE@")
+BEGIN_DATE = os.getenv("BEGIN_DATE", "@BEGIN_DATE@")
 ENS_SIZE = os.getenv("ENS_SIZE", "30")
 HYB_WGT_STATIC = os.getenv("HYB_WGT_STATIC", "@HYB_WGT_STATIC@")
 HYB_WGT_ENS = os.getenv("HYB_WGT_ENS", "@HYB_WGT_ENS@")
 emptyObsSpaceAction = os.getenv("EMPTY_OBS_SPACE_ACTION", "@emptyObsSpaceAction@")
 
-start_type = os.getenv("start_type", "start_type_NOT_DEFINED")
+START_TYPE = os.getenv("START_TYPE", "START_TYPE_NOT_DEFINED")
 GETKF_TYPE = os.getenv("GETKF_TYPE", "TYPE_NOT_DEFINED")
 use_conv_sat_info = (os.getenv("USE_CONV_SAT_INFO", "True").upper() != "FALSE")
 
@@ -43,7 +43,7 @@ ANALYSIS_VARIABLES = os.getenv("ANALYSIS_VARIABLES", "0")  # 5, 12 or a list of 
 # determine the temporal grid for Gaussian Thinning
 time_mesh = 3
 THINNING_TIME_MESH = f"PT{time_mesh:02d}H"
-analysis_time = datetime.strptime(analysisDate, "%Y-%m-%dT%H:%M:%SZ")
+analysis_time = datetime.strptime(ANALYSIS_DATE, "%Y-%m-%dT%H:%M:%SZ")
 delta = timedelta(hours=time_mesh / 2)
 time_min = analysis_time - delta
 time_max = analysis_time + delta
@@ -52,8 +52,8 @@ THINNING_TIME_MAX = time_max.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 # replacements for the @VAR@ patterns
 replacements = {
-    "analysisDate": f"{analysisDate}",
-    "beginDate": f"{beginDate}",
+    "ANALYSIS_DATE": f"{ANALYSIS_DATE}",
+    "BEGIN_DATE": f"{BEGIN_DATE}",
     "ENS_SIZE": f"{ENS_SIZE}",
     "HYB_WGT_STATIC": f"{HYB_WGT_STATIC}",
     "HYB_WGT_ENS": f"{HYB_WGT_ENS}",
@@ -98,7 +98,7 @@ if ytype == "jedivar":
 # set ANALYSIS_VARIABLES
 if ANALYSIS_VARIABLES == '0':  # if not set in the exp file, use default values
     ANALYSIS_VARIABLES = "5"
-    do_radar_ref = (os.getenv("DO_RADAR_REF", "FASLE").upper() == "TRUE" and start_type != "cold")
+    do_radar_ref = (os.getenv("DO_RADAR_REF", "FASLE").upper() == "TRUE" and START_TYPE != "cold")
     if do_radar_ref:
         ANALYSIS_VARIABLES = "12"
 # ~~~~~~~
@@ -118,7 +118,7 @@ elif ytype == "getkf":
 
 # ------------------------------------------------------------------------------------
 # tweaks for cold start DA
-if ytype == "jedivar" and start_type == "cold":
+if ytype == "jedivar" and START_TYPE == "cold":
     hy.modify(data, "output/filename", "filename: init.nc")
     hy.modify(data, "cost function/background/filename", "filename: init.nc")
 
@@ -159,7 +159,7 @@ if is_pass2:
 
 # ------------------------------------------------------------------------------------
 # keep/drop/passivate observations based on convifo/satinfo
-head_end, _ = hy.get_start_pos(data, "cost function/observations/observers")  # get the YAML head section
+head_end, _ = hy.get_start_pos(data, "observations/observers")  # get the YAML head section
 output = data[0:head_end + 1]
 # assemble observers
 dcObs = yt.get_all_obs(data, shallow=True)

@@ -12,7 +12,7 @@ mkdir -p "${EMISOUTPUTDIR}"
 #
 EMISFILE=${EMISOUTPUTDIR}/pollen_ef_${MESH_NAME}_${YYYY}_${DOY}.nc
 LINKEDEMISFILE=${UMBRELLA_PREP_CHEM_DATA}/bio.init.nc
-if [ ! -r "${EMISFILE}" ]; then
+if [[ ! -r "${EMISFILE}" ]]; then
    echo "No pollen input file regridded to this specific day and mesh: ${EMISFILE}, will look for a file to interpolate"
 else
    ln -sf "${EMISFILE}" "${LINKEDEMISFILE}"
@@ -37,7 +37,7 @@ srun python -u "${SCRIPT}" \
            "${INTERP_WEIGHTS_DIR}" \
            "${YYYY}${MM}${DD}${HH}" \
            "${MESH_NAME}"
-if [ ! -r "${EMISFILE}" ]; then
+if [[ ! -r "${EMISFILE}" ]]; then
    echo "Regrid failed, check the logs"
    exit 1 # do we need to exit the whole exrrfs_prep_chem.sh?
 else

@@ -27,7 +27,7 @@ HH=${CDATE:8:2}
 #-----------------------------------------------------------------------
 #
 meshgriddir="${FIXrrfs}/${MESH_NAME}"
-echo "INFO: meshgriddir is $meshgriddir"
+echo "INFO: meshgriddir is ${meshgriddir}"
 cp "${meshgriddir}"/"${MESH_NAME}".grid.nc mesh.nc
 
 #
@@ -99,7 +99,7 @@ if [[ -s filelist_mrms ]]; then
 
   numgrib2=$(more filelist_mrms | wc -l)
   echo "Using radar data from: $(head -1 filelist_mrms | cut -c10-15)"
-  echo "NSSL grib2 file levels = $numgrib2"
+  echo "NSSL grib2 file levels = ${numgrib2}"
 else
   echo "FATAL ERROR: Not enough radar reflectivity files were found"
   err_exit

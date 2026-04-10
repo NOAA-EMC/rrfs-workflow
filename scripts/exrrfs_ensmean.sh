@@ -30,7 +30,7 @@ for (( ii=0; ii<"${num_fhrs}"; ii=ii+"${group_total_num}" )); do
       break
     fi
     # get forecast hour and string
-    fhr=${fhr_all[$i]}
+    fhr=${fhr_all[${i}]}
     CDATEp=$(${NDATE} "${fhr}" "${CDATE}" )
     timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
 
@@ -78,7 +78,7 @@ nl -v 0 -w 1 -s ' ' "${CMDFILE}" > "${CMDFILE}".multi
 
 if (( NTASKS > NUM_CMDS )); then
   for ((i=NUM_CMDS; i<NTASKS; i++)); do
-    echo "$i /bin/true" >> "${CMDFILE}".multi
+    echo "${i} /bin/true" >> "${CMDFILE}".multi
   done
 elif (( NTASKS < NUM_CMDS )); then
   echo "ERROR: SLURM_NTASKS (${NTASKS}) < number of commands (${NUM_CMDS})"

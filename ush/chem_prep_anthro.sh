@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2154,SC2153,SC2012
+# rrfslint: file-disable=RRFS005
 #
 # --- Set the file expression and lat/lon dimension names
 #
@@ -31,7 +32,7 @@ if [[ -r ${EMISFILE_BASE_RAW1} ]] && [[ -r ${EMISFILE_BASE_RAW2} ]]; then
   echo "Checking to make sure we have corner coords"
   ncdump -hv XLAT_C "${EMISFILE_BASE_RAW1}"
   #shellcheck disable=SC2181
-  if [[ $? -ne 0 ]]; then
+  if (( $? != 0 )); then
     echo ".. we don't, cutting in from ${INPUT_GRID}"
     ncks -A -v XLAT_C,XLAT_M,XLONG_C,XLONG_M "${INPUT_GRID}" "${EMISFILE_BASE_RAW1}"
     ncks -A -v XLAT_C,XLAT_M,XLONG_C,XLONG_M "${INPUT_GRID}" "${EMISFILE_BASE_RAW2}"

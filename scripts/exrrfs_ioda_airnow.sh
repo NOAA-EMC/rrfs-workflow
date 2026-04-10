@@ -14,7 +14,7 @@ HOMErdasapp=${HOMErrfs}/sorc/RDASApp/
 ${cpreq} "${HOMErdasapp}"/sorc/iodaconv/src/compo/airnow2ioda_nc.py .
 
 # pyioda libraries
-PYIODALIB=$(echo "$HOMErdasapp"/build/lib/python3.*)
+PYIODALIB=$(echo "${HOMErdasapp}"/build/lib/python3.*)
 export PYTHONPATH="${PYIODALIB}:${PYTHONPATH}"
 
 # run the converter
