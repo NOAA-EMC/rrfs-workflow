@@ -54,6 +54,7 @@ jobs:
         with:
           sarif_file: rrfs_code_norm_results.sarif
           category: rrfs-code-norm
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Fail if RRFS Code Norm violations found
         if: always()
