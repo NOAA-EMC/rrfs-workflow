@@ -92,7 +92,7 @@ def load_satinfo():
 # update one satellite anchor
 def update_sat_anchor(data, dcSatInfo, anchor):
     anchor_cat = anchor[8:]  # anchor category: channels, use_flag, use_flag_clddet, error, obserr_bound_max
-    pos1, errmsg = hy.get_start_pos(data, anchor, ignore_error=True)
+    pos1, errmsg = hy.get_start_pos(data, anchor, stop_on_error=False)
     if errmsg is not None:  # if "_anchor" does not exisit, just return
         return
     pos2 = hy.next_pos(data, pos1)
@@ -152,7 +152,7 @@ def getkf_observer_tweak(data, getkf_type):
 
         # remove the "- filter: Temporal Thinning" block
         # assume only one of this filter in each observer
-        pos, errmsg = hy.get_start_pos(data, linestr="- filter: Temporal Thinning", ignore_error=True)
+        pos, errmsg = hy.get_start_pos(data, linestr="- filter: Temporal Thinning", stop_on_error=False)
         if errmsg is None and not data[pos].strip().startswith("#"):  # do nothing if not found or commented out
             next_one = hy.next_pos(data, pos)
             del data[pos:next_one]

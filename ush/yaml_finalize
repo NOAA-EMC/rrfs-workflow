@@ -159,7 +159,7 @@ if is_pass2:
 
 # ------------------------------------------------------------------------------------
 # keep/drop/passivate observations based on convifo/satinfo
-head_end, _ = hy.get_start_pos(data, "cost function/observations/observers")  # get the YAML head section
+head_end, _ = hy.get_start_pos(data, "observations/observers")  # get the YAML head section
 output = data[0:head_end + 1]
 # assemble observers
 dcObs = yt.get_all_obs(data, shallow=True)
