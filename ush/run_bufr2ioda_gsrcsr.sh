@@ -1,4 +1,5 @@
 #!/bin/bash
+# rrfslint: file-disable=RRFS017,RRFS018
 #--------------------------------------------------------------------------------------
 # run_bufr2ioda.sh
 # This driver script will:
@@ -8,7 +9,7 @@
 #       run_bufr2ioda.sh YYYYMMDDHH $DMPDIR /path/to/templates $COM_OBS
 #
 #--------------------------------------------------------------------------------------
-if [[ $# -ne 6 ]] ; then
+if (( $# != 6 )) ; then
     echo "usage:"
     echo "      $0 YYYYMMDDHH gdas|gfs /path/to/files.bufr_d/ /path/to/templates /path/to/output.ioda/"
     exit 1
@@ -59,7 +60,7 @@ for obtype in ${BUFR_py}; do
 
   # check if converter was successful
   # shellcheck disable=SC2181
-  if [ $? == 0 ]; then
+  if (( $? == 0 )); then
     # remove JSON file
     rm -rf "${COM_OBS}/${obtype}_${PDY}${cyc}.json"
   else

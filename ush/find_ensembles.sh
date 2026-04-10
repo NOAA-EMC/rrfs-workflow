@@ -6,7 +6,7 @@ if [[ "${HYB_WGT_ENS}" != "0" ]] && [[ "${HYB_WGT_ENS}" != "0.0" ]]; then # usin
   mpasout_file=mpasout.${timestr}.nc
   enshrs=$(( 10#${ENS_BEC_LOOK_BACK_HRS} + 1 ))
   ens_size=$(( 10#${ENS_SIZE} ))
-  base_dir="${HYB_ENS_PATH:-$COMINrrfs}"
+  base_dir="${HYB_ENS_PATH:-${COMINrrfs}}"
 
   for (( ii=0; ii<enshrs; ii=ii+1 )); do
      CDATEp=$(${NDATE} "-${ii}" "${CDATE}" )

@@ -51,7 +51,7 @@ if [[ ! -r "${EMISFILE_DENOM_PROCESSED}" ]] ; then
 
 #
   ncks -A -v RWC_annual_sum,RWC_annual_sum_smoke_fine,RWC_annual_sum_smoke_coarse,RWC_annual_sum_unspc_fine,RWC_annual_sum_unspc_coarse "${EMISFILE_RWC_PROCESSED}" "${EMISFILE_DENOM_PROCESSED}"
-  timestr3=$(date +%Y-%m-%d_%H:00:00 -d "$current_day")
+  timestr3=$(date +%Y-%m-%d_%H:00:00 -d "${current_day}")
   #shellcheck disable=SC2086
   ncap2 -O -s xtime=\"${timestr3}\"  "${EMISFILE_DENOM_PROCESSED}"  "${EMISFILE_DENOM_PROCESSED}"  
   ncks -O -6 "${EMISFILE_DENOM_PROCESSED}" "${EMISFILE_DENOM_PROCESSED}"
