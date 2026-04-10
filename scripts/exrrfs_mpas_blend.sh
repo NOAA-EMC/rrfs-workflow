@@ -12,7 +12,7 @@ large_scale_file=${UMBRELLA_PREP_IC_DATA}/init.nc
 
 for hr in ${BLENDING_CYCS:-"99"}; do
   shr=$(printf '%02d' $((10#$hr)) )
-  if [ "${cyc}" == "${shr}" ]; then
+  if [[ "${cyc}" == "${shr}" ]]; then
     timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)
     CDATEp=$("${NDATE}" -"${cyc_interval}" "${CDATE}" )
     PDYii=${CDATEp:0:8}

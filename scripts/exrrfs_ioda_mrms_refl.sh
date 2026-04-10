@@ -17,7 +17,6 @@ YYYY=${CDATE:0:4}
 MM=${CDATE:4:2}
 DD=${CDATE:6:2}
 HH=${CDATE:8:2}
-YYYYMMDD=${CDATE:0:8}
 #
 #-----------------------------------------------------------------------
 #
@@ -41,7 +40,7 @@ for bigmin_this in ${RADARREFL_TIMELEVEL[@]}; do
   #-----------------------------------------------------------------------
   #
   meshgriddir="${FIXrrfs}/${MESH_NAME}"
-  echo "meshgriddir is $meshgriddir"
+  echo "meshgriddir is ${meshgriddir}"
   cp "${meshgriddir}"/"${MESH_NAME}".grid.nc grid.nc
 
   #
@@ -83,7 +82,7 @@ for bigmin_this in ${RADARREFL_TIMELEVEL[@]}; do
         nsslfile1="*${mrms}_*_${YYYY}${MM}${DD}-${HH}${min}*.${obs_appendix}"
         numgrib2=$(find ${NSSL}/${nsslfile1} -maxdepth 1 -type f | wc -l)
         echo "Number of GRIB-2 files: ${numgrib2}"
-        if (( numgrib2 >= 10 )) && [ ! -e filelist_mrms ]; then
+        if (( numgrib2 >= 10 )) && [[ ! -e filelist_mrms ]]; then
           cp ${NSSL}/${nsslfile1} .
           ls ${nsslfile1} > filelist_mrms
           echo "Creating links for ${YYYY}${MM}${DD}-${HH}${min}"
@@ -109,7 +108,7 @@ for bigmin_this in ${RADARREFL_TIMELEVEL[@]}; do
 
      numgrib2=$(more filelist_mrms | wc -l)
      echo "Using radar data from: $(head -1 filelist_mrms | cut -c10-15)"
-     echo "NSSL grib2 file levels = $numgrib2"
+     echo "NSSL grib2 file levels = ${numgrib2}"
   else
      echo "WARNING: Not enough radar reflectivity files available for loop ${bigmin}."
      continue
@@ -181,11 +180,11 @@ EOF
   # pyioda libraries
   PYIODALIB=$(echo "${HOMErrfs}"/sorc/RDASApp/build/lib/python3.*)
   export PYTHONPATH=${PYIODALIB}:${PYTHONPATH}
-  "${HOMErrfs}"/ush/MRMS2ioda.py -i ./Gridded_ref.nc -c "${YYYY}-${MM}-${DD}T${HH}:${bigmin}:00" -o "ioda_mrms_${YYYYMMDD}${HH}_${bigmin}.nc4"
+  "${HOMErrfs}"/ush/MRMS2ioda.py -i ./Gridded_ref.nc -c "${YYYY}-${MM}-${DD}T${HH}:${bigmin}:00" -o "ioda_mrms_${CDATE}_${bigmin}.nc4"
 
   # file count sanity check and copy to COMOUT
-  if [[ -s "ioda_mrms_${YYYYMMDD}${HH}_${bigmin}.nc4" ]]; then
-    ${cpreq} "ioda_mrms_${YYYYMMDD}${HH}_${bigmin}.nc4" "${COMOUT}/ioda_mrms_refl/${WGF}"
+  if [[ -s "ioda_mrms_${CDATE}_${bigmin}.nc4" ]]; then
+    ${cpreq} "ioda_mrms_${CDATE}_${bigmin}.nc4" "${COMOUT}/ioda_mrms_refl/${WGF}"
   else
     echo "FATAL ERROR: no ioda MRMS file generated."
     err_exit # err_exit if no ioda files generated at the development stage

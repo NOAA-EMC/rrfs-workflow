@@ -20,12 +20,12 @@ echo "forecast length for this cycle is ${fcst_len_hrs_thiscyc}"
 #
 if [[ -r "${UMBRELLA_PREP_IC_DATA}/init.nc" ]]; then
   ln -snf "${UMBRELLA_PREP_IC_DATA}/init.nc" init.nc
-  start_type='cold'
+  START_TYPE='cold'
   do_DAcycling='false'
 else
   timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)
   ln -snf "${UMBRELLA_PREP_IC_DATA}/mpasout.nc" "${UMBRELLA_FCST_DATA}/mpasout.${timestr}.nc"
-  start_type='warm'
+  START_TYPE='warm'
   do_DAcycling='true'
 fi
 
@@ -48,7 +48,7 @@ ${cpreq} "${FIXrrfs}/stream_list/${PHYSICS_SUITE}"/* stream_list/
 start_time=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H:%M:%S)
 run_duration=${fcst_len_hrs_thiscyc:-1}:00:00
 physics_suite=${PHYSICS_SUITE:-'mesoscale_reference'}
-jedi_da="true" #true
+jedi_da=true #true
 
 pio_num_iotasks=${NODES}
 pio_stride=${PPN}
@@ -138,7 +138,7 @@ err_chk
 #
 # saving log.atmosphere.0000.out
 #
-[ -f ./log.atmosphere.0000.out ] && cat ./log.atmosphere.0000.out
+[[ -s ./log.atmosphere.0000.out ]] && cat ./log.atmosphere.0000.out
 #
 # double check status as sometimes atmosphere_model.x exit with 0 but there are still errors (log.atmosphere*err)
 #
@@ -146,7 +146,7 @@ num_err_log=$(find ./log.atmosphere*.err 2>/dev/null | wc -l)
 if (( "${num_err_log}" > 0 )) ; then
   echo "FATAL ERROR: MPAS model run failed"
   # saving err log info from the first err log file
-  for f in ./log.atmosphere*.err; do [ -s "$f" ] && echo "--- Saving err info from $f ---" && cat "$f" && break; done
+  for f in ./log.atmosphere*.err; do [[ -s "${f}" ]] && echo "--- Saving err info from ${f} ---" && cat "${f}" && break; done
   err_exit
 else
   # spinup cycles copy f001 mpasout to com/ directly, don't need the save_for_next task

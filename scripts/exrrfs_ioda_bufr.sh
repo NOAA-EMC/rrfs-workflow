@@ -65,10 +65,10 @@ ${cpreq} "${PARMrrfs}/bufr_atms_mapping.yaml" .
 input_file="atmsbufr"
 output_file="ioda_atms_{splits/satId}.nc"
 yaml="bufr_atms_mapping.yaml"
-if [[ -f "$input_file" ]]; then
-  ./bufr2netcdf.x "$input_file" "$yaml" "$output_file"
+if [[ -s "${input_file}" ]]; then
+  ./bufr2netcdf.x "${input_file}" "${yaml}" "${output_file}"
 else
-  echo "Input file $input_file does not exist."
+  echo "Input file ${input_file} does not exist."
 fi
 
 # --------------------------------------------------
@@ -78,10 +78,10 @@ ${cpreq} "${PARMrrfs}/bufr2netcdf_cris-fsr.yaml" .
 input_file="crisfsbufr"
 output_file="ioda_crisf4_{splits/satId}.nc"
 yaml="bufr2netcdf_cris-fsr.yaml"
-if [[ -f "$input_file" ]]; then
-  ./bufr2netcdf.x "$input_file" "$yaml" "$output_file"
+if [[ -s "${input_file}" ]]; then
+  ./bufr2netcdf.x "${input_file}" "${yaml}" "${output_file}"
 else
-  echo "Input file $input_file does not exist."
+  echo "Input file ${input_file} does not exist."
 fi
 
 # run python bufr2ioda tool for ZTD and AMV bufr obs
@@ -98,7 +98,7 @@ ${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/bufr2ioda_gsrcsr.py .
 ${cpreq} "${USHrrfs}"/run_bufr2ioda_gsrcsr.sh .
 
 # pyioda libraries
-PYIODALIB=$(echo "$HOMErdasapp"/build/lib/python3.*)
+PYIODALIB=$(echo "${HOMErdasapp}"/build/lib/python3.*)
 WXFLOWLIB=${USHrrfs}/wxflow/src
 export PYTHONPATH="${WXFLOWLIB}:${PYIODALIB}:${PYTHONPATH}"
 
@@ -133,16 +133,16 @@ for ioda_file in ioda*nc; do
   if [[ "${ioda_file}" == *abi* && "${ioda_file}" != *satwnd* ]]; then
     echo " ${ioda_file} ioda file detected: running offline_domain_check_satrad.py"
     ./offline_domain_check_satrad.py -o "${ioda_file}" -g "${grid_file}" -s 0.005
-    base_name=$(basename "$ioda_file" .nc)
+    base_name=$(basename "${ioda_file}" .nc)
     mv  "${base_name}_dc.nc" "${base_name}.nc"
   elif [[ "${ioda_file}" == *atms* || "${ioda_file}" == *cris* ]]; then
     echo " ${ioda_file} ioda file detected: temporarily skipping offline domain check"
   else
     ./offline_domain_check.py -o "${ioda_file}" -g "${grid_file}" -s 0.005
-    base_name=$(basename "$ioda_file" .nc)
+    base_name=$(basename "${ioda_file}" .nc)
     mv  "${base_name}_dc.nc" "${base_name}.nc"
     ./offline_ioda_tweak.py -o "${ioda_file}"
-    base_name=$(basename "$ioda_file" .nc)
+    base_name=$(basename "${ioda_file}" .nc)
     mv  "${base_name}_llp.nc" "${base_name}.nc"
   fi
 done

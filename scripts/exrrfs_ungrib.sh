@@ -50,7 +50,7 @@ for fhr in  ${fhr_all}; do
   if [[ -s "${GRIBFILE}" ]]; then
     ${cpreq} "${GRIBFILE}"  "${GRIBFILE_LOCAL}"
     # if FILENAME_PATTERN_B is defined and non-empty
-    if [ -n "${FILENAME_PATTERN_B+x}" ] && [ -n "${FILENAME_PATTERN_B}" ]; then
+    if [[ -n "${FILENAME_PATTERN_B+x}" ]] && [[ -n "${FILENAME_PATTERN_B}" ]]; then
       TARGET_FILE=${FILENAME_PATTERN_B/^HHH^/${HHH}}
       TARGET_FILE=${TARGET_FILE/^HH^/${HH}}
       GRIBFILE="${SOURCE_BASEDIR}/${TARGET_FILE}"
@@ -58,7 +58,7 @@ for fhr in  ${fhr_all}; do
     fi
   else
     # If GRIBFILE does not exist, might need to do time interpolation
-    if [[ ${INTERVAL} -eq 1 ]] && (( fhr % 3 != 0 )); then
+    if (( INTERVAL == 1 )) && (( fhr % 3 != 0 )); then
       source "${USHrrfs}"/gefs_interpolation.sh
     else
       echo "FATAL ERROR: ${GRIBFILE} missing and not eligible for time interpolation"

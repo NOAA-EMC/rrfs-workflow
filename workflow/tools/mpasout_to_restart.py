@@ -60,7 +60,7 @@ modify(myfile, changesets)
 myfile = "scripts/exrrfs_fcst.sh"
 changesets = {
     'mpasout': 'restart',
-    "start_type='cold'": "start_type='cold'\n  do_restart='false'",
+    "START_TYPE='cold'": "START_TYPE='cold'\n  do_restart='false'",
     "do_DAcycling='true'": "do_DAcycling='true'\n  do_restart='true'",
     #    'jedi_da="true" #true': 'jedi_da="false" #true',
 }
@@ -102,7 +102,7 @@ modify(myfile, changesets)
 myfile = "scripts/exrrfs_jedivar.sh"
 changesets = {
     "mpasout": "restart",
-    "start_type='cold'": "start_type='cold'\n  do_restart='false'",
+    "START_TYPE='cold'": "START_TYPE='cold'\n  do_restart='false'",
     "do_DAcycling='true'": "do_DAcycling='true'\n  do_restart='true'",
 }
 modify(myfile, changesets)
@@ -111,7 +111,7 @@ modify(myfile, changesets)
 myfile = "scripts/exrrfs_getkf.sh"
 changesets = {
     "mpasout": "restart",
-    "start_type='cold'": "start_type='cold'\n  do_restart='false'",
+    "START_TYPE='cold'": "START_TYPE='cold'\n  do_restart='false'",
     "do_DAcycling='true'": "do_DAcycling='true'\n  do_restart='true'",
 }
 modify(myfile, changesets)
