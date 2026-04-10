@@ -2,15 +2,6 @@
 
 # are needed things passed into this ush script?
 
-  # if do surface surgery, then skip surface cycle
-  if [ ${YYYYMMDDHH} -eq ${SOIL_SURGERY_time} ] ; then
-    if [ "${CYCLE_TYPE}" = "spinup" ]; then
-      export SFC_CYC=3  # skip for soil surgery
-    fi
-  fi
-
-
-
 #   
 #-----------------------------------------------------------------------
 #
