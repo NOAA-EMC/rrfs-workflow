@@ -471,8 +471,8 @@ if [ -f PRSLEV.GrbF${post_fhr} ]; then
 
     if [ -e $fld2d_subh -a -e $tm15 -a -e $tm30 -a -e $tm45 ]
     then
-      cat $tm45 $tm30 $tm15 $fld2d_subh > FLD2D.GrbF${fhr}_subh
-      wgrib2 FLD2D.GrbF${fhr}_subh -set center 7 -grib $fld2d_subh_combo >> $pgmout 2>> errfile
+      cat $tm45 $tm30 $tm15 $fld2d_subh > 2DFLD.GrbF${fhr}_subh
+      wgrib2 2DFLD.GrbF${fhr}_subh -set center 7 -grib $fld2d_subh_combo >> $pgmout 2>> errfile
     else
       msg="FATAL ERROR: ABORTING due to missing 15 minute UPP output $fld2d_subh $tm15 $tm30 $tm45"
       err_exit $msg
@@ -485,7 +485,12 @@ if [ $WGF = "det" ] || [ $WGF = "ensf" ]; then
   export pgm="rrfs_util_dpt2m_post.exe"
   . prep_step
 
-  $EXECrrfs/$pgm NATLEV.GrbF${post_fhr} DPT2M.GrbF${post_fhr} >>$pgmout 2>errfile
+# Use the NATLEV file for deterministic RRFS, and the 2DFLD file for ensemble members
+  if [ $WGF = "det" ]; then
+    $EXECrrfs/$pgm NATLEV.GrbF${post_fhr} DPT2M.GrbF${post_fhr} >>$pgmout 2>errfile
+  elif [ $WGF = "ensf" ]; then
+    $EXECrrfs/$pgm 2DFLD.GrbF${post_fhr} DPT2M.GrbF${post_fhr} >>$pgmout 2>errfile
+  fi
   export err=$?; err_chk
 
   cat NBMFLD.GrbF${post_fhr} DPT2M.GrbF${post_fhr} > NBMFLD_new.GrbF${post_fhr}
