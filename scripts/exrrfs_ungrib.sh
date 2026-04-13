@@ -49,7 +49,7 @@ for fhr in  ${fhr_all}; do
   GRIBFILE="${SOURCE_BASEDIR}/${TARGET_FILE}"
   if [[ "${REGRID_RRFS_GRIB2^^}" == "TRUE"  ]]; then
     if [[ -s "${GRIBFILE}" ]]; then
-      source "${USHrrfs}"/regrid_rrfs_grib2.sh # regrid NA3km rotated-lat-lon to grid 130
+      source "${USHrrfs}"/regrid_rrfs_grib2.sh # regrid NA3km rotated-lat-lon to the 3km variation of grid 130
     else
       echo "FATAL ERROR: ${GRIBFILE} missing"
       err_exit
