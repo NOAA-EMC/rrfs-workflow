@@ -47,7 +47,14 @@ for fhr in  ${fhr_all}; do
   TARGET_FILE=${FILENAME_PATTERN/^HHH^/${HHH}}
   TARGET_FILE=${TARGET_FILE/^HH^/${HH}}
   GRIBFILE="${SOURCE_BASEDIR}/${TARGET_FILE}"
-  if [[ -s "${GRIBFILE}" ]]; then
+  if [[ "${REGRID_RRFS_GRIB2^^}" == "TRUE"  ]]; then
+    if [[ -s "${GRIBFILE}" ]]; then
+      source "${USHrrfs}"/regrid_rrfs_grib2.sh # regrid NA3km rotated-lat-lon to grid 130
+    else
+      echo "FATAL ERROR: ${GRIBFILE} missing"
+      err_exit
+    fi
+  elif [[ -s "${GRIBFILE}" ]]; then
     ${cpreq} "${GRIBFILE}"  "${GRIBFILE_LOCAL}"
     # if FILENAME_PATTERN_B is defined and non-empty
     if [[ -n "${FILENAME_PATTERN_B+x}" ]] && [[ -n "${FILENAME_PATTERN_B}" ]]; then

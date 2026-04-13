@@ -45,6 +45,9 @@ def ungrib_ic(xmlFile, expdir, do_ensemble=False):
         meta_end = f'</metatask>\n'
 
     dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
+    regrid_rrfs_grib2 = os.getenv('REGRID_RRFS_GRIB2', 'FALSE').upper()
+    if regrid_rrfs_grib2 == "TRUE":
+        dcTaskEnv['REGRID_RRFS_GRIB2'] = "TRUE"
     # dependencies
     if extrn_mdl_source == "GFS_NCO":
         COMINgfs = os.getenv("COMINgfs", 'COMINgfs_not_defined')
