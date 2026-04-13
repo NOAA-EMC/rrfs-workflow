@@ -489,11 +489,7 @@ if [ $WGF = "det" ] || [ $WGF = "ensf" ]; then
   if [ $WGF = "det" ]; then
     $EXECrrfs/$pgm NATLEV.GrbF${post_fhr} DPT2M.GrbF${post_fhr} >>$pgmout 2>errfile
   elif [ $WGF = "ensf" ]; then
-     if [[ $post_fhr == '00' ]]; then
-       $EXECrrfs/$pgm NATLEV.GrbF${post_fhr} DPT2M.GrbF${post_fhr} >>$pgmout 2>errfile
-     else
-       $EXECrrfs/$pgm 2DFLD.GrbF${post_fhr} DPT2M.GrbF${post_fhr} >>$pgmout 2>errfile
-     fi
+    $EXECrrfs/$pgm 2DFLD.GrbF${post_fhr} DPT2M.GrbF${post_fhr} >>$pgmout 2>errfile
   fi
   export err=$?; err_chk
 
