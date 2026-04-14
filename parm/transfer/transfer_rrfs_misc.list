@@ -26,59 +26,29 @@
 _COMROOT_/rrfs/_SHORTVER_/firewx_input/
 + /_PDY_*/
 + /_PDYm1_*/
-+ /_PDYm2_*/
-+ /_PDYm3_*/
-+ /_PDYm4_*/
-+ /_PDYm5_*/
-+ /_PDYm6_*/
-+ /_PDYm7_*/
 - *
 B 1000000
 
 _COMROOT_/rrfs/_SHORTVER_/HOURLY_HWP/
 + /hourly_hwp._PDY_/***
 + /hourly_hwp._PDYm1_/***
-+ /hourly_hwp._PDYm2_/***
-+ /hourly_hwp._PDYm3_/***
-+ /hourly_hwp._PDYm4_/***
-+ /hourly_hwp._PDYm5_/***
-+ /hourly_hwp._PDYm6_/***
-+ /hourly_hwp._PDYm7_/***
 - *
 B 1000000
 
 _COMROOT_/rrfs/_SHORTVER_/RAVE_INTP/
 + /rave_intp._PDY_/***
 + /rave_intp._PDYm1_/***
-+ /rave_intp._PDYm2_/***
-+ /rave_intp._PDYm3_/***
-+ /rave_intp._PDYm4_/***
-+ /rave_intp._PDYm5_/***
-+ /rave_intp._PDYm6_/***
-+ /rave_intp._PDYm7_/***
 - *
 B 1000000
 
 _COMROOT_/rrfs/_SHORTVER_/satbias/
-+ /*_PDY_*
-+ /*_PDYm1_*
-+ /*_PDYm2_*
-+ /*_PDYm3_*
-+ /*_PDYm4_*
-+ /*_PDYm5_*
-+ /*_PDYm6_*
-+ /*_PDYm7_*
++ /satbias._PDY_/***
++ /satbias._PDYm1_/***
 - *
 B 1000000
 
 _COMROOT_/rrfs/_SHORTVER_/surface/
-+ /*_PDY_*
-+ /*_PDYm1_*
-+ /*_PDYm2_*
-+ /*_PDYm3_*
-+ /*_PDYm4_*
-+ /*_PDYm5_*
-+ /*_PDYm6_*
-+ /*_PDYm7_*
++ /surface._PDY_/***
++ /surface._PDYm1_/***
 - *
 B 1000000
