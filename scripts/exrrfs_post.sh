@@ -472,7 +472,7 @@ if [ -f PRSLEV.GrbF${post_fhr} ]; then
     if [ -e $fld2d_subh -a -e $tm15 -a -e $tm30 -a -e $tm45 ]
     then
       cat $tm45 $tm30 $tm15 $fld2d_subh > 2DFLD.GrbF${fhr}_subh
-      wgrib2 2DFLD.GrbF${fhr}_subh -set center 7 -grib $fld2d_subh_combo >> $pgmout 2>> errfile
+      wgrib2 2DFLD.GrbF${fhr}_subh -set center 7 -not max -grib $fld2d_subh_combo >> $pgmout 2>> errfile
     else
       msg="FATAL ERROR: ABORTING due to missing 15 minute UPP output $fld2d_subh $tm15 $tm30 $tm45"
       err_exit $msg
@@ -489,11 +489,7 @@ if [ $WGF = "det" ] || [ $WGF = "ensf" ]; then
   if [ $WGF = "det" ]; then
     $EXECrrfs/$pgm NATLEV.GrbF${post_fhr} DPT2M.GrbF${post_fhr} >>$pgmout 2>errfile
   elif [ $WGF = "ensf" ]; then
-     if [[ $post_fhr == '00' ]]; then
-       $EXECrrfs/$pgm NATLEV.GrbF${post_fhr} DPT2M.GrbF${post_fhr} >>$pgmout 2>errfile
-     else
-       $EXECrrfs/$pgm 2DFLD.GrbF${post_fhr} DPT2M.GrbF${post_fhr} >>$pgmout 2>errfile
-     fi
+    $EXECrrfs/$pgm 2DFLD.GrbF${post_fhr} DPT2M.GrbF${post_fhr} >>$pgmout 2>errfile
   fi
   export err=$?; err_chk
 
