@@ -51,6 +51,9 @@ gsi_namelist="
  /
 OBS_INPUT::
 !  dfile          dtype       dplat     dsis                 dval    dthin dsfcalc
+   wbbufr         t           null      t                    1.0     0     0
+   wbbufr         q           null      q                    1.0     0     0
+   wbbufr         uv          null      uv                   1.0     0     0
    pm25bufr       pm2_5       null      TEOM                 1.0     0     0
    dbzobs.nc      dbz         null      dbz                  1.0     0     0
    fedobs.nc      fed         null      fed                  1.0     0     0

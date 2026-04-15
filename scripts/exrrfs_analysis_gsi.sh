@@ -486,6 +486,9 @@ if [[ ${GSI_TYPE} == "OBSERVER" || ${anav_type} == "conv" || ${anav_type} == "co
   obs_files_target[${obs_number}]=satwndbufr
 
   obs_number=${#obs_files_source[@]}
+  obs_files_source[${obs_number}]=${obspath_tmp}/${obsfileprefix}.t${HH}${SUBH}z.gsbpfl.tm00.bufr_d
+  obs_files_target[${obs_number}]=wbbufr
+  obs_number=${#obs_files_source[@]}
   obs_files_source[${obs_number}]=${obspath_tmp}/${obsfileprefix}.t${HH}${SUBH}z.nexrad.tm00.bufr_d
   obs_files_target[${obs_number}]=l2rwbufr
 

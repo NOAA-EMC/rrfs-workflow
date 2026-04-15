@@ -59,10 +59,12 @@ fhr3m1=$(printf "%03d" "$fhr3m1")
 case "$RUNTYPE" in
   rrfs_alaska)
     GRIBIN="$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr3}.ak.grib2"
+    GRIBINB="$COMIN/${model}.${cycle}.2dfld.3km.f${fhr3}.ak.grib2"
     GEMGRD="${RUNTYPE}_${PDY}${cyc}f${fhr3}"
     ;;
   rrfs_conus)
     GRIBIN="$COMIN/${model}.${cycle}.${GRIB}.3km.f${fhr3}.conus.grib2"
+    GRIBINB="$COMIN/${model}.${cycle}.2dfld.3km.f${fhr3}.conus.grib2"
     GEMGRD="${RUNTYPE}_${PDY}${cyc}f${fhr3}"
     ;;
   rrfs_conus_subh)
@@ -82,10 +84,12 @@ case "$RUNTYPE" in
     ;;
   rrfs_hawaii)
     GRIBIN="$COMIN/${model}.${cycle}.${GRIB}.2p5km.f${fhr3}.hi.grib2"
+    GRIBINB="$COMIN/${model}.${cycle}.2dfld.2p5km.f${fhr3}.hi.grib2"
     GEMGRD="${RUNTYPE}_${PDY}${cyc}f${fhr3}"
     ;;
   rrfs_prico)
     GRIBIN="$COMIN/${model}.${cycle}.${GRIB}.2p5km.f${fhr3}.pr.grib2"
+    GRIBINB="$COMIN/${model}.${cycle}.2dfld.2p5km.f${fhr3}.pr.grib2"
     GEMGRD="${RUNTYPE}_${PDY}${cyc}f${fhr3}"
     ;;
 esac
@@ -129,13 +133,15 @@ done
 case "$RUNTYPE" in
   rrfs_alaska)
     "$WGRIB2" -s "$GRIBIN" | grep -f "$GEMPAK_FIX/rrfs.parmlist" | "$WGRIB2" -i -grib temp "$GRIBIN"
-    mv temp "grib${fhr_padded}"
+    "$WGRIB2" -s "$GRIBINB" | grep -f "$GEMPAK_FIX/rrfs.parmlist" | "$WGRIB2" -i -grib tempb "$GRIBINB"
+    cat temp tempb > "grib${fhr_padded}"
     ;;
   rrfs_conus)
-    "$WGRIB2" "$GRIBIN" | grep "REFD:263 K" | grep max | "$WGRIB2" -i -grib tempref263k "$GRIBIN"
+    "$WGRIB2" "$GRIBINB" | grep "REFD:263 K" | grep max | "$WGRIB2" -i -grib tempref263k "$GRIBINB"
     "$WGRIB2" tempref263k -set_byte 4 11 198 -grib tempmaxref263k
     "$WGRIB2" -s "$GRIBIN" | grep -f "$GEMPAK_FIX/rrfs.parmlist" | "$WGRIB2" -i -grib temp "$GRIBIN"
-    cat temp tempmaxref263k > "grib${fhr_padded}"
+    "$WGRIB2" -s "$GRIBINB" | grep -f "$GEMPAK_FIX/rrfs.parmlist" | "$WGRIB2" -i -grib tempb "$GRIBINB"
+    cat temp tempb tempmaxref263k > "grib${fhr_padded}"
     ;;
   rrfs_conus_subh)
     cpreq "$GRIBIN" "grib${fhr_padded}"
@@ -152,11 +158,13 @@ case "$RUNTYPE" in
     ;;
   rrfs_hawaii)
     "$WGRIB2" -s "$GRIBIN" | grep -f "$GEMPAK_FIX/rrfs.parmlist" | "$WGRIB2" -i -grib temp "$GRIBIN"
-    mv temp "grib${fhr_padded}"
+    "$WGRIB2" -s "$GRIBINB" | grep -f "$GEMPAK_FIX/rrfs.parmlist" | "$WGRIB2" -i -grib tempb "$GRIBINB"
+    cat temp tempb > "grib${fhr_padded}"
     ;;
   rrfs_prico)
     "$WGRIB2" -s "$GRIBIN" | grep -f "$GEMPAK_FIX/rrfs.parmlist" | "$WGRIB2" -i -grib temp "$GRIBIN"
-    mv temp "grib${fhr_padded}"
+    "$WGRIB2" -s "$GRIBINB" | grep -f "$GEMPAK_FIX/rrfs.parmlist" | "$WGRIB2" -i -grib tempb "$GRIBINB"
+    cat temp tempb > "grib${fhr_padded}"
     ;;
   *)
     cpreq "$GRIBIN" "grib${fhr_padded}"
