@@ -60,8 +60,9 @@ def day_clean(srcPath, cyc1, cyc2, srcType, WGF):
             pattern = f'{i:02}/{WGF}'
         elif srcType == "stmp":
             pattern = f'*_{i:02}_*/{WGF}'
-        elif srcType == "com_lbc":
-            pattern = f'{i:02}/lbc/{WGF}'
+        elif srcType.startswith("com_"):
+            folder_name = srcType.split("_")[1]
+            pattern = f'{i:02}/{folder_name}/{WGF}'
         else:  # com
             pattern = f'{i:02}/*/{WGF}'
 
@@ -174,6 +175,7 @@ if not all(envar.strip() for envar in list_envars):  # if not "all envars are no
 stmp_retention_cycs = int(os.getenv("STMP_RETENTION_CYCS", "24"))
 com_retention_cycs = int(os.getenv("COM_RETENTION_CYCS", "120"))
 com_lbc_retention_cycs = int(os.getenv("COM_LBC_RETENTION_CYCS", "48"))
+com_fcst_retention_cycs = int(os.getenv("COM_FCST_RETENTION_CYCS", "48"))
 log_retention_cycs = int(os.getenv("LOG_RETENTION_CYCS", "840"))
 clean_back_days = int(os.getenv("CLEAN_BACK_DAYS", "5"))
 #
@@ -186,6 +188,7 @@ print(f'cdate={cdate}')
 print(f'stmp_retention_cycs={stmp_retention_cycs}')
 print(f'com_retention_cycs={com_retention_cycs}')
 print(f'com_lbc_retention_cycs={com_lbc_retention_cycs}')
+print(f'com_fcst_retention_cycs={com_fcst_retention_cycs}')
 print(f'log_retention_cycs={log_retention_cycs}')
 print(f'clean_back_days={clean_back_days}')
 
@@ -197,6 +200,9 @@ group_clean(cdate, com_retention_cycs, COMROOT, 'com', NET, RUN, WGF, rrfs_ver)
 
 print(f'\nTry to clean com_lbc: {COMROOT}')
 group_clean(cdate, com_lbc_retention_cycs, COMROOT, 'com_lbc', NET, RUN, WGF, rrfs_ver)
+
+print(f'\nTry to clean com_fcst: {COMROOT}')
+group_clean(cdate, com_fcst_retention_cycs, COMROOT, 'com_fcst', NET, RUN, WGF, rrfs_ver)
 
 print('\nTry to clean log: ' + COMROOT.rstrip('/') + f'{NET}/{rrfs_ver}/logs')
 group_clean(cdate, log_retention_cycs, COMROOT, 'log', NET, RUN, WGF, rrfs_ver)
