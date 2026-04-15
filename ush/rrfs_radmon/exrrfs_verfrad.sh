@@ -2,7 +2,7 @@
 set -x
 
 # Run data extract/validation for regional radiance diag data
-echo "---> exnam_vrfyrad.sh.ecf"
+echo "---> exrrfs_vrfyrad.sh.ecf"
 
 #  Command line arguments
 export PDY=${1:-${PDY:?}} 
@@ -12,7 +12,7 @@ export cyc=${2:-${cyc:?}}
 # Set the required Directories 
 #################################################################################
 
-export FIXnam=${FIXnam:-${FIX_GSI}}
+export FIXrrfs=${FIXrrfs:-${FIX_GSI}}
 
 #################################################################################
 
@@ -27,16 +27,6 @@ export NCP=${NCP:-/bin/cp}
 
 export Z=${Z:-"gz"}
 export UNCOMPRESS=${UNCOMPRESS:-"gunzip -f"}
-
-#  NOTE for namrr:  the contents of the t00z.radstat.tm06-tm01 are stored
-#  in the _next_ day's radmon.[yyyymmdd] file to match the way the radstat
-#  files are created.  
-#    The pattern is for radmon.20160318:
-#       t00z.radstat.tm06  contents is dated 2016031718
-#       t00z.radstat.tm05  contents is dated 2016031719
-#           . . .
-#       t00z.radstat.tm01  contents is dated 2016031723
-#       t00z.radstat.tm00  contents is dated 2016031800
 
 ###########################################################################
 # ensure work and TANK dirs exist, verify radstat and biascr are available
@@ -65,7 +55,7 @@ if [[ -s ${radstat} && -s ${biascr} ]]; then
    #------------------------------------------------------------------
    #  SATYPE is the list of expected satellite/instrument sources
    #  in the radstat file.  It should be stored in the $TANKverf 
-   #  directory.  If it isn't there then use the $FIXnam copy.  In all 
+   #  directory.  If it isn't there then use the $FIXrrfs copy.  In all 
    #  cases write it back out to the radmon.$PDY directory.  Add any
    #  new sources to the list before writing back out.
    #------------------------------------------------------------------
@@ -73,12 +63,12 @@ if [[ -s ${radstat} && -s ${biascr} ]]; then
    echo 'radstat_satype= ' $radstat_satype
 
    #------------------------------------------------------------------
-   #  Look for the $satype_file from the info directory or $FIXnam
+   #  Look for the $satype_file from the info directory or $FIXrrfs
    #  in that order.  
    #------------------------------------------------------------------
    if [[ ! -e ${TANKverf}/info/${satype_file} ]]; then
-      if [[ -e ${FIXnam}/${satype_file} ]]; then 
-         export SATYPE=`cat ${FIXnam}/${satype_file}`
+      if [[ -e ${FIXrrfs}/${satype_file} ]]; then 
+         export SATYPE=`cat ${FIXrrfs}/${satype_file}`
       else
          export SATYPE=${radstat_satype}
       fi
@@ -195,6 +185,6 @@ elif [[ $rc_time -ne 0 ]]; then
    err=$rc_time
 fi
 
-echo "<--- exnam_vrfyrad.sh.ecf"
+echo "<--- exrrfs_verfrad.sh.ecf"
 exit ${err}
 
