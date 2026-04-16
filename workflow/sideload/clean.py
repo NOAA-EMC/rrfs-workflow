@@ -2,6 +2,7 @@
 from pathlib import Path
 import os
 import sys
+import ast
 import shutil
 from datetime import datetime, timedelta, timezone
 import sqlite3
@@ -40,7 +41,7 @@ def is_cycle_done(EXPDIR, CDATE):
 #
 
 
-def day_clean(srcPath, cyc1, cyc2, srcType, WGF):
+def day_clean(srcPath, cyc1, cyc2, srcType, WGF, com_nondefault=""):
     check_is_cyc_done = os.getenv("CHECK_IS_CYC_DONE", "FALSE").upper() == "TRUE"
     if check_is_cyc_done:  # mainly for retros. Not needed by realtime runs as we want to remove all old cycles including expired ones
         EXPDIR = os.getenv("EXPDIR", "EXPDIR_not_defined")
@@ -60,10 +61,12 @@ def day_clean(srcPath, cyc1, cyc2, srcType, WGF):
             pattern = f'{i:02}/{WGF}'
         elif srcType == "stmp":
             pattern = f'*_{i:02}_*/{WGF}'
-        elif srcType == "com_lbc":
-            pattern = f'{i:02}/lbc/{WGF}'
-        else:  # com
-            pattern = f'{i:02}/*/{WGF}'
+        elif srcType.startswith("com"):  # process different com directories
+            task = srcType.strip().split('_', 1)[1]
+            if task == "default":
+                pattern = f'{i:02}/*/{WGF}'
+            else:
+                pattern = f'{i:02}/{task}/{WGF}'
 
         pathlist = list(Path(srcPath).glob(pattern))
         if srcType == "stmp" and STMP_KEPT_TASKS != "":  # exclude STMP_KEPT_TASKS from pathlist
@@ -71,6 +74,13 @@ def day_clean(srcPath, cyc1, cyc2, srcType, WGF):
             excludes = []
             for task in kept_tasks:
                 excludes.append(f'{RUN}_{task}_{i:02}_')
+            pathlist = [p for p in pathlist if not any(ex in str(p) for ex in excludes)]
+        # ~~~~~
+        if srcType == 'com_default' and com_nondefault != '':  # exclude nondefault from the default pathlist
+            kept_tasks = com_nondefault.split(",")
+            excludes = []
+            for task in kept_tasks:
+                excludes.append(f'{i:02}/{task}/{WGF}')
             pathlist = [p for p in pathlist if not any(ex in str(p) for ex in excludes)]
 
         for mypath in pathlist:
@@ -93,7 +103,7 @@ def day_clean(srcPath, cyc1, cyc2, srcType, WGF):
         # remove RUN.PDY/cyc if it is empty under com/
         #
         cycPath = srcPath.rstrip('/') + f"/{i:02}"
-        if os.path.exists(cycPath) and srcType == "com" and is_directory_empty(cycPath):
+        if os.path.exists(cycPath) and srcType.startswith("com") and is_directory_empty(cycPath):
             os.rmdir(cycPath)
             print(f'remove empty directory: {cycPath}')
         # ~~~~~~~~~~~~
@@ -107,7 +117,7 @@ def day_clean(srcPath, cyc1, cyc2, srcType, WGF):
 #
 
 
-def group_clean(cdate, retention_cycs, srcBase, srcType, NET, RUN, WGF, rrfs_ver):
+def group_clean(cdate, retention_cycs, srcBase, srcType, NET, RUN, WGF, rrfs_ver, com_nondefault=""):
     clean_back_days = int(os.getenv("CLEAN_BACK_DAYS", "5"))
 
     srcBase = srcBase.rstrip('/')
@@ -128,8 +138,8 @@ def group_clean(cdate, retention_cycs, srcBase, srcType, NET, RUN, WGF, rrfs_ver
         elif srcType == "log":
             srcPath = f"{srcBase}/{NET}/{rrfs_ver}/logs/{RUN}.{bPDY}"
         if os.path.exists(srcPath):
-            print(f"----\nday_clean {srcPath} 0 23 {srcType} {WGF}\n----")
-            day_clean(srcPath, 0, 23, srcType, WGF)
+            print(f"----\nday_clean {srcPath} 0 23 {srcType} {WGF} {com_nondefault}\n----")
+            day_clean(srcPath, 0, 23, srcType, WGF, com_nondefault)
     # ~~~~~~
     # clean cycles in the first clean cycle day
     if srcType == "stmp":
@@ -139,8 +149,8 @@ def group_clean(cdate, retention_cycs, srcBase, srcType, NET, RUN, WGF, rrfs_ver
     elif srcType == "log":
         srcPath = f"{srcBase}/{NET}/{rrfs_ver}/logs/{RUN}.{pPDY}"
     if os.path.exists(srcPath):
-        print(f"----\nday_clean {srcPath} 0 {pcyc} {srcType} {WGF}\n----")
-        day_clean(srcPath, 0, int(pcyc), srcType, WGF)
+        print(f"----\nday_clean {srcPath} 0 {pcyc} {srcType} {WGF} {com_nondefault}\n----")
+        day_clean(srcPath, 0, int(pcyc), srcType, WGF, com_nondefault)
 
 
 #
@@ -172,8 +182,7 @@ if not all(envar.strip() for envar in list_envars):  # if not "all envars are no
 # get clean-related environmental variables
 #
 stmp_retention_cycs = int(os.getenv("STMP_RETENTION_CYCS", "24"))
-com_retention_cycs = int(os.getenv("COM_RETENTION_CYCS", "120"))
-com_lbc_retention_cycs = int(os.getenv("COM_LBC_RETENTION_CYCS", "48"))
+com_retention_cycs = os.getenv("COM_RETENTION_CYCS", "120")
 log_retention_cycs = int(os.getenv("LOG_RETENTION_CYCS", "840"))
 clean_back_days = int(os.getenv("CLEAN_BACK_DAYS", "5"))
 #
@@ -185,18 +194,30 @@ cdate = cdate.replace(tzinfo=timezone.utc)  # make it UTC-aware
 print(f'cdate={cdate}')
 print(f'stmp_retention_cycs={stmp_retention_cycs}')
 print(f'com_retention_cycs={com_retention_cycs}')
-print(f'com_lbc_retention_cycs={com_lbc_retention_cycs}')
 print(f'log_retention_cycs={log_retention_cycs}')
 print(f'clean_back_days={clean_back_days}')
 
 print(f'\nTry to clean stmp: {os.path.dirname(DATAROOT)}')
 group_clean(cdate, stmp_retention_cycs, DATAROOT, 'stmp', NET, RUN, WGF, rrfs_ver)
 
-print(f'\nTry to clean com: {COMROOT}')
-group_clean(cdate, com_retention_cycs, COMROOT, 'com', NET, RUN, WGF, rrfs_ver)
-
-print(f'\nTry to clean com_lbc: {COMROOT}')
-group_clean(cdate, com_lbc_retention_cycs, COMROOT, 'com_lbc', NET, RUN, WGF, rrfs_ver)
+# more granularity for the com clean
+if com_retention_cycs.isdigit():  # if digit, do clean directly
+    print(f'\nTry to clean com_default: {COMROOT}')
+    group_clean(cdate, com_retention_cycs, COMROOT, 'com_default', NET, RUN, WGF, rrfs_ver)
+else:  # otherwise, it defines a flow style dictionary, eg. "{'default': 120, 'lbc,fcst': 48, 'upp': 840}"
+    dcTaskCycs = ast.literal_eval(com_retention_cycs)
+    com_nondefault = ''
+    for key, value in dcTackCycs.items():
+        if key != "default":
+            tasks = key.strip().split(',')
+            for task in tasks:
+                com_nondefault += task.strip() + ','
+                print(f'\nTry to clean com_{task}: {COMROOT}')
+                group_clean(cdate, int(value), COMROOT, f'com_{task}', NET, RUN, WGF, rrfs_ver)
+    # ~~~~~~~~~~~~
+    value = int(dcTackCycs['default'])
+    print(f'\nTry to clean com_default: {COMROOT}')
+    group_clean(cdate, int(value), COMROOT, f'com_default', NET, RUN, WGF, rrfs_ver, com_nondefault.strip(','))
 
 print('\nTry to clean log: ' + COMROOT.rstrip('/') + f'{NET}/{rrfs_ver}/logs')
 group_clean(cdate, log_retention_cycs, COMROOT, 'log', NET, RUN, WGF, rrfs_ver)
