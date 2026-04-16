@@ -197,29 +197,29 @@ print(f'com_retention_cycs={com_retention_cycs}')
 print(f'log_retention_cycs={log_retention_cycs}')
 print(f'clean_back_days={clean_back_days}')
 
-print(f'\nTry to clean stmp: {os.path.dirname(DATAROOT)}')
+print(f'\nTry to clean stmp: {os.path.dirname(DATAROOT)}, {stmp_retention_cycs} hourcycs ago')
 group_clean(cdate, stmp_retention_cycs, DATAROOT, 'stmp', NET, RUN, WGF, rrfs_ver)
 
 # more granularity for the com clean
 if com_retention_cycs.isdigit():  # if digit, do clean directly
-    print(f'\nTry to clean com_default: {COMROOT}')
+    print(f'\nTry to clean com_default: {COMROOT}, {com_retention_cycs} hourcycs ago')
     group_clean(cdate, com_retention_cycs, COMROOT, 'com_default', NET, RUN, WGF, rrfs_ver)
 else:  # otherwise, it defines a flow style dictionary, eg. "{'default': 120, 'lbc,fcst': 48, 'upp': 840}"
     dcTaskCycs = ast.literal_eval(com_retention_cycs)
     com_nondefault = ''
-    for key, value in dcTackCycs.items():
+    for key, value in dcTaskCycs.items():
         if key != "default":
             tasks = key.strip().split(',')
             for task in tasks:
                 com_nondefault += task.strip() + ','
-                print(f'\nTry to clean com_{task}: {COMROOT}')
+                print(f'\nTry to clean com_{task}: {COMROOT}/PDY/cyc/{task}, {value} hourcycs ago')
                 group_clean(cdate, int(value), COMROOT, f'com_{task}', NET, RUN, WGF, rrfs_ver)
     # ~~~~~~~~~~~~
-    value = int(dcTackCycs['default'])
-    print(f'\nTry to clean com_default: {COMROOT}')
+    value = int(dcTaskCycs['default'])
+    print(f'\nTry to clean com_default: {COMROOT}, {value} hourcycs ago')
     group_clean(cdate, int(value), COMROOT, f'com_default', NET, RUN, WGF, rrfs_ver, com_nondefault.strip(','))
 
-print('\nTry to clean log: ' + COMROOT.rstrip('/') + f'{NET}/{rrfs_ver}/logs')
+print('\nTry to clean log: ' + COMROOT.rstrip('/') + f'{NET}/{rrfs_ver}/logs, {log_retention_cycs} hourcycs ago')
 group_clean(cdate, log_retention_cycs, COMROOT, 'log', NET, RUN, WGF, rrfs_ver)
 
 print('\nDone!')
