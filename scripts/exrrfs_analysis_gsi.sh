@@ -875,21 +875,6 @@ if [ "${DO_RADDA}" = "TRUE" ]; then
     SAT_TIME=$($NDATE -$((10#${satcounter})) ${YYYYMMDDHH})
     echo $SAT_TIME
 
-# DO_ENS_RADDA IS NEVER TRUE - REMOVE THIS IF BLOCK?	
-#    if [ "${DO_ENS_RADDA}" = "TRUE" ]; then			
-#      # For EnKF.  Note, EnKF does not need radstat file
-#      if [ -r ${SATBIAS_DIR}_ensmean/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ]; then
-#        echo " using satellite bias files from ${SAT_TIME}" 
-#        cpreq -p ${SATBIAS_DIR}_ensmean/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ./satbias_in
-#        cpreq -p ${SATBIAS_DIR}_ensmean/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias_pc ./satbias_pc
-#	    
-#        break
-#      fi
-	  
-#    else
-    # For EnVar
-    #
-
     if [ -r ${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ]; then
       echo " using satellite bias files from ${SATBIAS_OUT} ${spinup_or_prod_rrfs}.${SAT_TIME}"
       cpreq -p ${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ./satbias_in
