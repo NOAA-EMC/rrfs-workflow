@@ -1,7 +1,5 @@
 #! /bin/bash
 
-# are needed things passed into this ush script?
-
 #   
 #-----------------------------------------------------------------------
 #
