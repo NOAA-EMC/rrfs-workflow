@@ -248,7 +248,7 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
      print_info_msg "$VERBOSE" "Using radar data from: `head -1 filelist_mrms | cut -c10-15`"
      print_info_msg "$VERBOSE" "NSSL grib2 file levels = $numgrib2"
   else
-     echo "WARNING: Not enough radar reflectivity files available for loop ${bigmin}."
+     echo "WARNING: Not enough radar reflectivity files in ${NSSL} available for loop ${bigmin}."
      continue
   fi
   #
