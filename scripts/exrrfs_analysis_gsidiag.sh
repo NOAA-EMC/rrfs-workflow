@@ -153,7 +153,12 @@ for loop in $loops; do
       cd ${DATA}
 
       for type in $listall; do
-         count=$(ls pe*.${type}_${loop} | wc -l)
+	 if [ -e pe0000.${type}_${loop} ]; then
+          count=$(ls pe*.${type}_${loop} | wc -l)
+         else
+	  count=0
+	 fi
+
          if [[ $count -gt 0 ]]; then
             $(cat pe*.${type}_${loop} > diag_${type}_${string}.${YYYYMMDDHH})
             echo "diag_${type}_${string}.${YYYYMMDDHH}" >> listrad_bin
@@ -167,7 +172,11 @@ for loop in $loops; do
       cd ${DATA}
 
       for type in $listall; do
-         count=$(ls pe*.${type}_${loop} | wc -l)
+	 if [ -e pe0000.${type}_${loop} ]; then
+          count=$(ls pe*.${type}_${loop} | wc -l)
+         else
+	  count=0
+	 fi
          if [[ $count -gt 0 ]]; then
             $(cat pe*.${type}_${loop} > diag_${type}_${string}.${YYYYMMDDHH})
             echo "diag_${type}_${string}.${YYYYMMDDHH}" >> listdbz_bin
@@ -188,7 +197,11 @@ for loop in $loops; do
       cd ${DATA}
 
       for type in $listall_cnv; do
-         count=$(ls pe*.${type}_${loop}.nc4 | wc -l)
+	 if [ -e pe0000.${type}_${loop}.nc4 ]; then
+          count=$(ls pe*.${type}_${loop}.nc4 | wc -l)
+         else
+	  count=0
+	 fi
          if [[ $count -gt 0 ]]; then
             . prep_step   
             ${APRUN} $pgm -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4 >>$pgmout >errfile
@@ -206,7 +219,11 @@ for loop in $loops; do
       done
 
       for type in $listall_rad; do
-         count=$(ls pe*.${type}_${loop}.nc4 | wc -l)
+	 if [ -e pe0000.${type}_${loop}.nc4 ]; then
+          count=$(ls pe*.${type}_${loop}.nc4 | wc -l)
+         else
+	  count=0
+	 fi
          if [[ $count -gt 0 ]]; then
             ${APRUN} $pgm -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4 >>$pgmout >errfile
             export err=$?; err_chk
@@ -230,7 +247,11 @@ for loop in $loops; do
       cd ${DATA}
 
       for type in $listall; do
-         count=$(ls pe*.${type}_${loop}.nc4 | wc -l)
+	 if [ -e pe0000.${type}_${loop}.nc4 ]; then
+          count=$(ls pe*.${type}_${loop}.nc4 | wc -l)
+         else
+	  count=0
+	 fi
          if [[ $count -gt 0 ]]; then
 	    . prep_step
             ${APRUN} $pgm -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4 >>$pgmout >errfile

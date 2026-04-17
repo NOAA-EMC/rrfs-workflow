@@ -1046,10 +1046,16 @@ if [ "${DO_GSIDIAG_OFFLINE}" = "FALSE" ]; then
   numfile_cnv=0
   numfile_rad=0
   if [ $binary_diag = ".true." ]; then
-#    listall="hirs2_n14 msu_n14 sndr_g08 sndr_g11 sndr_g11 sndr_g12 sndr_g13 sndr_g08_prep sndr_g11_prep sndr_g12_prep sndr_g13_prep sndrd1_g11 sndrd2_g11 sndrd3_g11 sndrd4_g11 sndrd1_g15 sndrd2_g15 sndrd3_g15 sndrd4_g15 sndrd1_g13 sndrd2_g13 sndrd3_g13 sndrd4_g13 hirs3_n15 hirs3_n16 hirs3_n17 amsua_n15 amsua_n16 amsua_n17 amsua_n18 amsua_n19 amsua_metop-a amsua_metop-b amsua_metop-c amsub_n15 amsub_n16 amsub_n17 hsb_aqua airs_aqua amsua_aqua imgr_g08 imgr_g11 imgr_g12 pcp_ssmi_dmsp pcp_tmi_trmm conv sbuv2_n16 sbuv2_n17 sbuv2_n18 omi_aura ssmi_f13 ssmi_f14 ssmi_f15 hirs4_n18 hirs4_metop-a mhs_n18 mhs_n19 mhs_metop-a mhs_metop-b mhs_metop-c amsre_low_aqua amsre_mid_aqua amsre_hig_aqua ssmis_las_f16 ssmis_uas_f16 ssmis_img_f16 ssmis_env_f16 iasi_metop-a iasi_metop-b iasi_metop-c seviri_m08 seviri_m09 seviri_m10 seviri_m11 cris_npp atms_npp ssmis_f17 cris-fsr_npp cris-fsr_n20 atms_n20 abi_g16 abi_g18 abi_g19 radardbz fed atms_n21 cris-fsr_n21"
+
 listall="amsua_metop-b amsua_metop-c mhs_metop-b mhs_metop-c iasi_metop-b iasi_metop-c cris-fsr_n20 atms_n20 abi_g18 abi_g19 atms_n21 cris-fsr_n21"
     for type in $listall; do
-      count=$(ls pe*.${type}_${loop} | wc -l)
+
+      if [ -e pe0000.${type}_${loop} ]; then
+        count=$(ls pe*.${type}_${loop} | wc -l)
+      else
+	count=0
+      fi
+
       if [[ $count -gt 0 ]]; then
          $(cat pe*.${type}_${loop} > diag_${type}_${string}.${YYYYMMDDHH})
          cpreq diag_${type}_${string}.${YYYYMMDDHH} $COMOUT
@@ -1063,11 +1069,17 @@ listall="amsua_metop-b amsua_metop-c mhs_metop-b mhs_metop-c iasi_metop-b iasi_m
     export pgm="nc_diag_cat.x"
 
     listall_cnv="conv_ps conv_q conv_t conv_uv conv_pw conv_rw conv_sst conv_dbz conv_fed"
-#    listall_rad="hirs2_n14 msu_n14 sndr_g08 sndr_g11 sndr_g11 sndr_g12 sndr_g13 sndr_g08_prep sndr_g11_prep sndr_g12_prep sndr_g13_prep sndrd1_g11 sndrd2_g11 sndrd3_g11 sndrd4_g11 sndrd1_g15 sndrd2_g15 sndrd3_g15 sndrd4_g15 sndrd1_g13 sndrd2_g13 sndrd3_g13 sndrd4_g13 hirs3_n15 hirs3_n16 hirs3_n17 amsua_n15 amsua_n16 amsua_n17 amsua_n18 amsua_n19 amsua_metop-a amsua_metop-b amsua_metop-c amsub_n15 amsub_n16 amsub_n17 hsb_aqua airs_aqua amsua_aqua imgr_g08 imgr_g11 imgr_g12 pcp_ssmi_dmsp pcp_tmi_trmm conv sbuv2_n16 sbuv2_n17 sbuv2_n18 omi_aura ssmi_f13 ssmi_f14 ssmi_f15 hirs4_n18 hirs4_metop-a mhs_n18 mhs_n19 mhs_metop-a mhs_metop-b mhs_metop-c amsre_low_aqua amsre_mid_aqua amsre_hig_aqua ssmis_las_f16 ssmis_uas_f16 ssmis_img_f16 ssmis_env_f16 iasi_metop-a iasi_metop-b iasi_metop-c seviri_m08 seviri_m09 seviri_m10 seviri_m11 cris_npp atms_npp ssmis_f17 cris-fsr_npp cris-fsr_n20 atms_n20 abi_g16 abi_g18 abi_g19 atms_n21 cris-fsr_n21"
+
 listall_rad="amsua_metop-b amsua_metop-c sbuv2_n18 mhs_metop-b mhs_metop-c iasi_metop-b iasi_metop-c atms_npp  cris-fsr_n20 atms_n20 abi_g18 abi_g19 atms_n21 cris-fsr_n21"
 
     for type in $listall_cnv; do
-      count=$(ls pe*.${type}_${loop}.nc4 | wc -l)
+
+      if [ -e pe0000.${type}_${loop}.nc4 ]; then
+        count=$(ls pe*.${type}_${loop}.nc4 | wc -l)
+      else
+	count=0
+      fi
+
       if [[ $count -gt 0 ]]; then
 	 . prep_step
          ${APRUN} $pgm -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4 >>$pgmout 2>errfile
@@ -1083,7 +1095,12 @@ listall_rad="amsua_metop-b amsua_metop-c sbuv2_n18 mhs_metop-b mhs_metop-c iasi_
     done
 
     for type in $listall_rad; do
-      count=$(ls pe*.${type}_${loop}.nc4 | wc -l)
+      if [ -e pe0000.${type}_${loop}.nc4 ]; then
+        count=$(ls pe*.${type}_${loop}.nc4 | wc -l)
+      else
+	count=0
+      fi
+
       if [[ $count -gt 0 ]]; then
         . prep_step
         ${APRUN} $pgm -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4 >>$pgmout 2>errfile
