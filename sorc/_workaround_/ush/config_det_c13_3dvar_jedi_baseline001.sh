@@ -6,8 +6,8 @@ version="v1.2.0"
 ACCOUNT="RRFS-DEV"
 
 # Directory settings (user-dependent)
-# rrfs-workflow.20260203.dev-sci
-EXPT_SUBDIR="det_c13_3dvar_jedi_car_cft"
+# rrfs-workflow.20260417.dev-sci
+EXPT_SUBDIR="det_c13_3dvar_jedi_baseline001"
 EXPT_BASEDIR="/lfs/h2/emc/da/noscrub/$USER/RRFSv1/expt_dirs/May2024_retro/$version/"
 STMP="/lfs/h2/emc/stmp/$USER/May2024_retro/$version/$EXPT_SUBDIR"
 PTMP="/lfs/h2/emc/ptmp/$USER/May2024_retro/$version/$EXPT_SUBDIR"
@@ -32,6 +32,7 @@ QUEUE_GRAPHICS="dev"
 # JEDI options
 DO_IODA_BUFR="TRUE"
 DO_JEDIVAR="TRUE"
+DO_PARALLEL_DA="TRUE"
 DA_SYSTEM="JEDI"
 DO_DACOLD="FALSE"
 DO_DACYCLE="TRUE"
@@ -47,6 +48,7 @@ RADARREFL_TIMELEVEL=(0)
 FH_DFI_RADAR="0.0,0.25,0.5"
 
 # Other options
+CYCLE_THROTTLE=12
 grid_ratio_fv3=1.0 # default: 2.0
 DO_ARCHIVE_RETRO="TRUE" # archive retro results
 WTIME_RUN_ARCHIVE_RETRO="00:10:00"
