@@ -226,6 +226,8 @@ def process_prod_tiles():
   out_lats = []
   out_lons = []
 
+  any_input_files = 0
+
   # open tile files and process
   for i in range(2):
     g = goes_i[i]
@@ -246,6 +248,7 @@ def process_prod_tiles():
           u.close()
           count = count + 1
       if count>0:
+        any_input_files = 1
         lat = lat[np.where(this_glm>0)]
         lon = lon[np.where(this_glm>0)]
         this_glm = this_glm[np.where(this_glm>0)]
@@ -253,6 +256,11 @@ def process_prod_tiles():
         out_fed = out_fed + [min(fedcutoff,z) for z in this_glm]
         out_lats = out_lats + [z for z in lat]
         out_lons = out_lons + [z for z in lon]
+  if len(out_fed)==0:
+    if any_input_files==0:
+      print('WARNING: obs count=0 because no valid GLM tiles were found in '+obs_west+' or '+obs_east)
+    else:
+      print('WARNING: obs count=0 though valid GLM tiles were found (e.g., no nonzero obs after thinning)')
   # write output to NetCDF
   fout = nc.Dataset(outFile, 'w')
   fout.createDimension('ntime', 1)
