@@ -356,8 +356,8 @@ if [[ $BUILD_WORKAROUND = true ]]; then
   cp _workaround_/parm/rdas-atmosphere-templates-fv3_c13.yaml ../parm/rdas-atmosphere-templates-fv3_c13.yaml
 
   # Configuration files for GSI and JEDI
-  cp _workaround_/ush/config_det_c13_3dvar_gsi_car_cft.sh ../ush/config_det_c13_3dvar_gsi_car_cft.sh
-  cp _workaround_/ush/config_det_c13_3dvar_jedi_car_cft.sh ../ush/config_det_c13_3dvar_jedi_car_cft.sh
+  cp _workaround_/ush/config_det_c13_3dvar_gsi_baseline001.sh ../ush/config_det_c13_3dvar_gsi_baseline001.sh
+  cp _workaround_/ush/config_det_c13_3dvar_jedi_baseline001.sh ../ush/config_det_c13_3dvar_jedi_baseline001.sh
 
 fi
 

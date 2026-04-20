@@ -2,7 +2,7 @@ gsi_namelist="
  &SETUP
    miter=${miter},niter(1)=${niter1},niter(2)=${niter2},
    write_diag(1)=.true.,write_diag(2)=${write_diag_2},write_diag(3)=.true.,
-   qoption=1,print_obs_para=.true.,diag_fed=${diag_fed},diag_radardbz=${diag_radardbz},
+   qoption=2,print_obs_para=.true.,diag_fed=${diag_fed},diag_radardbz=${diag_radardbz},
    if_model_dbz=${if_model_dbz},if_model_fed=${if_model_fed},static_gsi_nopcp_dbz=0.0,if_use_w_vr=.false.,
    rmesh_dbz=4.0,rmesh_vr=4.0,zmesh_dbz=1000.0,zmesh_vr=1000.0,
    inflate_dbz_obserr=.true.,missing_to_nopcp=.false.,radar_no_thinning=.true.,
@@ -216,7 +216,7 @@ OBS_INPUT::
    i_gsdsfc_uselist=1,
    i_lightpcp=1,
    i_sfct_gross=1,
-   i_coastline=3,
+   !i_coastline=3,
    i_gsdqc=2,
  /
  &CHEM

@@ -1,10 +1,10 @@
 
  &SETUP
-   qoption=1
+   qoption=2
  /
  &GRIDOPTS
    regional=.true.,fv3_regional=.true.,grid_ratio_fv3_regional=1.0,
-   nlon=421,nlat=253,nsig=65,
+   nlon=421,nlat=253,nsig=65,use_fv3_grid_spec=.true.,
  /
  &BKGERR
    vs=1.0,

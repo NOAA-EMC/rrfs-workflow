@@ -28,6 +28,10 @@ minimizer: DRPCG
 final_diagnostics_departures: oman
 final_j_evaluation: true
 number_of_outer_loops: 2
+ninner: 50
+gradient_norm_reduction: 1e-10
+#write_increment_outer_loop_1: true
+#write_increment_outer_loop_2: true
 distribution: RoundRobin
 empty_obs_space_action: create output
 
@@ -76,8 +80,6 @@ atmosphere_npz_anl: 65
 atmosphere_ntiles: 1
 atmosphere_io_layout_x: 1
 atmosphere_io_layout_y: 1
-gradient_norm_reduction: 1e-3
-ninner: 50
 
 # Background
 atmosphere_background_path: "./"
@@ -111,8 +113,6 @@ state_variables:
 - vfrac
 - tslb
 - smois
-- eastward_wind_at_surface
-- northward_wind_at_surface
 - air_pressure_at_surface
 - rain_water
 - snow_water
@@ -121,6 +121,10 @@ state_variables:
 - cloud_ice_number_concentration
 - rain_number_concentration
 - upward_air_velocity
+- air_temperature_at_2m
+- water_vapor_mixing_ratio_wrt_moist_air_at_2m
+- eastward_wind_at_surface
+- northward_wind_at_surface
 
 eastward_wind: ua
 northward_wind: va
@@ -135,8 +139,6 @@ geopotential_height_times_gravity_at_surface: phis
 skin_temperature_at_surface: tsfc
 tslb: tslb
 smois: smois
-eastward_wind_at_surface: u_srf
-northward_wind_at_surface: v_srf
 rain_water: rainwat
 snow_water: snowwat
 graupel: graupel
@@ -145,6 +147,10 @@ cloud_ice_number_concentration: ice_nc
 rain_number_concentration: rain_nc
 upward_air_velocity: W
 equivalent_reflectivity_factor: ref_f3d
+air_temperature_at_2m: t2m
+water_vapor_mixing_ratio_wrt_moist_air_at_2m: q2m
+eastward_wind_at_surface: u_srf
+northward_wind_at_surface: v_srf
 
 
 # Background error
@@ -207,9 +213,9 @@ observations:
 - aircft_winds_234
 - aircft_winds_235
 
-- proflr_winds_227
-- vadwnd_winds_224
-- rassda_airTemperature_126
+#- proflr_winds_227
+#- vadwnd_winds_224
+#- rassda_airTemperature_126
 
 # Surface conventional
 - adpsfc_airTemperature_181
@@ -223,10 +229,10 @@ observations:
 - adpsfc_winds_281
 - adpsfc_winds_284
 - adpsfc_winds_287
-- msonet_airTemperature_188
-- msonet_specificHumidity_188
-- msonet_stationPressure_188
-- msonet_winds_288
+#- msonet_airTemperature_188
+#- msonet_specificHumidity_188
+#- msonet_stationPressure_188
+#- msonet_winds_288
 
 - sfcshp_airTemperature_180
 - sfcshp_airTemperature_182
@@ -242,12 +248,12 @@ observations:
 
 # Remote
 #- gnss_zenithTotalDelay
-- satwnd_winds_245_270
-- satwnd_winds_245_272
-- satwnd_winds_246_270
-- satwnd_winds_246_272
-- satwnd_winds_247_270
-- satwnd_winds_247_272
+#- satwnd_winds_245_270
+#- satwnd_winds_245_272
+#- satwnd_winds_246_270
+#- satwnd_winds_246_272
+#- satwnd_winds_247_270
+#- satwnd_winds_247_272
 
 # SatRad
 #- abi_g16
@@ -263,13 +269,13 @@ observations:
 
 # Analysis iuse flag (default: passivate)
 # Upper-air conventional
-iuse_adpupa_airTemperature_120: passivate
-iuse_adpupa_airTemperature_132: passivate
-iuse_adpupa_specificHumidity_120: passivate
-iuse_adpupa_specificHumidity_132: passivate
-iuse_adpupa_stationPressure_120: passivate
-iuse_adpupa_winds_220: passivate
-iuse_adpupa_winds_232: passivate
+iuse_adpupa_airTemperature_120: accept
+iuse_adpupa_airTemperature_132: accept
+iuse_adpupa_specificHumidity_120: accept
+iuse_adpupa_specificHumidity_132: accept
+iuse_adpupa_stationPressure_120: accept
+iuse_adpupa_winds_220: accept
+iuse_adpupa_winds_232: accept
 
 iuse_aircar_airTemperature_133: accept
 iuse_aircar_specificHumidity_133: accept
@@ -285,47 +291,47 @@ iuse_aircft_winds_231: accept
 iuse_aircft_winds_234: accept
 iuse_aircft_winds_235: accept
 
-iuse_proflr_winds_227: passivate
-iuse_vadwnd_winds_224: passivate
-iuse_rassda_airTemperature_126: passivate
+iuse_proflr_winds_227: accept
+iuse_vadwnd_winds_224: accept
+iuse_rassda_airTemperature_126: accept
 
 # Surface conventional
-iuse_adpsfc_airTemperature_181: passivate
-iuse_adpsfc_airTemperature_183: passivate
-iuse_adpsfc_airTemperature_187: passivate
-iuse_adpsfc_specificHumidity_181: passivate
-iuse_adpsfc_specificHumidity_183: passivate
-iuse_adpsfc_specificHumidity_187: passivate
-iuse_adpsfc_stationPressure_181: passivate
-iuse_adpsfc_stationPressure_187: passivate
-iuse_adpsfc_winds_281: passivate
-iuse_adpsfc_winds_284: passivate
-iuse_adpsfc_winds_287: passivate
-iuse_msonet_airTemperature_188: passivate
-iuse_msonet_specificHumidity_188: passivate
-iuse_msonet_stationPressure_188: passivate
-iuse_msonet_winds_288: passivate
+iuse_adpsfc_airTemperature_181: accept
+iuse_adpsfc_airTemperature_183: accept
+iuse_adpsfc_airTemperature_187: accept
+iuse_adpsfc_specificHumidity_181: accept
+iuse_adpsfc_specificHumidity_183: accept
+iuse_adpsfc_specificHumidity_187: accept
+iuse_adpsfc_stationPressure_181: accept
+iuse_adpsfc_stationPressure_187: accept
+iuse_adpsfc_winds_281: accept
+iuse_adpsfc_winds_284: accept
+iuse_adpsfc_winds_287: accept
+iuse_msonet_airTemperature_188: accept
+iuse_msonet_specificHumidity_188: accept
+iuse_msonet_stationPressure_188: accept
+iuse_msonet_winds_288: accept
 
-iuse_sfcshp_airTemperature_180: passivate
-iuse_sfcshp_airTemperature_182: passivate
-iuse_sfcshp_airTemperature_183: passivate
-iuse_sfcshp_specificHumidity_180: passivate
-iuse_sfcshp_specificHumidity_182: passivate
-iuse_sfcshp_specificHumidity_183: passivate
-iuse_sfcshp_stationPressure_180: passivate
-iuse_sfcshp_stationPressure_182: passivate
-iuse_sfcshp_winds_280: passivate
-iuse_sfcshp_winds_282: passivate
-iuse_sfcshp_winds_284: passivate
+iuse_sfcshp_airTemperature_180: accept
+iuse_sfcshp_airTemperature_182: accept
+iuse_sfcshp_airTemperature_183: accept
+iuse_sfcshp_specificHumidity_180: accept
+iuse_sfcshp_specificHumidity_182: accept
+iuse_sfcshp_specificHumidity_183: accept
+iuse_sfcshp_stationPressure_180: accept
+iuse_sfcshp_stationPressure_182: accept
+iuse_sfcshp_winds_280: accept
+iuse_sfcshp_winds_282: accept
+iuse_sfcshp_winds_284: accept
 
 # Remote
-iuse_gnss_zenithTotalDelay: passivate
-iuse_satwnd_winds_245_270: passivate
-iuse_satwnd_winds_245_272: passivate
-iuse_satwnd_winds_246_270: passivate
-iuse_satwnd_winds_246_272: passivate
-iuse_satwnd_winds_247_270: passivate
-iuse_satwnd_winds_247_272: passivate
+iuse_gnss_zenithTotalDelay: accept
+iuse_satwnd_winds_245_270: accept
+iuse_satwnd_winds_245_272: accept
+iuse_satwnd_winds_246_270: accept
+iuse_satwnd_winds_246_272: accept
+iuse_satwnd_winds_247_270: accept
+iuse_satwnd_winds_247_272: accept
 
 # SatRad
 iuse_abi_g16: passivate
