@@ -18,7 +18,8 @@ echo "----------" > ./DEAD
     echo "#Lost: $(grep LOST stat | wc | tr -s " " | cut -f 2 -d " ")"
 } >> ./DEAD
 
-echo "----------" > ./RUN
+echo "$(basename "$PWD")" > ./RUN
+echo "----------" >> ./RUN
 {
     grep RUN stat | tr -s " " | cut -f 1,2,4 -d " "
     grep QUE stat | tr -s " " | cut -f 1,2,4 -d " "
