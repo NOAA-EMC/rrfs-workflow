@@ -1050,12 +1050,7 @@ if [ "${DO_GSIDIAG_OFFLINE}" = "FALSE" ]; then
 listall="amsua_metop-b amsua_metop-c mhs_metop-b mhs_metop-c iasi_metop-b iasi_metop-c cris-fsr_n20 atms_n20 abi_g18 abi_g19 atms_n21 cris-fsr_n21"
     for type in $listall; do
 
-      if [ -e pe0000.${type}_${loop} ]; then
-        count=$(ls pe*.${type}_${loop} | wc -l)
-      else
-	count=0
-      fi
-
+      count=$(ls pe*.${type}_${loop} 2>/dev/null | wc -l)
       if [[ $count -gt 0 ]]; then
          $(cat pe*.${type}_${loop} > diag_${type}_${string}.${YYYYMMDDHH})
          cpreq diag_${type}_${string}.${YYYYMMDDHH} $COMOUT
@@ -1074,12 +1069,7 @@ listall_rad="amsua_metop-b amsua_metop-c sbuv2_n18 mhs_metop-b mhs_metop-c iasi_
 
     for type in $listall_cnv; do
 
-      if [ -e pe0000.${type}_${loop}.nc4 ]; then
-        count=$(ls pe*.${type}_${loop}.nc4 | wc -l)
-      else
-	count=0
-      fi
-
+      count=$(ls pe*.${type}_${loop}.nc4 2>/dev/null | wc -l)
       if [[ $count -gt 0 ]]; then
 	 . prep_step
          ${APRUN} $pgm -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4 >>$pgmout 2>errfile
@@ -1095,11 +1085,7 @@ listall_rad="amsua_metop-b amsua_metop-c sbuv2_n18 mhs_metop-b mhs_metop-c iasi_
     done
 
     for type in $listall_rad; do
-      if [ -e pe0000.${type}_${loop}.nc4 ]; then
-        count=$(ls pe*.${type}_${loop}.nc4 | wc -l)
-      else
-	count=0
-      fi
+      count=$(ls pe*.${type}_${loop}.nc4 2>/dev/null | wc -l)
 
       if [[ $count -gt 0 ]]; then
         . prep_step
