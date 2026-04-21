@@ -518,6 +518,7 @@ optionList[34]=DO_PARALLEL_DA
 optionList[35]=DA_SYSTEM
 optionList[36]=DO_DACOLD
 optionList[37]=DO_ARCHIVE_RETRO
+optionList[38]=DO_DUPLICATE_TAGGING
 
 obs_number=${#optionList[@]}
 for (( i=0; i<${obs_number}; i++ ));

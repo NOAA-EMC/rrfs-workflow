@@ -360,18 +360,20 @@ export err=$?; err_chk
 mv ioda_vadwnd_thinned.nc ioda_vadwnd.nc
 
 # offline duplicate tagger (cycle-to-cycle duplicates) (0=new; 1=duplicate)
-obs_types=(adpupa adpsfc aircar aircft msonet vadwnd sfcshp rassda proflr)
-for obs in "${obs_types[@]}"; do
-  tm01_ioda="${CYCLE_BASEDIR}/${YYYYMMDDHHm1}/ioda_bufr/ioda_${obs}.nc"
-  if [[ -f $tm01_ioda ]]; then
-    tm00_ioda="./ioda_${obs}.nc"
-    tm00_ioda_out="ioda_${obs}_tagged.nc"
-    export pgm="offline_duplicate_tagger.py"
-    python offline_duplicate_tagger.py tag $tm00_ioda -p $tm01_ioda -o $tm00_ioda_out >> $pgmout
-    export err=$?; err_chk
-    mv $tm00_ioda_out $tm00_ioda
-  fi
-done
+if [[ "${DO_DUPLICATE_TAGGING}" = "TRUE" ]]; then
+  obs_types=(adpupa adpsfc aircar aircft msonet vadwnd sfcshp rassda proflr)
+  for obs in "${obs_types[@]}"; do
+    tm01_ioda="${CYCLE_BASEDIR}/${YYYYMMDDHHm1}/ioda_bufr/ioda_${obs}.nc"
+    if [[ -f $tm01_ioda ]]; then
+      tm00_ioda="./ioda_${obs}.nc"
+      tm00_ioda_out="ioda_${obs}_tagged.nc"
+      export pgm="offline_duplicate_tagger.py"
+      python offline_duplicate_tagger.py tag $tm00_ioda -p $tm01_ioda -o $tm00_ioda_out >> $pgmout
+      export err=$?; err_chk
+      mv $tm00_ioda_out $tm00_ioda
+    fi
+  done
+fi
 #
 #-----------------------------------------------------------------------
 #

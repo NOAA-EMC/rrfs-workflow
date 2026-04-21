@@ -2634,13 +2634,23 @@ DO_IODA_MRMS="FALSE"
 # DA_SYSTEM:
 # Which DA system should we use to initialize the forecasts (GSI or JEDI)
 #
+# DO_DACOLD:
+# Flag to turn on DA during coldstart cycle.
+#
+# DO_ARCHIVE_RETRO:
+# Flag to turn on automatic archive to hpss for retro experiments.
+#
+# DO_DUPLICATE_TAGGING:
+# Flag to turn on cycle-to-cycle duplicate obs tagging.
+#
 #-----------------------------------------------------------------------
 #
 DO_JEDIVAR="FALSE"
 DO_PARALLEL_DA="TRUE"
 DA_SYSTEM="GSI"
-DO_DACOLD="NO"
+DO_DACOLD="FALSE"
 DO_ARCHIVE_RETRO="FALSE"
+DO_DUPLICATE_TAGGING="FALSE"
 #
 #-----------------------------------------------------------------------
 #
