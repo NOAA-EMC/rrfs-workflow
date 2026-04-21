@@ -247,7 +247,12 @@ ln -sf ./itag                              fort.11
   mv $DATA/bufrpost/profilm.c1.${tmmark} $DATA/profilm.c1.${tmmark}.f${fhr}
   echo done > $DATA/sndpostdone${fhr}.${tmmark}
 
-  cat $DATA/profilm.c1.${tmmark}  $DATA/profilm.c1.${tmmark}.f${fhr} > $DATA/profilm_int
+  if [ -e $DATA/profilm.c1.${tmmark} ]; then
+    cat $DATA/profilm.c1.${tmmark}  $DATA/profilm.c1.${tmmark}.f${fhr} > $DATA/profilm_int
+  else
+    cp  $DATA/profilm.c1.${tmmark}.f${fhr}  $DATA/profilm_int
+  fi
+
   mv $DATA/profilm_int $DATA/profilm.c1.${tmmark}
 
   fhr=`expr $fhr + $INCR`
