@@ -91,7 +91,7 @@ export NODES_LBC="<nodes>2:ppn=192</nodes>"
 export NODES_FCST="<nodes>10:ppn=160</nodes>"
 export NODES_MPASSIT="<nodes>1:ppn=160</nodes>"
 export NODES_UPP="<nodes>1:ppn=160</nodes>"
-export NODES_JEDIVAR="<nodes>16:ppn=50</nodes>"
+export NODES_JEDIVAR="<nodes>20:ppn=40</nodes>"
 export NODES_IODA_MRMS_REFL="<nodes>1:ppn=40</nodes>"
 #
 export KEEPDATA=YES

@@ -3035,14 +3035,20 @@ cost function:
          simulated variables: [windEastward, windNorthward]
 
        obs operator:
-         name: SfcCorrected
-         correction scheme to use: GSL
-         variables:
-         - name: windEastward
-         - name: windNorthward
+           name: VertInterp
+           vertical coordinate: air_pressure
+           observation vertical coordinate: pressure
+           observation vertical coordinate group: MetaData
+           interpolation method: log-linear
+           #gsi geovals:
+           #  filename: "obsout/sfc_uv_geoval_2022052619.nc"
+           #  levels_are_top_down: False
+           variables:
+           - name: windEastward
+           - name: windNorthward
 
        linear obs operator:
-         name: Identity
+         name: VertInterp
 
        obs error:
          covariance model: diagonal
