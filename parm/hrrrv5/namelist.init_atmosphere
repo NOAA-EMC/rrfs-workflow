@@ -54,6 +54,10 @@
 &physics
     config_tsk_seaice_threshold = 271.4
 /
+&lbcs
+    config_lbc_hydrometeors_rrfs = ${lbc_hydrometeors_rrfs}
+    config_lbc_hydrometeors_gfs = ${lbc_hydrometeors_gfs}
+/
 &io
     config_pio_num_iotasks = 0
     config_pio_stride = 1

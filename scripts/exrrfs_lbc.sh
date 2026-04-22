@@ -29,6 +29,9 @@ start_time=$(date -d "${EDATE:0:8} ${EDATE:8:2}" +%Y-%m-%d_%H:%M:%S)
 EDATE=$(${NDATE} "${fhr_end}" "${CDATEin}")
 end_time=$(date -d "${EDATE:0:8} ${EDATE:8:2}" +%Y-%m-%d_%H:%M:%S)
 
+lbc_hydrometeors_rrfs=true
+lbc_hydrometeors_gfs=false
+
 if [[ "${prefix}" == "RAP" || "${prefix}" == "HRRR" ]]; then
   nfglevels=51
   nfgsoillevels=9
@@ -38,9 +41,13 @@ elif  [[ "${prefix}" == "RRFS" ]]; then
 elif  [[ "${prefix}" == "GFS" ]]; then
   nfglevels=58
   nfgsoillevels=4
+  lbc_hydrometeors_rrfs=false
+  lbc_hydrometeors_gfs=true
 elif  [[ "${prefix}" == "GEFS" ]]; then
   nfglevels=32
   nfgsoillevels=4
+  lbc_hydrometeors_rrfs=false
+  lbc_hydrometeors_gfs=false
 fi
 nsoillevels=${NSOIL_LEVELS}
 
