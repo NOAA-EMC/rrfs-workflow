@@ -158,6 +158,7 @@ cost function:
            engine:
              type: H5File
              obsfile: data/obs/ioda_mrms_refl.nc
+             missing file action: "warn"
          obsdataout:
            engine:
              type: H5File
