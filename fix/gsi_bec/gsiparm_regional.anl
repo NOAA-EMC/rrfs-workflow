@@ -4,6 +4,7 @@
  /
  &GRIDOPTS
    regional=.true.,fv3_regional=.false.,mpas_regional=.true.,
+   use_fv3_grid_spec=.false.,
    nlon=@GSIBEC_NLON@,nlat=@GSIBEC_NLAT@,nsig=@GSIBEC_NSIG@,
    rlat_start=@GSIBEC_LAT_START@,rlat_end=@GSIBEC_LAT_END@,
    rlon_start=@GSIBEC_LON_START@,rlon_end=@GSIBEC_LON_END@,
@@ -31,7 +32,7 @@ met_guess::
   tv       @GSIBEC_NSIG@       2         virtual_temperature  tv
   tsen     @GSIBEC_NSIG@       2         sensible_temperature tsen 
   q        @GSIBEC_NSIG@       2         specific_humidity    sphum
-  prse     @GSIBEC_NSIG@      -1         air_pressure         prse    
+  prsl     @GSIBEC_NSIG@      -1         air_pressure         prsl    
 #  oz       @GSIBEC_NSIG@       2         ozone                o3mr 
 #  delp     @GSIBEC_NSIG@      -1         fv3_del_pressure     delp    
 ::
