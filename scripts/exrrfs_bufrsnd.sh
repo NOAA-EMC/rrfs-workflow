@@ -124,9 +124,6 @@ MM=`echo $PDY | cut -c5-6`
 DD=`echo $PDY | cut -c7-8`
 CYCLE=$PDY$cyc
 
-startd=$YYYY$MM$DD
-startdate=$CYCLE
-
 STARTDATE=${YYYY}-${MM}-${DD}_${cyc}:00:00
 endtime=$($NDATE ${FHRLIM} ${YYYY}${MM}${DD}${cyc})
 
@@ -327,6 +324,7 @@ cat <<EOF > stnmlist_input
 1
 $DATA/class1.bufr
 ${COMOUT}/bufr.${cyc}/bufr
+${CYCLE}
 EOF
 
 mkdir -p ${COMOUT}/bufr.${cyc}
