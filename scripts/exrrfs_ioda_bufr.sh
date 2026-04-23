@@ -162,6 +162,8 @@ cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.satwnd.tm00.bufr_d" satwndbufr
 cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.gsrcsr.tm00.bufr_d" abibufr
 cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.atms.tm00.bufr_d" atmsbufr
 cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.crisf4.tm00.bufr_d" crisfsbufr
+cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.1bamua.tm00.bufr_d" 1bamsuabufr
+cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.esamua.tm00.bufr_d" esamsuabufr
 #
 #-----------------------------------------------------------------------
 #
@@ -226,6 +228,7 @@ dirs=("$RDASAPP_DIR"/build/lib/python3.*)
 PYIODALIB=${dirs[0]}
 WXFLOWLIB=${RDASAPP_DIR}/sorc/wxflow/src
 export PYTHONPATH="${WXFLOWLIB}:${PYIODALIB}:${PYTHONPATH}"
+export PYTHONPATH="${RDASAPP_DIR}/build/lib/python3.11/site-packages:${PYTHONPATH}"
 
 cp "${RDASAPP_DIR}"/rrfs-test/IODA/python/bufr2ioda_adpupa_prepbufr.json .
 cp "${RDASAPP_DIR}"/rrfs-test/IODA/python/bufr2ioda_adpupa_prepbufr.py .
@@ -235,6 +238,7 @@ cp "${RDASAPP_DIR}"/rrfs-test/IODA/python/bufr2ioda_satwnd_amv_goes.py .
 #cp "${RDASAPP_DIR}"/rrfs-test/IODA/python/bufr2ioda.json .
 cp "${RDASAPP_DIR}"/rrfs-test/IODA/python/bufr2ioda_gsrcsr.json .
 cp "${RDASAPP_DIR}"/rrfs-test/IODA/python/bufr2ioda_gsrcsr.py .
+cp "${RDASAPP_DIR}"/rrfs-test/IODA/python/bufr2ioda_amsua.py .
 
 # generate a JSON w CDATE from the template and convert to IODA
 cp "${RDASAPP_DIR}"/rrfs-test/IODA/python/gen_bufr2ioda_json.py .
@@ -275,6 +279,18 @@ else
 fi
 
 #3 AMSUA
+# --------------------------------------------------
+# run  bufr2netcdf tool for atms bufr obs
+# --------------------------------------------------
+cp "${PARM_IODACONV}/bufr_1bamua_mapping.yaml" .
+cp "${PARM_IODACONV}/bufr_esamua_mapping.yaml" .
+ln -sf "${RDASAPP_DIR}/rrfs-test/IODA/python/aux" .
+yaml_1b="bufr_1bamua_mapping.yaml"
+yaml_es="bufr_esamua_mapping.yaml"
+input_1b="1bamsuabufr"
+input_es="esamsuabufr"
+output_file="ioda_amsua_{splits/satId}.nc"
+python bufr2ioda_amsua.py $input_1b $input_es $yaml_es $yaml_1b $output_file
 
 #4 CRIS
 # --------------------------------------------------
@@ -333,7 +349,7 @@ for ioda_file in ioda*.nc; do
     export err=$?; err_chk
     base_name=$(basename "$ioda_file" .nc)
     mv  "${base_name}_dc.nc" "${base_name}.nc"
-  elif [[ "${ioda_file}" == *atms* || "${ioda_file}" == *cris* ]]; then
+  elif [[ "${ioda_file}" == *atms* || "${ioda_file}" == *cris* || "${ioda_file}" == *amsua* ]]; then
     echo " ${ioda_file} ioda file detected: temporarily skipping offline domain check"
   else
     export pgm="offline_domain_check.py"
