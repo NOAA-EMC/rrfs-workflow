@@ -203,7 +203,7 @@ group_clean(cdate, stmp_retention_cycs, DATAROOT, 'stmp', NET, RUN, WGF, rrfs_ve
 # more granularity for the com clean
 if com_retention_cycs.isdigit():  # if digit, do clean directly
     print(f'\nTry to clean com_default: {COMROOT}, {com_retention_cycs} hourcycs ago')
-    group_clean(cdate, com_retention_cycs, COMROOT, 'com_default', NET, RUN, WGF, rrfs_ver)
+    group_clean(cdate, int(com_retention_cycs), COMROOT, 'com_default', NET, RUN, WGF, rrfs_ver)
 else:  # otherwise, it defines a flow style dictionary, eg. "{'default': 120, 'lbc,fcst': 48, 'upp': 840}"
     dcTaskCycs = ast.literal_eval(com_retention_cycs)
     com_nondefault = ''
