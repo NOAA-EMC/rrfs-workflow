@@ -3,10 +3,10 @@ import os
 import textwrap
 from rocoto_funcs.base import xml_task, get_cascade_env
 
-# begin of fcst --------------------------------------------------------
+# begin of prep_ic --------------------------------------------------------
 
 
-def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
+def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0, resilient=False):
     # spinup_mode:
     #  0 = no parallel spinup cycles in the experiment
     #  1 = a spinup cycle
@@ -52,6 +52,28 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
 
     if "global" in os.getenv("MESH_NAME"):
         dcTaskEnv['cpreq'] = "ln -snf"
+    if not (do_ensemble and resilient):
+        metatask = False
+        meta_id = ""
+        meta_bgn = ""
+        meta_end = ""
+        ensindexstr = ""
+    else:
+        meta_id = 'resilient_prep_ic'
+        metatask = True
+        task_id = f'{meta_id}_m#ens_index#'
+        dcTaskEnv['ENS_INDEX'] = "#ens_index#"
+        dcTaskEnv['RESILIENT_RESTART'] = "TRUE"
+        meta_bgn = ""
+        meta_end = ""
+        ens_size = int(os.getenv('ENS_SIZE', '2'))
+        ens_indices = ''.join(f'{i:03d} ' for i in range(1, int(ens_size) + 1)).strip()
+        meta_bgn = f'''
+<metatask name="{meta_id}">
+<var name="ens_index">{ens_indices}</var>'''
+        meta_end = f'\
+</metatask>\n'
+        ensindexstr = "_m#ens_index#"
     dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
     # dependencies
     coldhrs = coldhrs.split(' ')
@@ -192,6 +214,14 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
    </or>
   </and>
   </dependency>'''
+
+# if this is a re-run because fcst died, that is the lone dependency.
+    if resilient:
+        dependencies = f'''
+  <dependency>
+    <taskdep state="Dead" task="fcst{ensindexstr}"/>
+  </dependency>'''
     #
-    xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv, dependencies, command_id="PREP_IC")
-# end of fcst --------------------------------------------------------
+    xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv, dependencies,
+             metatask, meta_id, meta_bgn, meta_end, "PREP_IC")
+# end of prep_ic --------------------------------------------------------

@@ -69,7 +69,7 @@ case ${task_id} in
     module load "rrfs/${MACHINE}.${COMPILER}"
     module load wgrib2
     ;;
-  prep_ic)
+  prep_ic|resilient_prep_ic)
     module purge
     module load "rrfs/${MACHINE}.${COMPILER}"
     module load nco

@@ -42,6 +42,11 @@ else
   mem_list=("000") # if determinitic
 fi
 
+if [[ "${RESILIENT_RESTART:-"FALSE"}" == "TRUE" ]]; then
+  mem_list=(${ENS_INDEX})
+fi
+
+
 for index in "${mem_list[@]}"; do # loop through all the members
   # Determine path
   if (( 10#${index} == 0 )); then
@@ -187,7 +192,11 @@ done # done for all the members
 # parallel run the serial tasks
 #
 ${cpreq} "${EXECrrfs}"/rank_run.x .
-${MPI_RUN_CMD} ./rank_run.x "${DATA}/script_prep_ic_*.sh"
+if [[ "${RESILIENT_RESTART:-"FALSE"}" == "TRUE" ]]; then
+  ${MPI_RUN_CMD} ./rank_run.x "${DATA}/script_prep_ic_${pid}.sh"
+else
+  ${MPI_RUN_CMD} ./rank_run.x "${DATA}/script_prep_ic_*.sh"
+fi
 
 # Check for errors
 export err=$?

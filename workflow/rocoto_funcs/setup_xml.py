@@ -170,6 +170,9 @@ def setup_xml(HOMErrfs, expdir):
             listEnsGrpInfo = smart_ens_groups('fcst')
             for dcEnsGrpInfo in listEnsGrpInfo["group_list"]:
                 fcst(xmlFile, expdir, do_ensemble=True, dcEnsGrpInfo=dcEnsGrpInfo)
+                if os.getenv("RESILIENT_RESTART", "FALSE").upper() == "TRUE":
+                    prep_ic(xmlFile, expdir, do_ensemble=True, resilient=True)
+                    fcst(xmlFile, expdir, do_ensemble=True, dcEnsGrpInfo=dcEnsGrpInfo, resilient=True)
             if os.getenv('DO_CYC', 'FALSE').upper() == "TRUE":
                 save_for_next(xmlFile, expdir, do_ensemble=True)
             if os.getenv("DO_POST", "TRUE").upper() == "TRUE":

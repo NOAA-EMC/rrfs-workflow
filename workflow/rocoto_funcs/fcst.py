@@ -7,8 +7,10 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 # begin of fcst --------------------------------------------------------
 
 
-def fcst(xmlFile, expdir, do_ensemble=False, dcEnsGrpInfo=None, do_spinup=False):
+def fcst(xmlFile, expdir, do_ensemble=False, dcEnsGrpInfo=None, do_spinup=False, resilient=False):
     meta_id = 'fcst'
+    if resilient:
+      meta_id = 'resilient_fcst'
     dep_xml = ""
     if do_spinup:
         cycledefs = 'spinup'
@@ -69,6 +71,8 @@ def fcst(xmlFile, expdir, do_ensemble=False, dcEnsGrpInfo=None, do_spinup=False)
         ens_indices = dcEnsGrpInfo["ens_indices"]
         dep_xml = dcEnsGrpInfo["dep_xml"]
         group_name = dcEnsGrpInfo["group_name"]
+        if resilient:
+          group_name = 'resilient_'+group_name
         metatask = True
         task_id = f'{meta_id}_m#ens_index#'
         dcTaskEnv['ENS_INDEX'] = "#ens_index#"
@@ -169,6 +173,8 @@ def fcst(xmlFile, expdir, do_ensemble=False, dcEnsGrpInfo=None, do_spinup=False)
     prep_ic_dep = f'<taskdep task="prep_ic"/>'
     if do_spinup:
         prep_ic_dep = f'<taskdep task="prep_ic_spinup"/>'
+    if resilient:
+        prep_ic_dep = f'<taskdep task="resilient_prep_ic{ensindexstr}"/>'
     prep_lbc_dep = f'\n    <taskdep task="prep_lbc{ensindexstr}" cycle_offset="0:00:00"/>'
     if "global" in os.getenv("MESH_NAME"):
         prep_lbc_dep = ''
