@@ -43,7 +43,7 @@ else
 fi
 
 if [[ "${RESILIENT_RESTART:-"FALSE"}" == "TRUE" ]]; then
-  mem_list=(${ENS_INDEX})
+  mem_list=("${ENS_INDEX}")
 fi
 
 
