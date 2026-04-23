@@ -228,7 +228,7 @@ dirs=("$RDASAPP_DIR"/build/lib/python3.*)
 PYIODALIB=${dirs[0]}
 WXFLOWLIB=${RDASAPP_DIR}/sorc/wxflow/src
 export PYTHONPATH="${WXFLOWLIB}:${PYIODALIB}:${PYTHONPATH}"
-export PYTHONPATH="${RDASAPP_DIR}/build/lib/python3.11/site-packages:${PYTHONPATH}"
+export PYTHONPATH="${WXFLOWLIB}:${PYIODALIB}:${PYIODALIB}/site-packages:${PYTHONPATH}"
 
 cp "${RDASAPP_DIR}"/rrfs-test/IODA/python/bufr2ioda_adpupa_prepbufr.json .
 cp "${RDASAPP_DIR}"/rrfs-test/IODA/python/bufr2ioda_adpupa_prepbufr.py .
