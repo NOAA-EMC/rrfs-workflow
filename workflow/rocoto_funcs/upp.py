@@ -66,7 +66,15 @@ def upp(xmlFile, expdir, index, dcGrpInfo, do_ensemble=False, do_ensmean_post=Fa
         starttime = get_cascade_env(f"STARTTIME_{meta_id}".upper())
         timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
     #
-    dependencies = f'''
+    if do_ensmean_post:
+        dependencies = f'''
+  <dependency>
+  <and>{timedep}
+    <taskdep task="mpassit{ensindexstr}_g{index:02d}"/>
+  </and>
+  </dependency>'''
+    else:
+        dependencies = f'''
   <dependency>
   <and>{timedep}
     <taskdep task="mpassit_g{index:02d}{ensindexstr}"/>
