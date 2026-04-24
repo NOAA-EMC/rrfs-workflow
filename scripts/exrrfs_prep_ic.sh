@@ -42,7 +42,7 @@ else
   mem_list=("000") # if determinitic
 fi
 
-if [[ "${RESILIENT_RESTART:-"FALSE"}" == "TRUE" ]]; then
+if [[ "${RESILIENT_ENSEMBLE:-"FALSE"}" == "TRUE" ]]; then
   mem_list=("${ENS_INDEX}")
 fi
 
@@ -192,7 +192,7 @@ done # done for all the members
 # parallel run the serial tasks
 #
 ${cpreq} "${EXECrrfs}"/rank_run.x .
-if [[ "${RESILIENT_RESTART:-"FALSE"}" == "TRUE" ]]; then
+if [[ "${RESILIENT_ENSEMBLE:-"FALSE"}" == "TRUE" ]]; then
   ${MPI_RUN_CMD} ./rank_run.x "${DATA}/script_prep_ic_${pid}.sh"
 else
   ${MPI_RUN_CMD} ./rank_run.x "${DATA}/script_prep_ic_*.sh"

@@ -63,7 +63,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0, resilient=False):
         metatask = True
         task_id = f'{meta_id}_m#ens_index#'
         dcTaskEnv['ENS_INDEX'] = "#ens_index#"
-        dcTaskEnv['RESILIENT_RESTART'] = "TRUE"
+        dcTaskEnv['RESILIENT_ENSEMBLE'] = "TRUE"
         meta_bgn = ""
         meta_end = ""
         ens_size = int(os.getenv('ENS_SIZE', '2'))

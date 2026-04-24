@@ -10,7 +10,7 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 def fcst(xmlFile, expdir, do_ensemble=False, dcEnsGrpInfo=None, do_spinup=False, resilient=False):
     meta_id = 'fcst'
     if resilient:
-        meta_id = 'resilient_fcst'
+        meta_id = 'fcst_resilient'
     dep_xml = ""
     if do_spinup:
         cycledefs = 'spinup'
