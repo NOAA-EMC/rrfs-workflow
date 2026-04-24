@@ -24,7 +24,7 @@ export SNUDGETYPES="GGG" # G=gsd_update_soiltq from GSI; P=2022 J Hydro paper; c
 export COLDSTART_CYCS_DO_DA=false #true
 export DO_NONVAR_CLOUD_ANA=true
 export DO_CHEMISTRY=false
-export DO_RADAR_REF=false  # does not work for 3DVar, only EnVar or GETKF
+export DO_RADAR_REF=true  # does not work for 3DVar, only EnVar or GETKF
 export RADARREFL_TIMELEVEL="00"  # 00 15 30 45 min
 export HYB_WGT_ENS=0.5
 export HYB_WGT_STATIC=0.5
@@ -91,7 +91,7 @@ export NODES_LBC="<nodes>2:ppn=192</nodes>"
 export NODES_FCST="<nodes>10:ppn=160</nodes>"
 export NODES_MPASSIT="<nodes>1:ppn=160</nodes>"
 export NODES_UPP="<nodes>1:ppn=160</nodes>"
-export NODES_JEDIVAR="<nodes>16:ppn=50</nodes>"
+export NODES_JEDIVAR="<nodes>20:ppn=40</nodes>"
 export NODES_IODA_MRMS_REFL="<nodes>1:ppn=40</nodes>"
 #
 export KEEPDATA=YES

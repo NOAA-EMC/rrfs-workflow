@@ -41,7 +41,7 @@ if [[ ${MACHINE,,} == "ursa" ]]; then # special needs at ursa
   export I_MPI_ADJUST_GATHERV=2
   export I_MPI_ADJUST_SCATTER=2
   export I_MPI_ADJUST_SCATTERV=2
-  export I_MPI_COLL_INTRANODE=pt2pt
+#  export I_MPI_COLL_INTRANODE=pt2pt
 fi
 #
 echo "load rrfs-workflow modules by default"
