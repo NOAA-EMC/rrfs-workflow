@@ -424,14 +424,17 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
   fi
 
   #-- Generate AWIPS/wmo products for RRFS
-  #-- AWIPS/wmo products are not generated for ensemble forecasts
+  #-- 00/06/12/18Z deterministic cycles only
+  #-- AWIPS/wmo products are not generated for ensemble member forecasts
   if [ ${DO_ENSFCST} = "FALSE" ]; then
-    ${USHrrfs}/prdgen/rrfs_mkawp.sh ${fhr}
+    if [ $cyc -eq 00 ] || [ $cyc -eq 06 ] || [ $cyc -eq 12 ] || [ $cyc -eq 18 ]; then
+      ${USHrrfs}/prdgen/rrfs_mkawp.sh ${fhr}
+    fi
   fi
 
   #-- Generate RAP smoke and HYSPLIT dust products for RRFS
   #-- 06Z and 12Z deterministic cycles only
-  #-- Smoke/dust products are not generated for ensemble forecasts
+  #-- Smoke/dust products are not generated for ensemble member forecasts
   if [ ${DO_ENSFCST} = "FALSE" ]; then
     if [ $cyc -eq 06 ] || [ $cyc -eq 12 ]; then
       if (( 10#$fhr <= 72 )); then
