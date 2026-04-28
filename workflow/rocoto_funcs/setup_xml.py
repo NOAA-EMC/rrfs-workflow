@@ -43,6 +43,7 @@ def setup_xml(HOMErrfs, expdir):
     if os.path.exists(f"{expdir}/config/satinfo") and os.getenv("USE_THE_LATEST_SATBIAS") is None:
         env_vars = {'USE_THE_LATEST_SATBIAS': 'TRUE'}
         os.environ.update(env_vars)
+    NET = os.getenv('NET').lower()
     machine = os.getenv('MACHINE').lower()
     do_deterministic = os.getenv('DO_DETERMINISTIC', 'TRUE').upper()
     do_ensemble = os.getenv('DO_ENSEMBLE', 'FALSE').upper()
@@ -55,7 +56,7 @@ def setup_xml(HOMErrfs, expdir):
     if os.getenv("DO_POST", "TRUE").upper() == "TRUE":
         listPostGrpInfo = smart_post_groups(dcCycledef)
 
-    fPath = f"{expdir}/rrfs.xml"
+    fPath = f"{expdir}/{NET}.xml"
     with open(fPath, 'w') as xmlFile:
         header_begin(xmlFile)
         header_entities(xmlFile, expdir)
@@ -219,7 +220,7 @@ def setup_xml(HOMErrfs, expdir):
 source /etc/profile{extra}
 module load rocoto/1.3.7g
 cd {expdir}
-rocotorun -w rrfs.xml -d rrfs.db
+rocotorun -w {NET}.xml -d {NET}.db
 '''
         rocotoFile.write(text)
 
@@ -227,5 +228,5 @@ rocotorun -w rrfs.xml -d rrfs.db
     st = os.stat(fPath)
     os.chmod(fPath, st.st_mode | stat.S_IEXEC)
 
-    print(f'rrfs.xml and run_rocoto.sh created at:\n  {expdir}')
+    print(f'{NET}.xml and run_rocoto.sh created at:\n  {expdir}')
 # end of setup_xml

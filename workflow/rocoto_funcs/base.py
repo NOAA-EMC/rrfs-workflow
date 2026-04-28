@@ -60,7 +60,7 @@ def header_entities(xmlFile, expdir):
     DATAROOT = os.getenv('DATAROOT', 'DATAROOT_not_defined')
     COMROOT = os.getenv('COMROOT', 'COMROOT_not_defined')
     net = os.getenv('NET', 'rrfs')
-    run = os.getenv('RUN', 'rrfs')
+    run = os.getenv('NET', 'rrfs')  # so far, RUN = NET
     rrfs_ver = os.getenv('VERSION', 'v2.0.0')
     account = os.getenv('ACCOUNT', 'wrfruc')
     queue = os.getenv('QUEUE', 'batch')
@@ -331,6 +331,7 @@ def xml_task(
     #     at the same cycle, for example, post_f01, post_f02, ensembles, etc
     WGF = os.getenv('WGF', 'WGF_not_defined')
     TAG = os.getenv('TAG', 'TAG_not_defined')
+    RUN = os.getenv('NET', 'RUN_not_defined')  # so far, RUN = NET
     realtime = os.getenv('REALTIME', 'false')
     deadline = get_cascade_env(f'DEADLINE_{task_id}'.upper())
     if metatask is False:
@@ -339,7 +340,7 @@ def xml_task(
         command_id = meta_id
     dcTaskRes = {
         'command': f'&HOMErrfs;/workflow/sideload/launch.sh JRRFS_' + f'{command_id}'.upper(),
-        'join': f'&LOGROOT;/rrfs.@Y@m@d/@H/{WGF}/rrfs_{task_id}_{TAG}_@Y@m@d@H.log',
+        'join': f'&LOGROOT;/{RUN}.@Y@m@d/@H/{WGF}/{RUN}_{task_id}_{TAG}_@Y@m@d@H.log',
         'jobname': f'{TAG}_{task_id}_c@H',
         'account': get_cascade_env(f'ACCOUNT_{task_id}'.upper()),
         'queue': get_cascade_env(f'QUEUE_{task_id}'.upper()),

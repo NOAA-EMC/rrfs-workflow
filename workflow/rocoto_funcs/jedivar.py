@@ -79,7 +79,7 @@ def jedivar(xmlFile, expdir, spinup_mode=0):
 
     ens_dep = ""
     if HYB_WGT_ENS != "0" and HYB_WGT_ENS != "0.0" and HYB_ENS_TYPE == "1":  # rrfsens
-        RUN = 'rrfs'
+        RUN = NET  # so far, RUN = NET
         ens_dep = "\n    <or>"
         for enshrs in range(1, int(ens_bec_look_back_hrs) + 1):
             ens_dep = ens_dep + "\n    <and>"
@@ -90,7 +90,7 @@ def jedivar(xmlFile, expdir, spinup_mode=0):
         ens_dep = ens_dep + "\n    </or>"
 
     elif HYB_WGT_ENS != "0" and HYB_WGT_ENS != "0.0" and HYB_ENS_TYPE == "2":  # interpolated GDAS/GEFS
-        RUN = 'rrfs'
+        RUN = NET
         ens_dep = f'''
     <or>
       <datadep age="00:01:00"><cyclestr  offset="0:00:00">{HYB_ENS_PATH}/{RUN}.@Y@m@d/@H/ic/enkf/mem030/init.nc</cyclestr></datadep>
