@@ -22,7 +22,8 @@ def is_directory_empty(directory_path):
 
 def is_cycle_done(EXPDIR, CDATE):
     is_done = False
-    db = f"{EXPDIR}/rrfs.db"
+    NET = os.getenv("NET", "NET_not_defined")
+    db = f"{EXPDIR}/{NET}.db"
     conn = sqlite3.connect(db)
     cur = conn.cursor()
     cur.execute(f"SELECT * FROM cycles")
