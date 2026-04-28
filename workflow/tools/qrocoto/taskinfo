@@ -13,7 +13,7 @@ if [[ $# < 2 ]]; then
   exit
 fi
 
-RUN=rrfs
+RUN=${NET}
 
 CDATE=$1
 taskraw=$2

@@ -29,7 +29,13 @@ expdir = args[1]
 
 # check exp.setup
 getkf = False
-with open(f'{expdir}/rrfs.xml') as infile:
+if os.path.exists(f'{expdir}/rrfs.xml'):
+    NET = "rrfs"
+elif os.path.exists(f'{expdir}/rtma.xml'):
+    NET = "rtma"
+elif os.path.exists(f'{expdir}/arps.xml'):
+    NET = "arps"
+with open(f'{expdir}/{NET}.xml') as infile:
     for line in infile:
         if "COLDSTART_CYCS_DO_DA" in line:
             COLDSTART_CYCS_DO_DA = get_value(line)
@@ -41,7 +47,7 @@ with open(f'{expdir}/rrfs.xml') as infile:
             HYB_ENS_TYPE = get_value(line)
         elif "HYB_ENS_PATH" in line:
             HYB_ENS_PATH = get_value(line)
-        elif "CYC_INTERVAL" in line:
+        elif line.startswith("<envar><name>CYC_INTERVAL"):
             CYC_INTERVAL = get_value(line)
         elif "FCST_LEN_HRS_CYCLES" in line:
             FCST_LEN_HRS_CYCLES = get_value(line)
