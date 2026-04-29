@@ -23,7 +23,7 @@ if [[ ! -s exp.setup ]]; then
 fi
 source exp.setup
 
-RUN=rrfs
+RUN=${NET}
 
 for task in "${!cleans[@]}"; do
   do_clean=${cleans[${task}]}

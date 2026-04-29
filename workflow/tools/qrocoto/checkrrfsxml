@@ -1,10 +1,18 @@
 #!/bin/bash
 # shellcheck disable=all
 
+if [[ -s rrfs.xml ]]; then
+  NET=rrfs
+elif [[ -s rtma.xml ]]; then
+  NET=rtma
+elif [[ -s arps.xml ]]; then
+  NET=arps
+fi
+
 if (( $# > 0 )); then
-  xmlfile="$1/rrfs.xml"
+  xmlfile="$1/${NET}.xml"
 else
-  xmlfile="rrfs.xml"
+  xmlfile="${NET}.xml"
 fi
 
 echo -e "======= metatasks ======"
