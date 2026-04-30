@@ -152,6 +152,7 @@ elif [[ ${MESH_NAME} == "global12km" ]]; then
   export FCST_DT=60
   export FCST_SUBSTEPS=2
   export FCST_RADT=30
+  export FCST_GFL_SUB3D=0
   export UPP_DOMAIN="conus."
 
   export MPASSIT_NX=1800
@@ -164,6 +165,7 @@ elif [[ ${MESH_NAME} == "global-15-3km" ]]; then
   export FCST_DT=20
   export FCST_SUBSTEPS=4
   export FCST_RADT=15
+  export FCST_GFL_SUB3D=1
   export UPP_DOMAIN="conus."
 
   export MPASSIT_NX=1800

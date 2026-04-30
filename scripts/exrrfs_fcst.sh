@@ -9,6 +9,7 @@ cd "${DATA}" || exit 1
 dt=${FCST_DT:-60}
 substeps=${FCST_SUBSTEPS:-2}
 radt=${FCST_RADT:-30}
+config_gfl_sub3d=${FCST_GFL_SUB3D:-0}
 #
 # find forecst length for this cycle
 #
@@ -117,7 +118,7 @@ fi
 if [[ "${MPASOUT_TIMELEVELS}" != "" ]]; then # prioritize MPASOUT_TIMELEVELS
   read -ra mpasout_all <<< "${MPASOUT_TIMELEVELS}"
 elif [[ "${mpasout_interval,,}" != "none" ]]; then
- read -ra mpasout_all <<< "$(seq 0 $((10#${mpasout_interval%%:*})) $((10#${fcst_len_hrs_thiscyc} )) | paste -sd ' ')"
+  read -ra mpasout_all <<< "$(seq 0 $((10#${mpasout_interval%%:*})) $((10#${fcst_len_hrs_thiscyc} )) | paste -sd ' ')"
 fi
 # shellcheck disable=SC2068
 for fhr in ${mpasout_all[@]}; do
