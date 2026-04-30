@@ -1,5 +1,26 @@
 #!/bin/bash
 
+set -Ee -o pipefail
+START=$(date +%s)
+log_dir="${LOG_DIR:-logs}"
+mkdir -p "$log_dir"
+
+timestamp="$(date +%Y%m%d_%H%M%S)"
+log_file="$log_dir/app_build_${timestamp}.log"
+
+exec > >(tee -a "$log_file") 2>&1
+
+echo "=================================================="
+echo "Build started: $(date)"
+echo "Log file: $log_file"
+echo "Host: $(hostname)"
+echo "PWD: $(pwd)"
+echo "Command: $0 $*"
+echo "=================================================="
+
+trap 'rc=$?; echo; echo "ERROR: command failed with exit code $rc at line $LINENO: $BASH_COMMAND"; echo "Log file: $log_file"; exit $rc' ERR
+trap 'rc=$?; if [[ $rc -eq 0 ]]; then echo; echo "Build finished successfully at $(date)"; echo "Log file: $log_file"; fi' EXIT
+
 # usage instructions
 usage () {
 cat << EOF_USAGE
@@ -623,5 +644,8 @@ else
       done
     fi
 fi
-
+echo build finished: `date`
+END=$(date +%s)
+DIFF=$((END - START))
+echo "Time taken to run the code: $DIFF seconds"
 exit 0
