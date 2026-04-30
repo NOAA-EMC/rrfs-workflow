@@ -41,6 +41,7 @@ for i in {0..23..12};    do arr[$i]="00"; done # 3hr fcst
 export FCST_LEN_HRS_CYCLES="${arr[*]}"
 export DO_POST=false
 export HISTORY_INTERVAL=none
+export MPASOUT_TIMELEVELS="0 1"
 export DIAG_INTERVAL=1
 
 export IC_OFFSET=39
