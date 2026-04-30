@@ -36,14 +36,22 @@ case ${MACHINE} in
     ;;
 esac
 
-PHYSICS_SUITE=hrrrv5  # modify if using other suites
+if [[ -z "$1" ]]; then
+  echo "usage: $0 <hrrrv5|mpas_global>"
+  exit 1
+fi
+PHYSICS_SUITE="$1"
 
 cp ${run_dir}/streams.init_atmosphere.invariant ${HOMErrfs}/parm/streams.init_atmosphere
 cp ${run_dir}/namelist.init_atmosphere.invariant ${HOMErrfs}/parm/${PHYSICS_SUITE}/namelist.init_atmosphere
+if [[ "${PHYSICS_SUITE}" == "mpas_global" ]]; then
+  sed -i -e "s/config_blend_bdy_terrain = true/config_blend_bdy_terrain = false/" \
+    -e "s/config_use_spechumd = true/!config_use_spechumd = true/" ${HOMErrfs}/parm/${PHYSICS_SUITE}/namelist.init_atmosphere
+fi
 sed -i -e "s#@config_geog_data_path@#${config_geog_data_path}#" ${HOMErrfs}/parm/${PHYSICS_SUITE}/namelist.init_atmosphere 
 #revert the previous change to `scripts/exrrfs_ic.sh`
 git checkout ${HOMErrfs}/scripts/exrrfs_ic.sh
 
 echo -e "\n !! Done !! Changes have been made for generating invariant.nc"
 echo "Go to expdir, run 'rwind 202405060000 ic; rboot 202405060000 ic' to reboot the 'ic' task"
-echo "Or use git checkout to revert the above changes"
+echo "After that, use git checkout to revert the above changes"
