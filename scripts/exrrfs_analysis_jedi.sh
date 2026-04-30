@@ -357,6 +357,8 @@ elif [[ ${anav_type} == "radardbz" ]]; then
   jcb_config=${JCB_CONFIG_DBZ}
 fi
 cp ${PARMdir}/${jcb_config} .
+cp ${FIX_GSI}/gsd_sfcobs_uselist.txt .
+cp ${FIX_GSI}/gsd_sfcobs_provider.txt .
 cp ${USHdir}/run_jcb.py .
 
 #sed - rdas-atmosphere-templates.yaml

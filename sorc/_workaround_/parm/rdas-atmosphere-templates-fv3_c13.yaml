@@ -189,6 +189,13 @@ atmosphere_final_increment_prefix: "./anl/atminc."
 
 # Observation things
 # ------------------
+mesonet_use_list_winds: true
+mesonet_use_list_airTemperature: true
+mesonet_use_list_specificHumidity: true
+mesonet_use_list_stationPressure: true
+mesonet_gsd_sfcobs_uselist: gsd_sfcobs_uselist.txt
+mesonet_gsd_sfcobs_provider: gsd_sfcobs_provider.txt
+
 observations:
 # Upper-air conventional
 - adpupa_airTemperature_120
