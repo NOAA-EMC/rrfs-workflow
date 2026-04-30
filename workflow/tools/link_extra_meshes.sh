@@ -16,6 +16,12 @@ if [[ -d ${meshdir} ]]; then
   ln -snf "${meshdir}" "${HOMErrfs}/fix"
 fi
 
+# global12km at gaeac6
+meshdir="/gpfs/f6/arfs-gsl/world-shared/extra_meshes/global12km"
+if [[ -d ${meshdir} ]]; then
+  ln -snf "${meshdir}" "${HOMErrfs}/fix"
+fi
+
 # south3.5km at gaeac6
 meshdir="/gpfs/f6/arfs-gsl/world-shared/extra_meshes/south3.5km"
 if [[ -d ${meshdir} ]]; then

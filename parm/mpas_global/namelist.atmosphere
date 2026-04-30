@@ -57,7 +57,7 @@
     config_bucket_update = 'none'
     config_physics_suite = 'hrrrv5'
     config_convection_scheme = 'cu_grell_freitas_li'
-    config_gfl_sub3d = 0
+    config_gfl_sub3d = ${config_gfl_sub3d}
     config_gwdo_scheme = 'bl_ugwp_gwdo'
     config_lsm_scheme    = 'sf_noah'
     num_soil_layers      = 4
