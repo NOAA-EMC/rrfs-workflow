@@ -352,9 +352,9 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
       fi
       if [[ ${SENDDBN} = "YES" ]] ; then
         if (( 10#$cyc % 3 == 0 )); then
-            $DBNROOT/bin/dbn_alert MODEL RRFS_2DFLD_DET_${DBNDOM} $job \
+            $DBNROOT/bin/dbn_alert MODEL RRFS_DET_2DFLD_${DBNDOM} $job \
                 ${COMOUT}/rrfs.t${cyc}z.2dfld.${outspacing}.f${fhr}.${domain}.grib2
-            $DBNROOT/bin/dbn_alert MODEL RRFS_2DFLD_DET_${DBNDOM}_IDX $job \
+            $DBNROOT/bin/dbn_alert MODEL RRFS_DET_2DFLD_${DBNDOM}_IDX $job \
                 ${COMOUT}/rrfs.t${cyc}z.2dfld.${outspacing}.f${fhr}.${domain}.grib2.idx
         fi
       fi  #SENDDBN
