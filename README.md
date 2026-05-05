@@ -18,32 +18,31 @@ Charter](https://docs.google.com/document/d/1uLbPx-pOWp7eECz_7VHRt_tQyD8PLFdrwo8
 
 The rrfs-workflow code is organized in the following subdirectories:
 
-* doc - the User Guide documentation.
+* docs - the User Guide documentation.
 * ecf - the ecFlow contents which will drive the RRFS workflow in NWS
   operations.
-* fix - static data.
 * jobs - the main driver scripts (known as J-jobs) for each task. The
   workflow driver (either ecFlow or rocoto) submits these J-jobs.
-* modulefiles - module files for NOAA HPC systems.
+* lib - has a compiled f2py shared object (needed in blending system)
+* modulefiles - module files for NOAA HPC systems [not maintained at this point]
 * parm - parameter files - generally namelists or configure files.
 * scripts - the "ex scripts" - the primary script for a given task,
   and called by the J-job.
-* sorc - the build script for the RRFS system, as well as the scripts
+* sorc - Contains the app_build.sh script for the RRFS system, as well as the scripts
   to download and install all dependencies.
-* tests - unit tests for rrfs-workflow code.
 * ush - the utility scripts - scripts typically called by the "ex
   scripts" to handle specific tasks, often repeatedly for different
   times or geographic regions.
 * versions - shell scripts setting environment vars to the required
   versions of all dependencies, for building and for running
-  rrfs-workflow.
+  rrfs-workflow.  These versions are WCOSS2-specific.
 
 These are in compliance with the (NCO implementation standard)
 [https://www.nco.ncep.noaa.gov/idsb/implementation_standards/ImplementationStandards.v11.0.0.pdf].
 
 ## Build Instructions
 
-1. Clone the `main` branch of the authoritative repository:
+1. Clone the `rrfs-nco` default branch of the authoritative repository:
 ```
 git clone https://github.com/NOAA-EMC/rrfs-workflow
 ```
@@ -62,7 +61,7 @@ The above command is equal to:
 ./manage_externals/checkout_externals
 ./app_build.sh -p=[machine]
 ```
-where `[machine]` is `wcoss2`, `hera`, `jet`, `orion`, or `hercules`.  Adding a `--gtg` flag will compile GTG (turbulence) component, and a `--ifi` flag adds the IFI (icing) component.  Only select users can clone/install the GTG and IFI components.
+where `[machine]` is `wcoss2`, `hera`, `orion`, or `hercules`.  Adding a `--gtg` flag will compile GTG (turbulence) component, and a `--ifi` flag adds the IFI (icing) component.  Only select users can clone/install the GTG and IFI components.  Builds beyond wcoss2 are not supported within this branch.
 
 4. Move to the home directory (rrfs-workflow):
 ```
