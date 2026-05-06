@@ -28,7 +28,7 @@ else  # runs in an environment without a job scheduler
   export NONSCHEDULER_JOBID=$(ps -o pgid= -p $$ | tr -d ' ')  # chid processes will send SIGTERM to this JOBID
   cleanup() {
     echo "Killing the current task and all child processes..."
-    pkill -P ${NONSCHEDULER_JOBID}  # Kills all child processes of this script
+    pkill -P "${NONSCHEDULER_JOBID}"  # Kills all child processes of this script
     exit 1
   }
   trap cleanup SIGINT SIGTERM
