@@ -52,8 +52,8 @@ do
         fi
 
         if [ "$SENDDBN" == "YES" ]; then
-            ${DBNROOT}/bin/dbn_alert MODEL RRFS_DET $job $COMOUT/${OUTPUTfile}
-            ${DBNROOT}/bin/dbn_alert MODEL RRFS_DET_IDX $job $COMOUT/${OUTPUTfile}.idx
+            ${DBNROOT}/bin/dbn_alert MODEL RRFS_DET_SMOKE $job $COMOUT/${OUTPUTfile}
+            ${DBNROOT}/bin/dbn_alert MODEL RRFS_DET_SMOKE_IDX $job $COMOUT/${OUTPUTfile}.idx
         fi
     done
 done
@@ -100,8 +100,8 @@ do
     fi
 
     if [ "$SENDDBN" == "YES" ]; then
-        ${DBNROOT}/bin/dbn_alert MODEL RRFS_DET $job $COMOUT/${OUTPUTfile}
-        ${DBNROOT}/bin/dbn_alert MODEL RRFS_DET_IDX $job $COMOUT/${OUTPUTfile}.idx
+        ${DBNROOT}/bin/dbn_alert MODEL RRFS_DET_DUST $job $COMOUT/${OUTPUTfile}
+        ${DBNROOT}/bin/dbn_alert MODEL RRFS_DET_DUST_IDX $job $COMOUT/${OUTPUTfile}.idx
     fi
     cd ../
 done

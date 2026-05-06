@@ -304,6 +304,7 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
   domains=(hi pr)
   for domain in ${domains[@]}
   do
+    DBNDOM="${domain^^}"
     outspacing="2p5km"
     if [ ${DO_ENSFCST} = "TRUE" ]; then
       if [[ $SENDCOM = 'YES' ]]; then
@@ -317,9 +318,9 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
       fi
       if [[ ${SENDDBN} = "YES" ]] ; then
         if (( 10#$cyc % 3 == 0 )); then
-            $DBNROOT/bin/dbn_alert MODEL RRFS_DET $job \
+            $DBNROOT/bin/dbn_alert MODEL RRFS_DET_${DBNDOM} $job \
                 ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2
-            $DBNROOT/bin/dbn_alert MODEL RRFS_DET_IDX $job \
+            $DBNROOT/bin/dbn_alert MODEL RRFS_DET_${DBNDOM}_IDX $job \
                 ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
         fi
       fi  #SENDDBN
@@ -330,6 +331,7 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
   domains=(conus ak hi pr)
   for domain in ${domains[@]}
   do
+    DBNDOM="${domain^^}"
     if [[ $domain = "conus" || $domain = "ak" ]]; then
       outspacing="3km"
       task="4"
@@ -350,9 +352,9 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
       fi
       if [[ ${SENDDBN} = "YES" ]] ; then
         if (( 10#$cyc % 3 == 0 )); then
-            $DBNROOT/bin/dbn_alert MODEL RRFS_2DFLD_DET $job \
+            $DBNROOT/bin/dbn_alert MODEL RRFS_DET_2DFLD_${DBNDOM} $job \
                 ${COMOUT}/rrfs.t${cyc}z.2dfld.${outspacing}.f${fhr}.${domain}.grib2
-            $DBNROOT/bin/dbn_alert MODEL RRFS_2DFLD_DET_IDX $job \
+            $DBNROOT/bin/dbn_alert MODEL RRFS_DET_2DFLD_${DBNDOM}_IDX $job \
                 ${COMOUT}/rrfs.t${cyc}z.2dfld.${outspacing}.f${fhr}.${domain}.grib2.idx
         fi
       fi  #SENDDBN
@@ -396,9 +398,9 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
         wgrib2 ${COMOUT}/${fld2d_subh_dom} -s > ${COMOUT}/${fld2d_subh_dom}.idx
 
 	if [[ $SENDDBN = 'YES' ]]; then
-             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBH $job \
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBH_${DBNDOM} $job \
                   ${COMOUT}/rrfs.t${cyc}z.2dfld.${outspacing}.subh.f${fhr}.${domain}.grib2
-             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBH_IDX $job \
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBH_${DBNDOM}_IDX $job \
                   ${COMOUT}/rrfs.t${cyc}z.2dfld.${outspacing}.subh.f${fhr}.${domain}.grib2.idx
 	fi
       fi
