@@ -69,4 +69,6 @@ elif [ ! -z $SLURM_JOB_ID ]; then
   scancel $SLURM_JOB_ID
   echo "----- waiting for $SLURM_JOB_ID to be killed -----"
   sleep 600
+elif [ ! -z $NONSCHEDULER_JOBID ]; then
+  kill -TERM -"${NONSCHEDULER_JOBID}"
 fi
