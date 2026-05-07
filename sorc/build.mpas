@@ -7,12 +7,12 @@ HOMErrfs="$(dirname "$rundir")"
 COMPILER=${COMPILER:-intel}
 
 source "${HOMErrfs}/workflow/tools/detect_machine.sh"
-source "${HOMErrfs}/workflow/tools/init.sh"
+"${HOMErrfs}/workflow/tools/init.sh"
 
 EXEC="${HOMErrfs}/sorc/MPAS-Model/init_atmosphere_model"
 EXEC2="${HOMErrfs}/sorc/MPAS-Model/atmosphere_model"
 
-compiler_str="intel-mpi"
+compiler_str=${mpas_compiler_str:-"intel-mpi"}
 case "${MACHINE}" in
   wcoss2)
     BUILD_VERSION_FILE="${HOMErrfs}/versions/build.ver"

@@ -25,3 +25,4 @@ fix/global12km
 pygraf
 tests/xml
 workflow/OPSROOT
+modulefiles/rrfs/hostgeneric.*.lua
