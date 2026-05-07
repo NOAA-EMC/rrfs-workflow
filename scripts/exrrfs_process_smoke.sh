@@ -91,6 +91,9 @@ fi
 #-----------------------------------------------------------------------
 #
 
+# to silence warnings related to ESMPy 8.8.0b
+export PYTHONWARNINGS="ignore:ESMF installation version"
+
 python -u  ${USHrrfs}/generate_fire_emissions.py \
   "${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}" \
   "${fire_rave_dir_work}" \
