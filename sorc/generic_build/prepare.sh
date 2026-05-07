@@ -10,8 +10,8 @@ mappings["rrfs"]="${HOMErrfs}/modulefiles/rrfs"
 mappings["rdas"]="${HOMErrfs}/sorc/RDASApp/modulefiles/RDAS"
 mappings["mpassit"]="${HOMErrfs}/sorc/MPASSIT/modulefiles"
 mappings["upp"]="${HOMErrfs}/sorc/UPP/modulefiles"
-mappings["util"]="${HOMErrfs}/sorc/RRFS_UTILS//modulefiles"
-mappings["blend"]="${HOMErrfs}/sorc/MPASBlend//modulefiles"
+mappings["util"]="${HOMErrfs}/sorc/RRFS_UTILS/modulefiles"
+mappings["blend"]="${HOMErrfs}/sorc/MPASBlend/modulefiles"
 
 cd "${run_dir}/modulefiles" || exit 1
 echo "copy hostgeneric module files to the corresponding locations ..."
