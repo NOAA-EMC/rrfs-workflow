@@ -33,6 +33,9 @@ case ${MACHINE} in
       echo "unsupported gaea cluster: ${MACHINE}"
     fi
     ;;
+  hostgeneric)
+    exit 0
+    ;;
   *)
     FIX_RRFS_LOCATION=/unknown/location
     echo "platform not supported: ${MACHINE}"
