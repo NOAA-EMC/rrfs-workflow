@@ -8,13 +8,19 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 
 
 def graphics(xmlFile, expdir):
-    task_id = 'graphics'
+    meta_id = 'graphics'
+    task_id = f'{meta_id}_#tile#'
+    tiles = os.getenv('GRAPHICS_TILES', 'full')
+    meta_bgn = f'''
+<metatask name="{meta_id}">
+<var name="tile">{tiles}</var>'''
+    meta_end = f'</metatask>\n'
     cycledefs = 'prod'
     #
     # Task-specific EnVars beyond the task_common_vars
     dcTaskEnv = {
         'FCST_LEN_HRS_CYCLES': os.getenv('FCST_LEN_HRS_CYCLES', '03 03'),
-        'TILES': os.getenv('GRAPHICS_TILES', 'full'),
+        'TILE': '#tile#',
         'GRAPHICS_ZIP': os.getenv('GRAPHICS_ZIP', 'FALSE').upper(),
     }
     # dependencies
@@ -37,6 +43,6 @@ def graphics(xmlFile, expdir):
   </dependency>'''
 
     #
-    xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv, dependencies)
+    xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv, dependencies, True, meta_id, meta_bgn, meta_end, "GRAPHICS")
 
 # end of graphics --------------------------------------------------------
