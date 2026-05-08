@@ -97,7 +97,7 @@ export NODES_IODA_MRMS_REFL="<nodes>1:ppn=40</nodes>"
 export KEEPDATA=YES
 export MAXTRIES=3
 export STMP_RETENTION_CYCS=26
-export COM_RETENTION_CYCS='{"default": 84, "lbc,fcst": 48, "upp": 840}'  # use " inside and ' outside
+export COM_RETENTION_CYCS='{"default": 84, "lbc,fcst": 48, "upp,nclprd": 840}'  # use " inside and ' outside
 export CYCLETHROTTLE=3600
 export CYCLELIFESPAN=2
 #
