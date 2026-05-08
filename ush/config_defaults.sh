@@ -2643,6 +2643,9 @@ DO_IODA_MRMS="FALSE"
 # DO_DUPLICATE_TAGGING:
 # Flag to turn on cycle-to-cycle duplicate obs tagging.
 #
+# EXT_SONDE:
+# Flag to turn on extend sounding option
+#
 #-----------------------------------------------------------------------
 #
 DO_JEDIVAR="FALSE"
@@ -2651,6 +2654,7 @@ DA_SYSTEM="GSI"
 DO_DACOLD="FALSE"
 DO_ARCHIVE_RETRO="FALSE"
 DO_DUPLICATE_TAGGING="FALSE"
+EXT_SONDE="FALSE"
 #
 #-----------------------------------------------------------------------
 #
