@@ -124,9 +124,6 @@ MM=`echo $PDY | cut -c5-6`
 DD=`echo $PDY | cut -c7-8`
 CYCLE=$PDY$cyc
 
-startd=$YYYY$MM$DD
-startdate=$CYCLE
-
 STARTDATE=${YYYY}-${MM}-${DD}_${cyc}:00:00
 endtime=$($NDATE ${FHRLIM} ${YYYY}${MM}${DD}${cyc})
 
@@ -247,7 +244,12 @@ ln -sf ./itag                              fort.11
   mv $DATA/bufrpost/profilm.c1.${tmmark} $DATA/profilm.c1.${tmmark}.f${fhr}
   echo done > $DATA/sndpostdone${fhr}.${tmmark}
 
-  cat $DATA/profilm.c1.${tmmark}  $DATA/profilm.c1.${tmmark}.f${fhr} > $DATA/profilm_int
+  if [ -e $DATA/profilm.c1.${tmmark} ]; then
+    cat $DATA/profilm.c1.${tmmark}  $DATA/profilm.c1.${tmmark}.f${fhr} > $DATA/profilm_int
+  else
+    cp  $DATA/profilm.c1.${tmmark}.f${fhr}  $DATA/profilm_int
+  fi
+
   mv $DATA/profilm_int $DATA/profilm.c1.${tmmark}
 
   fhr=`expr $fhr + $INCR`
@@ -322,6 +324,7 @@ cat <<EOF > stnmlist_input
 1
 $DATA/class1.bufr
 ${COMOUT}/bufr.${cyc}/bufr
+${CYCLE}
 EOF
 
 mkdir -p ${COMOUT}/bufr.${cyc}

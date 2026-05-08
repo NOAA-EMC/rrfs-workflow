@@ -955,7 +955,12 @@ for file_for_fcst_INPUT in *.nc coupler.res fv3_grid_spec bk_coupler.res gvf* *.
   if [ -f ${FORECAST_INPUT_PRODUCT}/${file_for_fcst_INPUT} ]; then
     echo "Overwrite ${FORECAST_INPUT_PRODUCT}/${file_for_fcst_INPUT}"
   fi
+
+  if [ -e ${DATA}/${file_for_fcst_INPUT} ]; then
   mv ${DATA}/${file_for_fcst_INPUT} ${FORECAST_INPUT_PRODUCT}
+  else
+  echo do not see ${DATA}/${file_for_fcst_INPUT} to move
+  fi
 done
 
 #

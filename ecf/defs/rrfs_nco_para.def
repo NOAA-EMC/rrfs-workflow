@@ -9052,16 +9052,16 @@ suite para
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 0335 and :TIME < 0635
                 task jrrfs_det_process_smoke_spinup
-                  trigger ./jrrfs_det_process_smoke==complete
+                  trigger :TIME >= 0335 and :TIME < 0635
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_radar_spinup
-                  trigger ./jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0325 and :TIME < 0625
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_lightning_spinup
-                  trigger ./jrrfs_det_process_lightning==complete
+                  trigger :TIME >= 0315 and :TIME < 0615
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_bufr_spinup
-                  trigger ./jrrfs_det_process_bufr==complete
+                  trigger :TIME >= 0335 and :TIME < 0635
                   edit CYCLE_TYPE 'spinup'
               endfamily
               family ics
@@ -10045,16 +10045,16 @@ suite para
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 0435 and :TIME < 0735
                 task jrrfs_det_process_smoke_spinup
-                  trigger ./jrrfs_det_process_smoke==complete
+                  trigger :TIME >= 0435 and :TIME < 0735
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_radar_spinup
-                  trigger ./jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0425 and :TIME < 0725
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_lightning_spinup
-                  trigger ./jrrfs_det_process_lightning==complete
+                  trigger :TIME >= 0415 and :TIME < 0715
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_bufr_spinup
-                  trigger ./jrrfs_det_process_bufr==complete
+                  trigger :TIME >= 0435 and :TIME < 0735
                   edit CYCLE_TYPE 'spinup'
               endfamily
               family prep
@@ -11375,16 +11375,16 @@ suite para
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 0535 and :TIME < 0835
                 task jrrfs_det_process_smoke_spinup
-                  trigger ./jrrfs_det_process_smoke==complete
+                  trigger :TIME >= 0535 and :TIME < 0835
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_radar_spinup
-                  trigger ./jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0525 and :TIME < 0825
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_lightning_spinup
-                  trigger ./jrrfs_det_process_lightning==complete
+                  trigger :TIME >= 0515 and :TIME < 0815
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_bufr_spinup
-                  trigger ./jrrfs_det_process_bufr==complete
+                  trigger :TIME >= 0535 and :TIME < 0835
                   edit CYCLE_TYPE 'spinup'
               endfamily
               family prep
@@ -12378,16 +12378,16 @@ suite para
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 0635 and :TIME < 0935
                 task jrrfs_det_process_smoke_spinup
-                  trigger ./jrrfs_det_process_smoke==complete
+                  trigger :TIME >= 0635 and :TIME < 0935
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_radar_spinup
-                  trigger ./jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0625 and :TIME < 0925
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_lightning_spinup
-                  trigger ./jrrfs_det_process_lightning==complete
+                  trigger :TIME >= 0615 and :TIME < 0915
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_bufr_spinup
-                  trigger ./jrrfs_det_process_bufr==complete
+                  trigger :TIME >= 0635 and :TIME < 0935
                   edit CYCLE_TYPE 'spinup'
               endfamily
               family ics
@@ -19107,16 +19107,16 @@ suite para
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 0735 and :TIME < 1035
                 task jrrfs_det_process_smoke_spinup
-                  trigger ./jrrfs_det_process_smoke==complete
+                  trigger :TIME >= 0735 and :TIME < 1035
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_radar_spinup
-                  trigger ./jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0725 and :TIME < 1025
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_lightning_spinup
-                  trigger ./jrrfs_det_process_lightning==complete
+                  trigger :TIME >= 0715 and :TIME < 1015
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_bufr_spinup
-                  trigger ./jrrfs_det_process_bufr==complete
+                  trigger :TIME >= 0735 and :TIME < 1035
                   edit CYCLE_TYPE 'spinup'
               endfamily
               family prep
@@ -20643,16 +20643,16 @@ suite para
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 0835 and :TIME < 1135
                 task jrrfs_det_process_smoke_spinup
-                  trigger ./jrrfs_det_process_smoke==complete
+                  trigger :TIME >= 0835 and :TIME < 1135
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_radar_spinup
-                  trigger ./jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0825 and :TIME < 1125
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_lightning_spinup
-                  trigger ./jrrfs_det_process_lightning==complete
+                  trigger :TIME >= 0815 and :TIME < 1115
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_bufr_spinup
-                  trigger ./jrrfs_det_process_bufr==complete
+                  trigger :TIME >= 0835 and :TIME < 1135
                   edit CYCLE_TYPE 'spinup'
               endfamily
               family prep
@@ -20667,7 +20667,7 @@ suite para
                 edit MEM_TYPE 'MEMBER'
                 edit GSI_TYPE 'ANALYSIS'
                 task jrrfs_det_analysis_gsi
-                  trigger ../prep/jrrfs_det_prep_cyc==complete and /prod_clone/primary/06/obsproc/v1.2/rrfs/08z/dump/jobsproc_rrfs_dump==complete and /prod_clone/primary/06/obsproc/v1.2/rrfs/08z/prep/jobsproc_rrfs_prep==complete and ( /para/primary/06/rrfs/v1.0/07z/enkf/forecast==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete)
+                  trigger (:TIME >= 0831 and :TIME < 2031) and ../prep/jrrfs_det_prep_cyc==complete and /prod_clone/primary/06/obsproc/v1.2/rrfs/08z/dump/jobsproc_rrfs_dump==complete and /prod_clone/primary/06/obsproc/v1.2/rrfs/08z/prep/jobsproc_rrfs_prep==complete and ( /para/primary/06/rrfs/v1.0/07z/enkf/forecast==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete)
                 task jrrfs_det_update_lbc_soil
                   trigger ./jrrfs_det_analysis_gsi==complete
                 task jrrfs_det_analysis_gsi_diag
@@ -34136,16 +34136,16 @@ suite para
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 1535 and :TIME < 1835
                 task jrrfs_det_process_smoke_spinup
-                  trigger ./jrrfs_det_process_smoke==complete
+                  trigger :TIME >= 1535 and :TIME < 1835
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_radar_spinup
-                  trigger ./jrrfs_det_process_radar==complete
+                  trigger :TIME >= 1525 and :TIME < 1825
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_lightning_spinup
-                  trigger ./jrrfs_det_process_lightning==complete
+                  trigger :TIME >= 1515 and :TIME < 1815
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_bufr_spinup
-                  trigger ./jrrfs_det_process_bufr==complete
+                  trigger :TIME >= 1535 and :TIME < 1835
                   edit CYCLE_TYPE 'spinup'
               endfamily
               family ics
@@ -35128,16 +35128,16 @@ suite para
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 1635 and :TIME < 1935
                 task jrrfs_det_process_smoke_spinup
-                  trigger ./jrrfs_det_process_smoke==complete
+                  trigger :TIME >= 1635 and :TIME < 1935
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_radar_spinup
-                  trigger ./jrrfs_det_process_radar==complete
+                  trigger :TIME >= 1625 and :TIME < 1925
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_lightning_spinup
-                  trigger ./jrrfs_det_process_lightning==complete
+                  trigger :TIME >= 1615 and :TIME < 1915
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_bufr_spinup
-                  trigger ./jrrfs_det_process_bufr==complete
+                  trigger :TIME >= 1635 and :TIME < 1935
                   edit CYCLE_TYPE 'spinup'
               endfamily
               family prep
@@ -36458,16 +36458,16 @@ suite para
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 1735 and :TIME < 2035
                 task jrrfs_det_process_smoke_spinup
-                  trigger ./jrrfs_det_process_smoke==complete
+                  trigger :TIME >= 1735 and :TIME < 2035
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_radar_spinup
-                  trigger ./jrrfs_det_process_radar==complete
+                  trigger :TIME >= 1725 and :TIME < 2025
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_lightning_spinup
-                  trigger ./jrrfs_det_process_lightning==complete
+                  trigger :TIME >= 1715 and :TIME < 2015
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_bufr_spinup
-                  trigger ./jrrfs_det_process_bufr==complete
+                  trigger :TIME >= 1735 and :TIME < 2035
                   edit CYCLE_TYPE 'spinup'
               endfamily
               family prep
@@ -37460,16 +37460,16 @@ suite para
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 1835 and :TIME < 2135
                 task jrrfs_det_process_smoke_spinup
-                  trigger ./jrrfs_det_process_smoke==complete
+                  trigger :TIME >= 1835 and :TIME < 2135
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_radar_spinup
-                  trigger ./jrrfs_det_process_radar==complete
+                  trigger :TIME >= 1825 and :TIME < 2125
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_lightning_spinup
-                  trigger ./jrrfs_det_process_lightning==complete
+                  trigger :TIME >= 1815 and :TIME < 2115
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_bufr_spinup
-                  trigger ./jrrfs_det_process_bufr==complete
+                  trigger :TIME >= 1835 and :TIME < 2135
                   edit CYCLE_TYPE 'spinup'
               endfamily
               family ics
@@ -44188,16 +44188,16 @@ suite para
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 1935 and :TIME < 2235
                 task jrrfs_det_process_smoke_spinup
-                  trigger ./jrrfs_det_process_smoke==complete
+                  trigger :TIME >= 1935 and :TIME < 2235
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_radar_spinup
-                  trigger ./jrrfs_det_process_radar==complete
+                  trigger :TIME >= 1925 and :TIME < 2225
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_lightning_spinup
-                  trigger ./jrrfs_det_process_lightning==complete
+                  trigger :TIME >= 1915 and :TIME < 2215
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_bufr_spinup
-                  trigger ./jrrfs_det_process_bufr==complete
+                  trigger :TIME >= 1935 and :TIME < 2235
                   edit CYCLE_TYPE 'spinup'
               endfamily
               family prep
@@ -45723,16 +45723,16 @@ suite para
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 2035 and :TIME < 2335
                 task jrrfs_det_process_smoke_spinup
-                  trigger ./jrrfs_det_process_smoke==complete
+                  trigger :TIME >= 2035 and :TIME < 2335
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_radar_spinup
-                  trigger ./jrrfs_det_process_radar==complete
+                  trigger :TIME >= 2025 and :TIME < 2325
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_lightning_spinup
-                  trigger ./jrrfs_det_process_lightning==complete
+                  trigger :TIME >= 2015 and :TIME < 2315
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_bufr_spinup
-                  trigger ./jrrfs_det_process_bufr==complete
+                  trigger :TIME >= 2035 and :TIME < 2335
                   edit CYCLE_TYPE 'spinup'
               endfamily
               family prep
@@ -45747,7 +45747,7 @@ suite para
                 edit MEM_TYPE 'MEMBER'
                 edit GSI_TYPE 'ANALYSIS'
                 task jrrfs_det_analysis_gsi
-                  trigger ../prep/jrrfs_det_prep_cyc==complete and /prod_clone/primary/18/obsproc/v1.2/rrfs/20z/dump/jobsproc_rrfs_dump==complete and /prod_clone/primary/18/obsproc/v1.2/rrfs/20z/prep/jobsproc_rrfs_prep==complete and ( /para/primary/18/rrfs/v1.0/19z/enkf/forecast==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete )
+                  trigger (:TIME >= 2031 or :TIME < 0831) and ../prep/jrrfs_det_prep_cyc==complete and /prod_clone/primary/18/obsproc/v1.2/rrfs/20z/dump/jobsproc_rrfs_dump==complete and /prod_clone/primary/18/obsproc/v1.2/rrfs/20z/prep/jobsproc_rrfs_prep==complete and ( /para/primary/18/rrfs/v1.0/19z/enkf/forecast==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete )
                 task jrrfs_det_update_lbc_soil
                   trigger ./jrrfs_det_analysis_gsi==complete
                 task jrrfs_det_analysis_gsi_diag

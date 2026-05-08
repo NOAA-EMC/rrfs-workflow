@@ -393,7 +393,7 @@ EOFnml
 export pgm="gsi_enkf.x"
 . prep_step
 
-countdiag=$(ls diag*conv* | wc -l)
+countdiag=$(ls diag*conv* 2>/dev/null | wc -l)
 if [ $countdiag -gt $nens ]; then
   ${APRUN} ${EXECrrfs}/$pgm < enkf.nml >>$pgmout 2>errfile
   export err=$?; err_chk
