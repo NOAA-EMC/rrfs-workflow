@@ -74,8 +74,6 @@ def fcst(xmlFile, expdir, do_ensemble=False, dcEnsGrpInfo=None, do_spinup=False)
         metatask = True
         task_id = f'{meta_id}_m#ens_index#'
         dcTaskEnv['ENS_INDEX'] = "#ens_index#"
-        meta_bgn = ""
-        meta_end = ""
         meta_bgn = f'''
 <metatask name="{group_name}">
 <var name="ens_index">{ens_indices}</var>'''
