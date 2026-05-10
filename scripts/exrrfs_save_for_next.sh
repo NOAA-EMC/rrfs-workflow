@@ -54,6 +54,8 @@ export err=$?
 if (( err != 0 )) ; then
   echo "save_for_next failed with error code ${err} "
   err_exit
+else
+  touch ${COMOUT}/fcst/${WGF}/save_for_next_f${cyc_interval}.done
 fi
 
 exit 0

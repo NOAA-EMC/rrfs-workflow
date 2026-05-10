@@ -112,10 +112,10 @@ for index in "${mem_list[@]}"; do # loop through all the members
           CDATEp=$(${NDATE} -${ii} "${CDATE}" )
           PDYii=${CDATEp:0:8}
           cycii=${CDATEp:8:2}
-          file_mpasout="${COMINrrfs}/${RUN}.${PDYii}/${cycii}/fcst/${WGF}${memdir}/mpasout.${timestr}.nc"
+          file_mpasout="${COMINsfc}/${RUN}.${PDYii}/${cycii}/fcst/${WGF}${memdir}/mpasout.${timestr}.nc"
           if [[ -s "${file_mpasout}" ]]; then
             source_file="${file_mpasout}"
-            var_list="smois,snow,snowh,snowc,sst,canwat,tslb,skintemp,landmask,isltyp,ivgtyp,soilt1,sh2o"
+            var_list="smois,snow,snowh,snowc,sst,canwat,tslb,skintemp,isltyp,ivgtyp,soilt1,sh2o"
             break
           fi
         done
@@ -129,7 +129,7 @@ for index in "${mem_list[@]}"; do # loop through all the members
             file_init="${COMINsfc}/${RUN}.${PDYii}/${cycii}/ic/${WGF}${memdir}/init.nc"
             if [[ -s "${file_init}" ]]; then
               source_file="${file_init}"
-              var_list="smois,snow,snowh,snowc,sst,canwat,tslb,skintemp,landmask,isltyp,ivgtyp"
+              var_list="smois,snow,snowh,snowc,sst,canwat,tslb,skintemp,isltyp,ivgtyp"
             fi
           fi
         fi
