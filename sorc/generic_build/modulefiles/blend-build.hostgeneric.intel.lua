@@ -1,0 +1,1 @@
+mpassit-build.hostgeneric.intel.lua

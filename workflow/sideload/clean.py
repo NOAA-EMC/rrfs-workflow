@@ -66,6 +66,8 @@ def day_clean(srcPath, cyc1, cyc2, srcType, WGF, com_nondefault=""):
             task = srcType.strip().split('_', 1)[1]
             if task == "default":
                 pattern = f'{i:02}/*/{WGF}'
+            elif task == "nclprd":
+                pattern = f'{i:02}/nclprd'
             else:
                 pattern = f'{i:02}/{task}/{WGF}'
 

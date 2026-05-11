@@ -1,0 +1,65 @@
+# a list of files/subdirectories to be excluded from the final target version of the fix/ directory
+# 
+# - use empty lines to sepearate different sections
+# - each section corresponds to a subdirectory (including the top level fix directory, ie. "./")
+# - the first line of each section is a header and it specifies a given directory followed by a colon
+# - other lines of each section continues without empty lines in between and list files/directories to be excluded
+# - if a section contains only one line (i.e, a header), it means to remove the whole directory
+# - one may use "./:" as the header to exclude files/directories under the top fix directory
+# 
+#  The comment lines below are to illustrate how to make a conus12km only fix/ directory
+#    one needs to uncomment if the target is not conus12km, not L60, etc.
+#
+
+./:
+INIT_DONE
+ar3.5km
+ea5km
+global12km
+global-15-3km
+global15km
+south3.5km
+eu12km
+sf1km
+
+chemistry/dust:
+fengsha_dust_inputs.conus12km.nc
+fengsha_dust_inputs.conus3km.nc
+
+chemistry/RAVE:
+RAVE.dummy.conus12km.nc
+RAVE.dummy.conus3km.nc
+
+conus12km:
+conus12km.invariant.nc_L65*
+static_bec
+bumploc/conus12km_L65_80_401km11levels
+
+conus3km:
+
+na12km:
+
+physics:
+convection_permitting
+mesoscale_reference
+mpas_global
+
+#gsi_bec:
+#mpas_pave_L60.txt
+
+mpas_blend/conus3km:
+
+stream_list:
+convection_permitting
+mesoscale_reference
+mpas_global
+
+ungrib:
+Vtable.HRRR
+Vtable.RAP
+
+vert_levels:
+L112.txt
+L125.txt
+#L60.txt
+L62.txt

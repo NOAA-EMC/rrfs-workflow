@@ -7,7 +7,7 @@ HOMErrfs="$(dirname "$rundir")"
 COMPILER=${COMPILER:-intel}
 
 source "${HOMErrfs}/workflow/tools/detect_machine.sh"
-source "${HOMErrfs}/workflow/tools/init.sh"
+"${HOMErrfs}/workflow/tools/init.sh"
 
 EXEC="${HOMErrfs}/sorc/WPS/ungrib/src/ungrib.exe"
 
@@ -31,7 +31,7 @@ cd "${HOMErrfs}/sorc/WPS" || exit 1
 ./clean
 if [[ "${MACHINE}" == "wcoss2" ]]; then
   cp ../_workaround_/WPS/configure.wps_wcoss2 configure.wps
-elif [[ "${MACHINE}" == "gaeac6" ]] || [[ "${MACHINE}" == "orion" || "${MACHINE}" == "hercules" || "${MACHINE}" == "ursa" ]]; then
+elif [[ "${MACHINE}" == "gaeac6" ]] || [[ "${MACHINE}" == "orion" || "${MACHINE}" == "hercules" || "${MACHINE}" == "ursa" || "${MACHINE}" == "hostgeneric" ]]; then
   mkdir -p .tmpNETCDFDIR/include
   mkdir -p .tmpNETCDFDIR/lib
   ln -snf "${netcdf_c_ROOT}"/include/* .tmpNETCDFDIR/include
@@ -46,7 +46,7 @@ else
 fi
 ./compile ungrib
 
-if [[ "${MACHINE}" == "gaeac6" ]] || [[ "${MACHINE}" == "orion" || "${MACHINE}" == "hercules" || "${MACHINE}" == "ursa" ]]; then
+if [[ "${MACHINE}" == "gaeac6" ]] || [[ "${MACHINE}" == "orion" || "${MACHINE}" == "hercules" || "${MACHINE}" == "ursa" || "${MACHINE}" == "hostgeneric" ]]; then
   cd ungrib/src || exit 1
   ifort -o ungrib.exe  misc_definitions_module.o debug_cio.o module_debug.o module_stringutil.o \
     table.o module_datarray.o gridinfo.o new_storage.o filelist.o ungrib.o output.o rrpr.o \

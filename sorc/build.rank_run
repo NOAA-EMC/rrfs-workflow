@@ -7,7 +7,7 @@ HOMErrfs="$(dirname "$rundir")"
 COMPILER=${COMPILER:-intel}
 
 source "${HOMErrfs}/workflow/tools/detect_machine.sh"
-source "${HOMErrfs}/workflow/tools/init.sh"
+"${HOMErrfs}/workflow/tools/init.sh"
 
 EXEC="${HOMErrfs}/sorc/rank_run/build/rank_run.x"
 

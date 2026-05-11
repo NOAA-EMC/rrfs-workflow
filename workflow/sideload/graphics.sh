@@ -16,7 +16,8 @@ file_tmpl="rrfs.t${cyc}z.prslev.f0{FCST_TIME:02d}.conus.grib2"
 model=${NET}
 ntasks=${NTASKS:-12}
 grib2_dir="${COMOUT}/upp/det"
-workdir="${COMOUT}/graphics/tmp"
+workdir="${COMOUT}/graphics/${WGF}"
+zipdir="${COMOUT}/nclprd"
 rm -rf "${workdir}"
 mkdir -p "${workdir}"
 cd "${pygrafdir}" || exit 1
@@ -28,34 +29,18 @@ fcst_len_hrs_thiscyc=$( "${USHrrfs}/find_fcst_length.sh"  "${fcst_len_hrs_cycles
 echo "forecast length for this cycle is ${fcst_len_hrs_thiscyc}"
 fhr1=0
 fhr2=${fcst_len_hrs_thiscyc}
-wait_minutes=${WAIT_MINUTES:-1}
+wait_minutes=${WAIT_MINUTES:-180}
+tile=${TILE:-'full'}
 #
-# generate the graphics under workdir and then move to graphics/{tile}
+# generate the graphics
 #
-read -ra tiles <<< "${TILES}"
-for tile in ${tiles[@]}; do
+if [[ "${GRAPHICS_ZIP^^}" == "TRUE" ]]; then
+  mkdir -p "${zipdir}"
+  python create_graphics.py maps --all_leads -d ${grib2_dir} -f ${fhr1} ${fhr2} --file_type prs --file_tmpl ${file_tmpl} -m ${model} \
+      --images ${image_list} hourly -n ${ntasks} -o ${workdir} -s ${CDATE} --tiles ${tile} -z ${zipdir} -w ${wait_minutes}
+else
   python create_graphics.py maps --all_leads -d ${grib2_dir} -f ${fhr1} ${fhr2} --file_type prs --file_tmpl ${file_tmpl} -m ${model} \
       --images ${image_list} hourly -n ${ntasks} -o ${workdir} -s ${CDATE} --tiles ${tile} -w ${wait_minutes}
-  export err=$?; err_chk
-  #
-  mkdir -p "${COMOUT}/graphics/${tile}"
-  dirs=(${workdir}/*/)
-  for i in ${dirs[@]}; do
-    mv ${i}/* "${COMOUT}/graphics/${tile}"
-  done
-done
-#
-# zip the graphics if requested
-if [[ "${GRAPHICS_ZIP^^}" == "TRUE" ]]; then
-  mkdir -p "${COMOUT}/nclprd"
-  for tile in ${tiles[@]}; do
-    cd "${COMOUT}/graphics/${tile}"
-    zip files.zip *.png
-    mkdir -p "${COMOUT}/nclprd/${tile}"
-    mv files.zip "${COMOUT}/nclprd/${tile}"
-    rm -rf "${COMOUT}/graphics/${tile}"
-  done
 fi
-
 export err=$?; err_chk
 exit 0

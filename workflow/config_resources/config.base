@@ -118,8 +118,8 @@ export NATIVE_UPP=${NATIVE_UPP:-""}
 
 # graphics
 export NODES_GRAPHICS=${NODES_GRAPHICS:-"<nodes>1:ppn=20</nodes>"}
-export WALLTIME_GRAPHICS=${WALLTIME_GRAPHICS:-"01:00:00"}
-export GRAPHICS_TILES=${GRAPHICS_TILES:-"full"}  # "full NE NC NW SE SC SW EastCO"
+export WALLTIME_GRAPHICS=${WALLTIME_GRAPHICS:-"02:00:00"}
+export GRAPHICS_TILES=${GRAPHICS_TILES:-"full NE NC NW SE SC SW EastCO"}  # "full NE NC NW SE SC SW EastCO"
 export GRAPHICS_ZIP=${GRAPHICS_ZIP:-false}
 
 # clean
