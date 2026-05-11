@@ -55,7 +55,7 @@ if (( err != 0 )) ; then
   echo "save_for_next failed with error code ${err} "
   err_exit
 else
-  touch "${COMOUT}/fcst/${WGF}"/fcst_f$(printf "%03d" "${fcst_hr}").done
+  touch "${COMOUT}/fcst/${WGF}/fcst_f$(printf "%03d" "${fcst_hr}").done"
 fi
 
 exit 0
