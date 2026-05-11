@@ -63,7 +63,7 @@ export DBNLOG=YES
 # export EMC_DEV="YES"
 # export EMC_LOG_OUTPUT="/lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/para/output/prod/today"
 # export envir="prod"
-export KEEP_RESTART=YES
+# export KEEP_RESTART=YES
 # NCO Testing 20250819 JBP: for para testing, remove for prod
 #export PDY=20250911
 export DCOMROOT=/lfs/h1/ops/prod/dcom
