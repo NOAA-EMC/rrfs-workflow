@@ -103,9 +103,14 @@ export err=$?; err_chk
 
 #Copy the the hourly, interpolated RAVE data to $rave_dir so it
 # is maintained there for future cycles.
+dummy_smoke_file="${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}/dummy_24hr_smoke.nc"
 for file in ${DATA}/RAVE-HrlyEmiss-* ${DATA}/RRFS_NA_3km_intp_* ${DATA}/SMOKE_RRFS_data_*
 do
    filename=$(basename "$file")
+   if [[ "$filename" == SMOKE_RRFS_data_* ]] && cmp -s "$file" "$dummy_smoke_file"; then
+      echo "WARNING: $file is the dummy SMOKE_RRFS file"
+      continue
+   fi
    daystr=$(echo "$filename" | grep -o '[0-9]\{8\}' | head -1)
    [ -z "$daystr" ] && continue
 
