@@ -165,6 +165,7 @@
     cplflx = .false.
     debug = .false.
     diag_log = .true.
+    diag_flux = .true.
     do_deep = .true.
     do_gsl_drag_ls_bl = .true.
     do_gsl_drag_ss = .true.
