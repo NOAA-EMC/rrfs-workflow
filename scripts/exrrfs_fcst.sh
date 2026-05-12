@@ -63,6 +63,12 @@ if [[ "${FCST_CONVECTION_SCHEME^^}" == "TRUE" ]]; then
     config_gfl_sub3d = 1/" namelist.atmosphere
 fi
 
+if [[ "${MESH_NAME^^}" == "FWX1.25km" ]]; then
+  sed -i -e "s/    config_apply_lbcs = true/\
+    config_apply_lbcs = true\n\
+    config_lbc_w = 'zero'/" namelist.atmosphere
+fi
+
 # generate the streams file on the fly using sed as this file contains "filename_template='lbc.$Y-$M-$D_$h.$m.$s.nc'"
 lbc_interval=${LBC_INTERVAL:-3}
 restart_interval=${RESTART_INTERVAL:-none}

@@ -1,8 +1,2 @@
-smoke_fine                      SMOKE_FINE
-smoke_coarse			SMOKE_COARSE
 unspc_fine			UNSPC_FINE
-unspc_coarse			UNSPC_COARSE
 PM2_5                           PM2_5
-PM10				PM10
-dust_fine			DUST_FINE
-dust_coarse			DUST_COARSE

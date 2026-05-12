@@ -5,8 +5,8 @@
         ignore = all
 [submodule "sorc/MPAS-Model"]
 	path = sorc/MPAS-Model
-	url = https://github.com/RRFSx/MPAS-Model
-        branch = gsl/develop
+	url = https://github.com/haiqinli/MPAS-Model
+        branch = gsl/develop-mp-emission
         ignore = all
 [submodule "sorc/RDASApp"]
 	path = sorc/RDASApp
@@ -43,3 +43,8 @@
 	path = workflow/sideload/pyDAmonitor
 	url = https://github.com/pyDAmonitor/pyDAmonitor.git
         ignore = all
+[submodule "sorc/regrid-wrapper"]
+	path = sorc/regrid-wrapper
+	url = https://github.com/jordanschnell/regrid-wrapper.git
+	branch = mpas_aero_v0
+	ignore = all

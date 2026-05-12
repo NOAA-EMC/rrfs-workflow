@@ -25,13 +25,15 @@ def prep_chem(xmlFile, expdir, do_ensemble=False, do_spinup=False):
         'CHEM_INPUT': os.getenv('CHEM_INPUT', 'CHEM_INPUT_undefined'),
         'REGRID_WRAPPER_DIR': os.getenv('REGRID_WRAPPER_DIR', 'REGRID_WRAPPER_DIR_undefined'),
         'REGRID_CONDA_ENV': os.getenv('REGRID_CONDA_ENV', 'REGRID_CONDA_ENV_undefined'),
-        'RAVE_INPUT': os.getenv('RAVE_INPUT', 'RAVE_INPUT_undefined'),
+        'FIRE_INPUT': os.getenv('FIRE_INPUT', 'FIRE_INPUT_undefined'),
+        'FIRE_DATASET': os.getenv('FIRE_DATASET', 'FIRE_DATASET_undefined'),
     }
     #
     metatask = True
     task_id = f'{meta_id}_#group#'
     dcTaskEnv['CHEM_GROUP'] = '#group#'
-    dcTaskEnv['ANTHRO_EMISINV'] = 'GRA2PES'
+    dcTaskEnv['ANTHRO_EMISINV'] = 'NEMO'
+    dcTaskEnv['EBB_DCYCLE'] = os.getenv('EBB_DCYCLE', 0)
     #
     chem_groups = os.getenv('CHEM_GROUPS', 'smoke').replace(',', ' ')
     meta_bgn = f'''
@@ -39,19 +41,21 @@ def prep_chem(xmlFile, expdir, do_ensemble=False, do_spinup=False):
 <var name="group">{chem_groups}</var>'''
     meta_end = f'</metatask>\n'
 
-    dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
+    if "anthro" in chem_groups:
+       dcTaskEnv['KEEPDATA'] = 'YES'
+    else:
+       dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
     # dependencies
     timedep = ''
+    dependencies = ''
     if realtime.upper() == "TRUE":
         starttime = get_cascade_env(f"STARTTIME_{task_id}".upper())
         timedep = f'\n  <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
 
-    dependencies = f'''
-  <dependency>
-  <and>{timedep}
-    <taskdep task="prep_ic"/>
-  </and>
-  </dependency>'''
+        dependencies = f'''
+      <dependency>
+         {timedep}
+      </dependency>'''
 
     xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv, dependencies, metatask, meta_id, meta_bgn, meta_end, "PREP_CHEM")
 # end of prep_chem --------------------------------------------------------

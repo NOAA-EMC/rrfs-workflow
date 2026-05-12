@@ -1,51 +1,42 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2154,SC2153,SC2012
 # Remove any old files
-rm -f "${UMBRELLA_PREP_CHEM_DATA}"/smoke.init*nc # why we need this?
-
-# RAVE_INPUT is provided by the job card directly
-ECO_INPUTDIR=${CHEM_INPUT}/aux/ecoregion/raw/
-FMC_INPUTDIR=${CHEM_INPUT}/aux/FMC/raw/${YYYY}/${MM}/
-
+rm -f "${UMBRELLA_PREP_CHEM_DATA}"/goes.aod.init*nc # why we need this?
+# 
+GOES_INPUT=/scratch4/BMC/zrtrr/jdduda/smoke_mask/GOES
 # output directories
-RAVE_OUTPUTDIR=${DATA}
-ECO_OUTPUTDIR=${DATA}
-FMC_OUTPUTDIR=${DATA}
+GOES_OUTPUTDIR=${DATA}
+OUTPUTFILE=${UMBRELLA_PREP_CHEM_DATA}/goes.aod.init.nc
+
 #
 srun python -u "${SCRIPT}" \
-               "${FIRE_DATASET}" \
+               "GOES" \
                "${DATA}" \
-               "${FIRE_INPUT}" \
-               "${RAVE_OUTPUTDIR}" \
+               "${GOES_INPUT}" \
+               "${GOES_OUTPUTDIR}" \
                "${INTERP_WEIGHTS_DIR}" \
                "${YYYY}${MM}${DD}${HH}"
 mkdir -p logs
 mv ./*.log ./*.ESMF_LogFile logs || echo "could not move logs"
+
+
+
+
 #
 # Loop through the hours and link the files so they have the correct filename and variable names 
 # TODO - Update variable names via outside script or within regrid.py -- mapping table?
 for ihour in $(seq 0 "${my_fcst_length}");
 do
-  if (( ihour > 24 )); then
+  if [[ ${ihour} -gt 24 ]]; then
     ihour2=$((ihour-24))
   else
     ihour2=${ihour}
   fi
-  if [[ "${EBB_DCYCLE}" == -1 ]]; then
-     # Peristence emissions, only 24 forecasts are possible
-     # Beyond that we need to repeat the emissions
-     timestr1=$(date +%Y%m%d%H -d "$previous_day + $ihour2 hours")
-  else
-     # Either NOWcast (1 emission file per current forecast hour) or
-     # Forecasted emissions requiring the previous 24 hours
-     timestr1=$(date +%Y%m%d%H -d "$current_day + $ihour hours")
-  fi
-
+  timestr1=$(date +%Y%m%d%H -d "$previous_day + $ihour2 hours")
   timestr2=$(date +%Y-%m-%d_%H -d "$current_day + $ihour hours")
   timestr3=$(date +%Y-%m-%d_%H:00:00 -d "$current_day + $ihour hours")
   #
-  EMISFILE="${UMBRELLA_PREP_CHEM_DATA}/smoke.init.retro.${timestr2}.00.00.nc"
-  EMISFILE2="${RAVE_OUTPUTDIR}/${MESH_NAME}-${FIRE_DATASET}-${timestr1}.nc"
+  EMISFILE2="${GOES_OUTPUTDIR}/${MESH_NAME}-GOES-${timestr1}.nc"
   if [[ -r "${EMISFILE2}" ]]; then
     ncrename -v PM25,e_bb_in_smoke_fine "${EMISFILE2}"
     ncrename -v FRP_MEAN,frp_in -v FRE,fre_in "${EMISFILE2}"
@@ -56,15 +47,14 @@ do
     ncrename -v NH3,e_bb_in_nh3 "${EMISFILE2}"
     ln -sf "${EMISFILE2}" "${EMISFILE}"
   else
-    dummyRAVE=${FIXrrfs}/chemistry/${FIRE_DATASET}/${FIRE_DATASET}.dummy.${MESH_NAME}.nc
-    if [[ -s ${dummyRAVE} ]]; then
-      cp "${dummyRAVE}" "${EMISFILE}"
+    dummyGOES=${FIXrrfs}/chemistry/GOES/GOES.dummy.${MESH_NAME}.nc
+    if [[ -s ${dummyGOES} ]]; then
+      cp "${dummyGOES}" "${EMISFILE}"
     else
-      echo "${dummyRAVE} not found, stop the workflow..."
+      echo "${dummyGOES} not found, stop the workflow..."
       err_exit
     fi
   fi
-  ncap2 -O -s 'frp_in=frp_in.ttl($nkwildfire)' -s 'fre_in=fre_in.ttl($nkwildfire)' "${EMISFILE}" "${EMISFILE}"
   ncks -O -6 "${EMISFILE}" "${EMISFILE}"
   ncks -A -v xtime ./init.nc  "${EMISFILE}"
   #shellcheck disable=SC2086
@@ -74,7 +64,7 @@ done
 #
 echo "Concatenating hourly files for use in forecast mode"
 # Concatenate for ebb2
-ncrcat -v frp_in,fre_in,e_bb_in_so2,e_bb_in_ch4,e_bb_in_smoke_coarse,e_bb_in_nh3 "${UMBRELLA_PREP_CHEM_DATA}"/smoke.init.retro.*.00.00.nc "${UMBRELLA_PREP_CHEM_DATA}"/smoke.init.nc
+ncrcat "${UMBRELLA_PREP_CHEM_DATA}"/smoke.init.retro.*.00.00.nc "${UMBRELLA_PREP_CHEM_DATA}"/smoke.init.nc
 #
 # Calculate previous 24 hour average HWP
 #
@@ -91,13 +81,14 @@ if [[ ! -r "${ECO_OUTPUTDIR}/ecoregions_${MESH_NAME}_mpas.nc" ]] && [[ -r "${ECO
                    "${ECO_INPUTDIR}" \
                    "${ECO_OUTPUTDIR}" \
                    "${INTERP_WEIGHTS_DIR}" \
-                   "${YYYY}${MM}${DD}${HH}"
+                   "${YYYY}${MM}${DD}${HH}" \
+                   "${MESH_NAME}"
 
   ncks -A -v ecoregion_ID "${ECO_OUTPUTDIR}/ecoregions_${MESH_NAME}_mpas.nc" "${UMBRELLA_PREP_CHEM_DATA}"/smoke.init.nc
 fi
 # 
 n_fmc=$(ls "${FMC_INPUTDIR}/fmc_${YYYY}${MM}${DD}"* | wc -l)
-if (( n_fmc > 0 )); then
+if [[ ${n_fmc} -gt 0 ]]; then
   echo "Have at least some soil moisture information, will interpolate"
      ln -s "${FMC_INPUTDIR}"/* "${DATA}"/
      srun python -u "${SCRIPT}"   \
@@ -106,7 +97,8 @@ if (( n_fmc > 0 )); then
                      "${FMC_INPUTDIR}" \
                      "${FMC_OUTPUTDIR}" \
                      "${INTERP_WEIGHTS_DIR}" \
-                     "${YYYY}${MM}${DD}${HH}"
+                     "${YYYY}${MM}${DD}${HH}" \
+                     "${MESH_NAME}"
   # Average for ebb2
   ncrcat "${FMC_OUTPUTDIR}"/fmc*"${MESH_NAME}"*nc "${UMBRELLA_PREP_CHEM_DATA}"/fmc.init.nc
   ncks -A -v 10h_dead_fuel_moisture_content "${UMBRELLA_PREP_CHEM_DATA}"/fmc.init.nc "${UMBRELLA_PREP_CHEM_DATA}"/smoke.init.nc

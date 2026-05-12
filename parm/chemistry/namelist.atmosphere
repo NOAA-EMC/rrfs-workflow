@@ -1,6 +1,7 @@
 &chemistry
     config_smoke_scheme  = 'off'
     config_dust_scheme = 'off'
+    config_anthro_scheme = 'off'
     num_chem = 0
     plume_wind_eff = 0
     ebb_dcycle = 1
@@ -20,6 +21,7 @@
     dust_moist_correction = 0.1
     aero_dir_rad_fdb = false
     config_mynn_enh_mix = false
-    kanthro = 20
+    config_mp_aero_emission = false
+    kanthro = 1
     kwildfire = 1
 /

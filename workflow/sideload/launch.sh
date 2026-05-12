@@ -24,14 +24,8 @@ elif [[ -n "${PBS_NODEFILE}" ]]; then # PBS
     export STRIDE=$((128 / PPN))
     export MPI_RUN_CMD="mpiexec -n $NTASKS -ppn $PPN --cpu-bind core --depth $STRIDE --label --line-buffer"
   fi
-else  # runs in an environment without a job scheduler
-  export NONSCHEDULER_JOBID=$(ps -o pgid= -p $$ | tr -d ' ')  # chid processes will send SIGTERM to this JOBID
-  cleanup() {
-    echo "Killing the current task and all child processes..."
-    pkill -P "${NONSCHEDULER_JOBID}"  # Kills all child processes of this script
-    exit 1
-  }
-  trap cleanup SIGINT SIGTERM
+else
+  echo "Info: Not slurm nor PBS"
 fi
 #
 ulimit -s unlimited
@@ -126,6 +120,12 @@ case ${task_id} in
     module purge
     module load "rrfs/${MACHINE}.${COMPILER}"
     module load nco
+    ;;
+  prep_chem)
+    module purge
+    module load "rrfs/${MACHINE}.regrid-wrapper-spack-stack.${COMPILER}"
+#    module load "rrfs/${MACHINE}.${COMPILER}"
+#    module load stack-python esmf py-xarray py-netcdf4 py-mpi4py nco
     ;;
   *)
     module purge
