@@ -139,7 +139,7 @@ err_chk
 #
 # saving log.atmosphere.0000.out
 #
-[[ -f ./log.atmosphere.0000.out ]] && cat ./log.atmosphere.0000.out
+[[ -s ./log.atmosphere.0000.out ]] && cat ./log.atmosphere.0000.out
 #
 # double check status as sometimes atmosphere_model.x exit with 0 but there are still errors (log.atmosphere*err)
 #
