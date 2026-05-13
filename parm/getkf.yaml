@@ -15056,7 +15056,7 @@ observations:
            action:
              name: reject
 
-         # Reject obs with pressure < 150 mb and  > 400 mb
+         # Reject obs with pressure < 150 mb and > 300 mb
          - filter: Bounds Check
            udescriptor: "bounds_check_pressure"
            filter variables:
@@ -15065,7 +15065,7 @@ observations:
            test variables:
            - name: MetaData/pressure
            minvalue: 15000.
-           maxvalue: 40000.
+           maxvalue: 30000.
            where:
            - variable: ObsType/windEastward
              is_in: 246
@@ -15429,7 +15429,7 @@ observations:
            action:
              name: reject
 
-         # Reject obs with pressure < 150 mb and  > 400 mb
+         # Reject obs with pressure < 150 mb and > 300 mb
          - filter: Bounds Check
            udescriptor: "bounds_check_pressure"
            filter variables:
@@ -15438,7 +15438,7 @@ observations:
            test variables:
            - name: MetaData/pressure
            minvalue: 15000.
-           maxvalue: 40000.
+           maxvalue: 30000.
            where:
            - variable: ObsType/windEastward
              is_in: 246
