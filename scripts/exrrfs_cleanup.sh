@@ -45,7 +45,11 @@ if [ "${CLEAN_MODE}" == "post" ]; then
     # rrfs
     if [ "${KEEP_DET_RESTART^^}" != YES ]; then
       echo "Cleaning up det RESTART files for cyc $cyc ."
-      for Restart_cyc in $Restart_1h $Restart_2h $Restart_3h; do
+
+      # for Restart_cyc in $Restart_1h $Restart_2h $Restart_3h; do
+      # 20260508 - Keep 1h restart files
+
+      for Restart_cyc in $Restart_2h $Restart_3h; do
         date_to_remove=${Restart_cyc:0:8}
         cyc_to_remove=${Restart_cyc:8:2}
         com_to_remove=${COMIN}/rrfs.${date_to_remove}/${cyc_to_remove}/forecast/RESTART
@@ -58,7 +62,11 @@ if [ "${CLEAN_MODE}" == "post" ]; then
     # enkf
     if [ "${KEEP_ENKF_RESTART^^}" != YES ]; then
       echo "Cleaning up enkf RESTART files for cyc $cyc ."
-      for Restart_cyc in $Restart_1h $Restart_2h $Restart_3h; do
+
+      # for Restart_cyc in $Restart_1h $Restart_2h $Restart_3h; do
+      # 20260508 - Keep 1h restart files
+
+      for Restart_cyc in $Restart_2h $Restart_3h; do
         date_to_remove=${Restart_cyc:0:8}
         cyc_to_remove=${Restart_cyc:8:2}
         for imem in {01..30}; do
