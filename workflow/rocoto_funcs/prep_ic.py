@@ -63,13 +63,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
         strneqs = strneqs + f"\n      <strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
     streqs = streqs.lstrip('\n')
     strneqs = strneqs.lstrip('\n')
-    if do_ensemble:
-        datadep_prod = ""
-        for i in range(1, int(ens_size) + 1):
-            memdirstr = f'/mem{i:03d}'
-            datadep_prod = datadep_prod + f'''\n      <datadep age="00:01:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;{memdirstr}/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
-    else:
-        datadep_prod = f'''\n      <datadep age="00:01:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
+    datadep_prod = f'''\n      <datadep age="00:00:05"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;/fcst_f{cyc_interval:0>3}.done</cyclestr></datadep>'''
 
     datadep_spinup = f'''\n      <taskdep task="fcst_spinup" cycle_offset="-1:00:00"/>'''
     if spinup_mode == 0:  # no parallel spinup cycles
@@ -92,7 +86,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
         sfc_streqs = textwrap.indent(sfc_streqs.lstrip('\n'), '        ')
         sfc_strneqs = textwrap.indent(sfc_strneqs.lstrip('\n'), '      ')
         for i in range(1, int(sfc_update_look_back_hrs) + 1, 1):
-            datadep_sfc = datadep_sfc + f'''\n        <datadep age="00:01:00"><cyclestr offset="-{i}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
+            datadep_sfc = datadep_sfc + f'''\n        <datadep age="00:00:05"><cyclestr offset="-{i}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;/fcst_f{i:0>3}.done</cyclestr></datadep>'''
         sfc_dep = f'''
     <and>
       <or>

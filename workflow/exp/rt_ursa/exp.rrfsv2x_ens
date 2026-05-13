@@ -41,7 +41,6 @@ for i in {0..23..12};    do arr[$i]="00"; done # 3hr fcst
 export FCST_LEN_HRS_CYCLES="${arr[*]}"
 export DO_POST=false
 export HISTORY_INTERVAL=none
-export MPASOUT_TIMELEVELS="0 1"
 export DIAG_INTERVAL=1
 
 export IC_OFFSET=39
@@ -84,7 +83,7 @@ export TASKTHROTTLE=60
 export MAXTRIES=3
 export CLEAN_BACK_DAYS=2
 export STMP_RETENTION_CYCS=26
-export COM_RETENTION_CYCS='{"default": 48, "lbc,fcst": 30}'   # use " inside and ' outside
+export COM_RETENTION_CYCS='{"default": 84, "lbc,fcst": 72}'   # use " inside and ' outside
 export CYCLETHROTTLE=3600
 export CYCLELIFESPAN=2
 #

@@ -42,20 +42,18 @@ export GSIBEC_Y=20
 
 export DO_CYC=true
 export CYC_INTERVAL=1
-for i in {0..23};    do arr[$i]="03"; done # 3hr fcst
-for i in {0..23..03}; do arr[$i]="12"; done # 18hr fcst
-for i in {0..23..12}; do arr[$i]="48"; done # 24hr fcst every 12hrs
-for i in 00; do arr[$i]="36"; done # 36hr fcst at 00Z
+for i in {0..23};    do arr[$i]="09"; done # 3hr fcst
+for i in {0..23..12}; do arr[$i]="72"; done # 24hr fcst every 12hrs
 export FCST_LEN_HRS_CYCLES="${arr[*]}"
 export HISTORY_INTERVAL=1
 export DIAG_INTERVAL=1
-export MPASOUT_TIMELEVELS='0 1 3 15 27'
+export MPASOUT_TIMELEVELS='0 1 3'
 export POST_GROUP_TOT_NUM=10
 export DO_PYDAMONITOR=true
 
 export IC_OFFSET=3
 export LBC_OFFSET=6
-export LBC_LENGTH=48
+export LBC_LENGTH=84
 export LBC_INTERVAL=1
 export LBC_UNGRIB_GROUP_TOTAL_NUM=3
 export LBC_GROUP_TOTAL_NUM=6
@@ -77,13 +75,13 @@ export CYCLEDEF_PROD_EXCLUDE="01 02 13 14"
 #export COLDSTART_CYCS="03 15"
 #export PRODSWITCH_CYCS="09 21"
 #
-export WALLTIME_FCST="5:00:00"
+export WALLTIME_FCST="8:00:00"
 export WALLTIME_SAVE_FCST="0:30:00"
 export WALLTIME_MPASSIT="3:00:00"
 export WALLTIME_UPP="3:00:00"
 export WALLTIME_JEDIVAR="00:25:00"
 # Ursa
-export QUEUE="batch"
+export QUEUE="windfall"
 export PARTITION="u1-compute"
 export NODES_PREP_IC="<nodes>1:ppn=10</nodes>"
 export NODES_IC="<nodes>2:ppn=192</nodes>"
@@ -97,7 +95,7 @@ export NODES_IODA_MRMS_REFL="<nodes>1:ppn=40</nodes>"
 export KEEPDATA=YES
 export MAXTRIES=3
 export STMP_RETENTION_CYCS=26
-export COM_RETENTION_CYCS='{"default": 84, "lbc,fcst": 48, "upp,nclprd": 840}'  # use " inside and ' outside
+export COM_RETENTION_CYCS='{"default": 96, "lbc,fcst": 72, "upp,nclprd": 960}'  # use " inside and ' outside
 export CYCLETHROTTLE=3600
 export CYCLELIFESPAN=2
 #
