@@ -16,7 +16,7 @@ def save_for_next(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     # Task-specific EnVars beyond the task_common_vars
     dcTaskEnv = {
         'MPASOUT_INTERVAL': os.getenv('MPASOUT_INTERVAL', '1'),
-        'CYC_INTERVAL': f'#mpasout_fhr#',
+        'FCST_HR': f'#mpasout_fhr#',
     }
 
     if do_ensemble:

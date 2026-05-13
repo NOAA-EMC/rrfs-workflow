@@ -6,9 +6,9 @@ cpreq=${cpreq:-cpreq}
 
 cd "${DATA}" || exit 1
 mpasout_interval=${MPASOUT_INTERVAL:-1}
-cyc_interval=${CYC_INTERVAL:-1}
+fcst_hr=${FCST_HR:-1}
 #
-CDATEp=$( ${NDATE}  "${cyc_interval}"  "${CDATE}" )
+CDATEp=$( ${NDATE}  "${fcst_hr}"  "${CDATE}" )
 timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
 #
 export CMDFILE="${DATA}/poescript_savefcst"
@@ -54,6 +54,8 @@ export err=$?
 if (( err != 0 )) ; then
   echo "save_for_next failed with error code ${err} "
   err_exit
+else
+  touch "${COMOUT}/fcst/${WGF}/fcst_f$(printf "%03d" "${fcst_hr}").done"
 fi
 
 exit 0
