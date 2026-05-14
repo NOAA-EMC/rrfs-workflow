@@ -208,7 +208,7 @@ if [ -s ${COMOUT}/${fld2d} ]; then
 fi
 if [ -s ${COMOUT}/${testbed} ]; then
   wgrib2 ${COMOUT}/${testbed} -s > ${COMOUT}/${testbed}.idx
-fi  
+fi
 
 if [ "${DO_ENSFCST}" != "TRUE" ] && [ ${fhr} != '000' ] && [ -e $COMOUT/${fld2d_subh} ]; then
   wgrib2 ${COMOUT}/${fld2d_subh} -s > ${COMOUT}/${fld2d_subh}.idx
