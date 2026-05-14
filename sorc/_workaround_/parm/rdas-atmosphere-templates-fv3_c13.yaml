@@ -189,6 +189,7 @@ atmosphere_final_increment_prefix: "./anl/atminc."
 
 # Observation things
 # ------------------
+use_error_inflation: true
 mesonet_use_list_winds: true
 mesonet_use_list_airTemperature: true
 mesonet_use_list_specificHumidity: true
@@ -220,9 +221,9 @@ observations:
 - aircft_winds_234
 - aircft_winds_235
 
-#- proflr_winds_227
+- proflr_winds_227
 #- vadwnd_winds_224
-#- rassda_airTemperature_126
+- rassda_airTemperature_126
 
 # Surface conventional
 - adpsfc_airTemperature_181
@@ -236,10 +237,10 @@ observations:
 - adpsfc_winds_281
 - adpsfc_winds_284
 - adpsfc_winds_287
-#- msonet_airTemperature_188
-#- msonet_specificHumidity_188
-#- msonet_stationPressure_188
-#- msonet_winds_288
+- msonet_airTemperature_188
+- msonet_specificHumidity_188
+- msonet_stationPressure_188
+- msonet_winds_288
 
 - sfcshp_airTemperature_180
 - sfcshp_airTemperature_182
@@ -255,12 +256,34 @@ observations:
 
 # Remote
 #- gnss_zenithTotalDelay
+
+# Meteosat / EUMETSAT satelliteIdentifier 56
+#- satwnd_winds_243_56
+#- satwnd_winds_253_56
+
+# Meteosat / EUMETSAT satelliteIdentifier 57
+#- satwnd_winds_243_57
+#- satwnd_winds_253_57
+
+# Himawari / JMA satelliteIdentifier 174
+#- satwnd_winds_242_174
+#- satwnd_winds_250_174
+#- satwnd_winds_252_174
+
+# GOES-16 satelliteIdentifier 270
 #- satwnd_winds_245_270
-#- satwnd_winds_245_272
 #- satwnd_winds_246_270
-#- satwnd_winds_246_272
 #- satwnd_winds_247_270
+
+# GOES-18 satelliteIdentifier 272
+#- satwnd_winds_245_272
+#- satwnd_winds_246_272
 #- satwnd_winds_247_272
+
+# GOES-19 satelliteIdentifier 273
+#- satwnd_winds_245_273
+#- satwnd_winds_246_273
+#- satwnd_winds_247_273
 
 # SatRad
 #- abi_g16
@@ -333,12 +356,22 @@ iuse_sfcshp_winds_284: accept
 
 # Remote
 iuse_gnss_zenithTotalDelay: accept
+iuse_satwnd_winds_243_56: accept
+iuse_satwnd_winds_253_56: accept
+iuse_satwnd_winds_243_57: accept
+iuse_satwnd_winds_253_57: accept
+iuse_satwnd_winds_242_174: accept
+iuse_satwnd_winds_250_174: accept
+iuse_satwnd_winds_252_174: accept
 iuse_satwnd_winds_245_270: accept
-iuse_satwnd_winds_245_272: accept
 iuse_satwnd_winds_246_270: accept
-iuse_satwnd_winds_246_272: accept
 iuse_satwnd_winds_247_270: accept
+iuse_satwnd_winds_245_272: accept
+iuse_satwnd_winds_246_272: accept
 iuse_satwnd_winds_247_272: accept
+iuse_satwnd_winds_245_273: accept
+iuse_satwnd_winds_246_273: accept
+iuse_satwnd_winds_247_273: accept
 
 # SatRad
 iuse_abi_g16: passivate

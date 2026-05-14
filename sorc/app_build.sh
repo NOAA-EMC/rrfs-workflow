@@ -354,10 +354,10 @@ if [[ $BUILD_WORKAROUND = true ]]; then
   # Workaround for qmin=0 in GSI
   cp _workaround_/gsi/constants.f90 gsi/src/gsi/constants.f90
 
-  # Workaround for qoption=1 in GSI
+  # Workaround for options in GSI
   cp _workaround_/fix/gsi/gsiparm.anl.sh ../fix/gsi/gsiparm.anl.sh
 
-  # Workaround for aircar+aircft t, q, uv
+  # Workaround for GSI convinfo
   cp _workaround_/fix/gsi/convinfo.rrfs ../fix/gsi/convinfo.rrfs
 
   # Workaround for GSI 3DVar
@@ -373,12 +373,12 @@ if [[ $BUILD_WORKAROUND = true ]]; then
   cp _workaround_/gsibec/mod_fv3_lola.f90 RDASApp/sorc/_workaround_/gsibec/mod_fv3_lola.f90
   cp _workaround_/fix/jedi/RRFS_CONUS_13km/gsiparm_regional.anl ../fix/jedi/RRFS_CONUS_13km/gsiparm_regional.anl
 
-  # Workaround for grid_ratio=1, aircar+aircft, and 3DVar
+  # Workaround for JEDI JCB configuration
   cp _workaround_/parm/rdas-atmosphere-templates-fv3_c13.yaml ../parm/rdas-atmosphere-templates-fv3_c13.yaml
 
   # Configuration files for GSI and JEDI
-  cp _workaround_/ush/config_det_c13_3dvar_gsi_baseline001.sh ../ush/config_det_c13_3dvar_gsi_baseline001.sh
-  cp _workaround_/ush/config_det_c13_3dvar_jedi_baseline001.sh ../ush/config_det_c13_3dvar_jedi_baseline001.sh
+  cp _workaround_/ush/config_det_c13_3dvar_gsi_baseline003.sh ../ush/config_det_c13_3dvar_gsi_baseline003.sh
+  cp _workaround_/ush/config_det_c13_3dvar_jedi_baseline003.sh ../ush/config_det_c13_3dvar_jedi_baseline003.sh
 
 fi
 
