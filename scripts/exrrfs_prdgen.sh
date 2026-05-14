@@ -187,6 +187,12 @@ if [ ${DO_ENSFCST} != "TRUE" ]; then
   export err=$?; err_chk
 fi
 
+if [ ${DO_ENSFCST} = "TRUE" ]; then
+  wgrib2 ${COMOUT}/${fld2d} | grep -F -f ${FIX_UPP}/testbed_fields_2dfld_ensf.txt | wgrib2 -i -append -grib ${DATA}/${testbed} ${COMOUT}/${fld2d}
+  wgrib2 ${COMOUT}/${prslev} | grep -F -f ${FIX_UPP}/testbed_fields_prslev_ensf.txt | wgrib2 -i -append -grib ${DATA}/${testbed} ${COMOUT}/${prslev}
+  export err=$?; err_chk
+fi
+
   cpreq ${DATA}/${testbed}  ${COMOUT}/${testbed}
 fi
 
@@ -202,7 +208,7 @@ if [ -s ${COMOUT}/${fld2d} ]; then
 fi
 if [ -s ${COMOUT}/${testbed} ]; then
   wgrib2 ${COMOUT}/${testbed} -s > ${COMOUT}/${testbed}.idx
-fi
+fi  
 
 if [ "${DO_ENSFCST}" != "TRUE" ] && [ ${fhr} != '000' ] && [ -e $COMOUT/${fld2d_subh} ]; then
   wgrib2 ${COMOUT}/${fld2d_subh} -s > ${COMOUT}/${fld2d_subh}.idx
