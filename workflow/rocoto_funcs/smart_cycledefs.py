@@ -55,8 +55,9 @@ def smart_cycledefs():
     #
     # fill in the Cycledef dictionary
     dcCycledef = {}
-    dcCycledef['ic'] = f'{cycledef_ic}'
-    dcCycledef['lbc'] = f'{cycledef_lbc}'
+    if os.getenv('DO_RTMA', 'FALSE').upper() == 'FALSE':
+        dcCycledef['ic'] = f'{cycledef_ic}'
+        dcCycledef['lbc'] = f'{cycledef_lbc}'
     #
     exclude_str = os.getenv('CYCLEDEF_PROD_EXCLUDE', '')
     if exclude_str:
