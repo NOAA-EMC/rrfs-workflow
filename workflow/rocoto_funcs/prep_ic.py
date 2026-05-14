@@ -158,11 +158,11 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
 
 # overwrite dependencies if do_rtma
     if os.getenv('DO_RTMA', 'FALSE').upper() == "TRUE":
-        rtma_bkg_path = os.getenv('RTMA_BKG_PATH', 'RTMA_BKG_PATH_NOT_DEFINED')
+        rtma_rrfspath = os.getenv('RTMA_RRFSPATH', 'RTMA_RRFSPATH_NOT_DEFINED')
         dependencies = f'''
   <dependency>
   <and>{timedep}
-   <datadep age="00:00:05"><cyclestr offset="-{cyc_interval}:00:00">{rtma_bkg_path}/rrfs.@Y@m@d/@H/fcst/&WGF;/fcst_f{cyc_interval:0>3}.done</cyclestr></datadep>
+   <datadep age="00:00:05"><cyclestr offset="-{cyc_interval}:00:00">{rtma_rrfspath}/rrfs.@Y@m@d/@H/fcst/&WGF;/fcst_f{cyc_interval:0>3}.done</cyclestr></datadep>
   </and>
   </dependency>'''
 

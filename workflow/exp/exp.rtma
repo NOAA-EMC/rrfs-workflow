@@ -16,7 +16,7 @@ export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed i
 export ZETA_LEVELS="L60.txt"
 #
 export DO_RTMA=true
-export RTMA_BKG_PATH="/home/role.rtrr/rrfsv2x"  # the location of RRFS 1h fcsts: rrfs.$PDY/$cyc/fcst/det/mpasout*.nc 
+export RTMA_RRFSPATH="/home/role.rtrr/rrfsv2x"  # the RRFS location: rrfs.$PDY/$cyc/(fcst,lbc)/det/mpasout*.nc 
 export DO_NONVAR_CLOUD_ANA=false
 export DO_CLEAN=true
 export HYB_WGT_ENS=0.0
