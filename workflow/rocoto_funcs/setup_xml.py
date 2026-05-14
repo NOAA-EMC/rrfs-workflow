@@ -106,7 +106,7 @@ def setup_xml(HOMErrfs, expdir):
                     nonvar_cldana(xmlFile, expdir, spinup_mode=-1)
                 fcst(xmlFile, expdir)
                 save_for_next(xmlFile, expdir)
-            else:
+            elif os.getenv("DO_FCST", "TRUE").upper() == "TRUE":
                 prep_ic(xmlFile, expdir)
                 if "global" not in MESH_NAME:
                     prep_lbc(xmlFile, expdir)
@@ -120,8 +120,7 @@ def setup_xml(HOMErrfs, expdir):
                     nonvar_cldana(xmlFile, expdir)
                 if os.getenv("DO_PYDAMONITOR", "FALSE").upper() == "TRUE":
                     pyDAmonitor(xmlFile, expdir)
-                if os.getenv("DO_FCST", "TRUE").upper() == "TRUE":
-                    fcst(xmlFile, expdir)
+                fcst(xmlFile, expdir)
                 if os.getenv('DO_CYC', 'FALSE').upper() == "TRUE" and os.getenv('DO_RTMA', 'FALSE').upper() == 'FALSE':
                     save_for_next(xmlFile, expdir)
             #
