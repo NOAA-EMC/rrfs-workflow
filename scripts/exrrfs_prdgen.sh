@@ -433,7 +433,6 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
 
   # create prslev and 2dfld files on 32-km North America grid
   # Deterministic cycles only
-  # do we need something to exclude firewx?  
   # And might we want to ensf also?
   if [ ${DO_ENSFCST} = "FALSE" ]; then
     prslev_na_32km=${net4}.t${cyc}z.prslev.32km.f${fhr}.na.grib2
@@ -441,7 +440,7 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
 
     if [[ $SENDCOM = 'YES' ]]; then
       export gridspecs="lambert:253:50.000000 214.500000:349:32463.000000 1.000000:277:32463.000000"
-      wgrib2 ${DATA}/${prslev} -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv inputs.gribprslev32km.uv
+      wgrib2 ${COMOUT}/${prslev} -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv inputs.gribprslev32km.uv
       wgrib2 inputs.gribprslev32km.uv -set_bitmap 1 -set_grib_type c3 \
         -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
         -new_grid_interpolation neighbor \
@@ -449,7 +448,7 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
         -new_grid ${gridspecs} ${COMOUT}/${prslev_na_32km}
       wgrib2 ${COMOUT}/${prslev_na_32km} -s > ${COMOUT}/${prslev_na_32km}.idx
 
-      wgrib2 ${DATA}/${fld2d} -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv inputs.grib2dfld32km.uv
+      wgrib2 ${COMOUT}/${fld2d} -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv inputs.grib2dfld32km.uv
       wgrib2 inputs.grib2dfld32km.uv -set_bitmap 1 -set_grib_type c3 \
         -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
         -new_grid_interpolation neighbor \
