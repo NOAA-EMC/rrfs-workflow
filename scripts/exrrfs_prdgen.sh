@@ -168,32 +168,32 @@ if [ ${DO_ENSFCST} = "TRUE" ]; then
   prslev=${net4}.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.${gridname}.grib2
   natlev=${net4}.t${cyc}z.${mem_num}.natlev.${gridspacing}.f${fhr}.${gridname}.grib2
   fld2d=${net4}.t${cyc}z.${mem_num}.2dfld.${gridspacing}.f${fhr}.${gridname}.grib2
-  testbed=${net4}.t${cyc}z.${mem_num}.testbed.${gridspacing}.f${fhr}.${gridname}.grib2
+  subset=${net4}.t${cyc}z.${mem_num}.subset.${gridspacing}.f${fhr}.${gridname}.grib2
 else
   prslev=${net4}.t${cyc}z.prslev.${gridspacing}.f${fhr}.${gridname}.grib2
   natlev=${net4}.t${cyc}z.natlev.${gridspacing}.f${fhr}.${gridname}.grib2
   fld2d=${net4}.t${cyc}z.2dfld.${gridspacing}.f${fhr}.${gridname}.grib2
-  testbed=${net4}.t${cyc}z.testbed.${gridspacing}.f${fhr}.${gridname}.grib2
+  subset=${net4}.t${cyc}z.subset.${gridspacing}.f${fhr}.${gridname}.grib2
   fld2d_subh=${net4}.t${cyc}z.2dfld.${gridspacing}.subh.f${fhr}.${gridname}.grib2
 fi
 
-# extract the output fields for the testbed files
+# extract the output fields for the subset files
 if [ "${PREDEF_GRID_NAME}" != "RRFS_FIREWX_1.5km" ]; then
-  wgrib2 ${COMOUT}/${fld2d} | grep -F -f ${FIX_UPP}/testbed_fields_2dfld.txt | wgrib2 -i -grib ${DATA}/${testbed} ${COMOUT}/${fld2d}
-  wgrib2 ${COMOUT}/${prslev} | grep -F -f ${FIX_UPP}/testbed_fields_prslev.txt | wgrib2 -i -append -grib ${DATA}/${testbed} ${COMOUT}/${prslev}
+  wgrib2 ${COMOUT}/${fld2d} | grep -F -f ${FIX_UPP}/subset_fields_2dfld.txt | wgrib2 -i -grib ${DATA}/${subset} ${COMOUT}/${fld2d}
+  wgrib2 ${COMOUT}/${prslev} | grep -F -f ${FIX_UPP}/subset_fields_prslev.txt | wgrib2 -i -append -grib ${DATA}/${subset} ${COMOUT}/${prslev}
 
 if [ ${DO_ENSFCST} != "TRUE" ]; then
-  wgrib2 ${COMOUT}/${natlev} | grep -F -f ${FIX_UPP}/testbed_fields_natlev.txt | wgrib2 -i -append -grib ${DATA}/${testbed} ${COMOUT}/${natlev}
+  wgrib2 ${COMOUT}/${natlev} | grep -F -f ${FIX_UPP}/subset_fields_natlev.txt | wgrib2 -i -append -grib ${DATA}/${subset} ${COMOUT}/${natlev}
   export err=$?; err_chk
 fi
 
 if [ ${DO_ENSFCST} = "TRUE" ]; then
-  wgrib2 ${COMOUT}/${fld2d} | grep -F -f ${FIX_UPP}/testbed_fields_2dfld_ensf.txt | wgrib2 -i -append -grib ${DATA}/${testbed} ${COMOUT}/${fld2d}
-  wgrib2 ${COMOUT}/${prslev} | grep -F -f ${FIX_UPP}/testbed_fields_prslev_ensf.txt | wgrib2 -i -append -grib ${DATA}/${testbed} ${COMOUT}/${prslev}
+  wgrib2 ${COMOUT}/${fld2d} | grep -F -f ${FIX_UPP}/subset_fields_2dfld_ensf.txt | wgrib2 -i -append -grib ${DATA}/${subset} ${COMOUT}/${fld2d}
+  wgrib2 ${COMOUT}/${prslev} | grep -F -f ${FIX_UPP}/subset_fields_prslev_ensf.txt | wgrib2 -i -append -grib ${DATA}/${subset} ${COMOUT}/${prslev}
   export err=$?; err_chk
 fi
 
-  cpreq ${DATA}/${testbed}  ${COMOUT}/${testbed}
+  cpreq ${DATA}/${subset}  ${COMOUT}/${subset}
 fi
 
 # create index files
@@ -206,8 +206,8 @@ fi
 if [ -s ${COMOUT}/${fld2d} ]; then
   wgrib2 ${COMOUT}/${fld2d} -s > ${COMOUT}/${fld2d}.idx
 fi
-if [ -s ${COMOUT}/${testbed} ]; then
-  wgrib2 ${COMOUT}/${testbed} -s > ${COMOUT}/${testbed}.idx
+if [ -s ${COMOUT}/${subset} ]; then
+  wgrib2 ${COMOUT}/${subset} -s > ${COMOUT}/${subset}.idx
 fi
 
 if [ "${DO_ENSFCST}" != "TRUE" ] && [ ${fhr} != '000' ] && [ -e $COMOUT/${fld2d_subh} ]; then
@@ -413,22 +413,22 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
     done
   fi
 
-  # create testbed files on 3-km CONUS grid
+  # create subset files on 3-km CONUS grid
   if [ ${DO_ENSFCST} = "TRUE" ]; then
-    testbed_conus=${net4}.t${cyc}z.${mem_num}.testbed.${gridspacing}.f${fhr}.conus.grib2
+    subset_conus=${net4}.t${cyc}z.${mem_num}.subset.${gridspacing}.f${fhr}.conus.grib2
   else
-    testbed_conus=${net4}.t${cyc}z.testbed.${gridspacing}.f${fhr}.conus.grib2
+    subset_conus=${net4}.t${cyc}z.subset.${gridspacing}.f${fhr}.conus.grib2
   fi
 
   if [[ $SENDCOM = 'YES' ]]; then
     export gridspecs="lambert:262.5:38.5:38.5 237.280472:1799:3000 21.138123:1059:3000"
-    wgrib2 ${DATA}/${testbed} -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv inputs.gribtestbed.uv
-    wgrib2 inputs.gribtestbed.uv -set_bitmap 1 -set_grib_type c3 \
+    wgrib2 ${DATA}/${subset} -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv inputs.gribsubset.uv
+    wgrib2 inputs.gribsubset.uv -set_bitmap 1 -set_grib_type c3 \
       -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
       -new_grid_interpolation neighbor \
       -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
-      -new_grid ${gridspecs} ${COMOUT}/${testbed_conus}
-    wgrib2 ${COMOUT}/${testbed_conus} -s > ${COMOUT}/${testbed_conus}.idx
+      -new_grid ${gridspecs} ${COMOUT}/${subset_conus}
+    wgrib2 ${COMOUT}/${subset_conus} -s > ${COMOUT}/${subset_conus}.idx
   fi
 
   #-- Generate AWIPS/wmo products for RRFS
