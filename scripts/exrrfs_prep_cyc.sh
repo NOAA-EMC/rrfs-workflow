@@ -421,7 +421,7 @@ else
       echo "cpreq -p ${bkpath}/${restart_prefix}${file}  bk_${file}" >> para_copy.sh
     done
 
-    cpprocs=`cat ./para_copy.sh | wc -l`
+    cpprocs=5
     mpiexec -n ${cpprocs} -ppn ${cpprocs} --cpu-bind core cfp ./para_copy.sh
     ctrl_bkpath=${bkpath}/../INPUT
     cpreq -p ${ctrl_bkpath}/gfs_ctrl.nc  gfs_ctrl.nc
