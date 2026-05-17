@@ -404,14 +404,14 @@ else
     fi
   fi
 
-  filelistn="fv_core.res.tile1.nc fv_srf_wnd.res.tile1.nc fv_tracer.res.tile1.nc phy_data.nc sfc_data.nc"
+  filelistn="phy_data.nc fv_tracer.res.tile1.nc fv_srf_wnd.res.tile1.nc fv_core.res.tile1.nc sfc_data.nc"
   checkfile=${bkpath}/${restart_prefix}coupler.res
   n_iolayouty=$(($IO_LAYOUT_Y-1))
   list_iolayout=$(seq 0 $n_iolayouty)
   if [ -r "${checkfile}" ] ; then
     cpreq -p ${bkpath}/${restart_prefix}coupler.res      bk_coupler.res
     cpreq -p ${bkpath}/${restart_prefix}fv_core.res.nc   fv_core.res.nc
-    echo "#! /bin/sh" > ./para_copy.sh
+    touch ./para_copy.sh
     for file in ${filelistn}; do
       if [ "${CYCLE_SUBTYPE}" = "spinup" ]; then
         echo "cpreq -p ${bkpath}/${restart_prefix}${file}  ${file}" >> para_copy.sh
