@@ -404,22 +404,25 @@ else
     fi
   fi
 
-  filelistn="fv_core.res.tile1.nc fv_srf_wnd.res.tile1.nc fv_tracer.res.tile1.nc phy_data.nc sfc_data.nc"
+  filelistn="phy_data.nc fv_tracer.res.tile1.nc fv_srf_wnd.res.tile1.nc fv_core.res.tile1.nc sfc_data.nc"
   checkfile=${bkpath}/${restart_prefix}coupler.res
   n_iolayouty=$(($IO_LAYOUT_Y-1))
   list_iolayout=$(seq 0 $n_iolayouty)
   if [ -r "${checkfile}" ] ; then
     cpreq -p ${bkpath}/${restart_prefix}coupler.res      bk_coupler.res
     cpreq -p ${bkpath}/${restart_prefix}fv_core.res.nc   fv_core.res.nc
+    touch ./para_copy.sh
     for file in ${filelistn}; do
       if [ "${CYCLE_SUBTYPE}" = "spinup" ]; then
-        cpreq -p ${bkpath}/${restart_prefix}${file}  ${file}
+        echo "cpreq -p ${bkpath}/${restart_prefix}${file}  ${file}" >> para_copy.sh
       else
-        cpreq -p ${bkpath}/${restart_prefix}${file}  ${file}
+        echo "cpreq -p ${bkpath}/${restart_prefix}${file}  ${file}" >> para_copy.sh
       fi
-      cpreq -p ${bkpath}/${restart_prefix}${file}  bk_${file}
+      echo "cpreq -p ${bkpath}/${restart_prefix}${file}  bk_${file}" >> para_copy.sh
     done
 
+    cpprocs=5
+    mpiexec -n ${cpprocs} -ppn ${cpprocs} --cpu-bind core cfp ./para_copy.sh
     ctrl_bkpath=${bkpath}/../INPUT
     cpreq -p ${ctrl_bkpath}/gfs_ctrl.nc  gfs_ctrl.nc
 

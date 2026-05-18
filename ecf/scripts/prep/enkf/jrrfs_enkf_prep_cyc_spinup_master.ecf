@@ -4,7 +4,7 @@
 #PBS -q %QUEUE%
 #PBS -A %PROJ%-%PROJENVIR%
 #PBS -l walltime=00:20:00
-#PBS -l place=vscatter:shared,select=1:ncpus=1:mem=42G
+#PBS -l place=vscatter:shared,select=1:ncpus=5:mem=500G
 #PBS -l debug=true
 
 model=rrfs
@@ -38,6 +38,7 @@ module load wgrib2/${wgrib2_ver}
 module load udunits/${udunits_ver}
 module load gsl/${gsl_ver}
 module load nco/${nco_ver}
+module load cfp/${cfp_ver}
 
 export WGF="%WGF%"
 export MEMBER_NAME="%MEMBER_NAME%"
