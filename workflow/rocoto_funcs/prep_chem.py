@@ -32,7 +32,7 @@ def prep_chem(xmlFile, expdir, do_ensemble=False, do_spinup=False):
     metatask = True
     task_id = f'{meta_id}_#group#'
     dcTaskEnv['CHEM_GROUP'] = '#group#'
-    dcTaskEnv['ANTHRO_EMISINV'] = 'NEMO'
+    dcTaskEnv['ANTHRO_EMISINV'] = os.getenv('ANTHRO_EMISINV','GRA2PES')
     dcTaskEnv['EBB_DCYCLE'] = os.getenv('EBB_DCYCLE', 0)
     #
     chem_groups = os.getenv('CHEM_GROUPS', 'smoke').replace(',', ' ')
