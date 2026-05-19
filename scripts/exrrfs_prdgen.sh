@@ -429,6 +429,14 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
       -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
       -new_grid ${gridspecs} ${COMOUT}/${subset_conus}
     wgrib2 ${COMOUT}/${subset_conus} -s > ${COMOUT}/${subset_conus}.idx
+
+    if [ "${SENDDBN}" = "YES" ] && [ "${DO_ENSFCST}" = "TRUE" ]; then
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBSET_CONUS $job \
+                  ${COMOUT}/rrfs.t${cyc}z.${mem_num}.subset.${gridspacing}.f${fhr}.conus.grib2
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBSET_CONUS_IDX $job \
+                  ${COMOUT}/rrfs.t${cyc}z.${mem_num}.subset.${gridspacing}.f${fhr}.conus.grib2.idx
+    fi
+
   fi
 
   # create prslev and 2dfld files on 32-km North America grid
