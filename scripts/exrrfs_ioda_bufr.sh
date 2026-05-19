@@ -92,10 +92,10 @@ ${cpreq} "${PARMrrfs}/bufr2netcdf_mtiasi.yaml" .
 input_file="iasibufr"
 output_file="ioda_mtiasi_{splits/satId}.nc"
 yaml="bufr2netcdf_mtiasi.yaml"
-if [[ -f "$input_file" ]]; then
-  ./bufr2netcdf.x "$input_file" "$yaml" "$output_file"
+if [[ -s "${input_file}" ]]; then
+  ./bufr2netcdf.x "${input_file}" "${yaml}" "${output_file}"
 else
-  echo "Input file $input_file does not exist."
+  echo "Input file ${input_file} does not exist."
 fi
 
 # run python bufr2ioda tool for ZTD and AMV bufr obs
