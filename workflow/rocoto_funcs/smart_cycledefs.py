@@ -55,8 +55,9 @@ def smart_cycledefs():
     #
     # fill in the Cycledef dictionary
     dcCycledef = {}
-    dcCycledef['ic'] = f'{cycledef_ic}'
-    dcCycledef['lbc'] = f'{cycledef_lbc}'
+    if os.getenv('DO_RTMA', 'FALSE').upper() == 'FALSE':
+        dcCycledef['ic'] = f'{cycledef_ic}'
+        dcCycledef['lbc'] = f'{cycledef_lbc}'
     #
     exclude_str = os.getenv('CYCLEDEF_PROD_EXCLUDE', '')
     if exclude_str:
@@ -69,8 +70,9 @@ def smart_cycledefs():
         dcCycledef['spinup'] = {'valid_hours': f'{valid_str}', "cycledef": f'{cycledef_spinup}'}
     #
     # if we don't do DA at cold start cycles, let's exclude cold_cycs
+    do_jedi = os.getenv('DO_JEDI', 'FALSE').upper() == 'TRUE'
     nocoldda = os.getenv('COLDSTART_CYCS_DO_DA', 'TRUE').upper() == 'FALSE'
-    if nocoldda:
+    if do_jedi and nocoldda:
         if spinup:  # if spinup, coldda only happens at spinup cycles
             spinup_hrs2 = [item for item in spinup_hrs if item not in list(map(int, cold_cycs))]
             valid_str = " ".join(f"{i}" for i in spinup_hrs2)

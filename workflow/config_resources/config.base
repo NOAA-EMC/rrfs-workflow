@@ -26,6 +26,17 @@ export MPASOUT_SAVE2COM_HRS=${MPASOUT_SAVE2COM_HRS:-""}  # cycling mpasout.nc is
 #export POST_GROUP_SPEC="0-10 11-20 21-30 31-36" # customized group specification; setting this variable will overwrite POST_GROUP_TOT_NUM
 export REGRID_RRFS_GRIB2=${REGRID_RRFS_GRIB2:-false}
 
+# required options if DO_RTMA
+if [[ "${DO_RTMA^^}" == "TRUE" ]]; then
+  export DO_CYC=true
+  export CYC_INTERVAL=1
+  export DO_IC_LBC=false
+  export DO_IODA=true
+  export DO_JEDI=true
+  export FCST_LEN_HRS_CYCLES="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"  # 24 zeros
+  export POST_GROUP_TOT_NUM=1
+fi
+
 # PREP_LBC_LOOK_BACK_HRS
 if ${REALTIME:-false}; then
   export PREP_LBC_LOOK_BACK_HRS=${PREP_LBC_LOOK_BACK_HRS:-11}
