@@ -456,6 +456,7 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
       wgrib2 ${COMOUT}/${fld2d_na_32km} -s > ${COMOUT}/${fld2d_na_32km}.idx
 
       if [[ ${SENDDBN} = "YES" ]] ; then
+      if [ $cyc -eq 00 ] || [ $cyc -eq 06 ] || [ $cyc -eq 12 ] || [ $cyc -eq 18 ]; then
              $DBNROOT/bin/dbn_alert MODEL RRFS_DET_NA $job \
                   ${COMOUT}/rrfs.t${cyc}z.prslev.32km.f${fhr}.na.grib2
              $DBNROOT/bin/dbn_alert MODEL RRFS_DET_NA $job \
@@ -464,6 +465,7 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
                   ${COMOUT}/rrfs.t${cyc}z.2dfld.32km.f${fhr}.na.grib2
              $DBNROOT/bin/dbn_alert MODEL RRFS_DET_NA $job \
                   ${COMOUT}/rrfs.t${cyc}z.2dfld.32km.f${fhr}.na.grib2.idx
+      fi
 
       fi
 
