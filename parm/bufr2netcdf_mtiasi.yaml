@@ -34,7 +34,7 @@ bufr:
     sensorScanPosition:
       sensorScanPosition:
         fieldOfViewNumber: "*/FOVN"
-        sensor: iasi 
+        sensor: iasi
 
     solarZenithAngle:
       query: "*/SOZA"
@@ -50,14 +50,14 @@ bufr:
 
     stationElevation:
       query: "*/SELV"
-      type: float 
+      type: float
 
     sensorViewAngle:
       sensorScanAngle:
         fieldOfViewNumber: "*/FOVN"
         scanStart: -48.330
         scanStep: 3.334
-        scanStepAdjust: 0.625 
+        scanStepAdjust: 0.625
         sensor: iasi
 
     sensorChannelNumber:
@@ -132,7 +132,7 @@ encoder:
 
   variables:
 
-    # MetaData 
+    # MetaData
     - name: "MetaData/dateTime"
       source: variables/timestamp
       longName: "Datetime"
