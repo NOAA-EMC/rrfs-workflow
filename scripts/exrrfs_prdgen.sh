@@ -459,11 +459,11 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
       if [ $cyc -eq 00 ] || [ $cyc -eq 06 ] || [ $cyc -eq 12 ] || [ $cyc -eq 18 ]; then
              $DBNROOT/bin/dbn_alert MODEL RRFS_DET_NA $job \
                   ${COMOUT}/rrfs.t${cyc}z.prslev.32km.f${fhr}.na.grib2
-             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_NA $job \
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_NA_IDX $job \
                   ${COMOUT}/rrfs.t${cyc}z.prslev.32km.f${fhr}.na.grib2.idx
              $DBNROOT/bin/dbn_alert MODEL RRFS_DET_NA $job \
                   ${COMOUT}/rrfs.t${cyc}z.2dfld.32km.f${fhr}.na.grib2
-             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_NA $job \
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_NA_IDX $job \
                   ${COMOUT}/rrfs.t${cyc}z.2dfld.32km.f${fhr}.na.grib2.idx
       fi
 
