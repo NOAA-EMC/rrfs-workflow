@@ -432,8 +432,7 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
   fi
 
   # create prslev and 2dfld files on 32-km North America grid
-  # Deterministic cycles only
-  # And might we want to ensf also?
+  # Deterministic cycles only for now
   if [ ${DO_ENSFCST} = "FALSE" ]; then
     prslev_na_32km=${net4}.t${cyc}z.prslev.32km.f${fhr}.na.grib2
     fld2d_na_32km=${net4}.t${cyc}z.2dfld.32km.f${fhr}.na.grib2
@@ -455,6 +454,19 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
         -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
         -new_grid ${gridspecs} ${COMOUT}/${fld2d_na_32km}
       wgrib2 ${COMOUT}/${fld2d_na_32km} -s > ${COMOUT}/${fld2d_na_32km}.idx
+
+      if [[ ${SENDDBN} = "YES" ]] ; then
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_NA $job \
+                  ${COMOUT}/rrfs.t${cyc}z.prslev.32km.f${fhr}.na.grib2
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_NA $job \
+                  ${COMOUT}/rrfs.t${cyc}z.prslev.32km.f${fhr}.na.grib2.idx
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_NA $job \
+                  ${COMOUT}/rrfs.t${cyc}z.2dfld.32km.f${fhr}.na.grib2
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_NA $job \
+                  ${COMOUT}/rrfs.t${cyc}z.2dfld.32km.f${fhr}.na.grib2.idx
+
+      fi
+
     fi
   fi
 
