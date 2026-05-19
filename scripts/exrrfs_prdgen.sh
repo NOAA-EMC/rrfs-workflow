@@ -474,7 +474,6 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
              $DBNROOT/bin/dbn_alert MODEL RRFS_DET_NA_IDX $job \
                   ${COMOUT}/rrfs.t${cyc}z.2dfld.32km.f${fhr}.na.grib2.idx
       fi
-
       fi
 
     fi
