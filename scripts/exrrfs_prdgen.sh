@@ -430,11 +430,18 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
       -new_grid ${gridspecs} ${COMOUT}/${subset_conus}
     wgrib2 ${COMOUT}/${subset_conus} -s > ${COMOUT}/${subset_conus}.idx
 
-    if [ "${SENDDBN}" = "YES" ] && [ "${DO_ENSFCST}" = "TRUE" ]; then
+    if [ "${SENDDBN}" = "YES" ] ; then
+      if [ "${DO_ENSFCST}" = "TRUE" ]; then
              $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_SUBSET_CONUS $job \
                   ${COMOUT}/rrfs.t${cyc}z.${mem_num}.subset.${gridspacing}.f${fhr}.conus.grib2
              $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_SUBSET_CONUS_IDX $job \
                   ${COMOUT}/rrfs.t${cyc}z.${mem_num}.subset.${gridspacing}.f${fhr}.conus.grib2.idx
+      else
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBSET_CONUS $job \
+                  ${COMOUT}/rrfs.t${cyc}z.subset.${gridspacing}.f${fhr}.conus.grib2
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBSET_CONUS_IDX $job \
+                  ${COMOUT}/rrfs.t${cyc}z.subset.${gridspacing}.f${fhr}.conus.grib2.idx
+      fi 
     fi
 
   fi
