@@ -467,7 +467,7 @@ for mem in $(seq 3 5); do
     cp jrrfs_ensf_forecast_master.ecf jrrfs_ensf_forecast_mem${mem_3d}.ecf
   fi
   sed -i -e "s|@ensf_forecast_member@|${mem_3d}|g" jrrfs_ensf_forecast_mem${mem_3d}.ecf
-  add_to_tmpfile "$ECF_DIR/scripts/forecast/ensf/jrrfs_ensf_forecast_mem${mem_3d}.ecf"
+  add_to_tmpfile "$ECF_DIR/scripts/ensf/forecast/jrrfs_ensf_forecast_mem${mem_3d}.ecf"
 done
 
 # enkf analysis nonvarcld files
