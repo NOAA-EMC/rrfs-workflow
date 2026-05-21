@@ -430,11 +430,19 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
                   ${COMOUT}/rrfs.t${cyc}z.${mem_num}.subset.${gridspacing}.f${fhr}.conus.grib2
              $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_SUBSET_CONUS_IDX $job \
                   ${COMOUT}/rrfs.t${cyc}z.${mem_num}.subset.${gridspacing}.f${fhr}.conus.grib2.idx
+             $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_SUBSET_NA $job \
+                  ${COMOUT}/rrfs.t${cyc}z.${mem_num}.subset.${gridspacing}.f${fhr}.na.grib2
+             $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_SUBSET_NA_IDX $job \
+                  ${COMOUT}/rrfs.t${cyc}z.${mem_num}.subset.${gridspacing}.f${fhr}.na.grib2.idx
       else
              $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBSET_CONUS $job \
                   ${COMOUT}/rrfs.t${cyc}z.subset.${gridspacing}.f${fhr}.conus.grib2
              $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBSET_CONUS_IDX $job \
                   ${COMOUT}/rrfs.t${cyc}z.subset.${gridspacing}.f${fhr}.conus.grib2.idx
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBSET_NA $job \
+                  ${COMOUT}/rrfs.t${cyc}z.subset.${gridspacing}.f${fhr}.na.grib2
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBSET_NA_IDX $job \
+                  ${COMOUT}/rrfs.t${cyc}z.subset.${gridspacing}.f${fhr}.na.grib2.idx
       fi 
     fi
 
