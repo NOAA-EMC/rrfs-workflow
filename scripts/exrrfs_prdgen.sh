@@ -470,9 +470,9 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
                   ${COMOUT}/rrfs.t${cyc}z.prslev.32km.f${fhr}.na.grib2
              $DBNROOT/bin/dbn_alert MODEL RRFS_DET_NA_IDX $job \
                   ${COMOUT}/rrfs.t${cyc}z.prslev.32km.f${fhr}.na.grib2.idx
-             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_NA $job \
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_2DFLD_NA $job \
                   ${COMOUT}/rrfs.t${cyc}z.2dfld.32km.f${fhr}.na.grib2
-             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_NA_IDX $job \
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_2DFLD_NA_IDX $job \
                   ${COMOUT}/rrfs.t${cyc}z.2dfld.32km.f${fhr}.na.grib2.idx
       fi
       fi
@@ -563,9 +563,9 @@ EOF
                   ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2
              $DBNROOT/bin/dbn_alert MODEL RRFS_DET_FIREWX_IDX $job \
                   ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2.idx
-             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_FIREWX $job \
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_2DFLD_FIREWX $job \
                   ${COMOUT}/rrfs.t${cyc}z.2dfld.${gridspacing}.f${fhr}.firewx_lcc.grib2
-             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_FIREWX_IDX $job \
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_2DFLD_FIREWX_IDX $job \
                   ${COMOUT}/rrfs.t${cyc}z.2dfld.${gridspacing}.f${fhr}.firewx_lcc.grib2.idx
   fi
 
