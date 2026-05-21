@@ -100,21 +100,22 @@ export err=$?; err_chk
 
 #Copy the the hourly, interpolated RAVE data to $rave_dir so it
 # is maintained there for future cycles.
-for file in ${DATA}/RAVE-HrlyEmiss-* ${DATA}/RRFS_NA_3km_intp_* ${DATA}/SMOKE_RRFS_data_*
-do
-   filename=$(basename "$file")
-   daystr=$(echo "$filename" | grep -o '[0-9]\{8\}' | head -1)
-   [ -z "$daystr" ] && continue
+if [ "${CYCLE_TYPE}" != "spinup" ]; then
+  for file in ${DATA}/RAVE-HrlyEmiss-* ${DATA}/RRFS_NA_3km_intp_* ${DATA}/SMOKE_RRFS_data_*
+  do
+    filename=$(basename "$file")
+    daystr=$(echo "$filename" | grep -o '[0-9]\{8\}' | head -1)
+    [ -z "$daystr" ] && continue
 
-   rave_day_dir="${rave_base_prefix}.${daystr}"
-   if [ ! -f "${rave_day_dir}/${filename}" ]; then
+    rave_day_dir="${rave_base_prefix}.${daystr}"
+    if [ ! -f "${rave_day_dir}/${filename}" ]; then
       cpreq -p ${file} ${rave_day_dir}
       echo "Copied file: $filename → $rave_day_dir/" 
-   fi
-done
+    fi
+   done
 
-echo "Copy RAVE interpolated files completed"
-
+  echo "Copy RAVE interpolated files completed"
+fi
 #
 #-----------------------------------------------------------------------
 #
