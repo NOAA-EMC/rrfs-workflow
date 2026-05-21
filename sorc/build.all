@@ -26,10 +26,6 @@ if [[ "${1,,}" == chem* ]] || [[ "${2,,}" == chem* ]]; then
   cd "${HOMErrfs}/sorc/MPAS-Model" || exit 1
   git checkout "${branch_commit}"
   git submodule update --init --recursive
-  if [[ "${branch_commit}" != "chemrrfs" ]]; then
-    # allow smoke_coarse in histlist_3d_smoke
-    cp "${HOMErrfs}/fix/chemistry/mpassit/histlist_3d_smoke.coarse" "${HOMErrfs}/fix/chemistry/mpassit/histlist_3d_smoke"
-  fi
 fi
 cd "${HOMErrfs}/sorc" || exit 1
 
