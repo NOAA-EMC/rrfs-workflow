@@ -430,49 +430,88 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
                   ${COMOUT}/rrfs.t${cyc}z.${mem_num}.subset.${gridspacing}.f${fhr}.conus.grib2
              $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_SUBSET_CONUS_IDX $job \
                   ${COMOUT}/rrfs.t${cyc}z.${mem_num}.subset.${gridspacing}.f${fhr}.conus.grib2.idx
+             $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_SUBSET_NA $job \
+                  ${COMOUT}/rrfs.t${cyc}z.${mem_num}.subset.${gridspacing}.f${fhr}.na.grib2
+             $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_SUBSET_NA_IDX $job \
+                  ${COMOUT}/rrfs.t${cyc}z.${mem_num}.subset.${gridspacing}.f${fhr}.na.grib2.idx
       else
              $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBSET_CONUS $job \
                   ${COMOUT}/rrfs.t${cyc}z.subset.${gridspacing}.f${fhr}.conus.grib2
              $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBSET_CONUS_IDX $job \
                   ${COMOUT}/rrfs.t${cyc}z.subset.${gridspacing}.f${fhr}.conus.grib2.idx
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBSET_NA $job \
+                  ${COMOUT}/rrfs.t${cyc}z.subset.${gridspacing}.f${fhr}.na.grib2
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBSET_NA_IDX $job \
+                  ${COMOUT}/rrfs.t${cyc}z.subset.${gridspacing}.f${fhr}.na.grib2.idx
       fi 
     fi
 
   fi
 
-  # create prslev and 2dfld files on 32-km North America grid
+  # create prslev and 2dfld files on 13-km and 32-km North America grids
   # Deterministic cycles only for now
   if [ ${DO_ENSFCST} = "FALSE" ]; then
+    prslev_na_13km=${net4}.t${cyc}z.prslev.13km.f${fhr}.na.grib2
+    fld2d_na_13km=${net4}.t${cyc}z.2dfld.13km.f${fhr}.na.grib2
     prslev_na_32km=${net4}.t${cyc}z.prslev.32km.f${fhr}.na.grib2
     fld2d_na_32km=${net4}.t${cyc}z.2dfld.32km.f${fhr}.na.grib2
 
     if [[ $SENDCOM = 'YES' ]]; then
-      export gridspecs="lambert:253:50.000000 214.500000:349:32463.000000 1.000000:277:32463.000000"
-      wgrib2 ${COMOUT}/${prslev} -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv inputs.gribprslev32km.uv
-      wgrib2 inputs.gribprslev32km.uv -set_bitmap 1 -set_grib_type c3 \
+       export gridspecs_13="rot-ll:247.000000:-35.000000:0.000000 299.000000:1127:0.108300 -36.9303000:683:0.108300"
+       export gridspecs_32="lambert:253:50.000000 214.500000:349:32463.000000 1.000000:277:32463.000000"
+
+      wgrib2 ${COMOUT}/${prslev} -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv inputs.gribprslevna.uv
+      wgrib2 ${COMOUT}/${fld2d} -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv inputs.grib2dfldna.uv
+
+# interpolate 13 km output
+      wgrib2 inputs.gribprslevna.uv -set_bitmap 1 -set_grib_type c3 \
         -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
         -new_grid_interpolation neighbor \
         -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
-        -new_grid ${gridspecs} ${COMOUT}/${prslev_na_32km}
+        -new_grid ${gridspecs_13} ${COMOUT}/${prslev_na_13km}
+      wgrib2 ${COMOUT}/${prslev_na_13km} -s > ${COMOUT}/${prslev_na_13km}.idx
+
+      wgrib2 inputs.grib2dfldna.uv -set_bitmap 1 -set_grib_type c3 \
+        -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
+        -new_grid_interpolation neighbor \
+        -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
+        -new_grid ${gridspecs_13} ${COMOUT}/${fld2d_na_13km}
+      wgrib2 ${COMOUT}/${fld2d_na_13km} -s > ${COMOUT}/${fld2d_na_13km}.idx
+
+# interpolate 32 km output
+
+      wgrib2 inputs.gribprslevna.uv -set_bitmap 1 -set_grib_type c3 \
+        -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
+        -new_grid_interpolation neighbor \
+        -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
+        -new_grid ${gridspecs_32} ${COMOUT}/${prslev_na_32km}
       wgrib2 ${COMOUT}/${prslev_na_32km} -s > ${COMOUT}/${prslev_na_32km}.idx
 
-      wgrib2 ${COMOUT}/${fld2d} -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv inputs.grib2dfld32km.uv
-      wgrib2 inputs.grib2dfld32km.uv -set_bitmap 1 -set_grib_type c3 \
+      wgrib2 inputs.grib2dfldna.uv -set_bitmap 1 -set_grib_type c3 \
         -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
         -new_grid_interpolation neighbor \
         -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
-        -new_grid ${gridspecs} ${COMOUT}/${fld2d_na_32km}
+        -new_grid ${gridspecs_32} ${COMOUT}/${fld2d_na_32km}
       wgrib2 ${COMOUT}/${fld2d_na_32km} -s > ${COMOUT}/${fld2d_na_32km}.idx
 
       if [[ ${SENDDBN} = "YES" ]] ; then
       if [ $cyc -eq 00 ] || [ $cyc -eq 06 ] || [ $cyc -eq 12 ] || [ $cyc -eq 18 ]; then
              $DBNROOT/bin/dbn_alert MODEL RRFS_DET_NA $job \
-                  ${COMOUT}/rrfs.t${cyc}z.prslev.32km.f${fhr}.na.grib2
+                  ${COMOUT}/rrfs.t${cyc}z.prslev.13km.f${fhr}.na.grib2
              $DBNROOT/bin/dbn_alert MODEL RRFS_DET_NA_IDX $job \
-                  ${COMOUT}/rrfs.t${cyc}z.prslev.32km.f${fhr}.na.grib2.idx
+                  ${COMOUT}/rrfs.t${cyc}z.prslev.13km.f${fhr}.na.grib2.idx
              $DBNROOT/bin/dbn_alert MODEL RRFS_DET_2DFLD_NA $job \
-                  ${COMOUT}/rrfs.t${cyc}z.2dfld.32km.f${fhr}.na.grib2
+                  ${COMOUT}/rrfs.t${cyc}z.2dfld.13km.f${fhr}.na.grib2
              $DBNROOT/bin/dbn_alert MODEL RRFS_DET_2DFLD_NA_IDX $job \
+                  ${COMOUT}/rrfs.t${cyc}z.2dfld.13km.f${fhr}.na.grib2.idx
+
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_32KMNA $job \
+                  ${COMOUT}/rrfs.t${cyc}z.prslev.32km.f${fhr}.na.grib2
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_32KMNA_IDX $job \
+                  ${COMOUT}/rrfs.t${cyc}z.prslev.32km.f${fhr}.na.grib2.idx
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_2DFLD_32KMNA $job \
+                  ${COMOUT}/rrfs.t${cyc}z.2dfld.32km.f${fhr}.na.grib2
+             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_2DFLD_32KMNA_IDX $job \
                   ${COMOUT}/rrfs.t${cyc}z.2dfld.32km.f${fhr}.na.grib2.idx
       fi
       fi

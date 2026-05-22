@@ -393,10 +393,12 @@ if [[ "${SENDCOM}" = "YES" ]]; then
     $DBNROOT/bin/dbn_alert MODEL RRFS_DET_BUFR_GEMPAK $job ${COMOUT}/gempak/${outfilbase}.snd
     $DBNROOT/bin/dbn_alert MODEL RRFS_DET_BUFR_GEMPAK $job ${COMOUT}/gempak/${outfilbase}.sfc
     $DBNROOT/bin/dbn_alert MODEL RRFS_DET_BUFR_GEMPAK $job ${COMOUT}/gempak/${outfilbase}.sfc_aux
+    $DBNROOT/bin/dbn_alert MODEL RRFS_DET_BUFR $job ${COMOUT}/rrfs.t${cyc}z.bufrsnd.tar.gz
   elif [  ${WGF} = "ensf" ]; then
     $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_BUFR_GEMPAK $job ${COMOUT}/gempak/${outfilbase}.snd
     $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_BUFR_GEMPAK $job ${COMOUT}/gempak/${outfilbase}.sfc
     $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_BUFR_GEMPAK $job ${COMOUT}/gempak/${outfilbase}.sfc_aux
+    $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_BUFR $job ${COMOUT}/rrfs.t${cyc}z.bufrsnd.tar.gz
   fi
  fi
 fi
