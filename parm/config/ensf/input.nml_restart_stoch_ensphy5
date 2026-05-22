@@ -252,7 +252,7 @@
     min_seaice = 0.15
     mosaic_lu = 1
     mosaic_soil = 1
-    n_var_lndp = 7
+    n_var_lndp = 6
     n_var_spp = 4
     nsfullradar_diag = 3600
     nssl_alphah = 1.39
@@ -295,10 +295,10 @@
     iseed_lndp = 9
     lndp_lscale = 150000, 150000, 150000, 150000, 150000
     lndp_model_type = 2
-    lndp_prt_list = 0.2, 0.001, 0.001, 0.001, 0.001, 0.001, 0.2
+    lndp_prt_list = 0.2, 0.001, 0.001, 0.001, 0.001, 0.2
     lndp_tau = 21600, 21600, 21600, 21600, 21600
     lndp_type = 2
-    lndp_var_list = 'smc', 'vgf', 'alb', 'sal', 'emi', 'zol', 'stc'
+    lndp_var_list = 'smc', 'vgf', 'alb', 'sal', 'emi', 'stc'
     lndpint = 180
 /
 
