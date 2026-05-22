@@ -671,7 +671,34 @@ else
       LAYOUT_X="${LAYOUT_X_ENSF}" 
       if [ $ensmem_num = "3" ] || [ $ensmem_num = "4" ] || [ $ensmem_num = "5" ]; then
         LAYOUT_X="${LAYOUT_X_ENSF_LARGER}"
-      fi
+
+        if [ -e ${FIXLAM}/103_nodes_ensf/routehandle_fb01 ]; then
+         files=`ls ${FIXLAM}/103_nodes_ensf/routehandle_fb??`
+         echo "#! /bin/sh" > ./para_copy.sh
+         for fl in $files
+         do
+           echo "cpreq $fl ${DATA}/" >> ./para_copy.sh
+         done
+         cpprocs=`cat ./para_copy.sh | grep routehandle | wc -l`
+         mpiexec -n ${cpprocs} -ppn ${cpprocs} --cpu-bind core cfp ./para_copy.sh
+         rm ./para_copy.sh
+        fi
+
+      else #  mem 1 or 2
+
+        if [ -e ${FIXLAM}/94_nodes_ensf/routehandle_fb01 ]; then
+         files=`ls ${FIXLAM}/94_nodes_ensf/routehandle_fb??`
+         echo "#! /bin/sh" > ./para_copy.sh
+         for fl in $files
+         do
+           echo "cpreq $fl ${DATA}/" >> ./para_copy.sh
+         done
+         cpprocs=`cat ./para_copy.sh | grep routehandle | wc -l`
+         mpiexec -n ${cpprocs} -ppn ${cpprocs} --cpu-bind core cfp ./para_copy.sh
+         rm ./para_copy.sh
+
+      fi #ensmem_num
+
       LAYOUT_Y="${LAYOUT_Y_ENSF}" 
       WRITE_GRP="${WRTCMP_write_groups_ENSF}"
       WRITE_TSK="${WRTCMP_write_tasks_per_group_ENSF}"
