@@ -1,0 +1,53 @@
+#PBS -N rrfs_ensf_forecast_mem@ensf_forecast_member@_%CYC%
+#PBS -j oe
+#PBS -S /bin/bash
+#PBS -q %QUEUE%
+#PBS -A %PROJ%-%PROJENVIR%
+#PBS -l walltime=02:55:00
+#PBS -l place=vscatter:excl,select=103:ncpus=128:ompthreads=4:mem=500G
+#PBS -l debug=true
+
+model=rrfs
+export MACHINE=WCOSS2
+export cyc="%CYC%"
+%include <head.h>
+%include <envir-p1.h>
+############################################################
+# Load modules
+############################################################
+module load intel/${intel_ver}
+module load craype/${craype_ver}
+module load ve/rrfs/${rrfs_pythonve_ver}
+module load cray-mpich/${cray_mpich_ver}
+module load cray-pals/${cray_pals_ver}
+module load jasper/${jasper_ver}
+module load hdf5-D/${hdf5_ver}
+module load netcdf-D/${netcdf_ver}
+module load pnetcdf-D/${pnetcdf_ver}
+module load fms-D/${fms_ver}
+module load bacio/${bacio_ver}
+module load crtm/${crtm_ver}
+module load g2/${g2_ver}
+module load ip/${ip_ver}
+module load sp/${sp_ver}
+module load w3emc/${w3emc_ver}
+module load pio/${pio_ver}
+module load esmf-D/${esmf_ver}
+module load libjpeg/${libjpeg_ver}
+module load udunits/${udunits_ver}
+module load gsl/${gsl_ver}
+module load nco/${nco_ver}
+module load cfp/${cfp_ver}
+
+module list
+export WGF="%WGF%"
+export MEMBER_NAME="%MEMBER_NAME%"
+############################################################
+# CALL executable job script here
+############################################################
+${HOMErrfs}/jobs/JRRFS_FORECAST
+
+%include <tail.h>
+
+%manual
+%end
