@@ -170,14 +170,19 @@ case ${task_id} in
     ;;
   pydamonitor)
     module purge
+    set +x
     source "${HOMErrfs}/workflow/sideload/pyDAmonitor/ush/load_pyDAmonitor.sh"
+    set -x
     "${HOMErrfs}/workflow/sideload/pyDAmonitor/ush/drive.sh"
     ;;
   graphics)
     set +x
     source "${HOMErrfs}/workflow/tools/load_pygraf.sh"
     set -x
-    "${HOMErrfs}/workflow/sideload/${task_id}.sh"
+    "${HOMErrfs}/workflow/sideload/graphics.sh"
+    ;;
+  archive)
+    "${HOMErrfs}/workflow/sideload/archive.sh"
     ;;
   *)
     "${HOMErrfs}/jobs/${COMMAND}"

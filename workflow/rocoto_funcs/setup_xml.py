@@ -35,6 +35,7 @@ from rocoto_funcs.graphics import graphics
 from rocoto_funcs.misc import misc
 from rocoto_funcs.hofx import hofx
 from rocoto_funcs.pyDAmonitor import pyDAmonitor
+from rocoto_funcs.archive import archive
 
 # setup_xml
 
@@ -135,6 +136,8 @@ def setup_xml(HOMErrfs, expdir):
                     sys.exit(1)
             if os.getenv("DO_HOFX", "FALSE").upper() == "TRUE":
                 hofx(xmlFile, expdir)
+            if os.getenv("DO_ARCHIVE", "FALSE").upper() == "TRUE":
+                archive(xmlFile, expdir)
 
 # ---------------------------------------------------------------------------
 # assemble tasks for an ensemble experiment
