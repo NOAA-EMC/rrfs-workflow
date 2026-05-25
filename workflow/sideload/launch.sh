@@ -182,6 +182,9 @@ case ${task_id} in
     "${HOMErrfs}/workflow/sideload/graphics.sh"
     ;;
   archive)
+    set +x
+    eval "${ARCHIVE_MODULE}"
+    set -x
     "${HOMErrfs}/workflow/sideload/archive.sh"
     ;;
   *)

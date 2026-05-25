@@ -17,6 +17,9 @@ def archive(xmlFile, expdir):
         'ARCHIVE_COM1_SPEC': os.getenv("ARCHIVE_COM1_SPEC", ""),
         'ARCHIVE_STMP': os.getenv("ARCHIVE_STMP", ""),
     }
+    archive_module = os.getenv("ARCHIVE_MODULE", "")
+    if archive_module:
+        dcTaskEnv["ARCHIVE_MODULE"] = archive_module
     #
     # dependencies
     timedep = ""
