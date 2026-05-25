@@ -15,6 +15,7 @@ sideloaddir=${HOMErrfs}/workflow/sideload
 tar_rundir=${COMOUT}/..   # COMOUT contains cyc, we run htar/tar under ${RUN}.${PDY}
 #
 # create the file list for com1.tar (and com2.tar if requested)
+rm -rf "${workdir}"
 mkdir -p "${workdir}"
 cd "${workdir}" || exit 1
 ln -snf "${sideloaddir}/archive_create_filelist.py" .
