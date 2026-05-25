@@ -7,18 +7,14 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 # begin of archive --------------------------------------------------------
 
 
-def archive(xmlFile, expdir, spinup_mode=0):
+def archive(xmlFile, expdir):
     task_id = 'archive'
-    do_spinup = spinup_mode == 1
-    if do_spinup:
-        cycledefs = 'spinup'
-    else:
-        cycledefs = 'prod'
+    cycledefs = 'archive'
     # Task-specific EnVars beyond the task_common_vars
     dcTaskEnv = {
+        'ARCHIVE_INTERVAL': os.getenv("ARCHIVE_INTERVAL", "2"),
         'ARCHIVE_HPSSDIR': os.getenv("ARCHIVE_HPSSDIR", ""),
-        'ARCHIVE_COM_LIST1': os.getenv("ARCHIVE_COM_LIST1", ""),
-        'ARCHIVE_COM_LIST2': os.getenv("ARCHIVE_COM_LIST2", ""),
+        'ARCHIVE_COM1_SPEC': os.getenv("ARCHIVE_COM1_SPEC", ""),
         'ARCHIVE_STMP': os.getenv("ARCHIVE_STMP", ""),
     }
     #
