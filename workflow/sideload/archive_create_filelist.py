@@ -37,6 +37,8 @@ for pattern in items:
 # ~~~~
 # remove any directories
 includes = [f for f in includes if not os.path.isdir(f)]
+# remove all links under pyDAmonitor
+includes = [f for f in includes if not (os.path.islink(f) and f'pyDAmonitor/{WGF}' in f)]
 #
 # remove files specified by the 'exclude' key
 if 'exclude' in dcSpec:

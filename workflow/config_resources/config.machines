@@ -44,8 +44,9 @@ elif [[ ${MACHINE} == "gaeac6" ]]; then
   export RESERVATION=${RESERVATION:-""}
   export CLUSTER=${CLUSTER:-c6}
   export NATIVE_UPP="--exclusive"
-  export PARTITION_ARCHIVE=${PARTITION_ARCHIVE:-dtn_f5_f6}
+  export QUEUE_ARCHIVE="hpss"
   export CLUSTER_ARCHIVE=""
+  export PARTITION_ARCHIVE=${PARTITION_ARCHIVE:-dtn_f5_f6}
   export ARCHIVE_MODULE="module use /usw/hpss/modulefiles;module load hsi"
 
 elif [[ ${MACHINE} == "derecho" ]]; then

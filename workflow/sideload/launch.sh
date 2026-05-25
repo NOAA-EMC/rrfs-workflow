@@ -184,6 +184,7 @@ case ${task_id} in
   archive)
     set +x
     eval "${ARCHIVE_MODULE}"
+    module load python
     set -x
     "${HOMErrfs}/workflow/sideload/archive.sh"
     ;;
