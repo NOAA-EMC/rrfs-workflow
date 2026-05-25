@@ -9,8 +9,8 @@ import glob
 args = sys.argv
 nargs = len(args) - 1
 if nargs < 4:
-	print(f"{os.path.basename(sys.argv[0])} <basedir> <spec> <prefix> <outfile>")
-	exit()
+    print(f"{os.path.basename(sys.argv[0])} <basedir> <spec> <prefix> <outfile>")
+    exit()
 #
 basedir = sys.argv[1]
 spec = sys.argv[2]
