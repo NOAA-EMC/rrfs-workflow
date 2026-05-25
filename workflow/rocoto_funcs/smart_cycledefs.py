@@ -91,7 +91,7 @@ def smart_cycledefs():
             dcCycledef['archive'] = cycledef_prod
         else:
             if 24 % archive_interval != 0:
-                print('24 cannot be divided by ARCHIVE_INTERVAL={ARCHIVE_INTERVAL}, stop...')
+                print(f'24 cannot be divided by ARCHIVE_INTERVAL={archive_interval}, stop...')
                 sys.exit()
             # determine the archive cycledef
             valid_list = list(range(archive_interval-1, 25, archive_interval))
