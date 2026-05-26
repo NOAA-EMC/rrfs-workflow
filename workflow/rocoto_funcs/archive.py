@@ -16,6 +16,7 @@ def archive(xmlFile, expdir):
         'ARCHIVE_HPSSDIR': os.getenv("ARCHIVE_HPSSDIR", ""),
         'ARCHIVE_COM1_SPEC': os.getenv("ARCHIVE_COM1_SPEC", ""),
         'ARCHIVE_STMP': os.getenv("ARCHIVE_STMP", ""),
+        'ARCHIVE_STMP_INTERVAL': os.getenv("ARCHIVE_STMP_INTERVAL", "1"),
     }
     archive_module = os.getenv("ARCHIVE_MODULE", "")
     if archive_module:
