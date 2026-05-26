@@ -1,10 +1,10 @@
-#PBS -N rrfs_ensf_prep_cyc_mem@ensf_prep_cyc_member@_%CYC%
+#PBS -N rrfs_det_prep_cyc_spinup_%CYC%
 #PBS -j oe
 #PBS -S /bin/bash
 #PBS -q %QUEUE%
 #PBS -A %PROJ%-%PROJENVIR%
 #PBS -l walltime=00:20:00
-#PBS -l place=vscatter:excl,select=1:ncpus=1:mem=500G
+#PBS -l place=vscatter:shared,select=1:ncpus=5:mem=500G
 #PBS -l debug=true
 
 model=rrfs
@@ -38,10 +38,11 @@ module load wgrib2/${wgrib2_ver}
 module load udunits/${udunits_ver}
 module load gsl/${gsl_ver}
 module load nco/${nco_ver}
+module load cfp/${cfp_ver}
 
 module list
 export WGF="%WGF%"
-export MEMBER_NAME="%MEMBER_NAME%"
+export CYCLE_TYPE="%CYCLE_TYPE%"
 ############################################################
 # CALL executable job script here
 ############################################################

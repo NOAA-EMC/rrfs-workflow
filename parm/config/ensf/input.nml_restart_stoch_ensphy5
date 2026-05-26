@@ -75,7 +75,7 @@
     d_con = 0.5
     d_ext = 0.0
     dddmp = 0.1
-    delt_max = 0.008
+    delt_max = 0.004
     dnats = 0
     do_sat_adj = .false.
     do_schmidt = .true.
@@ -102,10 +102,10 @@
     kord_tm = -9
     kord_tr = 9
     kord_wz = 9
-    layout = 40, 72
+    layout = 44, 72
     make_nh = .false.
     mountain = .true.
-    n_split = 5
+    n_split = 6
     n_sponge = -1
     n_zs_filter = 0
     na_init = 0
@@ -252,7 +252,7 @@
     min_seaice = 0.15
     mosaic_lu = 1
     mosaic_soil = 1
-    n_var_lndp = 7
+    n_var_lndp = 6
     n_var_spp = 4
     nsfullradar_diag = 3600
     nssl_alphah = 1.39
@@ -295,10 +295,10 @@
     iseed_lndp = 9
     lndp_lscale = 150000, 150000, 150000, 150000, 150000
     lndp_model_type = 2
-    lndp_prt_list = 0.2, 0.001, 0.001, 0.001, 0.001, 0.001, 0.2
+    lndp_prt_list = 0.2, 0.001, 0.001, 0.001, 0.001, 0.2
     lndp_tau = 21600, 21600, 21600, 21600, 21600
     lndp_type = 2
-    lndp_var_list = 'smc', 'vgf', 'alb', 'sal', 'emi', 'zol', 'stc'
+    lndp_var_list = 'smc', 'vgf', 'alb', 'sal', 'emi', 'stc'
     lndpint = 180
 /
 

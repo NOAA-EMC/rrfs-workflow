@@ -75,7 +75,7 @@
     d_con = 0.5
     d_ext = 0.0
     dddmp = 0.1
-    delt_max = 0.008
+    delt_max = 0.004
     dnats = 0
     do_sat_adj = .false.
     do_schmidt = .true.
@@ -105,7 +105,7 @@
     layout = 40, 72
     make_nh = .false.
     mountain = .true.
-    n_split = 5
+    n_split = 6
     n_sponge = -1
     n_zs_filter = 0
     na_init = 0

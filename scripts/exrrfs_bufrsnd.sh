@@ -302,7 +302,7 @@ if [[ "${SENDCOM}" = "YES" ]]; then
  
  if [[ "${SENDDBN}" = "YES" ]]; then
  if [ ${WGF} = "det" ]; then
-   $DBNROOT/bin/dbn_alert MODEL RRFS_BUFR $job ${COMOUT}/rrfs.t${cyc}z.class1.bufr
+   $DBNROOT/bin/dbn_alert MODEL RRFS_DET_BUFR $job ${COMOUT}/rrfs.t${cyc}z.class1.bufr
 elif [ ${WGF} = "ensf" ]; then
    $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_BUFR $job ${COMOUT}/rrfs.t${cyc}z.m${ENSMEM_INDX}.class1.bufr
  fi
@@ -393,10 +393,12 @@ if [[ "${SENDCOM}" = "YES" ]]; then
     $DBNROOT/bin/dbn_alert MODEL RRFS_DET_BUFR_GEMPAK $job ${COMOUT}/gempak/${outfilbase}.snd
     $DBNROOT/bin/dbn_alert MODEL RRFS_DET_BUFR_GEMPAK $job ${COMOUT}/gempak/${outfilbase}.sfc
     $DBNROOT/bin/dbn_alert MODEL RRFS_DET_BUFR_GEMPAK $job ${COMOUT}/gempak/${outfilbase}.sfc_aux
+    $DBNROOT/bin/dbn_alert MODEL RRFS_DET_BUFR $job ${COMOUT}/rrfs.t${cyc}z.bufrsnd.tar.gz
   elif [  ${WGF} = "ensf" ]; then
     $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_BUFR_GEMPAK $job ${COMOUT}/gempak/${outfilbase}.snd
     $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_BUFR_GEMPAK $job ${COMOUT}/gempak/${outfilbase}.sfc
     $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_BUFR_GEMPAK $job ${COMOUT}/gempak/${outfilbase}.sfc_aux
+    $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_BUFR $job ${COMOUT}/rrfs.t${cyc}z.bufrsnd.tar.gz
   fi
  fi
 fi

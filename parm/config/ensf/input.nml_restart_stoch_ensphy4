@@ -75,7 +75,7 @@
     d_con = 0.5
     d_ext = 0.0
     dddmp = 0.1
-    delt_max = 0.008
+    delt_max = 0.004
     dnats = 0
     do_sat_adj = .false.
     do_schmidt = .true.
@@ -102,10 +102,10 @@
     kord_tm = -9
     kord_tr = 9
     kord_wz = 9
-    layout = 40, 72
+    layout = 44, 72
     make_nh = .false.
     mountain = .true.
-    n_split = 5
+    n_split = 6
     n_sponge = -1
     n_zs_filter = 0
     na_init = 0
@@ -252,7 +252,7 @@
     mosaic_lu = 1
     mosaic_soil = 1
     n_var_lndp = 7
-    n_var_spp = 3
+    n_var_spp = 2
     nsfullradar_diag = 3600
     nssl_alphah = 0.95
     nssl_alphar = 1.38
@@ -300,14 +300,14 @@
 /
 
 &nam_sppperts
-    iseed_spp = 4, 5, 6
-    spp_lscale = 150000.0, 150000.0, 150000.0
-    spp_prt_list = 0.2, 0.2, 0.3
-    spp_sigtop1 = 0.1, 0.1, 0.1
-    spp_sigtop2 = 0.025, 0.025, 0.025
-    spp_stddev_cutoff = 1.5, 1.5, 3.0
-    spp_tau = 21600.0, 21600.0, 21600.0
-    spp_var_list = 'rad', 'gwd', 'cu_deep'
+    iseed_spp = 4, 5
+    spp_lscale = 150000.0,150000.0
+    spp_prt_list = 0.2, 0.2
+    spp_sigtop1 = 0.1, 0.1
+    spp_sigtop2 = 0.025, 0.025
+    spp_stddev_cutoff = 1.5, 1.5
+    spp_tau = 21600.0, 21600.0
+    spp_var_list = 'rad', 'gwd'
     sppint = 36
 /
 
