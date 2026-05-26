@@ -822,20 +822,6 @@ if [ "${DO_FCST_RESTART}" = "TRUE" ] && [ $coupler_res_ct -gt 0 ] && [ $FCST_LEN
    mem_res="0"
    if [ ${WGF} = "ensf" ]; then
      mem_res=${ensmem_num}
-
-     if [ -e ${FIXLAM}/94_nodes_ensf/routehandle_fb01 ]; then
-       files=`ls ${FIXLAM}/94_nodes_ensf/routehandle_fb??`
-       echo "#! /bin/sh" > ./para_copy.sh
-       for fl in $files
-       do
-         echo "cpreq $fl ${DATA}/" >> ./para_copy.sh
-       done
-       cpprocs=`cat ./para_copy.sh | grep routehandle | wc -l`
-       mpiexec -n ${cpprocs} -ppn ${cpprocs} --cpu-bind core cfp ./para_copy.sh
-       rm ./para_copy.sh
-     fi
-
-
    fi
    $USHrrfs/update_input_nml.py \
     --path-to-defns ${FIXrrfs}/workflow/${WGF}/workflow.conf \
