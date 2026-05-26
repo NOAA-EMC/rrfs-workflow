@@ -2,7 +2,7 @@
 # tweaks for non-NCO experiments
 # This script will NOT be needed by NCO
 # shellcheck disable=SC1090,SC1091,SC2154,SC2155
-declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
+declare -rx PS4='+${SECONDS}s $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
 set -x
 #
 COMPILER=${COMPILER:-intel}
