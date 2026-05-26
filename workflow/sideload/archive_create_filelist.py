@@ -49,7 +49,7 @@ if 'exclude' in dcSpec:
         if not any(x.startswith(pattern) for pattern in items)
     ]
 #
-# write out the list in the current STMP directory
+# write out the list
 os.chdir(CWD)
 includes = [os.path.join(prefix, x) for x in includes]
 with open(outfile, 'w') as f:
