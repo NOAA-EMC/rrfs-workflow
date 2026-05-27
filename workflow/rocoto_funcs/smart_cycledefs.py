@@ -37,7 +37,7 @@ def smart_cycledefs():
             cycledef_ic = f'  &Y1;&M1;&D1;{cold_cycs[0]}00 &Y2;&M2;&D2;2300 {ic_step.zfill(2)}:00:00'
             cycledef_lbc = f' &Y1;&M1;&D1;{lbc_cycs[0]}00 &Y2;&M2;&D2;2300 {lbc_step.zfill(2)}:00:00'
             cycledef_prod = f'&Y1;&M1;&D1;0000 &Y2;&M2;&D2;2300 {cyc_interval.zfill(2)}:00:00'
-            cycledef_recenter = f'&Y1;&M1;&D1;{recenter_cycs[0]}00 &Y2;&M2;&D2;2300 {recenter_step.zfill(2)}:00:00'
+            cycledef_recenter = cycledef_ic
             cycledef_spinup = cycledef_prod
         # ~~~~~
         # retros write out cycledefs explicitly without referencing XML entities
