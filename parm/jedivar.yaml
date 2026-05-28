@@ -18293,7 +18293,7 @@ cost function:
          - name: reduce obs space
 
        # ---------------------------------------------------------------------------------------------------
-       # Step 5 : Creat a varirable of thinning priority based on cloudFree and StdDev from ABI channel 13
+       # Step 5 : Create a variable of thinning priority based on cloudFree and StdDev from ABI channel 13
        # ----------------------------------------------------------------------------------------------------
        - filter: Variable Assignment
          assignments:
@@ -19034,7 +19034,7 @@ cost function:
          - name: reduce obs space
 
        # ---------------------------------------------------------------------------------------------------
-       # Step 5 : Creat a varirable of thinning priority based on cloudFree and StdDev from ABI channel 13
+       # Step 5 : Create a variable of thinning priority based on cloudFree and StdDev from ABI channel 13
        # ----------------------------------------------------------------------------------------------------
        - filter: Variable Assignment
          assignments:
@@ -19096,7 +19096,7 @@ cost function:
            error parameter vector: *abi_g18_error
 
        # --------------------------------------------------------
-       # Step 8 : Creat surface flag assignment from Geovals
+       # Step 8 : Create surface flag assignment from Geovals
        # water:0
        # land: 1
        # ice:  2
