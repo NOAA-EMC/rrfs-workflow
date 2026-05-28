@@ -18190,12 +18190,6 @@ cost function:
          - name: ClearSkyStdCheck
            initial value: false
            force reinitialization: false
-         - name: ClearSkyStdCheck_channel_8
-           initial value: false
-           force reinitialization: false
-         - name: ClearSkyStdCheck_channel_9
-           initial value: false
-           force reinitialization: false
          - name: ClearSkyStdCheck_channel_10
            initial value: false
            force reinitialization: false
@@ -18929,12 +18923,6 @@ cost function:
            initial value: false
            force reinitialization: false
          - name: ClearSkyStdCheck
-           initial value: false
-           force reinitialization: false
-         - name: ClearSkyStdCheck_channel_8
-           initial value: false
-           force reinitialization: false
-         - name: ClearSkyStdCheck_channel_9
            initial value: false
            force reinitialization: false
          - name: ClearSkyStdCheck_channel_10
