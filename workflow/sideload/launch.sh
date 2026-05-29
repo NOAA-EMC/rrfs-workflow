@@ -2,7 +2,7 @@
 # tweaks for non-NCO experiments
 # This script will NOT be needed by NCO
 # shellcheck disable=SC1090,SC1091,SC2154,SC2155
-declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
+declare -rx PS4='+${SECONDS}s $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
 set -x
 #
 COMPILER=${COMPILER:-intel}
@@ -170,14 +170,23 @@ case ${task_id} in
     ;;
   pydamonitor)
     module purge
+    set +x
     source "${HOMErrfs}/workflow/sideload/pyDAmonitor/ush/load_pyDAmonitor.sh"
+    set -x
     "${HOMErrfs}/workflow/sideload/pyDAmonitor/ush/drive.sh"
     ;;
   graphics)
     set +x
     source "${HOMErrfs}/workflow/tools/load_pygraf.sh"
     set -x
-    "${HOMErrfs}/workflow/sideload/${task_id}.sh"
+    "${HOMErrfs}/workflow/sideload/graphics.sh"
+    ;;
+  archive)
+    set +x
+    eval "${ARCHIVE_MODULE}"
+    module load python
+    set -x
+    "${HOMErrfs}/workflow/sideload/archive.sh"
     ;;
   *)
     "${HOMErrfs}/jobs/${COMMAND}"

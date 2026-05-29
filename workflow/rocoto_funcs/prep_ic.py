@@ -178,6 +178,17 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0, resilient=False):
   </and>
   </dependency>'''
 
+# overwrite dependencies if do_rtma
+    if os.getenv('DO_RTMA', 'FALSE').upper() == "TRUE":
+        rtma_rrfspath = os.getenv('RTMA_RRFSPATH', 'RTMA_RRFSPATH_NOT_DEFINED')
+        dependencies = f'''
+  <dependency>
+  <and>{timedep}
+   <datadep age="00:00:05"><cyclestr offset="-{cyc_interval}:00:00">{rtma_rrfspath}/rrfs.@Y@m@d/@H/fcst/&WGF;/fcst_f{cyc_interval:0>3}.done</cyclestr></datadep>
+  </and>
+  </dependency>'''
+
+
 # overwrite dependencies if spinup_mode= -1
     if spinup_mode == -1:  # overwrite streqs and strneqs for prod tasks parallel to spinup cycles
         prodswitch_hrs = os.getenv('PRODSWITCH_CYCS', '09 21')

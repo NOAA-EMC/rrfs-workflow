@@ -35,6 +35,7 @@ from rocoto_funcs.graphics import graphics
 from rocoto_funcs.misc import misc
 from rocoto_funcs.hofx import hofx
 from rocoto_funcs.pyDAmonitor import pyDAmonitor
+from rocoto_funcs.archive import archive
 
 # setup_xml
 
@@ -45,6 +46,7 @@ def setup_xml(HOMErrfs, expdir):
         os.environ.update(env_vars)
     NET = os.getenv('NET').lower()
     machine = os.getenv('MACHINE').lower()
+    MESH_NAME = os.getenv("MESH_NAME")
     do_deterministic = os.getenv('DO_DETERMINISTIC', 'TRUE').upper()
     do_ensemble = os.getenv('DO_ENSEMBLE', 'FALSE').upper()
     do_ensmean_post = os.getenv('DO_ENSMEAN_POST', 'FALSE').upper()
@@ -84,10 +86,10 @@ def setup_xml(HOMErrfs, expdir):
             #
             if os.getenv("DO_IC_LBC", "TRUE").upper() == "TRUE":
                 ungrib_ic(xmlFile, expdir)
-                if "global" not in os.getenv("MESH_NAME"):
+                if "global" not in MESH_NAME:
                     ungrib_lbc(xmlFile, expdir)
                 ic(xmlFile, expdir)
-                if "global" not in os.getenv("MESH_NAME"):
+                if "global" not in MESH_NAME:
                     lbc(xmlFile, expdir)
             #
             if os.getenv("DO_SPINUP", "FALSE").upper() == "TRUE":
@@ -107,7 +109,7 @@ def setup_xml(HOMErrfs, expdir):
                 save_for_next(xmlFile, expdir)
             elif os.getenv("DO_FCST", "TRUE").upper() == "TRUE":
                 prep_ic(xmlFile, expdir)
-                if "global" not in os.getenv("MESH_NAME"):
+                if "global" not in MESH_NAME:
                     prep_lbc(xmlFile, expdir)
                 if do_chemistry == "TRUE":
                     prep_chem(xmlFile, expdir)
@@ -120,7 +122,7 @@ def setup_xml(HOMErrfs, expdir):
                 if os.getenv("DO_PYDAMONITOR", "FALSE").upper() == "TRUE":
                     pyDAmonitor(xmlFile, expdir)
                 fcst(xmlFile, expdir)
-                if os.getenv('DO_CYC', 'FALSE').upper() == "TRUE":
+                if os.getenv('DO_CYC', 'FALSE').upper() == "TRUE" and os.getenv('DO_RTMA', 'FALSE').upper() == 'FALSE':
                     save_for_next(xmlFile, expdir)
             #
             if os.getenv("DO_POST", "TRUE").upper() == "TRUE":
@@ -134,6 +136,8 @@ def setup_xml(HOMErrfs, expdir):
                     sys.exit(1)
             if os.getenv("DO_HOFX", "FALSE").upper() == "TRUE":
                 hofx(xmlFile, expdir)
+            if os.getenv("DO_ARCHIVE", "FALSE").upper() == "TRUE":
+                archive(xmlFile, expdir)
 
 # ---------------------------------------------------------------------------
 # assemble tasks for an ensemble experiment
@@ -151,13 +155,13 @@ def setup_xml(HOMErrfs, expdir):
                 nonvar_bufrobs(xmlFile, expdir)
                 nonvar_reflobs(xmlFile, expdir)
             ungrib_ic(xmlFile, expdir, do_ensemble=True)
-            if "global" not in os.getenv("MESH_NAME"):
+            if "global" not in MESH_NAME:
                 ungrib_lbc(xmlFile, expdir, do_ensemble=True)
             ic(xmlFile, expdir, do_ensemble=True)
-            if "global" not in os.getenv("MESH_NAME"):
+            if "global" not in MESH_NAME:
                 lbc(xmlFile, expdir, do_ensemble=True)
             prep_ic(xmlFile, expdir, do_ensemble=True)
-            if "global" not in os.getenv("MESH_NAME"):
+            if "global" not in MESH_NAME:
                 prep_lbc(xmlFile, expdir, do_ensemble=True)
             if os.getenv("DO_RECENTER", "FALSE").upper() == "TRUE":
                 recenter(xmlFile, expdir)

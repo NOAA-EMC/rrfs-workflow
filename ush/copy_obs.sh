@@ -36,6 +36,8 @@ mappings["ioda_atms_n20.nc"]="${obspath}/ioda_atms_n20.nc"
 mappings["ioda_atms_n21.nc"]="${obspath}/ioda_atms_n21.nc"
 mappings["ioda_crisf4_n20.nc"]="${obspath}/ioda_crisf4_n20.nc"
 mappings["ioda_crisf4_n21.nc"]="${obspath}/ioda_crisf4_n21.nc"
+mappings["ioda_mtiasi_metop-b.nc"]="${obspath}/ioda_mtiasi_metop-b.nc"
+mappings["ioda_mtiasi_metop-c.nc"]="${obspath}/ioda_mtiasi_metop-c.nc"
 
 if [[ "${DO_RADAR_REF^^}" == "TRUE" ]]; then
   if ${jedivar}; then

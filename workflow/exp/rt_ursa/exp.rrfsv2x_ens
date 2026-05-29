@@ -58,15 +58,25 @@ export RECENTER_CYCS="${COLDSTART_CYCS}"
 export DET_RECENTERCYCS_DO_DA=false #true # whether or not do detministic DA at RECENTER_CYCS
 export CYCLEDEF_PROD_EXCLUDE="01 02 13 14"
 #
+#export DO_PYDAMONITOR=true
+#export DO_GRAPHICS=true
+#export GRAPHICS_TILES="full NE NC NW SE SC SW EastCO"
+#export DO_ARCHIVE=true
+#export ARCHIVE_INTERVAL=3  # run the archive task every several hours
+#export ARCHIVE_HPSSDIR="/5year/BMC/wrfruc/Guoqing.Ge/${EXP_NAME}"
+#export ARCHIVE_COM1_SPEC='{"include":"ioda*, jedivar, nonvar*, fcst, upp, pyDAmonitor, graphics", "exclude":""}'  # use " inside and ' outside
+#export ARCHIVE_STMP=''  # eg. 'fcst,mpassit'  # archive files under the given task umbrella directories
+#export ARCHIVE_STMP_INTERVAL='1'  # ARCHIVE_STMP_INTERVAL must divide ARCHIVE_INTERVAL evenly
+#
 export QUEUE="batch"
 export PARTITION="u1-compute"
-export NODES_IODA_MRMS_REFL="<nodes>1:ppn=40</nodes>"
 export NODES_IC="<nodes>1:ppn=192</nodes>"
 export NODES_LBC="<nodes>1:ppn=192</nodes>"
 export NODES_FCST="<nodes>4:ppn=160</nodes>"
 export NODES_MPASSIT="<nodes>1:ppn=160</nodes>"
 export NODES_UPP="<nodes>1:ppn=160</nodes>"
 export NODES_RECENTER="<nodes>1:ppn=40</nodes>"
+export NODES_IODA_MRMS_REFL="<nodes>1:ppn=40</nodes>"
 export NODES_GETKF="<nodes>30:ppn=10</nodes>"
 export NODES_ENSMEAN="<nodes>2:ppn=60</nodes>"
 #

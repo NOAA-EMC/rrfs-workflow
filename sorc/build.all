@@ -11,18 +11,21 @@ cleanup() {
 }
 trap cleanup SIGINT SIGTERM
 
-if [[ "${1,,}" == "chem" ]] || [[ "${2,,}" == "chem" ]]; then
+if [[ "${1,,}" == chem* ]] || [[ "${2,,}" == chem* ]]; then
   cd "${HOMErrfs}/sorc" || exit 1
   echo "Option 'chem' found in the command line, downloading chem-specific MPAS-Model ......"
-  remote_url="https://github.com/cheMPAS-Fire/MPAS-Model"
-  branch_commit="chem/develop"  # a branch name or a commit hash
+  if [[ "${1,,}" == chemrrfs ]] || [[ "${2,,}" == chemrrfs ]]; then
+    remote_url="https://github.com/RRFSx/MPAS-Model"
+    branch_commit="chemrrfs"
+  else
+    remote_url="https://github.com/cheMPAS-Fire/MPAS-Model"
+    branch_commit="chem/develop"  # a branch name or a commit hash
+  fi
   mv MPAS-Model "MPAS-Model.$(date +%s)" # save a copy of current MPAS-Model
   git clone "${remote_url}" MPAS-Model
   cd "${HOMErrfs}/sorc/MPAS-Model" || exit 1
   git checkout "${branch_commit}"
   git submodule update --init --recursive
-  # allow smoke_coarse in histlist_3d_smoke
-  cp "${HOMErrfs}/fix/chemistry/mpassit/histlist_3d_smoke.coarse" "${HOMErrfs}/fix/chemistry/mpassit/histlist_3d_smoke"
 fi
 cd "${HOMErrfs}/sorc" || exit 1
 

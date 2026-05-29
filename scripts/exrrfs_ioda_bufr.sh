@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC1091,SC2153,SC2154
-declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
+declare -rx PS4='+${SECONDS}s $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
 set -x
 cpreq=${cpreq:-cpreq}
 
@@ -13,6 +13,7 @@ cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.satwnd.tm00.bufr_d" satwndbufr
 cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.gsrcsr.tm00.bufr_d" abibufr
 cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.atms.tm00.bufr_d" atmsbufr
 cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.crisf4.tm00.bufr_d" crisfsbufr
+cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.mtiasi.tm00.bufr_d" iasibufr
 ${cpreq} "${EXECrrfs}"/bufr2ioda.x .
 ${cpreq} "${EXECrrfs}"/bufr2netcdf.x .
 
@@ -84,6 +85,19 @@ else
   echo "Input file ${input_file} does not exist."
 fi
 
+# --------------------------------------------------
+# run  bufr2netcdf tool for mtiasi bufr obs
+# --------------------------------------------------
+${cpreq} "${PARMrrfs}/bufr2netcdf_mtiasi.yaml" .
+input_file="iasibufr"
+output_file="ioda_mtiasi_{splits/satId}.nc"
+yaml="bufr2netcdf_mtiasi.yaml"
+if [[ -s "${input_file}" ]]; then
+  ./bufr2netcdf.x "${input_file}" "${yaml}" "${output_file}"
+else
+  echo "Input file ${input_file} does not exist."
+fi
+
 # run python bufr2ioda tool for ZTD and AMV bufr obs
 # --------------------------------------------------
 HOMErdasapp=${HOMErrfs}/sorc/RDASApp/
@@ -135,7 +149,7 @@ for ioda_file in ioda*nc; do
     ./offline_domain_check_satrad.py -o "${ioda_file}" -g "${grid_file}" -s 0.005
     base_name=$(basename "${ioda_file}" .nc)
     mv  "${base_name}_dc.nc" "${base_name}.nc"
-  elif [[ "${ioda_file}" == *atms* || "${ioda_file}" == *cris* ]]; then
+  elif [[ "${ioda_file}" == *atms* || "${ioda_file}" == *cris* || "${ioda_file}" == *iasi* ]]; then
     echo " ${ioda_file} ioda file detected: temporarily skipping offline domain check"
   else
     ./offline_domain_check.py -o "${ioda_file}" -g "${grid_file}" -s 0.005
