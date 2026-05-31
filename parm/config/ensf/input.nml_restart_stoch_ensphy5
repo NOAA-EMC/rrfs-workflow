@@ -72,7 +72,7 @@
     d2_bg_k1 = 0.2
     d2_bg_k2 = 0.04
     d4_bg = 0.12
-    d_con = 0.5
+    d_con = 0.3
     d_ext = 0.0
     dddmp = 0.1
     delt_max = 0.004
@@ -105,7 +105,7 @@
     layout = 44, 72
     make_nh = .false.
     mountain = .true.
-    n_split = 6
+    n_split = 5
     n_sponge = -1
     n_zs_filter = 0
     na_init = 0
