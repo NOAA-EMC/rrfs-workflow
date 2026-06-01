@@ -153,7 +153,9 @@ if [[ "${ANTHRO_EMISINV}" == *NEMO* ]]; then
       isect_knt=$((isect_knt+1))
    done
    # Sum the files
-   NEMO_VAR_LIST=("POC,PEC,PMOTHR,PMC")
+#   NEMO_VAR_LIST=("POC,PEC,PMOTHR,PMC")
+   NEMO_VAR_LIST=("POC,PEC,PMOTHR,PMC,PAL,PCA,PCL,PFE,PK,PMG,PMN,PNA,PNCOM,PNH4,PNO3,PSI,PSO4,PTI,CO,NO,NO2,NH3,SO2")
+   NEMO_PM_VAR_LIST=("POC,PEC,PMOTHR,PAL,PCA,PCL,PFE,PK,PMG,PMN,PNA,PNCOM,PNH4,PNO3,PSI,PSO4,PTI")
    NEI_VAR_LIST=("LATITUDE,LONGITUDE,STKDM,STKHT,STKFLW,STKTK,STKVE")
    srun -n 1 python "${HOMErrfs}/workflow/tools/chem_merge_emissions.py" "${EMISFILE_NEMO_SECTORSUM}" "${NEMO_VAR_LIST[@]}" "${NEMO_EMISFILES_TO_CAT[@]}"
    # Append the dims - TODO, can only append variables to dim file, not other way around ...
@@ -179,8 +181,18 @@ if [[ "${ANTHRO_EMISINV}" == *NEMO* ]]; then
                            "${OUTDIR}" \
                            "${INTERP_WEIGHTS_DIR}" \
                            "${YYYY}${MM}${DD}${HH}"
-          ncap2 -O -s 'e_ant_in_unspc_fine=PEC+POC+PMOTHR' "${EMISFILE_NEMO_PROCESSED}"  "${EMISFILE_NEMO_PROCESSED}"
+          ncap2 -O -s "e_ant_in_unspc_fine=${NEMO_PM_VAR_LIST//,/+}" "${EMISFILE_NEMO_PROCESSED}"  "${EMISFILE_NEMO_PROCESSED}"
+          ncap2 -O -s "e_ant_in_nox=NO+NO2" "${EMISFILE_NEMO_PROCESSED}"  "${EMISFILE_NEMO_PROCESSED}"
           ncrename -v PMC,e_ant_in_unspc_coarse "${EMISFILE_NEMO_PROCESSED}"
+          ncrename -v CO,e_ant_in_co "${EMISFILE_NEMO_PROCESSED}"
+          ncrename -v NH3,e_ant_in_nh3 "${EMISFILE_NEMO_PROCESSED}"
+          ncrename -v SO2,e_ant_in_so2 "${EMISFILE_NEMO_PROCESSED}"
+          # TODO - if we run with the SNA scheme, we need PNH4,PNO3,PSO4 as seperate emissions but
+          # will need to remove it from e_ant_in_unspc_fine
+          ncrename -v PNH4,e_ant_in_nh4_a_fine "${EMISFILE_NEMO_PROCESSED}"
+          ncrename -v PNO3,e_ant_in_no3_a_fine "${EMISFILE_NEMO_PROCESSED}"
+          ncrename -v PSO4,e_ant_in_so4_a_fine "${EMISFILE_NEMO_PROCESSED}"
+          ncks -O -x -v "${NEMO_VAR_LIST[@]}" "${EMISFILE_NEMO_PROCESSED}" "${EMISFILE_NEMO_PROCESSED}"
           mv "${EMISFILE_NEMO_PROCESSED}" "${EMISFILE_NEMO_PROCESSED}_${istr}.nc"
           ncks -O -4 "${EMISFILE_NEMO_PROCESSED}_${istr}.nc" "${EMISFILE_NEMO_PROCESSED}_${istr}.nc"
           ncpdq -O -a Time,nCells,nkanthro "${EMISFILE_NEMO_PROCESSED}_${istr}.nc" "${EMISFILE_NEMO_PROCESSED}_${istr}.nc"
@@ -222,9 +234,18 @@ if [[ "${ANTHRO_EMISINV}" == *NEMO* ]]; then
    srun -n 1 python "${HOMErrfs}/workflow/tools/chem_merge_pt_emissions.py" "${NEMO_STACKFILE_PROCESSED}" "${NEI_VAR_LIST[@]}" "${NEMO_STACKFILES_TO_CAT[@]}"
 
    # Update variable names for the chosen mechanism 
-   ncap2 -O -s 'e_ant_pt_in_unspc_fine=PEC+POC+PMOTHR' "${NEMO_EMISFILE_PT_PROCESSED}" "${NEMO_EMISFILE_PT_PROCESSED}"
+   ncap2 -O -s "e_ant_pt_in_unspc_fine=${NEMO_PM_VAR_LIST//,/+}" "${NEMO_EMISFILE_PT_PROCESSED}" "${NEMO_EMISFILE_PT_PROCESSED}"
+   ncap2 -O -s 'e_ant_pt_in_nox=NO2+NO' "${NEMO_EMISFILE_PT_PROCESSED}" "${NEMO_EMISFILE_PT_PROCESSED}"
    ncrename -v PMC,e_ant_pt_in_unspc_coarse "${NEMO_EMISFILE_PT_PROCESSED}"
-   ncks -O -x -v PEC,POC,PMOTHR "${NEMO_EMISFILE_PT_PROCESSED}" "${NEMO_EMISFILE_PT_PROCESSED}"
+   ncrename -v CO,e_ant_pt_in_co "${NEMO_EMISFILE_PT_PROCESSED}"
+   ncrename -v NH3,e_ant_pt_in_nh3 "${NEMO_EMISFILE_PT_PROCESSED}"
+   ncrename -v SO2,e_ant_pt_in_so2 "${NEMO_EMISFILE_PT_PROCESSED}"
+   # TODO - if we run with the SNA scheme, we need PNH4,PNO3,PSO4 as seperate emissions but
+   # will need to remove it from e_ant_in_unspc_fine
+   ncrename -v PNH4,e_ant_pt_in_nh4_a_fine "${NEMO_EMISFILE_PT_PROCESSED}" 
+   ncrename -v PNO3,e_ant_pt_in_no3_a_fine "${NEMO_EMISFILE_PT_PROCESSED}"
+   ncrename -v PSO4,e_ant_pt_in_so4_a_fine "${NEMO_EMISFILE_PT_PROCESSED}"
+   ncks -O -x -v "${NEMO_VAR_LIST[@]}" "${NEMO_EMISFILE_PT_PROCESSED}" "${NEMO_EMISFILE_PT_PROCESSED}"
    # Update dimension name for # of stacks
    ncrename -d ROW,nanthro_pt "${NEMO_EMISFILE_PT_PROCESSED}"
    ncrename -d ROW,nanthro_pt "${NEMO_STACKFILE_PROCESSED}"
@@ -237,6 +258,13 @@ if [[ "${ANTHRO_EMISINV}" == *NEMO* ]]; then
    # Cast the stack parameters through time
    ncap2 -O -s 'e_ant_pt_in_unspc_fine[$Time,$TSTEP,$nanthro_pt]=e_ant_pt_in_unspc_fine' "${NEMO_EMISFILE_PT_PROCESSED}" "${NEMO_EMISFILE_PT_PROCESSED}"
    ncap2 -O -s 'e_ant_pt_in_unspc_coarse[$Time,$TSTEP,$nanthro_pt]=e_ant_pt_in_unspc_coarse' "${NEMO_EMISFILE_PT_PROCESSED}" "${NEMO_EMISFILE_PT_PROCESSED}"
+   ncap2 -O -s 'e_ant_pt_in_co[$Time,$TSTEP,$nanthro_pt]=e_ant_pt_in_co' "${NEMO_EMISFILE_PT_PROCESSED}" "${NEMO_EMISFILE_PT_PROCESSED}"
+   ncap2 -O -s 'e_ant_pt_in_nox[$Time,$TSTEP,$nanthro_pt]=e_ant_pt_in_nox' "${NEMO_EMISFILE_PT_PROCESSED}" "${NEMO_EMISFILE_PT_PROCESSED}"
+   ncap2 -O -s 'e_ant_pt_in_nh3[$Time,$TSTEP,$nanthro_pt]=e_ant_pt_in_nh3' "${NEMO_EMISFILE_PT_PROCESSED}" "${NEMO_EMISFILE_PT_PROCESSED}"
+   ncap2 -O -s 'e_ant_pt_in_so2[$Time,$TSTEP,$nanthro_pt]=e_ant_pt_in_so2' "${NEMO_EMISFILE_PT_PROCESSED}" "${NEMO_EMISFILE_PT_PROCESSED}"
+   ncap2 -O -s 'e_ant_pt_in_nh4_a_fine[$Time,$TSTEP,$nanthro_pt]=e_ant_pt_in_nh4_a_fine' "${NEMO_EMISFILE_PT_PROCESSED}" "${NEMO_EMISFILE_PT_PROCESSED}"
+   ncap2 -O -s 'e_ant_pt_in_no3_a_fine[$Time,$TSTEP,$nanthro_pt]=e_ant_pt_in_no3_a_fine' "${NEMO_EMISFILE_PT_PROCESSED}" "${NEMO_EMISFILE_PT_PROCESSED}"
+   ncap2 -O -s 'e_ant_pt_in_so4_a_fine[$Time,$TSTEP,$nanthro_pt]=e_ant_pt_in_so4_a_fine' "${NEMO_EMISFILE_PT_PROCESSED}" "${NEMO_EMISFILE_PT_PROCESSED}"
    ncrename -v LATITUDE,STKLT -v LONGITUDE,STKLG "${NEMO_STACKFILE_PROCESSED}"
 #
 fi # IS NEMO listed as part of the ANTHRO EMIS inventory?

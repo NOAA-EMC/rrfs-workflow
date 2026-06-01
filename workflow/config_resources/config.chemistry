@@ -23,14 +23,17 @@ export EBB_DCYCLE=-1
 export REGRID_WRAPPER_DIR="${HOMErrfs}/sorc/regrid-wrapper"
 #
 export ANTHRO_EMISINV="GRA2PES"
+export CONFIG_FIRE_HEATFLUX=false
+export CONFIG_FIRE_MOISTFLUX=false
 export CONFIG_COARSE=false
 export CONFIG_ULTRAFINE=false
+export EXTRA_CHEMICAL_TRACERS="" # e.g., "co,nox,so2"
+export CONFIG_MIE_AOD_OPT=0
 #
-export USE_EXTERNAL_CHEM_LBCS=true
+export USE_EXTERNAL_CHEM_LBCS=false
 export USE_EXTERNAL_CHEM_ICS=false
 #
-export WALLTIME_PREP_CHEM="00:30:00"
-export WALLTIME_PREP_CHEM_ICBC="00:30:00"
+export WALLTIME_PREP_CHEM="00:45:00"
 #
 # add mesh dependent logic when needed, such as case ${MESH_NAME} in "conus12km", etc
 
@@ -40,13 +43,9 @@ case ${MACHINE} in
     export FIRE_DATASET="RAVE" #  e.g., or NGFS
     export FIRE_INPUT="${CHEM_INPUT}/emissions/${FIRE_DATASET}/raw"
     export ACCOUNT=${ACCOUNT:-"acomp"}
-    export PARTITION_PREP_CHEM="hera"
-    export NODES_PREP_CHEM="<nodes>1:ppn=20</nodes>"
-    export MEMORY_PREP_CHEM="50G"
-    if [[ "${MESH_NAME}" == "conus3km" ]]; then
-      export PARTITION_PREP_CHEM="bigmem"
-      export MEMORY_PREP_CHEM="200G"
-    fi
+    export PARTITION_PREP_CHEM="bigmem"
+    export NODES_PREP_CHEM="<nodes>1:ppn=150</nodes>"
+    export MEMORY_PREP_CHEM="200G"
     ;;
   "ursa")
     export CHEM_INPUT="/scratch4/BMC/acomp/cheMPAS-Fire/input"
@@ -58,12 +57,8 @@ case ${MACHINE} in
     fi
     export ACCOUNT=${ACCOUNT:-"acomp"}
     export PARTITION_PREP_CHEM="u1-compute"
-    export NODES_PREP_CHEM="<nodes>1:ppn=50</nodes>"
-    export MEMORY_PREP_CHEM="50G"
-    if [[ "${MESH_NAME}" == "conus3km" ]]; then
-      export NODES_PREP_CHEM="<nodes>1:ppn=150</nodes>"
-      export MEMORY_PREP_CHEM="200G"
-    fi
+    export NODES_PREP_CHEM="<nodes>1:ppn=150</nodes>"
+    export MEMORY_PREP_CHEM="200G"
     ;;
   "gaeac6")
     export CHEM_INPUT="/gpfs/f6/drsa-fire3/world-shared/cheMPAS-Fire/input"

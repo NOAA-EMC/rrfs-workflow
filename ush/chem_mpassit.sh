@@ -18,6 +18,9 @@ if [[ "${CHEM_GROUPS}" == *pollen* ]]; then
 if [[ "${CHEM_GROUPS}" == *anthro* ]]; then
    cat "${FIXrrfs}"/chemistry/mpassit/histlist_3d_anthro >> histlist_3d
 fi
+if [[ "${CHEM_GROUPS}" == *ssalt* ]]; then
+   cat "${FIXrrfs}"/chemistry/mpassit/histlist_3d_ssalt >> histlist_3d
+fi
 # Make sure we didn't create any duplicates
 awk '!seen[$0]++' histlist_2d  > temp_histlist_2d && mv temp_histlist_2d histlist_2d
 awk '!seen[$0]++' histlist_3d  > temp_histlist_3d && mv temp_histlist_3d histlist_3d

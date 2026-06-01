@@ -21,7 +21,7 @@
     dust_moist_correction = 0.1
     aero_dir_rad_fdb = false
     config_mynn_enh_mix = false
-    config_mp_aero_emission = false
+    config_mp_aero_emission = true
     kanthro = 1
     kwildfire = 1
 /
