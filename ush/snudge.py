@@ -55,11 +55,10 @@ def update_soil_temp_gsd(atha, athb, landicemask, pa, pb, tslb, snotype, snod, s
     atb = theta_to_t(athb, pb)
     atincr = np.where(landicemask == 1, ata - atb, 0)
     print('Background lowest level air temperature min/max (K): %.3f / %.3f'%(np.min(atb), np.max(atb)))
-    print('Over land, lowest level air temperature increment min/max (K): %.3f / %.3f'%(np.min(atincr),np.max(atincr))) 
+    print('Over land, lowest level air temperature increment min/max (K): %.3f / %.3f'%(np.min(atincr), np.max(atincr)))
     temp_fac = np.min([np.max([(ata - 283.) / 15., np.zeros(len(ata))], axis=0), 1.5 * np.ones(len(ata))], axis=0) + 1.
     dts_min = -1.2 * temp_fac
     tincf = atincr * temp_fac
-    #dtslb = [np.min([np.ones(len(ata)), np.max([dts_min, c[i] * tincf], axis=0)], axis=0) for i in range(5)]
     dtslb = [np.where((snod < partialSnowThresh) & (snot > 273.15) & np.all(tslb[:5] > 273.15, axis=0), np.min([np.ones(len(ata)), np.max([dts_min, c[i] * tincf], axis=0)], axis=0), 0) for i in range(5)]
     tslb[:5] = tslb[:5] + dtslb
     if snotype == 'gsd':
