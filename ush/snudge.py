@@ -79,7 +79,7 @@ def update_soil_temp_paper(atha, athb, landicemask, pa, pb, tslb, snotype, snod,
     atb = theta_to_t(athb, pb)
     atincr = np.where(landicemask == 1, ata - atb, 0)
     print('Background lowest level air temperature min/max (K): %.3f / %.3f'%(np.min(atb), np.max(atb)))
-    print('Over land, lowest level air temperature increment min/max (K): %.3f / %.3f'%(np.min(atincr),np.max(atincr))) 
+    print('Over land, lowest level air temperature increment min/max (K): %.3f / %.3f'%(np.min(atincr), np.max(atincr)))
     temp_fac = np.min([np.max([(ata - 283.) / 15., np.zeros(len(ata))], axis=0), 1.5 * np.ones(len(ata))], axis=0) + 1.
     dtslb = [np.min([np.max([-1.2 * temp_fac, c[i] * atincr], axis=0), np.ones(len(ata))], axis=0) for i in range(5)]
     tslb[:5] = tslb[:5] + dtslb
