@@ -494,10 +494,19 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
 
   #-- Generate AWIPS/wmo products for RRFS
   #-- 00/06/12/18Z deterministic cycles only
+  #-- Use 2dfld for 3-km grid and prslev for 13-km grid
   #-- AWIPS/wmo products are not generated for ensemble member forecasts
   if [ ${DO_ENSFCST} = "FALSE" ]; then
     if [ $cyc -eq 00 ] || [ $cyc -eq 06 ] || [ $cyc -eq 12 ] || [ $cyc -eq 18 ]; then
-      ${USHrrfs}/prdgen/rrfs_mkawp.sh ${fhr}
+      grids=(3km 13km)
+      for grid in ${grids[@]}
+      do
+        if [ $grid == "3km" ]; then
+          ${USHrrfs}/prdgen/rrfs_mkawp.sh ${fhr} 2dfld ${grid}
+        elif [ $grid == "13km" ]; then
+          ${USHrrfs}/prdgen/rrfs_mkawp.sh ${fhr} prslev ${grid} 
+        fi
+      done
     fi
   fi
 

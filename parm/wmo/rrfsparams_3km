@@ -3,11 +3,13 @@ ASNOW:surface:
 CAPE:surface:
 CIN:surface:
 DPT:2 m above ground:
+GUST:surface:
 HGT:cloud ceiling:
 HLCY:3000-0 m above ground:
 MSLET:mean sea level:
 REFC:entire atmosphere (considered as a single layer):
 REFD:1000 m above ground:
+TCDC:entire atmosphere (considered as a single layer):
 TMP:2 m above ground:
 UGRD:10 m above ground:
 VGRD:10 m above ground:

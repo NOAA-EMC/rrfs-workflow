@@ -12,37 +12,39 @@
 # 2014-06-30  G Manikin  - adapted for HRRR
 # 2018-01-24  B Blake - HRRRv3
 # 2025-07-23  B Blake - adapted for RRFSv1
+# 2026-06-02  B Blake - add RRFS 13-km grid
 #################################################################################
 
 set -xa
 
 fhr=$1
+inputfile=$2
+gridspacing=$3
 
-#runRRFS="000 001 002 003 004 005 006 007 008 009 010 011 012 013 014 015 016 017 018 019 020 021 022 023 024 025 026 027 028 029 030 031 032 033 034 035 036 037 038 039 040 041 042 043 044 045 046 047 048 049 050 051 052 053 054 055 056 057 058 059 060 063 066 069 072 075 078 081 084"
 runRRFS="000 003 006 009 012 015 018 021 024 027 030 033 036 039 042 045 048 051 054 057 060 066 072 078 084"
 if  echo $runRRFS |grep $fhr;
 then
-  # Processing AWIPS grid (RRFS 3-km North America grid)
-  export INPUTfile=${COMOUT}/rrfs.t${cyc}z.2dfld.3km.f${fhr}.na.grib2
+  # Processing AWIPS grid (RRFS North America grid - 3 km or 13 km)
+  export INPUTfile=${COMOUT}/rrfs.t${cyc}z.${inputfile}.${gridspacing}.f${fhr}.na.grib2
 
   # Only grab records that need WMO headers for AWIPS
-  $WGRIB2 ${INPUTfile} | grep -F -f ${PARMrrfs}/wmo/rrfsparams_3km | $WGRIB2 -i ${INPUTfile} -new_grid_winds grid -set_grib_type same -grib rrfs.t${cyc}z.2dfld.3km.f${fhr}.na.grib2
+  $WGRIB2 ${INPUTfile} | grep -F -f ${PARMrrfs}/wmo/rrfsparams_${gridspacing} | $WGRIB2 -i ${INPUTfile} -new_grid_winds grid -set_grib_type same -grib rrfs.t${cyc}z.${inputfile}.${gridspacing}.f${fhr}.na.grib2
 
   # Run tocgrib2
 
   export pgm="tocgrib2"
   . prep_step
 
-  export FORT11=rrfs.t${cyc}z.2dfld.3km.f${fhr}.na.grib2
-  export FORT51=grib2.rrfs.t${cyc}z.f${fhr}.na
-  $TOCGRIB2 < $PARMrrfs/wmo/grib2_rrfs_f${fhr}_na
+  export FORT11=rrfs.t${cyc}z.${inputfile}.${gridspacing}.f${fhr}.na.grib2
+  export FORT51=grib2.rrfs.t${cyc}z.${gridspacing}.f${fhr}.na
+  $TOCGRIB2 < $PARMrrfs/wmo/grib2_rrfs_${gridspacing}_f${fhr}_na
   export err=$?; err_chk
 
-  cpreq -p grib2.rrfs.t${cyc}z.f${fhr}.na ${COMOUT}/wmo
+  cpreq -p grib2.rrfs.t${cyc}z.${gridspacing}.f${fhr}.na ${COMOUT}/wmo
 
  if [ $SENDDBN_NTC = YES ]
  then
-   $DBNROOT/bin/dbn_alert NTC_LOW $NET $job ${COMOUT}/wmo/grib2.rrfs.t${cyc}z.f${fhr}.na
+   $DBNROOT/bin/dbn_alert NTC_LOW $NET $job ${COMOUT}/wmo/grib2.rrfs.t${cyc}z.${gridspacing}.f${fhr}.na
  fi
 
 else
