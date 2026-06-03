@@ -26,5 +26,9 @@ EXEC="${HOMErrfs}/sorc/RRFS_UTILS/build/bin/process_metarcld.exe"
 cp "${EXEC}" "${HOMErrfs}/exec/process_metarcld.exe"
 EXEC="${HOMErrfs}/sorc/RRFS_UTILS/build/bin/process_NSSL_mosaic_nonvar.exe"
 cp "${EXEC}" "${HOMErrfs}/exec/process_NSSL_mosaic_nonvar.exe"
+EXEC="${HOMErrfs}/sorc/RRFS_UTILS/build/bin/process_update_sst.exe"
+cp "${EXEC}" "${HOMErrfs}/exec/process_update_sst.exe"
+EXEC="${HOMErrfs}/sorc/RRFS_UTILS/build/bin/process_generate_lakes.exe"
+cp "${EXEC}" "${HOMErrfs}/exec/process_generate_lakes.exe"
 
 exit 0
