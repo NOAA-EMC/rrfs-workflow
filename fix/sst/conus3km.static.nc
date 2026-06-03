@@ -1,1 +1,0 @@
-../.agent/sst/conus3km.static.nc
