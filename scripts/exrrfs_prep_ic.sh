@@ -196,45 +196,44 @@ if (( err != 0 )); then
   err_exit
 else
 
-#	update SST
+# update SST
 if (( "${ENS_SIZE:-0}" < 2 )); then
   for hr in ${SST_UPDATE_CYCS:-"99"}; do
      chr=$(printf '%02d' $((10#$hr)) )
      if [[ "${cyc}" == "${chr}" ]]; then
-	echo "update SST at cycle ",${cyc}
-	ln -s ${FIXrrfs}/sst/RTG_SST_landmask.dat .
-	ln -s ${FIXrrfs}/sst/${MESH_NAME}.mpas_lake_mask.nc mpas_lake_mask.nc
-	ln -s ${FIXrrfs}/sst/${MESH_NAME}.static.nc static.nc
-        sstpath="${NSST_SOURCE_DIR}"
-	ssttimestr=$(date -d "${CDATE:0:8} ${CDATE:8:2} - 1 day" +%y%j00000000)
-	ssttimestr2=$(date -d "${CDATE:0:8} ${CDATE:8:2} - 2 day" +%y%j00000000)
-	if [ -r ${sstpath}/${ssttimestr} ]; then
-	   cp ${sstpath}/${ssttimestr} RGT_SST.grib2
-	elif [ -r ${sstpath}/${ssttimestr2} ]; then
-	   cp ${sstpath}/${ssttimestr2} RGT_SST.grib2
-        else
-	   echo " WARNING: cannot find RGT SST data for cycle", ${cyc}
-	   exit 0
-	fi
-	ln -s ../mpasout.nc .
-	YYYYMMDDstr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y%m%d)
-	HHstr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%H)
-	sfclakepath="${LAKE_SOURCE_DIR}"
-	sfclakefile="${sfclakepath}/rrfs.${YYYYMMDDstr}/${HHstr}/forecast/INPUT/sfc_data.nc"
-	if [ -r ${sfclakefile} ]; then
-	   ln -s ${sfclakefile} sfc_data.nc
-	fi
-        ${cpreq} "${EXECrrfs}"/process_update_sst.exe .
-	${MPI_RUN_CMD} ./process_update_sst.exe
-	export err=$?
-        if (( err != 0 )); then
-           echo "prep_ic failed with error code ${err}"
-           err_exit
-        fi
+       echo "update SST at cycle ${cyc}"
+       ln -s "${FIXrrfs}/sst/RTG_SST_landmask.dat" .
+       ln -s "${FIXrrfs}/sst/${MESH_NAME}.mpas_lake_mask.nc" mpas_lake_mask.nc
+       ln -s "${FIXrrfs}/sst/${MESH_NAME}.static.nc" static.nc
+       sstpath="${NSST_SOURCE_DIR}"
+       ssttimestr=$(date -d "${CDATE:0:8} ${CDATE:8:2} - 1 day" +%y%j00000000)
+       ssttimestr2=$(date -d "${CDATE:0:8} ${CDATE:8:2} - 2 day" +%y%j00000000)
+       if [ -r "${sstpath}/${ssttimestr}" ]; then
+         cp "${sstpath}/${ssttimestr}" RGT_SST.grib2
+       elif [ -r "${sstpath}/${ssttimestr2}" ]; then
+         cp "${sstpath}/${ssttimestr2}" RGT_SST.grib2
+       else
+         echo " WARNING: cannot find RGT SST data for cycle", ${cyc}
+         exit 0
+       fi
+       ln -s ../mpasout.nc .
+       YYYYMMDDstr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y%m%d)
+       HHstr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%H)
+       sfclakepath="${LAKE_SOURCE_DIR}"
+       sfclakefile="${sfclakepath}/rrfs.${YYYYMMDDstr}/${HHstr}/forecast/INPUT/sfc_data.nc"
+       if [[ -r "${sfclakefile}" ]]; then
+         ln -s "${sfclakefile}" sfc_data.nc
+       fi
+       ${cpreq} "${EXECrrfs}"/process_update_sst.exe .
+       ${MPI_RUN_CMD} ./process_update_sst.exe
+       export err=$?
+       if (( err != 0 )); then
+         echo "prep_ic failed with error code ${err}"
+         err_exit
+       fi
      fi
   done
 fi
-
   echo "prep_ic completed successfully"
   touch "${umbrella_prep_ic_mem}"/prep_ic.done
 fi
