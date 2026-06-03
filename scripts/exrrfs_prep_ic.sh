@@ -206,8 +206,10 @@ if (( "${ENS_SIZE:-0}" < 2 )); then
        ln -s "${FIXrrfs}/sst/${MESH_NAME}.mpas_lake_mask.nc" mpas_lake_mask.nc
        ln -s "${FIXrrfs}/conus3km/${MESH_NAME}.static.nc" static.nc
        sstpath="${NSST_SOURCE_DIR}"
-       ssttimestr=$(date -d "${CDATE:0:8} ${CDATE:8:2} - 1 day" +%y%j00000000)
-       ssttimestr2=$(date -d "${CDATE:0:8} ${CDATE:8:2} - 2 day" +%y%j00000000)
+       CDATEm1d=$(${NDATE} -24 "${CDATE}")
+       CDATEm2d=$(${NDATE} -48 "${CDATE}")
+       ssttimestr=$(date -d "${CDATEm1d:0:8} ${CDATEm1d:8:2}" +%y%j00000000)
+       ssttimestr2=$(date -d "${CDATEm2d:0:8} ${CDATEm2d:8:2}" +%y%j00000000)
        if [[ -r "${sstpath}/${ssttimestr}" ]]; then
          cp "${sstpath}/${ssttimestr}" RGT_SST.grib2
        elif [[ -r "${sstpath}/${ssttimestr2}" ]]; then
