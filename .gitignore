@@ -26,3 +26,4 @@ pygraf
 tests/xml
 workflow/OPSROOT
 modulefiles/rrfs/hostgeneric.*.lua
+workflow/tools/downloads/

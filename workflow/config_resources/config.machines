@@ -2,6 +2,7 @@
 # machine-specific settings
 # set default A/Q/P/R information and other options as needed
 
+export ARCHIVE_MODULE=""
 if [[ ${MACHINE} == "jet" ]]; then
   export ACCOUNT=${ACCOUNT:-nrtrr}
   export QUEUE=${QUEUE:-batch}
@@ -26,6 +27,8 @@ elif [[ ${MACHINE} == "ursa" ]]; then
   export NATIVE_PREP=""
   export NATIVE_SAVE=""
   export NATIVE_CLEAN=""
+  export NATIVE_ARCHIVE=""
+  export PARTITION_ARCHIVE=${PARTITION_ARCHIVE:-u1-service}
 
 elif [[ ${MACHINE} == "orion" ]] || [[ ${MACHINE} == "hercules" ]]; then
   export ACCOUNT=${ACCOUNT:-rtrr}
@@ -41,6 +44,10 @@ elif [[ ${MACHINE} == "gaeac6" ]]; then
   export RESERVATION=${RESERVATION:-""}
   export CLUSTER=${CLUSTER:-c6}
   export NATIVE_UPP="--exclusive"
+  export QUEUE_ARCHIVE="hpss"
+  export CLUSTER_ARCHIVE=""
+  export PARTITION_ARCHIVE=${PARTITION_ARCHIVE:-dtn_f5_f6}
+  export ARCHIVE_MODULE="module use /usw/hpss/modulefiles;module load hsi"
 
 elif [[ ${MACHINE} == "derecho" ]]; then
   export ACCOUNT=${ACCOUNT:-test}

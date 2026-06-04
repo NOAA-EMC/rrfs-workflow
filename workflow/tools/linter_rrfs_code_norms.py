@@ -446,7 +446,7 @@ def rule_rrfs012_job_header(ctx: RuleContext) -> list[Violation]:
 
     expected = [
         "#!/usr/bin/env bash",
-        "declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-\"Unknown\"}})[${LINENO}]: '",
+        "declare -rx PS4='+${SECONDS}s $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-\"Unknown\"}})[${LINENO}]: '",
         "set -x",
         "date",
     ]
@@ -475,7 +475,7 @@ def rule_rrfs013_script_header(ctx: RuleContext) -> list[Violation]:
 
     expected = [
         "#!/usr/bin/env bash",
-        "declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-\"Unknown\"}})[${LINENO}]: '",
+        "declare -rx PS4='+${SECONDS}s $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-\"Unknown\"}})[${LINENO}]: '",
     ]
     for file_idx, actual, exp in _find_header_lines(ctx.lines, expected):
         if actual != exp:

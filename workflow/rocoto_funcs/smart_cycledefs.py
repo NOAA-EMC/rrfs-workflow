@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import sys
 
 
 def smart_cycledefs():
@@ -83,5 +84,18 @@ def smart_cycledefs():
             exclude_cycs = sorted(set(exclude_cycs))  # uniq and sort
             exclude_str = " ".join(f"{i}" for i in exclude_cycs)
             dcCycledef['da_nocold'] = {'exclude_hours': f'{exclude_str}', "cycledef": f'{cycledef_prod}'}
-    # ~~~~
+    # ~~~~~~~
+    if os.getenv('DO_ARCHIVE', 'FALSE').upper() == 'TRUE':
+        archive_interval = int(os.getenv('ARCHIVE_INTERVAL', '1'))
+        if archive_interval == 1:
+            dcCycledef['archive'] = cycledef_prod
+        else:
+            if 24 % archive_interval != 0:
+                print(f'24 cannot be divided by ARCHIVE_INTERVAL={archive_interval}, stop...')
+                sys.exit()
+            # determine the archive cycledef
+            valid_list = list(range(archive_interval - 1, 25, archive_interval))
+            valid_str = " ".join(f"{i}" for i in valid_list)
+            dcCycledef['archive'] = {'valid_hours': f'{valid_str}', "cycledef": f'{cycledef_prod}'}
+    # ~~~~~~~~
     return dcCycledef

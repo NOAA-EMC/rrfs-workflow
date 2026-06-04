@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # Aloha! This file is to setup some top level experiment options
 #
+# shellcheck disable=all
 export NET=rrfs                    # rrfs, rtma, 
 export MESH_NAME=conus12km         # conus12km, conus3km, na12km, etc
 export WGF="enkf"   # working group function = "det", "enkf", "ens", "firewx"
@@ -52,6 +53,16 @@ export COLDSTART_CYCS="00 06 12 18"   # cycles to cold start from external model
 export RECENTER_CYCS="${COLDSTART_CYCS}"
 export DET_RECENTERCYCS_DO_DA=false # whether or not do detministic DA at RECENTER_CYCS
 #
+#export DO_PYDAMONITOR=true
+#export DO_GRAPHICS=true
+#export GRAPHICS_TILES="full NE NC NW SE SC SW EastCO"
+#export DO_ARCHIVE=true
+#export ARCHIVE_INTERVAL=24  # run the archive task every several hours
+#export ARCHIVE_HPSSDIR="/5year/BMC/wrfruc/Guoqing.Ge/${EXP_NAME}"
+#export ARCHIVE_COM1_SPEC='{"include":"ioda*, jedivar, nonvar*, fcst, upp, pyDAmonitor, graphics", "exclude":""}'  # use " inside and ' outside
+#export ARCHIVE_STMP=''  # eg. 'fcst,mpassit'  # archive files under the given task umbrella directories
+#export ARCHIVE_STMP_INTERVAL='12'  # ARCHIVE_STMP_INTERVAL must divide ARCHIVE_INTERVAL evenly
+#
 export NODES_IC="<nodes>1:ppn=40</nodes>"
 export NODES_LBC="<nodes>1:ppn=40</nodes>"
 export NODES_FCST="<nodes>1:ppn=40</nodes>"
@@ -98,7 +109,6 @@ case ${MACHINE} in
     export OBSPATH_AIRNOW="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/airnow"
     export ACCOUNT="wrfruc"
     export QUEUE="batch"
-    export PARTITION="u1-compute"
     export PARTITION="u1-compute"
     export NODES_IC="<nodes>1:ppn=160</nodes>"
     export NODES_LBC="<nodes>1:ppn=160</nodes>"

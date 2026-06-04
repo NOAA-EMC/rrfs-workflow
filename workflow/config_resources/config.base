@@ -127,6 +127,9 @@ export NODES_UPP=${NODES_UPP:-"<nodes>2:ppn=40</nodes>"}
 export WALLTIME_UPP=${WALLTIME_UPP:-"00:50:00"}
 export NATIVE_UPP=${NATIVE_UPP:-""}
 
+# archive
+export WALLTIME_ARCHIVE=${WALLTIME_ARCHIVE:-"8:00:00"}
+
 # graphics
 export NODES_GRAPHICS=${NODES_GRAPHICS:-"<nodes>1:ppn=20</nodes>"}
 export WALLTIME_GRAPHICS=${WALLTIME_GRAPHICS:-"02:00:00"}

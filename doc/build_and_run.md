@@ -34,7 +34,7 @@ This Python script creates an experiment directory (i.e. `EXPDIR`), writes out a
 If you get any errors when running `setup_rocoto.py`, it is mostly because the currently loaded Python does not have required packages (such as 'dateutil').    
 You can use the Python environment included in rrfs-workflow by running
 ```
-source ../workflow/tools/load_bokeh.sh
+source ../workflow/tools/load_pyDAmonitor.sh
 ```
 and then run `setup_rocoto.py` again.  
 If the above source command fails to load a working Python environment, it usually means there is a module conflict. You may do `module purge` and/or start over from a clean terminal window.
