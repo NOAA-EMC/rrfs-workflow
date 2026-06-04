@@ -88,9 +88,9 @@ sed -e "s/@restart_interval@/${restart_interval}/" -e "s/@history_interval@/${hi
     -e "s/@diag_interval@/${diag_interval}/" -e "s/@lbc_interval@/${lbc_interval}/" \
     -e "${mpasout_replacement}"  "${PARMrrfs}"/streams.atmosphere  > streams.atmosphere
 #
-#if [[ "${mpasout_interval,,}" == "none" ]]; then  # remove the da_state stream for coldstart only forecasts
+if [[ "${mpasout_interval,,}" == "none" ]]; then  # remove the da_state stream for coldstart only forecasts
   sed -i '/<stream name="da_state"/,/<\/stream>/d' streams.atmosphere
-#fi
+fi
 #
 # chemistry related processing
 if [[ "${DO_CHEMISTRY^^}" == "TRUE" ]]; then

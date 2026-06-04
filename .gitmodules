@@ -45,6 +45,6 @@
         ignore = all
 [submodule "sorc/regrid-wrapper"]
 	path = sorc/regrid-wrapper
-	url = https://github.com/jordanschnell/regrid-wrapper.git
+	url = https://github.com/RRFSx/regrid-wrapper.git
 	branch = mpas_aero_v0
 	ignore = all

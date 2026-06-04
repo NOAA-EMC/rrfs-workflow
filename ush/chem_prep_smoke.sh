@@ -56,7 +56,6 @@ do
     ncrename -v NH3,e_bb_in_nh3 "${EMISFILE2}"
     ncrename -v NOx,e_bb_in_nox "${EMISFILE2}"
     ln -sf "${EMISFILE2}" "${EMISFILE}"
-    # TODO temporary fix until YAML options are built into regriddder
     ncap2 -O -s 'frp_in=frp_in.ttl($nkwildfire)' -s 'fre_in=fre_in.ttl($nkwildfire)' "${EMISFILE}" "${EMISFILE}"
   else
     dummyRAVE=${FIXrrfs}/chemistry/${FIRE_DATASET}/${FIRE_DATASET}.dummy.${MESH_NAME}.nc
@@ -67,6 +66,7 @@ do
       err_exit
     fi
   fi
+  # TODO temporary fix until YAML options are built into regriddder
   ncks -O -6 "${EMISFILE}" "${EMISFILE}"
   ncks -A -v xtime ./init.nc  "${EMISFILE}"
   #shellcheck disable=SC2086
@@ -76,7 +76,7 @@ done
 #
 echo "Concatenating hourly files for use in forecast mode"
 # Concatenate for ebb2
-ncrcat -v frp_in,fre_in,e_bb_in_so2,e_bb_in_ch4,e_bb_in_smoke_coarse,e_bb_in_nh3 "${UMBRELLA_PREP_CHEM_DATA}"/smoke.init.retro.*.00.00.nc "${UMBRELLA_PREP_CHEM_DATA}"/smoke.init.nc
+ncrcat -v frp_in,fre_in,e_bb_in_so2,e_bb_in_ch4,e_bb_in_smoke_coarse,e_bb_in_nh3,e_bb_in_co,e_bb_in_nox "${UMBRELLA_PREP_CHEM_DATA}"/smoke.init.retro.*.00.00.nc "${UMBRELLA_PREP_CHEM_DATA}"/smoke.init.nc
 #
 # Calculate previous 24 hour average HWP
 #

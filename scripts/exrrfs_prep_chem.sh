@@ -142,7 +142,9 @@ fi # bio/pollen
 if [[ "${CHEM_GROUP}" == "GOES_AOD" ]] ; then
   source "${USHrrfs}"/chem_prep_goes_aod.sh
 fi
-
+if [[ "${CHEM_GROUP}" == "ssalt" ]] ; then
+  echo "NOTHING to prepare -- exiting"
+fi
 if [[ "${CHEM_GROUP}" == "dust" ]]; then
   if [[ ! -s "${FIXrrfs}/chemistry/dust/fengsha_dust_inputs.${MESH_NAME}.nc" ]]; then
      source "${HOMErrfs}/workflow/tools/chem_prep_dust.sh"

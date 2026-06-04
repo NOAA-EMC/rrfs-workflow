@@ -75,12 +75,14 @@ if (( ${#files[@]}  )); then  # at least one file exists
   #
   sed -i "s/config_anthro_scheme\s*=\s*'off'/config_anthro_scheme  = 'simple_aero'/g" namelist.atmosphere
   #
-  if [[ ${ANTHRO_EMISINV} == "GRA2PES" ]] ; then
-     sed -i "s/\(kanthro\s*=\s*\).*/\120/" namelist.atmosphere
-  elif [[ ${ANTHRO_EMISINV} == "NEMO" ]] ; then
-     sed -i "s/\(kanthro\s*=\s*\).*/\11/" namelist.atmosphere
+  if [[ "${ANTHRO_EMISINV}" == *"GRA2PES"* ]] ; then
+    sed -i "s/\(kanthro\s*=\s*\).*/\120/" namelist.atmosphere
+  elif [[ "${ANTHRO_EMISINV}" == "NEMO" ]] ; then
+    sed -i "s/\(kanthro\s*=\s*\).*/\11/" namelist.atmosphere
   else
-     echo "UNKNOWN ANTHRO_EMISINV = ${ANTHRO_EMISINV} .. unexpected results may occur, user beware"
+    # Sets it to 1, but also prints your warning
+    sed -i "s/\(kanthro\s*=\s*\).*/\11/" namelist.atmosphere
+    echo "UNKNOWN ANTHRO_EMISINV = ${ANTHRO_EMISINV} .. unexpected results may occur, user beware"
   fi
   #
   num_chem=$(( num_chem + 1 ))
@@ -141,14 +143,14 @@ fi
 # MIE tables
 if [[ "${CONFIG_MIE_AOD_OPT}" -gt 0 ]]; then
    sed -i '/^&physics$/a \    aer_opt = 2' namelist.atmosphere
-   if [[ -e "${CHEM_INPUT}/aux/mie/AERO_OPT.TBL" ]]; then
-      echo "AERO_OPT.TBL exists in chem input directory, linking to run dir"
-      ln -s "${CHEM_INPUT}/aux/mie/AERO_OPT.TBL" .
+   if [[ -e "${FIXrrfs}/chemistry/optics/AERO_OPT.TBL" ]]; then
+      echo "AERO_OPT.TBL exists in fix directory, linking to run dir"
+      ln -s "${FIXrrfs}/chemistry/optics/AERO_OPT.TBL" .
       sed -i "s/\(config_mie_aod_opt\s*=\s*\).*/\1${CONFIG_MIE_AOD_OPT}/" namelist.atmosphere
    else
       # Linke the refract text files
-      ln -s "${HOMErrfs}/workflow/tools/prep_for_optics/refract*" .
-      srun -u python -u "${HOMErrfs}/workflow/tools/prep_for_optics/prep.optics.MPAS.py"
+      ln -s "${FIXrrfs}/chemistry/optics/refract*.txt" .
+      srun -u python -u "${HOMErrfs}/ush/chem_prep_for_optics.py"
       if [[ -e "AERO_OPT.TBL" ]] ; then
          echo "AERO_OPT.TBL created successfully"
          sed -i "s/\(config_mie_aod_opt\s*=\s*\).*/\1${CONFIG_MIE_AOD_OPT}/" namelist.atmosphere
