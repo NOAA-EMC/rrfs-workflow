@@ -669,7 +669,7 @@ else
       WRITE_TSK="${WRTCMP_write_tasks_per_group_LONG}"
     elif [ $FCST_LEN_HRS -eq '60' ] ; then
       LAYOUT_X="${LAYOUT_X_ENSF}" 
-      if [ $ensmem_num = "3" ] || [ $ensmem_num = "4" ] || [ $ensmem_num = "5" ]; then
+      if [ $ensmem_num = "2" ] || [ $ensmem_num = "3" ] || [ $ensmem_num = "5" ]; then
         LAYOUT_X="${LAYOUT_X_ENSF_LARGER}"
       fi
       LAYOUT_Y="${LAYOUT_Y_ENSF}" 

@@ -452,14 +452,18 @@ done
 cd $ECF_DIR/scripts/ensf/forecast
 echo "Copy ensf forecast files ..."
 rm -f jrrfs_ensf_forecast_mem???.ecf
-for mem in $(seq 1 2); do
+# 94 node list
+memlist="1 4"
+for mem in ${memlist}; do
   mem_3d=$( printf "%03d" "${mem}" )
   cp jrrfs_ensf_forecast_master.ecf jrrfs_ensf_forecast_mem${mem_3d}.ecf
   sed -i -e "s|@ensf_forecast_member@|${mem_3d}|g" jrrfs_ensf_forecast_mem${mem_3d}.ecf
   add_to_tmpfile "$ECF_DIR/scripts/ensf/forecast/jrrfs_ensf_forecast_mem${mem_3d}.ecf"
 done
 
-for mem in $(seq 3 5); do
+# 103 node list
+memlist="2 3 5"
+for mem in ${memlist}; do
   mem_3d=$( printf "%03d" "${mem}" )
   if [ ${resource_config} == "NCO" ]; then
     cp jrrfs_ensf_forecast_master.ecf_103nodes jrrfs_ensf_forecast_mem${mem_3d}.ecf
