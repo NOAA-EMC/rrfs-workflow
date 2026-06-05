@@ -18,13 +18,17 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
     coldhrs = os.getenv('COLDSTART_CYCS', '03 15')
     cyc_interval = os.getenv('CYC_INTERVAL')
     sfc_update_cycs = os.getenv('SFC_UPDATE_CYCS', '99')
+    sst_update_cycs = os.getenv('SST_UPDATE_CYCS', '99')
     sfc_update_look_back_hrs = os.getenv('SFC_UPDATE_LOOK_BACK_HRS', cyc_interval)
 
     # Task-specific EnVars beyond the task_common_vars
     dcTaskEnv = {
         'COLDSTART_CYCS': f'{coldhrs}',
         'SFC_UPDATE_CYCS': f'{sfc_update_cycs}',
+        'SST_UPDATE_CYCS': f'{sst_update_cycs}',
         'SFC_UPDATE_SOURCE_DIR': os.getenv('SFC_UPDATE_SOURCE_DIR'),
+        'LAKE_SOURCE_DIR': os.getenv('LAKE_SOURCE_DIR'),
+        'NSST_SOURCE_DIR': os.getenv('NSST_SOURCE_DIR'),
         'DO_BLENDING': os.getenv('DO_BLENDING', 'FALSE'),
     }
     if spinup_mode != 0:
