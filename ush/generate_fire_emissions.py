@@ -77,7 +77,6 @@ def generate_emiss_workflow(staticdir, ravedir, newges_dir, predef_grid):
        print('WARNING: First day true, no RAVE files available. Use dummy emissions file.  Not a major concern if problem does not persist')
        i_tools.create_dummy(intp_dir, current_day, tgt_latt, tgt_lont, cols, rows)
 
-
        subject = "Missing RAVE Data for RRFS"
        msg="WARNING: No RAVE data was found in RRFS ush/generate_fire_emission.py script"
        f = open("./warn.txt","w")
@@ -86,16 +85,6 @@ def generate_emiss_workflow(staticdir, ravedir, newges_dir, predef_grid):
 
        alert_email_list=os.environ.get('MAILTO','nco.spa@noaa.gov')
        cmd='mail.py -s '+ '"' + subject + '"' + ' -v "' + alert_email_list + '" < warn.txt '
-       print('cmd')
-       print(repr(cmd))
-       status=os.system(cmd)
-
-       subject = "Missing RAVE Data for RRFS"
-       msg="WARNING: No RAVE data was found in RRFS ush/generate_fire_emission.py script"
-       print msg > warn.txt
-       
-       alert_email_list=os.environ.get('MAILTO','sdm@noaa.gov')
-       cmd='mail.py -s '+ '"' + subject + '"' + ' -v "' + alert_email_list + '" < ./warn.txt '
        print('cmd')
        print(repr(cmd))
        status=os.system(cmd)
