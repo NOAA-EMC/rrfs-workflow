@@ -74,7 +74,7 @@ def generate_emiss_workflow(staticdir, ravedir, newges_dir, predef_grid):
            #produce emiss file 
            femmi_tools.produce_emiss_file(xarr_hwp, frp_avg_reshaped, totprcp_ave_arr, xarr_totprcp, intp_dir, current_day, tgt_latt, tgt_lont, ebb_tot_reshaped, fire_age, cols, rows)
    else:
-       print('First day true, no RAVE files available. Use dummy emissions file')
+       print('WARNING: First day true, no RAVE files available. Use dummy emissions file')
        i_tools.create_dummy(intp_dir, current_day, tgt_latt, tgt_lont, cols, rows)
 
 if __name__ == '__main__':
