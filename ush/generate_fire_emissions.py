@@ -13,6 +13,8 @@ import numpy as np
 import fire_emiss_tools as femmi_tools
 import HWP_tools
 import interp_tools as i_tools
+from email.message import EmailMessage
+import smtplib
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # Workflow
@@ -74,8 +76,16 @@ def generate_emiss_workflow(staticdir, ravedir, newges_dir, predef_grid):
            #produce emiss file 
            femmi_tools.produce_emiss_file(xarr_hwp, frp_avg_reshaped, totprcp_ave_arr, xarr_totprcp, intp_dir, current_day, tgt_latt, tgt_lont, ebb_tot_reshaped, fire_age, cols, rows)
    else:
-       print('WARNING: First day true, no RAVE files available. Use dummy emissions file')
+       print('WARNING: First day true, no RAVE files available. Use dummy emissions file.  Not a major concern if problem does not persist')
        i_tools.create_dummy(intp_dir, current_day, tgt_latt, tgt_lont, cols, rows)
+       msg = EmailMessage()
+       msg['Subject'] = "Missing RAVE Data for RRFS"
+       msg['From'] = 'rrfs_fire_emissions'
+       msg['To'] = MAILTO
+       msg.set_content("WARNING: No RAVE data was found in RRFS ush/generate_fire_emission.py script")
+
+       with smtplib.SMTP('localhost') as server:
+           server.send_message(msg)
 
 if __name__ == '__main__':
 
