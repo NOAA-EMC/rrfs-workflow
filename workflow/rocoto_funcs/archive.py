@@ -32,7 +32,7 @@ def archive(xmlFile, expdir):
     #
     taskdep = '\n<taskdep task="upp_g00"/>'
     ngroup = int(os.getenv('POST_GROUP_TOT_NUM'))
-    for i in range(1,ngroup):
+    for i in range(1, ngroup):
         taskdep += f'''
 <or>
   <not><taskvalid task="upp_g{i:02d}"/></not>
