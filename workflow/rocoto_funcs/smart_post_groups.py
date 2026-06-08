@@ -28,7 +28,7 @@ def smart_post_groups(dcCycleDef):
         history_interval = int(os.getenv('HISTORY_INTERVAL', '1'))
         step = math.floor(max_fcst_length / ngroups + 0.5)
         for i in range(ngroups):
-            bgn_hr = i * step + 1
+            bgn_hr = i * step + history_interval
             if i == 0:
                 bgn_hr = 0
             end_hr = (i + 1) * step

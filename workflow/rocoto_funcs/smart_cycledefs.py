@@ -20,6 +20,7 @@ def smart_cycledefs():
         ic_step = str(int(24 / len(cold_cycs)))
         if os.getenv('DO_CYC', 'FALSE').upper() == "FALSE":
             cyc_interval = ic_step
+            os.environ["CYC_INTERVAL"] = cyc_interval  # assign a pseudo "CYC_INTERVAL" for coldstart_only
         prodswitch_cycs = os.getenv('PRODSWITCH_CYCS', '09 21').strip().split()
         # compute spinup_hrs (usually coldstart at 03 or 15)
         spinup_hrs = list(range(int(cold_cycs[0]), int(prodswitch_cycs[0])))
