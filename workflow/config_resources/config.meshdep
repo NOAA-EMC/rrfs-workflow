@@ -97,18 +97,6 @@ elif [[ ${MESH_NAME} == "fwx1.25km" ]]; then
   export MPASSIT_REF_LAT=41.5
   export MPASSIT_REF_LON=-112.5
 
-elif [[ ${MESH_NAME} == "garnetSm1km" ]]; then
-  export FCST_DT=10
-  export FCST_SUBSTEPS=4
-  export FCST_RADT=10
-  export UPP_DOMAIN="garnetSm1km."
-
-  export MPASSIT_NX=500
-  export MPASSIT_NY=500
-  export MPASSIT_DX=1000.0
-  export MPASSIT_REF_LAT=37.0
-  export MPASSIT_REF_LON=-119.0
-
 elif [[ ${MESH_NAME} == "south3.5km" ]]; then
   export FCST_DT=25
   export FCST_SUBSTEPS=4
