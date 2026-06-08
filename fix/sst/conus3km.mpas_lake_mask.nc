@@ -1,0 +1,1 @@
+../.agent/sst/conus3km.mpas_lake_mask.nc

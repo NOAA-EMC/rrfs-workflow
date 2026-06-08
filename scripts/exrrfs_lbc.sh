@@ -6,17 +6,24 @@ cpreq=${cpreq:-cpreq}
 prefix=${EXTRN_MDL_SOURCE%_NCO} # remove the trailing '_NCO' if any
 cd "${DATA}" || exit 1
 #
-# find start and end time
+# convert numbers to 10-based to be robust and easier to reference
 #
-fhr_chunk=$(( (10#${LENGTH}/10#${INTERVAL} + 1) / 10#${GROUP_TOTAL_NUM}*10#${INTERVAL} ))
-fhr_begin=$((10#${OFFSET} + (10#${GROUP_INDEX} - 1 )*10#${fhr_chunk} ))
-if (( 10#${GROUP_INDEX} == 10#${GROUP_TOTAL_NUM} )); then
-  fhr_end=$(( 10#${OFFSET} + 10#${LENGTH}))
+offset=$((10#${OFFSET:-0}))
+tot_length=$((10#${LENGTH:-0}))
+group_total_num=$((10#${GROUP_TOTAL_NUM:-1}))
+group_index=$((10#${GROUP_INDEX:-1}))
+interval=$((10#${INTERVAL:-1}))
+#
+# compute fhr_begin, fhr_end, and then fhr_all for a given group
+#
+group_fhr_len=$(( tot_length/group_total_num ))
+if (( group_index==1 )); then
+  fhr_begin=${offset}
 else
-  fhr_end=$((10#${OFFSET} + (10#${GROUP_INDEX})*10#${fhr_chunk} - 10#${INTERVAL} ))
+  fhr_begin=$(( offset + (group_index-1)*group_fhr_len + interval ))
 fi
-fhr_all=$(seq $((10#${fhr_begin})) $((10#${INTERVAL})) $((10#${fhr_end} )) )
-
+fhr_end=$(( offset + group_index*group_fhr_len  ))
+fhr_all=$(seq ${fhr_begin} ${interval} ${fhr_end})
 #
 # generate the namelist on the fly
 # required variables: init_case, start_time, end_time, nvertlevels, nsoillevels, nfglevles, nfgsoillevels,
