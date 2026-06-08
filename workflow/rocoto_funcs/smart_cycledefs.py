@@ -23,6 +23,7 @@ def smart_cycledefs():
         ic_step = str(int(24 / len(cold_cycs)))
         if os.getenv('DO_CYC', 'FALSE').upper() == "FALSE":
             cyc_interval = ic_step
+            os.environ["CYC_INTERVAL"] = cyc_interval  # assign a pseudo "CYC_INTERVAL" for coldstart_only
         if recenter:
             recenter_cycs = os.getenv('RECENTER_CYCS', '03 15').strip().split()
             recenter_step = str(int(24 / len(recenter_cycs)))
