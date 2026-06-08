@@ -256,7 +256,7 @@ if  [[ ${regional_ensemble_option:-1} -eq 1 || ${l_both_fv3sar_gfs_ens} = ".true
   "WCOSS2")
 
     for loop in $loops; do
-      for timelist in $(ls ${COMINgfs}/enkfgdas.*/*/atmos/mem080/gdas*.atmf${loop}.${ftype}); do
+      for timelist in $(ls ${COMINgfs}/enkfgdas.*/*//mem080/enkfgdas*.atmf${loop}.${ftype}); do
         availtimeyyyymmdd=$(echo ${timelist} | cut -d'/' -f9 | cut -c 10-17)
         availtimehh=$(echo ${timelist} | cut -d'/' -f10)
         availtime=${availtimeyyyymmdd}${availtimehh}
@@ -271,7 +271,7 @@ if  [[ ${regional_ensemble_option:-1} -eq 1 || ${l_both_fv3sar_gfs_ens} = ".true
 
         if [[ ${hourDiff} -lt ${minHourDiff} ]]; then
            minHourDiff=${hourDiff}
-           enkfcstname=gdas.t${availtimehh}z.atmf${loop}
+           enkfcstname=enkfgdas.t${availtimehh}z.atmf${loop}
            eyyyymmdd=$(echo ${availtime} | cut -c1-8)
            ehh=$(echo ${availtime} | cut -c9-10)
            foundgdasens="true"
@@ -281,7 +281,7 @@ if  [[ ${regional_ensemble_option:-1} -eq 1 || ${l_both_fv3sar_gfs_ens} = ".true
 
     if [ ${foundgdasens} = "true" ]
     then
-      ls ${COMINgfs}/enkfgdas.${eyyyymmdd}/${ehh}/atmos/mem???/${enkfcstname}.nc > filelist03
+      ls ${COMINgfs}/enkfgdas.${eyyyymmdd}/${ehh}/mem???/model/atmos/history/${enkfcstname}.nc > filelist03
     fi
 
     ;;
