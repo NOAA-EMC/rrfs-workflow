@@ -114,7 +114,7 @@ case "${extrn_mdl_name}" in
 
   "GDASENKF")
     sysdir="${COMINgfs}/enkfgdas.${yyyymmdd}/${hh}/${MEMBER_NAME}/model/atmos/history/"
-    fns_on_disk=( "enkfgdas.t${hh}z.atmf0${fcst_hh}.nc" "enkfgdas.t${hh}z.sfcf0${fcst_hh}.nc")
+    fns_on_disk=( "enkfgdas.t${hh}z.atm.f0${fcst_hh}.nc" "enkfgdas.t${hh}z.sfc.f0${fcst_hh}.nc")
     ;;
 
   "RRFS")

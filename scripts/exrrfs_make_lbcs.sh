@@ -132,7 +132,7 @@ case "${extrn_mdl_name}" in
       fns_on_disk=( "${fcst_hhh[@]/#/$prefix}" )
       sysdir="${COMINgfs}/gfs.${yyyymmdd}/${hh}/products/atmos/grib2/0p25"
     elif [ "${gfs_file_fmt}" = "netcdf" ]; then
-      prefix="gfs.t${hh}z.atmf"
+      prefix="gfs.t${hh}z.atm.f"
       suffix=".nc"
       fns_on_disk_tmp=( "${fcst_hhh[@]/#/${prefix}}" )
       fns_on_disk=( "${fns_on_disk_tmp[@]/%/${suffix}}" )
