@@ -2,14 +2,9 @@
     config_smoke_scheme  = 'off'
     config_dust_scheme = 'off'
     config_anthro_scheme = 'off'
-    config_anthro_pt_scheme = 'off'
-    config_pollen_scheme = 'off'
-    config_rwc_scheme = 'off'
-    config_ssalt_scheme = 'off'
-    config_extra_chemical_tracers = ''
     num_chem = 0
     plume_wind_eff = 0
-    ebb_dcycle = -1
+    ebb_dcycle = 1
     hwp_method = 2
     add_fire_heat_flux = false
     add_fire_moist_flux = false
@@ -25,9 +20,7 @@
     dust_drylimit_factor = 0.1
     dust_moist_correction = 0.1
     config_mynn_enh_mix = false
-    config_mp_aero_emission = true
+    config_mp_aero_emission = false
     kanthro = 1
     kwildfire = 1
-    aero_dir_rad_fdb = 0
-    config_mie_aod_opt = 0
 /
