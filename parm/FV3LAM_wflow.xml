@@ -2941,6 +2941,9 @@ MODULES_RUN_TASK_FP script.
        <and>
       <and>
         <taskdep task="&IODA_BUFR_TN;_prod"/>
+        {%- if do_radda %}
+        <taskdep task="&ANALYSIS_JEDI_TN;_prod{{ uscore_ensmem_name }}" cycle_offset="-1:00:00"/>
+        {%- endif  %} 
       </and>
          <timedep><cyclestr offset="&START_TIME_CONVENTIONAL;">@Y@m@d@H@M00</cyclestr></timedep>
          <or>
@@ -3033,6 +3036,9 @@ MODULES_RUN_TASK_FP script.
            <datadep age="02:00"><cyclestr>&OBSPATH;/{{obstype_source}}.@Y@m@d/{{obstype_source}}.t@Hz.prepbufr.tm00</cyclestr></datadep>
          </or>
          <taskdep task="&PREP_CYC_TN;_prod{{ uscore_ensmem_name }}"/>
+         {%- if do_radda %}
+         <taskdep task="&ANALYSIS_GSI_TN;_prod{{ uscore_ensmem_name }}" cycle_offset="-1:00:00"/>
+         {%- endif  %}
          {%- if use_rrfse_ens %}
          {%- if do_envar_radar_ref and do_envar_radar_ref_once %}
          <taskdep task="&PROCESS_RADAR_REF_TN;_prod"/>

@@ -454,10 +454,7 @@ mkdir -p data/satbias_in  data/satbias_out
 
 cp "${FIX_JEDI}/"satbias_init/*.tlapse.txt data/satbias_in/.
 
-if [ ${BKTYPE} -eq 1 ]; then  # cold start uses the fixed initialize bias
-   cp "${FIX_JEDI}/satbias_init/*.nc" data/satbias_in/.
-
-else # copy bias from previous cycle
+if [[ ${DO_RADDA} == "TRUE" ]]; then # copy bias from previous cycle
   satcounter=1
   maxcounter=240
   echo 'COMOUT =', ${COMOUT}
@@ -501,7 +498,9 @@ else # copy bias from previous cycle
     satcounter=$((satcounter + 1))
 
   done
+# If not find satbias from previous 10 days, copy it from satbias_init
   if [ $satcounter -eq $maxcounter ]; then
+    echo "Not found satbias from previous 10 days, copy it from satbias_init"
     cp "${FIX_JEDI}/"satbias_init/*.nc data/satbias_in/.
   fi
 fi
