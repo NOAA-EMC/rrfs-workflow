@@ -7,7 +7,7 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 
 def recenter(xmlFile, expdir):
     task_id = 'recenter'
-    cycledefs = 'prod'
+    cycledefs = 'recenter'
     recenter_cycs = os.getenv('RECENTER_CYCS', '99')
     det_recentercycs_do_da = os.getenv('DET_RECENTERCYCS_DO_DA', 'false')
     # Task-specific EnVars beyond the task_common_vars
