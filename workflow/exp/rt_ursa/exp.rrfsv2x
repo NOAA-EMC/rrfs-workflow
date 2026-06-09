@@ -14,6 +14,8 @@ export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
 export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=YES
 #
 export SFC_UPDATE_SOURCE_DIR=/scratch3/BMC/rtwrfruc/RRFSv2X/NCO_dirs/MPAS_RAP
+export NSST_SOURCE_DIR=/public/data/grids/ncep/sst/0p083deg/grib2
+export LAKE_SOURCE_DIR=/public/data/grids/rrfs_a
 #
 export REALTIME=true     # true, false
 export ZETA_LEVELS="L60.txt"
@@ -61,6 +63,7 @@ export RETRO_PERIOD="2024052700-2024052800"
 export LBC_CYCS="00 12"  # evenly divide 24 hours, e.g., "00 12", "00 06 12 18", etc
 export COLDSTART_CYCS="03 15"   # cycles to cold start from external models
 export SFC_UPDATE_CYCS=${COLDSTART_CYCS}
+export SST_UPDATE_CYCS="00 12"
 export SFC_UPDATE_LOOK_BACK_HRS=3  # hours going back to look for surface update source files (mpasout)
 export CYCLEDEF_PROD_EXCLUDE="01 02 13 14"
 
