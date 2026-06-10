@@ -417,12 +417,10 @@ if [ ${DO_ENSFCST} = "TRUE" ]; then
   prslev=${DATA}/${net4}.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.${gridname}.grib2
   natlev=${DATA}/${net4}.t${cyc}z.${mem_num}.natlev.${gridspacing}.f${fhr}.${gridname}.grib2
   fld2d=${DATA}/${net4}.t${cyc}z.${mem_num}.2dfld.${gridspacing}.f${fhr}.${gridname}.grib2
-  nbmfld=${DATA}/${net4}.t${cyc}z.${mem_num}.nbmfld.${gridspacing}.f${fhr}.${gridname}.grib2
 else
   prslev=${DATA}/${net4}.t${cyc}z.prslev.${gridspacing}.f${fhr}.${gridname}.grib2
   natlev=${DATA}/${net4}.t${cyc}z.natlev.${gridspacing}.f${fhr}.${gridname}.grib2
   fld2d=${DATA}/${net4}.t${cyc}z.2dfld.${gridspacing}.f${fhr}.${gridname}.grib2
-  nbmfld=${DATA}/${net4}.t${cyc}z.nbmfld.${gridspacing}.f${fhr}.${gridname}.grib2
 fi
 
 if [ -f PRSLEV.GrbF${post_fhr} ]; then
@@ -480,32 +478,12 @@ if [ -f PRSLEV.GrbF${post_fhr} ]; then
   fi # SUB_GEN=1 test
 fi # PRSLEV test
 
-# post process 2m dew point for NBM - this is needed for RRFS (det) and REFS (ensf)
-if [ $WGF = "det" ] || [ $WGF = "ensf" ]; then
-  export pgm="rrfs_util_dpt2m_post.exe"
-  . prep_step
-
-# Use the NATLEV file for deterministic RRFS, and the 2DFLD file for ensemble members
-  if [ $WGF = "det" ]; then
-    $EXECrrfs/$pgm NATLEV.GrbF${post_fhr} DPT2M.GrbF${post_fhr} >>$pgmout 2>errfile
-  elif [ $WGF = "ensf" ]; then
-    $EXECrrfs/$pgm 2DFLD.GrbF${post_fhr} DPT2M.GrbF${post_fhr} >>$pgmout 2>errfile
-  fi
-  export err=$?; err_chk
-
-  cat NBMFLD.GrbF${post_fhr} DPT2M.GrbF${post_fhr} > NBMFLD_new.GrbF${post_fhr}
-fi
-
 if [ -f NATLEV.GrbF${post_fhr} ]; then
   wgrib2 NATLEV.GrbF${post_fhr} -set center 7 -grib ${natlev} >>$pgmout 2>>errfile
 fi
 
 if [ -f PRSLEV.GrbF${post_fhr} ]; then
   wgrib2 PRSLEV.GrbF${post_fhr} -set center 7 -not "UGRD:30 m above ground" -grib ${prslev} >>$pgmout 2>>errfile
-fi
-
-if [ -f NBMFLD_new.GrbF${post_fhr} ]; then
-  wgrib2 NBMFLD_new.GrbF${post_fhr} -set center 7 -grib ${nbmfld} >>$pgmout 2>>errfile
 fi
 #
 #-----------------------------------------------------------------------
@@ -520,15 +498,6 @@ cpreq -p ${fld2d} ${COMOUT}
 # Native level output is disabled for ensemble forecasts after f00
 if [[ -f ${natlev} ]]; then
   cpreq -p ${natlev} ${COMOUT}
-fi
-# NBMFLD file is only generated for RRFS and REFS
-if [[ -f ${nbmfld} ]]; then
-  cpreq -p ${nbmfld} ${COMOUT}
-  if [ ${DO_ENSFCST} = "TRUE" ]; then
-    wgrib2 ${nbmfld} -s > ${COMOUT}/${net4}.t${cyc}z.${mem_num}.nbmfld.${gridspacing}.f${fhr}.${gridname}.grib2.idx
-  else
-    wgrib2 ${nbmfld} -s > ${COMOUT}/${net4}.t${cyc}z.nbmfld.${gridspacing}.f${fhr}.${gridname}.grib2.idx
-  fi
 fi
 
 # Only one latlons_corners file per cycle is needed in COMOUT - make this change later
