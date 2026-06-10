@@ -100,21 +100,33 @@ def day_clean(srcPath, cyc1, cyc2, srcType, WGF, com_nondefault=""):
         pathlist = list(Path(srcPath).glob(pattern.rstrip(f'/{WGF}')))
         for mypath in pathlist:
             if os.path.isdir(mypath) and is_directory_empty(mypath):
-                os.rmdir(mypath)
-                print(f'remove empty directory: {mypath}')
+                if os.path.islink(mypath):
+                    os.unlink(mypath)
+                    print(f'unlink empty directory: {mypath}')
+                else:
+                    os.rmdir(mypath)
+                    print(f'remove empty directory: {mypath}')
         # ~~~~~~~~~~~~
         # remove RUN.PDY/cyc if it is empty under com/
         #
         cycPath = srcPath.rstrip('/') + f"/{i:02}"
         if os.path.isdir(cycPath) and srcType.startswith("com") and is_directory_empty(cycPath):
-            os.rmdir(cycPath)
-            print(f'remove empty directory: {cycPath}')
+            if os.path.islink(cycPath):
+                os.unlink(cycPath)
+                print(f'unlink empty directory: {cycPath}')
+            else:
+                os.rmdir(cycPath)
+                print(f'remove empty directory: {cycPath}')
         # ~~~~~~~~~~~~
         # remove srcPath if it is empty
         #
         if os.path.isdir(srcPath) and is_directory_empty(srcPath):
-            os.rmdir(srcPath)
-            print(f'remove empty directory: {srcPath}')
+            if os.path.islink(srcPath):
+                os.unlink(srcPath)
+                print(f'unlink empty directory: {srcPath}')
+            else:
+                os.rmdir(srcPath)
+                print(f'remove empty directory: {srcPath}')
 #
 # ----------------------------------------------------------------------
 #
