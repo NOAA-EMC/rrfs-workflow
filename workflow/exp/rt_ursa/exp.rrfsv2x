@@ -82,7 +82,7 @@ export GRAPHICS_ZIP=true
 export DO_ARCHIVE=true
 export ARCHIVE_INTERVAL=1  # run the archive task every several hours
 export ARCHIVE_HPSSDIR="/5year/BMC/wrfruc/rrfsv2x"
-export ARCHIVE_COM1_SPEC='{"include":"ioda*, jedivar, nonvar*, fcst, upp, pyDAmonitor, graphics", "exclude":""}'  # use " inside and ' outside
+export ARCHIVE_COM1_SPEC='{"include":"ioda*, jedivar, nonvar*, fcst, upp, pyDAmonitor, nclprd", "exclude":""}'  # use " inside and ' outside
 export ARCHIVE_STMP=''  # eg. 'fcst,mpassit'  # archive files under the given task umbrella directories
 export ARCHIVE_STMP_INTERVAL='1'  # ARCHIVE_STMP_INTERVAL must divide ARCHIVE_INTERVAL evenly
 #
