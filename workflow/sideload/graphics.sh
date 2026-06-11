@@ -18,7 +18,7 @@ ntasks=${NTASKS:-12}
 grib2_dir="${COMOUT}/upp/det"
 tile=${TILE:-'full'}
 workdir="${COMOUT}/graphics/${WGF}/${tile}"
-zipdir="${COMOUT}/nclprd"
+zipdir="${COMOUT}/nclprd/${WGF}"
 rm -rf "${workdir}"
 mkdir -p "${workdir}"
 cd "${pygrafdir}" || exit 1
