@@ -54,8 +54,8 @@ def update_soil_temp_gsd(atha, athb, landicemask, pa, pb, tslb, snotype, snod, s
     ata = theta_to_t(atha, pa)
     atb = theta_to_t(athb, pb)
     atincr = np.where(landicemask == 1, ata - atb, 0)
-    print('Background lowest level air temperature min/max (K): %.3f / %.3f'%(np.min(atb), np.max(atb)))
-    print('Over land, lowest level air temperature increment min/max (K): %.3f / %.3f'%(np.min(atincr), np.max(atincr)))
+    print('Background lowest level air temperature min/max (K): %.3f / %.3f' % (np.min(atb), np.max(atb)))
+    print('Over land, lowest level air temperature increment min/max (K): %.3f / %.3f' % (np.min(atincr), np.max(atincr)))
     temp_fac = np.min([np.max([(ata - 283.) / 15., np.zeros(len(ata))], axis=0), 1.5 * np.ones(len(ata))], axis=0) + 1.
     dts_min = -1.2 * temp_fac
     tincf = atincr * temp_fac
@@ -78,8 +78,8 @@ def update_soil_temp_paper(atha, athb, landicemask, pa, pb, tslb, snotype, snod,
     ata = theta_to_t(atha, pa)
     atb = theta_to_t(athb, pb)
     atincr = np.where(landicemask == 1, ata - atb, 0)
-    print('Background lowest level air temperature min/max (K): %.3f / %.3f'%(np.min(atb), np.max(atb)))
-    print('Over land, lowest level air temperature increment min/max (K): %.3f / %.3f'%(np.min(atincr), np.max(atincr)))
+    print('Background lowest level air temperature min/max (K): %.3f / %.3f' % (np.min(atb), np.max(atb)))
+    print('Over land, lowest level air temperature increment min/max (K): %.3f / %.3f' % (np.min(atincr), np.max(atincr)))
     temp_fac = np.min([np.max([(ata - 283.) / 15., np.zeros(len(ata))], axis=0), 1.5 * np.ones(len(ata))], axis=0) + 1.
     dtslb = [np.min([np.max([-1.2 * temp_fac, c[i] * atincr], axis=0), np.ones(len(ata))], axis=0) for i in range(5)]
     tslb[:5] = tslb[:5] + dtslb
@@ -237,12 +237,12 @@ fout.variables['soilt1'][:] = [snot]
 fout.variables['skintemp'][:] = [tsk]
 print('Soil temperature min/max (K) by level:')
 for i in range(5):
-    print('%.3f / %.3f'%(np.min(tslb[i]), np.max(tslb[i])))
-print('soilt1 min/max (K): %.3f / %.3f'%(np.min(snot), np.max(snot)))
-print('skintemp min/max (K): %.3f / %.3f'%(np.min(tsk), np.max(tsk)))
+    print('%.3f / %.3f' % (np.min(tslb[i]), np.max(tslb[i])))
+print('soilt1 min/max (K): %.3f / %.3f' % (np.min(snot), np.max(snot)))
+print('skintemp min/max (K): %.3f / %.3f' % (np.min(tsk), np.max(tsk)))
 print('Soil Q min/max (m3/m3) by level:')
 for i in range(5):
-    print('%.3f / %.3f'%(np.min(smois[i]), np.max(smois[i])))
+    print('%.3f / %.3f' % (np.min(smois[i]), np.max(smois[i])))
 
 fout.close()
 
