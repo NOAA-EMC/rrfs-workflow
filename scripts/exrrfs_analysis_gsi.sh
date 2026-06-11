@@ -1114,7 +1114,7 @@ if [ "${DO_GSIDIAG_OFFLINE}" = "FALSE" ]; then
   #
   #-----------------------------------------------------------------------
   #
-  # cycling radiance bias corretion files
+  # cycling radiance bias correction files
   #
   #-----------------------------------------------------------------------
   #
@@ -1152,7 +1152,7 @@ fi # run diag inline (with GSI)
 # 
 #-----------------------------------------------------------------------
 #
-filelist="pe*.nc4 rrfs.*.${YYYYMMDDHH}_cnvstat_nc rrfs.*.${YYYYMMDDHH}_radstat_nc satbias_out satbias_pc.out"
+filelist="pe*.nc4 satbias_out satbias_pc.out"
 for file in $filelist; do
   if [ -s $file ]; then
     [[ -f ${shared_output_data}/${file} ]]&& rm -f ${shared_output_data}/${file}
