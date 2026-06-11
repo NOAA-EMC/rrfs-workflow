@@ -102,12 +102,13 @@ for index in "${mem_list[@]}"; do # loop through all the members
   # do sfc cycling if no global blending
   #
   if [[ "${DO_BLENDING^^}" == "FALSE" ]]; then
-    for hr in ${SFC_UPDATE_CYCS:-"99"}; do
+    if [[ "${DO_SFC_UPDATE}" == "TRUE" ]]; then
+    for hr in ${COLDSTART_CYCS:-"99"}; do
       shr=$(printf '%02d' $((10#$hr)) )
       if [[ "${cyc}" == "${shr}" ]]; then
         source_file=""
         # look back ${NUM} cycles to find mpasout files for surface cycling
-        NUM=27
+        NUM=3
         for (( ii=cyc_interval; ii<=$(( NUM*cyc_interval )); ii=ii+cyc_interval )); do
           CDATEp=$(${NDATE} -${ii} "${CDATE}" )
           PDYii=${CDATEp:0:8}
@@ -148,6 +149,7 @@ for index in "${mem_list[@]}"; do # loop through all the members
         fi
       fi
     done
+  fi
   fi
   #
   #  find the right satbias file
