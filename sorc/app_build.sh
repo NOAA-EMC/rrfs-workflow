@@ -580,7 +580,7 @@ else
 	      ./check_imssnow_fv3lam.exe ./fv3lam_pre_blending_tq.exe \
 	      ./fv3lam_pre_blending_uv.exe ./gen_annual_maxmin_GVF.exe \
 	      ./gen_cs.exe ./gen_ensmean_recenter.exe ./lakesurgery.exe \
-	      ./rrfs_bucket.exe"
+	      ./rrfs_bucket.exe ./dpt2m_post.exe"
 
       rm -f ${remove_list}
 
@@ -599,7 +599,6 @@ AQM_UTIL_PREFIX=aqm_util
 
 [ -f ${EXEC_DIR}/adjust_soiltq.exe ] && mv ${EXEC_DIR}/adjust_soiltq.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_adjust_soiltq.exe
 [ -f ${EXEC_DIR}/chgres_cube ] && mv ${EXEC_DIR}/chgres_cube ${EXEC_DIR}/${UFS_UTIL_PREFIX}_chgres_cube
-[ -f ${EXEC_DIR}/dpt2m_post.exe ] && mv ${EXEC_DIR}/dpt2m_post.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_dpt2m_post.exe
 [ -f ${EXEC_DIR}/enkf.x ] && mv ${EXEC_DIR}/enkf.x ${EXEC_DIR}/${GSI_PREFIX}_enkf.x
 [ -f ${EXEC_DIR}/ens_mean_recenter_P2DIO.exe ] && mv ${EXEC_DIR}/ens_mean_recenter_P2DIO.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_ens_mean_recenter_P2DIO.exe
 [ -f ${EXEC_DIR}/filter_topo ] && mv ${EXEC_DIR}/filter_topo ${EXEC_DIR}/${UFS_UTIL_PREFIX}_filter_topo
