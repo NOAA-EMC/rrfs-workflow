@@ -166,7 +166,7 @@ if [ -r "${obs_file}" ]; then
    cpreq -p "${obs_file}" "lghtngbufr"
    run_lightning=true
 else
-	print_info_msg "$VERBOSE" "WARNING: ${obs_file} does not exist. Will continue without it (is data of opportunity)"
+   print_info_msg "$VERBOSE" "WARNING: ${obs_file} does not exist. Will continue without it (is data of opportunity)"
 fi
 #
 #-----------------------------------------------------------------------
