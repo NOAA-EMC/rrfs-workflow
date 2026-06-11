@@ -156,6 +156,10 @@ l_both_fv3sar_gfs_ens=${l_both_fv3sar_gfs_ens:-".false."}
 if  [ ${OB_TYPE} != "conv" ] || [ ${BKTYPE} -eq 1 ]; then #not using GDAS
   l_both_fv3sar_gfs_ens=.false.
 fi
+
+if [ ${GSI_TYPE} == "OBSERVER" ]; then
+   print_info_msg "$VERBOSE" "WARNING: In this regional EnKF observer mode, GDAS is not required"
+fi
 #
 #---------------------------------------------------------------------
 #
@@ -595,16 +599,22 @@ if [[ ${GSI_TYPE} == "OBSERVER" || ${anav_type} == "conv" || ${anav_type} == "co
 fi
 
 obs_number=${#obs_files_source[@]}
+obs_count=0
 for (( i=0; i<${obs_number}; i++ ));
 do
   obs_file=${obs_files_source[$i]}
   obs_file_t=${obs_files_target[$i]}
   if [ -r "${obs_file}" ]; then
     cpreq "${obs_file}" "${obs_file_t}"
+    ((obs_count++))  # the counter if file is available
   else
-    print_info_msg "$VERBOSE" "WARNING: ${obs_file} does not exist!"
+    print_info_msg "$VERBOSE" "WARNING: ${obs_file} does not exist! Will continue without it (is data of opportunity)"
   fi
 done
+
+if [ "$obs_count" -eq 0 ]; then
+  err_exit "FATAL: no observation files were found in this analysis"
+fi
 
 #
 #-----------------------------------------------------------------------
