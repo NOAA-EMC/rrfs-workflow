@@ -12,5 +12,5 @@ prepend_path("MODULEPATH", os.getenv("modulepath_mpi"))
 load(pathJoin("crtm", os.getenv("crtm_ver")))
 
 prepend_path("MODULEPATH","/apps/ops/test/nco/modulefiles")
-load(pathJoin("core/rocoto", os.getenv("rocoto_ver")))
+load(pathJoin("core/rocoto", os.getenv("rocoto_ver") or "1.3.5"))
 

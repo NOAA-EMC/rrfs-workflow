@@ -56,9 +56,7 @@ case $MACHINE in
   export OMP_PROC_BIND=close
   export OMP_PLACES=threads
   export MPICH_RANK_REORDER_METHOD=0
-  ncores=160
-  PPN_ANALYSIS_ENKF=8
-
+  ncores=$(( PPN_ANALYSIS_ENKF*NNODES_ANALYSIS_ENKF ))
   APRUN="mpiexec -n ${ncores} -ppn ${PPN_ANALYSIS_ENKF} --label --line-buffer --cpu-bind core --depth ${OMP_NUM_THREADS}"
   ;;
 #
