@@ -21,7 +21,7 @@ export IC_ONLY=false #true  # interpolate GEFS/GDAS to the target mesh to provid
 export DO_DETERMINISTIC=false
 export ENS_SIZE=30
 export ZETA_LEVELS="L60.txt"
-export ENS_GROUP_TOT_NUM=2
+#export ENS_GROUP_TOT_NUM=2
 export ENS_METADEP_FRAC_THRESHOLD=0.5
 #
 export DO_IODA=true

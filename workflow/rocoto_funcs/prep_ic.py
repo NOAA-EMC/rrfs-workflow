@@ -24,10 +24,9 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
     dcTaskEnv = {
         'COLDSTART_CYCS': f'{coldhrs}',
         'DO_SFC_UPDATE': f'{do_sfc_update}',
-        'SFC_UPDATE_SOURCE_DIR': os.getenv('SFC_UPDATE_SOURCE_DIR'),
         'SST_UPDATE_CYCS': f'{sst_update_cycs}',
-        'LAKE_SOURCE_DIR': os.getenv('LAKE_SOURCE_DIR'),
-        'NSST_SOURCE_DIR': os.getenv('NSST_SOURCE_DIR'),
+        'LAKE_SOURCE_DIR': os.getenv('LAKE_SOURCE_DIR', ''),
+        'NSST_SOURCE_DIR': os.getenv('NSST_SOURCE_DIR', ''),
         'DO_BLENDING': os.getenv('DO_BLENDING', 'FALSE'),
     }
     if spinup_mode != 0:
@@ -85,11 +84,12 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
     sfc_dep = ""
     if do_sfc_update == "TRUE":
         dcTaskEnv['SFC_UPDATE_LOOK_BACK_HRS'] = sfc_update_look_back_hrs
+        dcTaskEnv['SFC_UPDATE_SOURCE_DIR'] = os.getenv('SFC_UPDATE_SOURCE_DIR', '')
         datadep_sfc = ""
         for i in range(1, int(sfc_update_look_back_hrs) + 1, 1):
             datadep_sfc = datadep_sfc + f'''\n        <datadep age="00:00:05"><cyclestr offset="-{i}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;/fcst_f{i:0>3}.done</cyclestr></datadep>'''
         sfc_dep = f'''
-      <or>{timedep}{datadep_sfc}
+      <or>{datadep_sfc}
       </or>'''
 
     #
