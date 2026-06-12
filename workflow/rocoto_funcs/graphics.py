@@ -28,7 +28,7 @@ def graphics(xmlFile, expdir):
     realtime = os.getenv("REALTIME", "false")
     if realtime.upper() == "TRUE":
         starttime = get_cascade_env(f"STARTTIME_{task_id}".upper())
-        timedep = f'\n  <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
+        timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
     #
     taskdep = '\n<taskdep task="upp_g00"/>'
     ngroup = int(os.getenv('POST_GROUP_TOT_NUM'))
