@@ -34,6 +34,7 @@ def fcst(xmlFile, expdir, do_ensemble=False, dcEnsGrpInfo=None, do_spinup=False)
         'MPASOUT_INTERVAL': os.getenv('MPASOUT_INTERVAL', '1'),
         'MPASOUT_TIMELEVELS': os.getenv('MPASOUT_TIMELEVELS', ''),
         'PHYSICS_SUITE': f'{physics_suite}',
+        'LSM_SCHEME': os.getenv('LSM_SCHEME', 'sf_ruc'),
         'FCST_LEN_HRS_CYCLES': f'{fcst_len_hrs_cycles}',
         'FCST_DT': os.getenv('FCST_DT', 'FCST_DT_not_defined'),
         'FCST_SUBSTEPS': os.getenv('FCST_SUBSTEPS', 'FCST_SUBSTEPS_not_defined'),
