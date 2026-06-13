@@ -22,6 +22,7 @@ def graphics(xmlFile, expdir):
         'FCST_LEN_HRS_CYCLES': os.getenv('FCST_LEN_HRS_CYCLES', '03 03'),
         'TILE': '#tile#',
         'GRAPHICS_ZIP': os.getenv('GRAPHICS_ZIP', 'FALSE').upper(),
+        'GRAPHICS_MODEL': os.getenv('GRAPHICS_MODEL', ''),
     }
     # dependencies
     timedep = ""
