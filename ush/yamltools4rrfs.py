@@ -342,7 +342,7 @@ def write_out_filters(key, obs, obspath, do_dedent, filterlist):
         # remove "key" section from the obs["block"]
         pos1, _ = hy.get_start_pos(obs["block"], f"obs {key}")
         pos2 = hy.next_pos(obs["block"], pos1)
-        obs["block"][pos1+1:pos2] = []  # keep the "obs {key}:" line
+        obs["block"][pos1 + 1:pos2] = []  # keep the "obs {key}:" line
 
 
 # split a super YAML files to individual observers/filters
@@ -400,7 +400,7 @@ def split(fpath, level=1, dirname=".", do_dedent=False):
     # write main.yaml
     pos1, _ = hy.get_start_pos(data, "observations/observers")
     pos2 = hy.next_pos(data, pos1)
-    data[pos1+1:pos2] = []  # keep the "observers:" line
+    data[pos1 + 1:pos2] = []  # keep the "observers:" line
     with open(f'{toppath}/main.yaml', 'w') as outfile:
         for i in range(len(data)):
             outfile.write(data[i] + '\n')
@@ -498,14 +498,14 @@ plain_pack: ignore all indentation settings, pack as-is;
                     align_indentation(nspace4flt, flt_block, nIndent, listIndent)
                 prefix = fltfile.split("_")[0]
                 pos, _ = hy.get_start_pos(obs_block, filter_type[prefix])
-                obs_block[pos+1:pos+1] = flt_block
+                obs_block[pos + 1:pos + 1] = flt_block
 
             if not plain_pack:
                 align_indentation(nspace, obs_block, nIndent, listIndent)
             observers.extend(obs_block)
 
     # write out the super YAML file
-    data[pos1+1:pos1+1] = observers
+    data[pos1 + 1:pos1 + 1] = observers
     with open(fpath, 'w') as outfile:
         for line in data:
             outfile.write(line + "\n")
