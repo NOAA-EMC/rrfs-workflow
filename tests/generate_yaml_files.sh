@@ -30,14 +30,14 @@ export DO_RADAR_REF=false  # false, true
 #----------------------------------------------------------
 #  jedivar.yaml
 #----------------------------------------------------------
-yaml_finalize jedivar.yaml  "${rundir}"/yaml/jedivar_cold.yaml
+./yaml_finalize jedivar.yaml  "${rundir}"/yaml/jedivar_cold.yaml
 
 export START_TYPE=warm  # cold, warm
-yaml_finalize jedivar.yaml  "${rundir}"/yaml/jedivar_warm.yaml
+./yaml_finalize jedivar.yaml  "${rundir}"/yaml/jedivar_warm.yaml
 
 # change static BEC to BUMPBEC
 export STATIC_BEC_MODEL=BUMPBEC
-yaml_finalize jedivar.yaml  "${rundir}"/yaml/jedivar_bumpbec.yaml
+./yaml_finalize jedivar.yaml  "${rundir}"/yaml/jedivar_bumpbec.yaml
 
 # change back to use the default GSIBEC 
 export STATIC_BEC_MODEL=GSIBEC
@@ -45,12 +45,12 @@ export STATIC_BEC_MODEL=GSIBEC
 # change to pure 3DVAR
 export HYB_WGT_STATIC=1.0
 export HYB_WGT_ENS=0.0
-yaml_finalize jedivar.yaml  "${rundir}"/yaml/3dvar.yaml
+./yaml_finalize jedivar.yaml  "${rundir}"/yaml/3dvar.yaml
 
 # change to pure 3DENVAR
 export HYB_WGT_STATIC=0.0
 export HYB_WGT_ENS=1.0
-yaml_finalize jedivar.yaml  "${rundir}"/yaml/3denvar.yaml
+./yaml_finalize jedivar.yaml  "${rundir}"/yaml/3denvar.yaml
 
 # change back to default hybrid setting
 export HYB_WGT_STATIC=0.5
@@ -58,11 +58,11 @@ export HYB_WGT_ENS=0.5
 
 # pass2 to do reflectivity DA only
 export ANALYSIS_VARIABLES=12
-yaml_finalize jedivar.pass2.yaml  "${rundir}"/yaml/jedivar.pass2.yaml
+./yaml_finalize jedivar.pass2.yaml  "${rundir}"/yaml/jedivar.pass2.yaml
 
 # customize ANALYSIS_VARIABLES
 export ANALYSIS_VARIABLES="water_vapor_mixing_ratio_wrt_moist_air, air_temperature"
-yaml_finalize jedivar.yaml  "${rundir}"/yaml/jedivar_ana_vars.yaml
+./yaml_finalize jedivar.yaml  "${rundir}"/yaml/jedivar_ana_vars.yaml
 
 # change back to default 5
 export ANALYSIS_VARIABLES=5
@@ -73,26 +73,26 @@ export ANALYSIS_VARIABLES=5
 #----------------------------------------------------------
 # test getkf solver
 export GETKF_TYPE=solver
-yaml_finalize getkf.yaml  "${rundir}"/yaml/getkf_solver.yaml
+./yaml_finalize getkf.yaml  "${rundir}"/yaml/getkf_solver.yaml
 
 # test getkf post
 export GETKF_TYPE=post
-yaml_finalize getkf.yaml  "${rundir}"/yaml/getkf_post.yaml
+./yaml_finalize getkf.yaml  "${rundir}"/yaml/getkf_post.yaml
 
 # test getkf observer
 export GETKF_TYPE=observer
-yaml_finalize getkf.yaml  "${rundir}"/yaml/getkf_observer.yaml
+./yaml_finalize getkf.yaml  "${rundir}"/yaml/getkf_observer.yaml
 
 # customize ANALYSIS_VARIABLES
 export ANALYSIS_VARIABLES=12
-yaml_finalize getkf.yaml  "${rundir}"/yaml/getkf_observer_12_vars.yaml
+./yaml_finalize getkf.yaml  "${rundir}"/yaml/getkf_observer_12_vars.yaml
 
 export ANALYSIS_VARIABLES="water_vapor_mixing_ratio_wrt_moist_air, air_temperature"
-yaml_finalize getkf.yaml  "${rundir}"/yaml/getkf_observer_ana_vars.yaml
+./yaml_finalize getkf.yaml  "${rundir}"/yaml/getkf_observer_ana_vars.yaml
 
 #----------------------------------------------------------
 #  use convinfo and satinfo to manage observers 
 #----------------------------------------------------------
 export USE_CONV_SAT_INFO=true
-yaml_finalize jedivar.yaml  "${rundir}"/yaml/jedivar_conv_sat_info.yaml
-yaml_finalize getkf.yaml  "${rundir}"/yaml/getkf_conv_sat_info.yaml
+./yaml_finalize jedivar.yaml  "${rundir}"/yaml/jedivar_conv_sat_info.yaml
+./yaml_finalize getkf.yaml  "${rundir}"/yaml/getkf_conv_sat_info.yaml
