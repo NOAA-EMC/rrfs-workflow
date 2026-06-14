@@ -23,7 +23,7 @@ def jedivar(xmlFile, expdir, spinup_mode=0):
     # Task-specific EnVars beyond the task_common_vars
     extrn_mdl_source = os.getenv('IC_EXTRN_MDL_NAME', 'IC_PREFIX_not_defined')
     physics_suite = os.getenv('PHYSICS_SUITE', 'PHYSICS_SUITE_not_defined')
-    lsm_scheme = os.getenv('LSM_SCHEME', '')
+    lsm_scheme = os.getenv('LSM_SCHEME', 'sf_ruc')
     ens_size = int(os.getenv('ENS_SIZE', '2'))
     ens_bec_look_back_hrs = int(os.getenv('ENS_BEC_LOOK_BACK_HRS', '3'))
     snudgetype = os.getenv('SNUDGETYPES', '')
