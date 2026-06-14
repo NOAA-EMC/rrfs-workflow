@@ -2,7 +2,7 @@
 import os
 import sys
 import hifiyaml4rrfs as hy
-import yamltools4rrfs as yt
+import yamltools4rrfs as yj
 from datetime import datetime, timedelta
 
 args = sys.argv
@@ -139,8 +139,8 @@ if ytype == "getkf" and GETKF_TYPE == "solver":
 # ------------------------------------------------------------------------------------
 # read convinfo and/or satinfo if use_conv_sat_info
 if use_conv_sat_info:
-    dcConvInfo = yt.load_convinfo()
-    dcSatInfo = yt.load_satinfo()
+    dcConvInfo = yj.load_convinfo()
+    dcSatInfo = yj.load_satinfo()
     if not dcConvInfo:
         sys.stderr.write("INFO: no convinfo, or empty/corrupt convinfo\n")
     if not dcSatInfo:
@@ -162,18 +162,18 @@ if is_pass2:
 head_end, _ = hy.get_start_pos(data, "observations/observers")  # get the YAML head section
 output = data[0:head_end + 1]
 # assemble observers
-dcObs = yt.get_all_obs(data, shallow=True)
+dcObs = yj.get_all_obs(data, shallow=True)
 for name, observer in dcObs.items():
     sname = observer["sname"]
     tmp = data[observer["pos1"]:observer["pos2"]]  # a shallow copy when slicing
     if ytype == "getkf" and (GETKF_TYPE == "solver" or GETKF_TYPE == "post"):
-        yt.getkf_observer_tweak(tmp, GETKF_TYPE)
+        yj.getkf_observer_tweak(tmp, GETKF_TYPE)
 
     if use_conv_sat_info:
         if observer["is_sat_radiance"]:  # check against satinfo
             for sis, info in dcSatInfo.items():
                 if sis == sname:
-                    yt.update_sat_anchors(tmp, dcSatInfo)
+                    yj.update_sat_anchors(tmp, dcSatInfo)
                     output.extend(tmp)
                     break
         else:  # check against convinfo
