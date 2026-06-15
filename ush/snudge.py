@@ -47,14 +47,19 @@ def update_soil_temp_gsd(atha, athb, landicemask, pa, pb, tslb, snotype, snod, s
     # https://github.com/NOAA-EMC/GSI/blob/develop/src/gsi/gsd_update_mod.f90
     # lines 146 - 223 (approximate). The same code appears in
     # https://github.com/NOAA-EMC/HRRR/blob/develop/sorc/hrrr_gsi.fd/src/gsi/gsd_update_mod.f90
+    # update 5/27/2026: no soil T increment where snow depth < partialSnowThresh
+    #                   no soil T increment where soil is frozen
+    partialSnowThresh = 0.032
     c = [0.6, 0.55, 0.4, 0.3, 0.2]
     ata = theta_to_t(atha, pa)
     atb = theta_to_t(athb, pb)
     atincr = np.where(landicemask == 1, ata - atb, 0)
+    print('Background lowest level air temperature min/max (K): %.3f / %.3f' % (np.min(atb), np.max(atb)))
+    print('Over land, lowest level air temperature increment min/max (K): %.3f / %.3f' % (np.min(atincr), np.max(atincr)))
     temp_fac = np.min([np.max([(ata - 283.) / 15., np.zeros(len(ata))], axis=0), 1.5 * np.ones(len(ata))], axis=0) + 1.
     dts_min = -1.2 * temp_fac
     tincf = atincr * temp_fac
-    dtslb = [np.min([np.ones(len(ata)), np.max([dts_min, c[i] * tincf], axis=0)], axis=0) for i in range(5)]
+    dtslb = [np.where((snod < partialSnowThresh) & (snot > 273.15) & np.all(tslb[:5] > 273.15, axis=0), np.min([np.ones(len(ata)), np.max([dts_min, c[i] * tincf], axis=0)], axis=0), 0) for i in range(5)]
     tslb[:5] = tslb[:5] + dtslb
     if snotype == 'gsd':
         snot, tsk = update_snow_skin_temp_gsd(snod, snot, temp_fac, tincf, tsk, atincr)
@@ -73,6 +78,8 @@ def update_soil_temp_paper(atha, athb, landicemask, pa, pb, tslb, snotype, snod,
     ata = theta_to_t(atha, pa)
     atb = theta_to_t(athb, pb)
     atincr = np.where(landicemask == 1, ata - atb, 0)
+    print('Background lowest level air temperature min/max (K): %.3f / %.3f' % (np.min(atb), np.max(atb)))
+    print('Over land, lowest level air temperature increment min/max (K): %.3f / %.3f' % (np.min(atincr), np.max(atincr)))
     temp_fac = np.min([np.max([(ata - 283.) / 15., np.zeros(len(ata))], axis=0), 1.5 * np.ones(len(ata))], axis=0) + 1.
     dtslb = [np.min([np.max([-1.2 * temp_fac, c[i] * atincr], axis=0), np.ones(len(ata))], axis=0) for i in range(5)]
     tslb[:5] = tslb[:5] + dtslb
@@ -228,6 +235,14 @@ fout.variables['tslb'][:] = [tslb.T]
 fout.variables['smois'][:] = [smois.T]
 fout.variables['soilt1'][:] = [snot]
 fout.variables['skintemp'][:] = [tsk]
+print('Soil temperature min/max (K) by level:')
+for i in range(5):
+    print('%.3f / %.3f' % (np.min(tslb[i]), np.max(tslb[i])))
+print('soilt1 min/max (K): %.3f / %.3f' % (np.min(snot), np.max(snot)))
+print('skintemp min/max (K): %.3f / %.3f' % (np.min(tsk), np.max(tsk)))
+print('Soil Q min/max (m3/m3) by level:')
+for i in range(5):
+    print('%.3f / %.3f' % (np.min(smois[i]), np.max(smois[i])))
 
 fout.close()
 

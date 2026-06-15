@@ -13,7 +13,7 @@ export EXPDIR=${OPSROOT}/exp/rrfs${WGF}
 export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
 export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=YES
 #
-export SFC_UPDATE_SOURCE_DIR=/scratch3/BMC/rtwrfruc/RRFSv2X/NCO_dirs/MPAS_RAP
+#export SFC_UPDATE_SOURCE_DIR=/scratch3/BMC/rtwrfruc/RRFSv2X/NCO_dirs/MPAS_RAP
 export NSST_SOURCE_DIR=/public/data/grids/ncep/sst/0p083deg/grib2
 export LAKE_SOURCE_DIR=/public/data/grids/rrfs_a
 #
@@ -36,6 +36,8 @@ export ENS_SIZE=30
 export ENS_BEC_LOOK_BACK_HRS=1  # define the hours going back for ensemble forecast files for the ensemble BEC
 export DO_HOFX=false
 export HOFX_FHRS="000 001 012"
+export DO_SFC_UPDATE=true # do sfc update at cold start cycs
+export SFC_UPDATE_LOOK_BACK_HRS=3  # hours going back to look for surface update source files (mpasout)
 
 export STATIC_BEC_MODEL="GSIBEC" # the static bec model, GSIBEC and BUMPBEC
 export GSIBEC_X=40 #GSIBEC_X * GSIBEC_Y should match the number of MPI tasks
@@ -43,12 +45,12 @@ export GSIBEC_Y=20
 
 export DO_CYC=true
 export CYC_INTERVAL=1
-for i in {0..23};    do arr[$i]="09"; done # 3hr fcst
+for i in {0..23};    do arr[$i]="03"; done # 3hr fcst
 for i in {0..23..12}; do arr[$i]="72"; done # 24hr fcst every 12hrs
 export FCST_LEN_HRS_CYCLES="${arr[*]}"
 export HISTORY_INTERVAL=1
 export DIAG_INTERVAL=1
-export MPASOUT_TIMELEVELS='0 1 3'
+export MPASOUT_TIMELEVELS='0 1 2 3'
 export POST_GROUP_TOT_NUM=10
 
 export IC_OFFSET=3
@@ -62,10 +64,7 @@ export PREP_LBC_LOOK_BACK_HRS=11 # define the hours going back for prep_lbc to f
 export RETRO_PERIOD="2024052700-2024052800"
 export LBC_CYCS="00 12"  # evenly divide 24 hours, e.g., "00 12", "00 06 12 18", etc
 export COLDSTART_CYCS="03 15"   # cycles to cold start from external models
-export SFC_UPDATE_CYCS=${COLDSTART_CYCS}
 export SST_UPDATE_CYCS="00 12"
-export SFC_UPDATE_LOOK_BACK_HRS=3  # hours going back to look for surface update source files (mpasout)
-export CYCLEDEF_PROD_EXCLUDE="01 02 13 14"
 
 #export DO_SPINUP=true
 #export PRODSWITCH_CYCS="06 18"  # cycles to PROD switch to the spun-up ICs
@@ -77,14 +76,16 @@ export CYCLEDEF_PROD_EXCLUDE="01 02 13 14"
 #export PRODSWITCH_CYCS="09 21"
 #
 export DO_PYDAMONITOR=true
-#export DO_GRAPHICS=true
-#export GRAPHICS_TILES="full NE NC NW SE SC SW EastCO"
-#export DO_ARCHIVE=true
-#export ARCHIVE_INTERVAL=3  # run the archive task every several hours
-#export ARCHIVE_HPSSDIR="/5year/BMC/wrfruc/Guoqing.Ge/${EXP_NAME}"
-#export ARCHIVE_COM1_SPEC='{"include":"ioda*, jedivar, nonvar*, fcst, upp, pyDAmonitor, graphics", "exclude":""}'  # use " inside and ' outside
-#export ARCHIVE_STMP=''  # eg. 'fcst,mpassit'  # archive files under the given task umbrella directories
-#export ARCHIVE_STMP_INTERVAL='1'  # ARCHIVE_STMP_INTERVAL must divide ARCHIVE_INTERVAL evenly
+export DO_GRAPHICS=true
+export GRAPHICS_MODEL="RRFSv2X"   # Model Name in the plots
+export GRAPHICS_TILES="full NE NC NW SE SC SW EastCO"
+export GRAPHICS_ZIP=true
+export DO_ARCHIVE=true
+export ARCHIVE_INTERVAL=1  # run the archive task every several hours
+export ARCHIVE_HPSSDIR="/5year/BMC/wrfruc/rrfsv2x"
+export ARCHIVE_COM1_SPEC='{"include":"ioda*, jedivar, nonvar*, fcst, upp, pyDAmonitor, nclprd", "exclude":""}'  # use " inside and ' outside
+export ARCHIVE_STMP=''  # eg. 'fcst,mpassit'  # archive files under the given task umbrella directories
+export ARCHIVE_STMP_INTERVAL='1'  # ARCHIVE_STMP_INTERVAL must divide ARCHIVE_INTERVAL evenly
 #
 export WALLTIME_FCST="8:00:00"
 export WALLTIME_SAVE_FCST="0:30:00"
@@ -92,8 +93,10 @@ export WALLTIME_MPASSIT="3:00:00"
 export WALLTIME_UPP="3:00:00"
 export WALLTIME_JEDIVAR="00:25:00"
 # Ursa
-export QUEUE="windfall"
+export ACCOUNT="rtwrfruc"
+export QUEUE="hpq"   # "windfall"
 export PARTITION="u1-compute"
+#
 export NODES_PREP_IC="<nodes>1:ppn=10</nodes>"
 export NODES_IC="<nodes>2:ppn=192</nodes>"
 export NODES_LBC="<nodes>2:ppn=192</nodes>"
@@ -124,9 +127,6 @@ export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
 export OBSPATH="/public/data/grids/rap/obs"
 export OBSPATH_NSSLMOSIAC="/public/data/radar/mrms"
 
-#
-export ACCOUNT="rtwrfruc"
-export RESERVATION="rrfsens"
 #
 export STARTTIME_UNGRIB_IC="00:05:00"
 export STARTTIME_UNGRIB_LBC="00:05:00"
