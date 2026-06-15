@@ -14,11 +14,13 @@ def getkf(xmlFile, expdir, taskType):
     # Task-specific EnVars beyond the task_common_vars
     extrn_mdl_source = os.getenv('IC_EXTRN_MDL_NAME', 'IC_PREFIX_not_defined')
     physics_suite = os.getenv('PHYSICS_SUITE', 'PHYSICS_SUITE_not_defined')
+    lsm_scheme = os.getenv('LSM_SCHEME', 'sf_ruc')
     recenter_cycs = os.getenv('RECENTER_CYCS', '99')
     analysis_variables = os.getenv('ANALYSIS_VARIABLES', '0')
     dcTaskEnv = {
         'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
         'PHYSICS_SUITE': f'{physics_suite}',
+        'LSM_SCHEME': f'{lsm_scheme}',
         'REFERENCE_TIME': '@Y-@m-@dT@H:00:00Z',
         'DO_RADAR_REF': os.getenv('DO_RADAR_REF', 'FALSE').upper(),
         'YAML_GEN_METHOD': os.getenv('YAML_GEN_METHOD', '1'),
