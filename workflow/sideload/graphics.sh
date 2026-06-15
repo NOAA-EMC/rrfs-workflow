@@ -13,10 +13,11 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 pygrafdir="${HOMErrfs}/workflow/sideload/pygraf"
 image_list="${pygrafdir}/image_lists/regional_mpas_subset.yml"
 file_tmpl="rrfs.t${cyc}z.prslev.f0{FCST_TIME:02d}.conus.grib2"
-model=${NET}
+model=${GRAPHICS_MODEL:-${NET}}
 ntasks=${NTASKS:-12}
 grib2_dir="${COMOUT}/upp/det"
-workdir="${COMOUT}/graphics/${WGF}"
+tile=${TILE:-'full'}
+workdir="${COMOUT}/graphics/${WGF}/${tile}"
 zipdir="${COMOUT}/nclprd"
 rm -rf "${workdir}"
 mkdir -p "${workdir}"
@@ -30,7 +31,6 @@ echo "forecast length for this cycle is ${fcst_len_hrs_thiscyc}"
 fhr1=0
 fhr2=${fcst_len_hrs_thiscyc}
 wait_minutes=${WAIT_MINUTES:-180}
-tile=${TILE:-'full'}
 #
 # generate the graphics
 #
