@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 import os
-import textwrap
 from rocoto_funcs.base import xml_task, get_cascade_env
 
 # begin of fcst --------------------------------------------------------
@@ -17,18 +16,17 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
         cycledefs = 'prod'
     coldhrs = os.getenv('COLDSTART_CYCS', '03 15')
     cyc_interval = os.getenv('CYC_INTERVAL')
-    sfc_update_cycs = os.getenv('SFC_UPDATE_CYCS', '99')
+    do_sfc_update = os.getenv('DO_SFC_UPDATE', 'false').upper()
     sst_update_cycs = os.getenv('SST_UPDATE_CYCS', '99')
     sfc_update_look_back_hrs = os.getenv('SFC_UPDATE_LOOK_BACK_HRS', cyc_interval)
 
     # Task-specific EnVars beyond the task_common_vars
     dcTaskEnv = {
         'COLDSTART_CYCS': f'{coldhrs}',
-        'SFC_UPDATE_CYCS': f'{sfc_update_cycs}',
+        'DO_SFC_UPDATE': f'{do_sfc_update}',
         'SST_UPDATE_CYCS': f'{sst_update_cycs}',
-        'SFC_UPDATE_SOURCE_DIR': os.getenv('SFC_UPDATE_SOURCE_DIR'),
-        'LAKE_SOURCE_DIR': os.getenv('LAKE_SOURCE_DIR'),
-        'NSST_SOURCE_DIR': os.getenv('NSST_SOURCE_DIR'),
+        'LAKE_SOURCE_DIR': os.getenv('LAKE_SOURCE_DIR', ''),
+        'NSST_SOURCE_DIR': os.getenv('NSST_SOURCE_DIR', ''),
         'DO_BLENDING': os.getenv('DO_BLENDING', 'FALSE'),
     }
     if spinup_mode != 0:
@@ -58,6 +56,12 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
         dcTaskEnv['cpreq'] = "ln -snf"
     dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
     # dependencies
+    timedep = ""
+    realtime = os.getenv("REALTIME", "false")
+    if realtime.upper() == "TRUE":
+        starttime = get_cascade_env(f"STARTTIME_{task_id}".upper())
+        timedep = f'\n        <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
+    #
     coldhrs = coldhrs.split(' ')
     streqs = ""
     strneqs = ""
@@ -78,30 +82,15 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
         datadep = "whatever"  # dependencies will be rewritten near the end of this file
     # sfc update dependencies
     sfc_dep = ""
-    sfc_streqs = ""
-    sfc_strneqs = ""
-    if sfc_update_cycs != '99':
+    if do_sfc_update == "TRUE":
         dcTaskEnv['SFC_UPDATE_LOOK_BACK_HRS'] = sfc_update_look_back_hrs
+        dcTaskEnv['SFC_UPDATE_SOURCE_DIR'] = os.getenv('SFC_UPDATE_SOURCE_DIR', '')
         datadep_sfc = ""
-        for hr in sfc_update_cycs.split(' '):
-            hr = f"{hr:0>2}"
-            sfc_streqs = sfc_streqs + f"\n<streq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></streq>"
-            sfc_strneqs = sfc_strneqs + f"\n<strneq><left><cyclestr>@H</cyclestr></left><right>{hr}</right></strneq>"
-        sfc_streqs = textwrap.indent(sfc_streqs.lstrip('\n'), '        ')
-        sfc_strneqs = textwrap.indent(sfc_strneqs.lstrip('\n'), '      ')
         for i in range(1, int(sfc_update_look_back_hrs) + 1, 1):
             datadep_sfc = datadep_sfc + f'''\n        <datadep age="00:00:05"><cyclestr offset="-{i}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;/fcst_f{i:0>3}.done</cyclestr></datadep>'''
         sfc_dep = f'''
-    <and>
-      <or>
-{sfc_streqs}
-      </or>
       <or>{datadep_sfc}
-      </or>
-    </and>
-    <and>
-{sfc_strneqs}
-    </and>'''
+      </or>'''
 
     #
     satbias_dep = ""
@@ -113,11 +102,6 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
         satbias_dep += '\n' + spaces + f'  <datadep><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/jedivar/&WGF;/satbias_jumpstart</cyclestr></datadep>'
         satbias_dep += '\n' + spaces + '</or>'
     #
-    timedep = ""
-    realtime = os.getenv("REALTIME", "false")
-    if realtime.upper() == "TRUE":
-        starttime = get_cascade_env(f"STARTTIME_{task_id}".upper())
-        timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
     if os.getenv('DO_IC_LBC', 'TRUE').upper() == "TRUE":
         if do_ensemble:
             icdep = f'\n      <metataskdep metatask="ic"/>'
@@ -126,27 +110,18 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
     else:
         icdep = ""
     #
-    if timedep == '' and sfc_dep == '':
-        sfc_time_dep = ''
-    else:
-        sfc_time_dep = f'''
-   <or>{timedep}{sfc_dep}
-   </or>'''
-    #
     dependencies = f'''
   <dependency>
-  <and>{sfc_time_dep}
    <or>
     <and>
       <or>
 {streqs}
-      </or>{icdep}{satbias_dep}
+      </or>{icdep}{sfc_dep}{satbias_dep}
     </and>
     <and>
 {strneqs}{datadep}
     </and>
    </or>
-  </and>
   </dependency>'''
 
 # overwrite dependencies if no cycling (forecst-only)
