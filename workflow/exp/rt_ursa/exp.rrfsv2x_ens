@@ -21,7 +21,7 @@ export IC_ONLY=false #true  # interpolate GEFS/GDAS to the target mesh to provid
 export DO_DETERMINISTIC=false
 export ENS_SIZE=30
 export ZETA_LEVELS="L60.txt"
-export ENS_GROUP_TOT_NUM=3
+#export ENS_GROUP_TOT_NUM=2
 export ENS_METADEP_FRAC_THRESHOLD=0.5
 #
 export DO_IODA=true
@@ -37,7 +37,6 @@ export RADARREFL_TIMELEVEL="00"  # 00 15 30 45 min
 export DO_CYC=true
 export CYC_INTERVAL=1
 for i in {0..23};    do arr[$i]="01"; done # 3hr fcst
-for i in {0..23..12};    do arr[$i]="00"; done # 3hr fcst
 export FCST_LEN_HRS_CYCLES="${arr[*]}"
 export DO_POST=false
 export HISTORY_INTERVAL=none
@@ -45,7 +44,7 @@ export DIAG_INTERVAL=1
 
 export IC_OFFSET=39
 export LBC_OFFSET=39
-export LBC_LENGTH=10
+export LBC_LENGTH=15
 export LBC_INTERVAL=1
 export LBC_UNGRIB_GROUP_TOTAL_NUM=1
 export LBC_GROUP_TOTAL_NUM=2
@@ -56,7 +55,6 @@ export LBC_CYCS="03 15"
 export COLDSTART_CYCS="03 15"   # cycles to cold start from external models
 export RECENTER_CYCS="${COLDSTART_CYCS}"
 export DET_RECENTERCYCS_DO_DA=false #true # whether or not do detministic DA at RECENTER_CYCS
-export CYCLEDEF_PROD_EXCLUDE="01 02 13 14"
 #
 #export DO_PYDAMONITOR=true
 #export DO_GRAPHICS=true
@@ -68,8 +66,10 @@ export CYCLEDEF_PROD_EXCLUDE="01 02 13 14"
 #export ARCHIVE_STMP=''  # eg. 'fcst,mpassit'  # archive files under the given task umbrella directories
 #export ARCHIVE_STMP_INTERVAL='1'  # ARCHIVE_STMP_INTERVAL must divide ARCHIVE_INTERVAL evenly
 #
-export QUEUE="batch"
+export ACCOUNT="rtwrfruc"
+export QUEUE="hpq"  # "windfall"
 export PARTITION="u1-compute"
+#
 export NODES_IC="<nodes>1:ppn=192</nodes>"
 export NODES_LBC="<nodes>1:ppn=192</nodes>"
 export NODES_FCST="<nodes>4:ppn=160</nodes>"
@@ -95,7 +95,7 @@ export CLEAN_BACK_DAYS=2
 export STMP_RETENTION_CYCS=26
 export COM_RETENTION_CYCS='{"default": 84, "lbc,fcst": 72}'   # use " inside and ' outside
 export CYCLETHROTTLE=3600
-export CYCLELIFESPAN=2
+export CYCLELIFESPAN=3
 #
 # local.setup: setup some local options specific to a platform or an experiment
 #
@@ -110,9 +110,6 @@ export IC_EXTRN_MDL_BASEDIR="/public/data/grids/gefs/ncep"
 export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
 export OBSPATH="/public/data/grids/rap/obs"
 export OBSPATH_NSSLMOSIAC="/public/data/radar/mrms"
-#
-export ACCOUNT="rtwrfruc"
-export RESERVATION="rrfsens"
 #
 export STARTTIME_UNGRIB_IC="00:05:00"
 export STARTTIME_UNGRIB_LBC="00:05:00"
