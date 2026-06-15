@@ -100,7 +100,7 @@ case "${extrn_mdl_name}" in
       fns_on_disk=( "gfs.t${hh}z.pgrb2.0p25.f0${fcst_hh}" )
     elif [ "${gfs_file_fmt}" = "netcdf" ]; then
       sysdir="${COMINgfs}/gfs.${yyyymmdd}/${hh}/model/atmos/history"
-      fns=( "atm" "sfc" )
+      fns=( "atm." "sfc." )
       if [ "${fcst_hh}" = "00" ]; then
         suffix="anl.nc"
       else
