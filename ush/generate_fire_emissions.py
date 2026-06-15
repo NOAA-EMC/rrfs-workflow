@@ -74,8 +74,20 @@ def generate_emiss_workflow(staticdir, ravedir, newges_dir, predef_grid):
            #produce emiss file 
            femmi_tools.produce_emiss_file(xarr_hwp, frp_avg_reshaped, totprcp_ave_arr, xarr_totprcp, intp_dir, current_day, tgt_latt, tgt_lont, ebb_tot_reshaped, fire_age, cols, rows)
    else:
-       print('First day true, no RAVE files available. Use dummy emissions file')
+       print('WARNING: No RAVE files available - starting fresh with a dummy emissions file.')
        i_tools.create_dummy(intp_dir, current_day, tgt_latt, tgt_lont, cols, rows)
+
+       subject = "Missing RAVE Data for RRFS"
+       msg="WARNING: No RAVE data was found in RRFS ush/generate_fire_emission.py script"
+       f = open("./warn.txt","w")
+       f.write(msg)
+       f.close()
+
+       alert_email_list=os.environ.get('MAILTO','nco.spa@noaa.gov')
+       cmd='mail.py -s '+ '"' + subject + '"' + ' -v "' + alert_email_list + '" < warn.txt '
+       print('cmd')
+       print(repr(cmd))
+       status=os.system(cmd)
 
 if __name__ == '__main__':
 
