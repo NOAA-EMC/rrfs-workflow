@@ -59,8 +59,16 @@ hour zero).
 if [ ${WGF} = "firewx" ]; then
   hh="${CDATE:8:2}"
   firewx_loc="${COMINnam}/input/nam_firewx_loc"
-  LAT_CTR=`grep ${hh}z $firewx_loc | awk '{print $2}'`
-  LON_CTR=`grep ${hh}z $firewx_loc | awk '{print $3}'`
+  if [ ! -e ${firewx_loc} ]; then
+    LAT_CTR=`grep ${hh}z $firewx_loc | awk '{print $2}'`
+    LON_CTR=`grep ${hh}z $firewx_loc | awk '{print $3}'`
+  else
+    echo "WARNING:  Did not find firewx_loc to to set center point.  Will default to DC region"
+    LAT_CTR=39.0
+    LON_CTR=-77.0
+  fi
+  WRTCMP_cen_lat=${LAT_CTR}
+  WRTCMP_cen_lon=${LON_CTR}
 fi
 #
 #-----------------------------------------------------------------------
