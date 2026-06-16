@@ -62,7 +62,7 @@ nprocs=$(( NNODES_MAKE_SFC_CLIMO * PPN_MAKE_SFC_CLIMO ))
 if [ ${WGF} = "firewx" ]; then
   hh="${CDATE:8:2}"
   firewx_loc="${COMINnam}/input/nam_firewx_loc"
-  if [ ! -s ${firewx_loc} ]; then
+  if [ -s ${firewx_loc} ]; then
     LAT_CTR=`grep ${hh}z $firewx_loc | awk '{print $2}'`
     LON_CTR=`grep ${hh}z $firewx_loc | awk '{print $3}'`
   else
