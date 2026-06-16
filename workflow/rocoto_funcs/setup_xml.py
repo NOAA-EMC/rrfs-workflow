@@ -170,6 +170,8 @@ def setup_xml(HOMErrfs, expdir):
                     getkf(xmlFile, expdir, 'POST')
             if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
                 nonvar_cldana(xmlFile, expdir, do_ensemble=True)
+            if os.getenv("DO_PYDAMONITOR", "FALSE").upper() == "TRUE":
+                pyDAmonitor(xmlFile, expdir)
             listEnsGrpInfo = smart_ens_groups('fcst')
             for dcEnsGrpInfo in listEnsGrpInfo["group_list"]:
                 fcst(xmlFile, expdir, do_ensemble=True, dcEnsGrpInfo=dcEnsGrpInfo)

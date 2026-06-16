@@ -60,8 +60,7 @@ def mpassit(xmlFile, expdir, index, dcGrpInfo, do_ensemble=False, do_ensmean_pos
             memdir = "/mem#ens_index#"
         else:  # do_ensmean_post
             metatask = False
-            meta_id = "mpassit_ensmean"
-            task_id = f'{meta_id}_g{index:02d}'
+            task_id = f'{meta_id}_g{index:02d}_ensmean'
             meta_bgn = ""
             meta_end = ""
             memdir = "/ensmean"

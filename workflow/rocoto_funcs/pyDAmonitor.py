@@ -37,9 +37,13 @@ def pyDAmonitor(xmlFile, expdir, spinup_mode=0):
         starttime = get_cascade_env(f"STARTTIME_{task_id}".upper())
         timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
     #
-    taskdep = '\n<taskdep task="jedivar"/>'
-    if do_nonvar_cloud_ana == "TRUE":
-        taskdep += '\n<taskdep task="nonvar_cldana"/>'
+    wgf = os.getenv('WGF', 'det')
+    if wgf == "det":
+        taskdep = '\n<taskdep task="jedivar"/>'
+        if do_nonvar_cloud_ana == "TRUE":
+            taskdep += '\n<taskdep task="nonvar_cldana"/>'
+    else:
+        taskdep = '\n<taskdep task="getkf_observer"/>'
     taskdep = textwrap.indent(taskdep, '    ')
     #
     dependencies = f'''
