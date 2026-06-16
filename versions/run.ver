@@ -57,6 +57,8 @@ export hrrr_ver=v4.1
 export rap_ver=v5.1
 
 export DBNLOG=YES
+export MAILTO="nco.spa@noaa.gov,Matthew.Pyle@noaa.gov,Lin.Gan@noaa.gov"
+
 #### NOT COMPLY WITH IMPLEMENTATION STANDARD - NEED TO BE REMOVED BEFORE CODE DELIVERY
 
 # NCO Testing 20250919 JBP: comment out below EMC_DEV, EMC_LOG_OUTPUT, and envir definitions.
