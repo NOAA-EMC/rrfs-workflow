@@ -599,21 +599,22 @@ if [[ ${GSI_TYPE} == "OBSERVER" || ${anav_type} == "conv" || ${anav_type} == "co
 fi
 
 obs_number=${#obs_files_source[@]}
-obs_count=0
+obs_file_count=0
 for (( i=0; i<${obs_number}; i++ ));
 do
   obs_file=${obs_files_source[$i]}
   obs_file_t=${obs_files_target[$i]}
   if [ -r "${obs_file}" ]; then
     cpreq "${obs_file}" "${obs_file_t}"
-    ((obs_count++))  # the counter if file is available
+    ((obs_file_count++))  # the counter if file is available
   else
     print_info_msg "$VERBOSE" "WARNING: ${obs_file} does not exist! Will continue without it (is data of opportunity)"
   fi
 done
 
-if [ "$obs_count" -eq 0 ]; then
-  err_exit "FATAL: no observation files were found in this analysis"
+echo "number of obs files:" $obs_file_count
+if [ "$obs_file_count" -eq 0 ]; then
+  err_exit "FATAL ERROR: no observation files were found in this analysis."
 fi
 
 #
