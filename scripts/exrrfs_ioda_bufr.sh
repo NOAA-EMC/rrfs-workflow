@@ -169,7 +169,7 @@ mv ioda_vadwnd_thinned.nc ioda_vadwnd.nc
 # Cast metadata to the type expected by OSDF
 ${cpreq} "${USHrrfs}"/prep_ioda_cast.sh .
 for ioda_file in ioda*.nc; do
-  ./prep_ioda_cast.sh -i ${ioda_file}
+  ./prep_ioda_cast.sh -i "${ioda_file}"
 done
 
 # file count sanity check and copy to COMOUT
