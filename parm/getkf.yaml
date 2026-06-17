@@ -70,19 +70,8 @@ background:
     nmembers: '@ENS_SIZE@'
 
 driver:
+  run as observer only: true
   update obs config with geometry info: false
-  do test prints: false
-  read HX from disk: false
-  run as observer only: false
-  save posterior mean: false
-  save posterior ensemble: false
-  save prior mean: false
-  save posterior mean increment: true
-  save posterior ensemble increments: true
-  save prior variance: false
-  save posterior variance: false
-  do posterior observer: false
-  use control member: false
 
 local ensemble DA:
   solver: Deterministic GETKF
