@@ -158,7 +158,7 @@ if  [ ${OB_TYPE} != "conv" ] || [ ${BKTYPE} -eq 1 ]; then #not using GDAS
 fi
 
 if [ ${GSI_TYPE} == "OBSERVER" ]; then
-   print_info_msg "$VERBOSE" "WARNING: In this regional EnKF observer mode, GDAS is not required"
+   print_info_msg "$VERBOSE" "In this regional EnKF observer mode, GDAS is not required"
 fi
 #
 #---------------------------------------------------------------------
