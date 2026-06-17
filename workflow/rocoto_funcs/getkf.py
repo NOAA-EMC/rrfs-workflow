@@ -33,6 +33,8 @@ def getkf(xmlFile, expdir, taskType):
     }
     if taskType.upper() == "OBSERVER":
         task_id = "getkf_observer"
+    elif taskType.upper() == "OBSERVER_SOLVER":
+        task_id = "getkf_observer_solver"
     elif taskType.upper() == "SOLVER":
         task_id = "getkf_solver"
     elif taskType.upper() == "POST":
@@ -47,7 +49,7 @@ def getkf(xmlFile, expdir, taskType):
     if realtime.upper() == "TRUE":
         starttime = get_cascade_env(f"STARTTIME_{task_id}".upper())
         timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
-    if taskType.upper() == "OBSERVER":
+    if taskType.upper() == "OBSERVER" or taskType.upper() == "OBSERVER_SOLVER":
         if os.getenv("DO_IODA", "FALSE").upper() == "TRUE":
             iodadep = '<taskdep task="ioda_bufr"/>'
             dcTaskEnv['IODA_BUFR_WGF'] = 'enkf'

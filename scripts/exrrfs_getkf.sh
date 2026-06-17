@@ -30,7 +30,7 @@ mkdir -p obs ens jdiag
 #
 # copy observations files
 #
-if [[ "${GETKF_TYPE}" == "observer" ]]; then
+if [[ ${GETKF_TYPE} == observer* ]]; then
   source "${USHrrfs}/copy_obs.sh" "getkf"
 else
   ln -snf "${UMBRELLA_GETKF_OBSERVER_DATA}"/jdiag* jdiag/

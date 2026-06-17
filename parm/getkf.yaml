@@ -70,8 +70,19 @@ background:
     nmembers: '@ENS_SIZE@'
 
 driver:
-  run as observer only: true
   update obs config with geometry info: false
+  do test prints: false
+  read HX from disk: false
+  run as observer only: false
+  save posterior mean: false
+  save posterior ensemble: false
+  save prior mean: false
+  save posterior mean increment: true
+  save posterior ensemble increments: true
+  save prior variance: false
+  save posterior variance: false
+  do posterior observer: false
+  use control member: false
 
 local ensemble DA:
   solver: Deterministic GETKF
@@ -87,19 +98,20 @@ observations:
      observers:
      - obs space:
          name: refl10cm
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
              type: H5File
              obsfile: data/obs/ioda_mrms_refl.nc
              missing file action: "warn"
-         obsdataout:
-           engine:
-             type: H5File
-             allow overwrite: true
-             obsfile: jdiag_mrms_refl.nc
+#         obsdataout:
+#           engine:
+#             type: H5File
+#             allow overwrite: true
+#             obsfile: jdiag_mrms_refl.nc
          io pool:
            write multiple files: false
          _source: mrms
@@ -124,8 +136,9 @@ observations:
            name: reject
      - obs space:
          name: adpsfc_t181
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -136,12 +149,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_adpsfc_t181.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_adpsfc_t181.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [airTemperature]
@@ -399,8 +412,9 @@ observations:
          #  filename: ./data/geovals/adpsfc_geovals_rrfs.nc
      - obs space:
          name: adpsfc_t183
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -412,12 +426,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_adpsfc_t183.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_adpsfc_t183.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [airTemperature]
@@ -674,8 +688,9 @@ observations:
          #  filename: ./data/geovals/adpsfc_geovals_rrfs.nc
      - obs space:
          name: adpsfc_t187
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -686,12 +701,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_adpsfc_t187.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_adpsfc_t187.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [airTemperature]
@@ -952,8 +967,9 @@ observations:
          #  filename: ./data/geovals/adpsfc_geovals_rrfs.nc
      - obs space:
          name: adpsfc_q181
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -964,12 +980,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_adpsfc_q181.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_adpsfc_q181.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [specificHumidity]
@@ -1226,8 +1242,9 @@ observations:
          #  filename: ./data/geovals/adpsfc_geovals_rrfs.nc
      - obs space:
          name: adpsfc_q183
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -1239,12 +1256,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_adpsfc_q183.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_adpsfc_q183.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [specificHumidity]
@@ -1501,8 +1518,9 @@ observations:
          #  filename: ./data/geovals/adpsfc_geovals_rrfs.nc
      - obs space:
          name: adpsfc_q187
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -1513,12 +1531,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_adpsfc_q187.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_adpsfc_q187.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [specificHumidity]
@@ -1773,8 +1791,9 @@ observations:
          #  filename: ./data/geovals/adpsfc_geovals_rrfs.nc
      - obs space:
          name: adpsfc_ps181
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -1785,12 +1804,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_adpsfc_ps181.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_adpsfc_ps181.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [stationPressure]
@@ -2044,8 +2063,9 @@ observations:
          #  filename: ./data/geovals/adpsfc_geovals_rrfs.nc
      - obs space:
          name: adpsfc_ps187
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -2056,12 +2076,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_adpsfc_ps187.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_adpsfc_ps187.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [stationPressure]
@@ -2315,8 +2335,9 @@ observations:
          #  filename: ./data/geovals/adpsfc_geovals_rrfs.nc
      - obs space:
          name: adpsfc_uv281
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -2327,12 +2348,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_adpsfc_uv281.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_adpsfc_uv281.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [windEastward, windNorthward]
@@ -2631,8 +2652,9 @@ observations:
          #  filename: ./data/geovals/adpsfc_geovals_rrfs.nc
      - obs space:
          name: adpsfc_uv284
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -2644,12 +2666,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_adpsfc_uv284.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_adpsfc_uv284.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [windEastward, windNorthward]
@@ -2948,8 +2970,9 @@ observations:
          #  filename: ./data/geovals/adpsfc_geovals_rrfs.nc
      - obs space:
          name: adpsfc_uv287
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -2960,12 +2983,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_adpsfc_uv287.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_adpsfc_uv287.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [windEastward, windNorthward]
@@ -3264,8 +3287,9 @@ observations:
          #  filename: ./data/geovals/adpsfc_geovals_rrfs.nc
      - obs space:
          name: adpupa_t120
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -3276,12 +3300,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_adpupa_t120.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_adpupa_t120.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [airTemperature]
@@ -3538,8 +3562,9 @@ observations:
          #  filename: ./data/geovals/adpupa_geovals_rrfs.nc
      - obs space:
          name: adpupa_t132
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -3550,12 +3575,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_adpupa_t132.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_adpupa_t132.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [airTemperature]
@@ -3812,8 +3837,9 @@ observations:
          #  filename: ./data/geovals/adpupa_geovals_rrfs.nc
      - obs space:
          name: adpupa_q120
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -3824,12 +3850,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_adpupa_q120.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_adpupa_q120.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [specificHumidity]
@@ -4086,8 +4112,9 @@ observations:
          #  filename: ./data/geovals/adpupa_geovals_rrfs.nc
      - obs space:
          name: adpupa_q132
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -4098,12 +4125,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_adpupa_q132.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_adpupa_q132.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [specificHumidity]
@@ -4360,8 +4387,9 @@ observations:
          #  filename: ./data/geovals/adpupa_geovals_rrfs.nc
      - obs space:
          name: adpupa_ps120
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -4372,12 +4400,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_adpupa_ps120.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_adpupa_ps120.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [stationPressure]
@@ -4630,8 +4658,9 @@ observations:
          #  filename: ./data/geovals/adpupa_geovals_rrfs.nc
      - obs space:
          name: adpupa_uv220
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -4642,12 +4671,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_adpupa_uv220.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_adpupa_uv220.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [windEastward, windNorthward]
@@ -4940,8 +4969,9 @@ observations:
          #  filename: ./data/geovals/adpupa_geovals_rrfs.nc
      - obs space:
          name: adpupa_uv232
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -4952,12 +4982,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_adpupa_uv232.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_adpupa_uv232.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [windEastward, windNorthward]
@@ -5250,8 +5280,9 @@ observations:
          #  filename: ./data/geovals/adpupa_geovals_rrfs.nc
      - obs space:
          name: aircar_t133
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -5262,12 +5293,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_aircar_t133.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_aircar_t133.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [airTemperature]
@@ -5524,8 +5555,9 @@ observations:
          #  filename: ./data/geovals/aircar_geovals_rrfs.nc
      - obs space:
          name: aircar_q133
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -5536,12 +5568,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_aircar_q133.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_aircar_q133.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [specificHumidity]
@@ -5798,8 +5830,9 @@ observations:
          #  filename: ./data/geovals/aircar_geovals_rrfs.nc
      - obs space:
          name: aircar_uv233
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -5810,12 +5843,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_aircar_uv233.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_aircar_uv233.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [windEastward, windNorthward]
@@ -6108,8 +6141,9 @@ observations:
          #  filename: ./data/geovals/aircar_geovals_rrfs.nc
      - obs space:
          name: aircft_t130
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -6120,12 +6154,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_aircft_t130.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_aircft_t130.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [airTemperature]
@@ -6382,8 +6416,9 @@ observations:
          #  filename: ./data/geovals/aircft_geovals_rrfs.nc
      - obs space:
          name: aircft_t131
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -6394,12 +6429,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_aircft_t131.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_aircft_t131.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [airTemperature]
@@ -6656,8 +6691,9 @@ observations:
          #  filename: ./data/geovals/aircft_geovals_rrfs.nc
      - obs space:
          name: aircft_t134
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -6668,12 +6704,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_aircft_t134.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_aircft_t134.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [airTemperature]
@@ -6930,8 +6966,9 @@ observations:
          #  filename: ./data/geovals/aircft_geovals_rrfs.nc
      - obs space:
          name: aircft_t135
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -6942,12 +6979,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_aircft_t135.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_aircft_t135.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [airTemperature]
@@ -7204,8 +7241,9 @@ observations:
          #  filename: ./data/geovals/aircft_geovals_rrfs.nc
      - obs space:
          name: aircft_q134
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -7216,12 +7254,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_aircft_q134.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_aircft_q134.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [specificHumidity]
@@ -7478,8 +7516,9 @@ observations:
          #  filename: ./data/geovals/aircft_geovals_rrfs.nc
      - obs space:
          name: aircft_uv230
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -7490,12 +7529,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_aircft_uv230.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_aircft_uv230.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [windEastward, windNorthward]
@@ -7788,8 +7827,9 @@ observations:
          #  filename: ./data/geovals/aircft_geovals_rrfs.nc
      - obs space:
          name: aircft_uv231
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -7800,12 +7840,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_aircft_uv231.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_aircft_uv231.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [windEastward, windNorthward]
@@ -8098,8 +8138,9 @@ observations:
          #  filename: ./data/geovals/aircft_geovals_rrfs.nc
      - obs space:
          name: aircft_uv234
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -8110,12 +8151,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_aircft_uv234.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_aircft_uv234.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [windEastward, windNorthward]
@@ -8408,8 +8449,9 @@ observations:
          #  filename: ./data/geovals/aircft_geovals_rrfs.nc
      - obs space:
          name: aircft_uv235
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -8420,12 +8462,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_aircft_uv235.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_aircft_uv235.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [windEastward, windNorthward]
@@ -8719,8 +8761,9 @@ observations:
      - obs space:
          name: gnss_ztd
 
-         distribution:   # for LETKF
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
 
          obsdatain:
@@ -8733,12 +8776,12 @@ observations:
            group variables: ["stationIdentification"]
            sort variable: "pressure"
            sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_gnss_ztd.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_gnss_ztd.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          simulated variables: [zenithTotalDelay]
@@ -8792,8 +8835,9 @@ observations:
 #            is_in: ["ROBG","LPT_"]
      - obs space:
          name: msonet_t188
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -8804,12 +8848,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_msonet_t188.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_msonet_t188.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [airTemperature]
@@ -9066,8 +9110,9 @@ observations:
          #  filename: ./data/geovals/msonet_geovals_rrfs.nc
      - obs space:
          name: msonet_q188
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -9078,12 +9123,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_msonet_q188.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_msonet_q188.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [specificHumidity]
@@ -9340,8 +9385,9 @@ observations:
          #  filename: ./data/geovals/msonet_geovals_rrfs.nc
      - obs space:
          name: msonet_ps188
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -9352,12 +9398,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_msonet_ps188.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_msonet_ps188.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [stationPressure]
@@ -9607,8 +9653,9 @@ observations:
          #  filename: ./data/geovals/msonet_geovals_rrfs.nc
      - obs space:
          name: msonet_uv288
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -9619,12 +9666,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_msonet_uv288.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_msonet_uv288.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [windEastward, windNorthward]
@@ -10185,8 +10232,9 @@ observations:
          #  filename: ./data/geovals/msonet_geovals_rrfs.nc
      - obs space:
          name: proflr_uv227
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 100e3
          obsdatain:
            engine:
@@ -10197,12 +10245,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_proflr_uv227.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_proflr_uv227.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [windEastward, windNorthward]
@@ -10539,8 +10587,9 @@ observations:
          #  filename: ./data/geovals/proflr_geovals_rrfs.nc
      - obs space:
          name: rassda_t126
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -10551,12 +10600,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_rassda_t126.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_rassda_t126.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [airTemperature]
@@ -10813,8 +10862,9 @@ observations:
          #  filename: ./data/geovals/rassda_geovals_rrfs.nc
      - obs space:
          name: sfcshp_t180
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -10825,12 +10875,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_sfcshp_t180.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_sfcshp_t180.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [airTemperature]
@@ -11087,8 +11137,9 @@ observations:
          #  filename: ./data/geovals/sfcshp_geovals_rrfs.nc
      - obs space:
          name: sfcshp_t182
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -11099,12 +11150,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_sfcshp_t182.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_sfcshp_t182.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [airTemperature]
@@ -11361,8 +11412,9 @@ observations:
          #  filename: ./data/geovals/sfcshp_geovals_rrfs.nc
      - obs space:
          name: sfcshp_t183
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -11374,12 +11426,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_sfcshp_t183.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_sfcshp_t183.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [airTemperature]
@@ -11636,8 +11688,9 @@ observations:
          #  filename: ./data/geovals/sfcshp_geovals_rrfs.nc
      - obs space:
          name: sfcshp_q180
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -11648,12 +11701,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_sfcshp_q180.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_sfcshp_q180.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [specificHumidity]
@@ -11910,8 +11963,9 @@ observations:
          #  filename: ./data/geovals/sfcshp_geovals_rrfs.nc
      - obs space:
          name: sfcshp_q182
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -11922,12 +11976,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_sfcshp_q182.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_sfcshp_q182.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [specificHumidity]
@@ -12184,8 +12238,9 @@ observations:
          #  filename: ./data/geovals/sfcshp_geovals_rrfs.nc
      - obs space:
          name: sfcshp_q183
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -12197,12 +12252,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_sfcshp_q183.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_sfcshp_q183.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [specificHumidity]
@@ -12459,8 +12514,9 @@ observations:
          #  filename: ./data/geovals/sfcshp_geovals_rrfs.nc
      - obs space:
          name: sfcshp_ps180
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -12471,12 +12527,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_sfcshp_ps180.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_sfcshp_ps180.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [stationPressure]
@@ -12738,8 +12794,9 @@ observations:
          #  filename: ./data/geovals/sfcshp_geovals_rrfs.nc
      - obs space:
          name: sfcshp_uv280
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -12750,12 +12807,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_sfcshp_uv280.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_sfcshp_uv280.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [windEastward, windNorthward]
@@ -13054,8 +13111,9 @@ observations:
          #  filename: ./data/geovals/sfcshp_geovals_rrfs.nc
      - obs space:
          name: sfcshp_uv282
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -13066,12 +13124,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_sfcshp_uv282.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_sfcshp_uv282.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [windEastward, windNorthward]
@@ -13370,8 +13428,9 @@ observations:
          #  filename: ./data/geovals/sfcshp_geovals_rrfs.nc
      - obs space:
          name: sfcshp_uv284
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -13383,12 +13442,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_sfcshp_uv284.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_sfcshp_uv284.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [windEastward, windNorthward]
@@ -13687,8 +13746,9 @@ observations:
          #  filename: ./data/geovals/sfcshp_geovals_rrfs.nc
      - obs space:
          name: vadwnd_uv224
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
@@ -13699,12 +13759,12 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_vadwnd_uv224.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_vadwnd_uv224.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [windEastward, windNorthward]
@@ -14049,20 +14109,21 @@ observations:
          #  filename: ./data/geovals/vadwnd_geovals_rrfs.nc
      - obs space:
          name: satwnd_uv245_270
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_satwnd.abi_goes-16.nc"
              missing file action: "warn"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_satwnd_uv245_270.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_satwnd_uv245_270.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [windEastward, windNorthward]
@@ -14456,20 +14517,21 @@ observations:
            defer to post: true
      - obs space:
          name: satwnd_uv245_272
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_satwnd.abi_goes-18.nc"
              missing file action: "warn"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_satwnd_uv245_272.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_satwnd_uv245_272.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [windEastward, windNorthward]
@@ -14863,20 +14925,21 @@ observations:
            defer to post: true
      - obs space:
          name: satwnd_uv246_270
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_satwnd.abi_goes-16.nc"
              missing file action: "warn"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_satwnd_uv246_270.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_satwnd_uv246_270.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [windEastward, windNorthward]
@@ -15236,20 +15299,21 @@ observations:
            defer to post: true
      - obs space:
          name: satwnd_uv246_272
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_satwnd.abi_goes-18.nc"
              missing file action: "warn"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_satwnd_uv246_272.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_satwnd_uv246_272.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [windEastward, windNorthward]
@@ -15609,20 +15673,21 @@ observations:
            defer to post: true
      - obs space:
          name: satwnd_uv247_270
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_satwnd.abi_goes-16.nc"
              missing file action: "warn"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_satwnd_uv247_270.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_satwnd_uv247_270.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [windEastward, windNorthward]
@@ -16010,20 +16075,21 @@ observations:
            defer to post: true
      - obs space:
          name: satwnd_uv247_272
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_satwnd.abi_goes-18.nc"
              missing file action: "warn"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_satwnd_uv247_272.nc
-             allow overwrite: true
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_satwnd_uv247_272.nc
+#             allow overwrite: true
          io pool:
            max pool size: 80
          observed variables: [windEastward, windNorthward]
@@ -16418,19 +16484,20 @@ observations:
              0.230, 0.230, 0.250, 0.250, 0.350,
              0.400, 0.550, 0.800, 3.000, 3.500]
          _anchor_obserr_bound_max: &amsua_n19_obserr_bound_max [4.5, 4.5, 4.5, 2.5, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.5, 3.5, 4.5, 4.5, 4.5]
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_amsua_n19.nc"
              missing file action: "warn"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_amsua_n19.nc
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_amsua_n19.nc
          simulated variables: [brightnessTemperature]
          observed variables: [brightnessTemperature]
          channels: *amsua_n19_channels
@@ -16852,19 +16919,20 @@ observations:
               1.0, 1.0, 1.0, 2.0, 4.5,
               4.5, 2.0, 2.0, 2.0, 2.0,
               2.0, 2.0]
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_atms_n20.nc"
              missing file action: "warn"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_atms_n20.nc
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_atms_n20.nc
          simulated variables: [brightnessTemperature]
          observed variables: [brightnessTemperature]
          channels: *atms_n20_channels
@@ -17440,19 +17508,20 @@ observations:
               1.0, 1.0, 1.0, 2.0, 4.5,
               4.5, 2.0, 2.0, 2.0, 2.0,
               2.0, 2.0]
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_atms_npp.nc"
              missing file action: "warn"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_atms_npp.nc
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_atms_npp.nc
          simulated variables: [brightnessTemperature]
          observed variables: [brightnessTemperature]
          channels: *atms_npp_channels
@@ -18016,19 +18085,20 @@ observations:
          _anchor_use_flag_clddet: &abi_g16_use_flag_clddet [-2, -2, -2, -2, -2, -2, -2, -2, -2, -2]
          _anchor_error: &abi_g16_error [ 2.2, 1.756, 1.587, 1.185, 2.2, 2.2, 2.2, 2.2, 2.2, 2.2 ]
          _anchor_obserr_bound_max: &abi_g16_obserr_bound_max [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_abi_g16.nc"
              missing file action: "warn"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_abi_g16.nc
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_abi_g16.nc
          io pool:
            max pool size: 80
          simulated variables: [brightnessTemperature]
@@ -18751,19 +18821,20 @@ observations:
          _anchor_use_flag_clddet: &abi_g18_use_flag_clddet [-2, -2, -2, -2, -2, -2, -2, -2, -2, -2]
          _anchor_error: &abi_g18_error [ 2.2, 1.756, 1.587, 1.185, 2.2, 2.2, 2.2, 2.2, 2.2, 2.2 ]
          _anchor_obserr_bound_max: &abi_g18_obserr_bound_max [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_abi_g18.nc"
              missing file action: "warn"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_abi_g18.nc
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_abi_g18.nc
          io pool:
            max pool size: 80
          simulated variables: [brightnessTemperature]
@@ -19500,19 +19571,20 @@ observations:
                0.450,  0.450,  0.550,  0.800,  4.000,
                4.000,  4.000,  3.500,  3.000,  3.000,
                3.000,  3.000]
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_atms_n21.nc"
              missing file action: "warn"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_atms_n21.nc
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_atms_n21.nc
          simulated variables: [brightnessTemperature]
          observed variables: [brightnessTemperature]
          channels: *atms_n21_channels
@@ -20077,19 +20149,20 @@ observations:
              0.230, 0.230, 0.250, 0.250, 0.350,
              0.400, 0.550, 0.800, 3.000, 3.500]
          _anchor_obserr_bound_max: &amsua_metop-b_obserr_bound_max [4.5, 4.5, 4.5, 2.5, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.5, 3.5, 4.5, 4.5, 4.5]
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_amsua_metop-b.nc"
              missing file action: "warn"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_amsua_metop-b.nc
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_amsua_metop-b.nc
          simulated variables: [brightnessTemperature]
          observed variables: [brightnessTemperature]
          channels: *amsua_metop-b_channels
@@ -20500,19 +20573,20 @@ observations:
              0.230, 0.230, 0.250, 0.250, 0.350,
              0.400, 0.550, 0.800, 3.000, 3.500]
          _anchor_obserr_bound_max: &amsua_metop-c_obserr_bound_max [4.5, 4.5, 4.5, 2.5, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.5, 3.5, 4.5, 4.5, 4.5]
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 500e3
          obsdatain:
            engine:
              type: H5File
              obsfile: "data/obs/ioda_amsua_metop-c.nc"
              missing file action: "warn"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_amsua_metop-c.nc
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_amsua_metop-c.nc
          simulated variables: [brightnessTemperature]
          observed variables: [brightnessTemperature]
          channels: *amsua_metop-c_channels
@@ -20921,19 +20995,20 @@ observations:
          _anchor_use_flag_clddet: &cris-fsr_n20_use_flag_clddet [1]
          _anchor_error: &cris-fsr_n20_error [1]
          _anchor_obserr_bound_max: &cris-fsr_n20_obserr_bound_max [1]
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 100e3
          obsdatain:
            engine:
              type: H5File
              obsfile: data/obs/ioda_crisf4_n20.nc
              missing file action: "warn"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_cris-fsr_n20.nc
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_cris-fsr_n20.nc
          io pool:
            max pool size: 80
          observed variables: [radiance]
@@ -21469,19 +21544,20 @@ observations:
          _anchor_use_flag_clddet: &cris-fsr_n21_use_flag_clddet [1]
          _anchor_error: &cris-fsr_n21_error [1]
          _anchor_obserr_bound_max: &cris-fsr_n21_obserr_bound_max [1]
-         distribution:
-           name: "RoundRobin"
+         use data frame container: true
+         redistribution:
+           name: Halo
            halo size: 100e3
          obsdatain:
            engine:
              type: H5File
              obsfile: data/obs/ioda_crisf4_n21.nc
              missing file action: "warn"
-         obsdataout:
-           empty obs space action: "@emptyObsSpaceAction@"
-           engine:
-             type: H5File
-             obsfile: jdiag_cris-fsr_n21.nc
+#         obsdataout:
+#           empty obs space action: "@emptyObsSpaceAction@"
+#           engine:
+#             type: H5File
+#             obsfile: jdiag_cris-fsr_n21.nc
          io pool:
            max pool size: 80
          observed variables: [radiance]
