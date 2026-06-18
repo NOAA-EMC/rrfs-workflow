@@ -162,7 +162,7 @@ if os.getenv('YAML_GEN_METHOD', '1') == '1':
     srcdir = f'{HOMErrfs}/workflow/tools/qrocoto'
     dstdir = f'{expdir}/qrocoto'
     shutil.copytree(srcdir, dstdir, dirs_exist_ok=True)
-    if os.getenv("DO_JEDI", 'false').upper() == "TRUE" and os.path.exists('satinfo'):
+    if os.getenv("DO_JEDI", 'false').upper() == "TRUE" and os.getenv('SAT_USELIST', ''):
         print(f'''\nRun the following commands to prepare the initial satbias files:
   cd  {expdir}
   source qrocoto/load_qrocoto.sh
