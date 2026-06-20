@@ -2,7 +2,7 @@
 #
 # This script is to help users to prepare intial satbias files 
 #
-# shellcheck disable=1091,2154
+# shellcheck disable=all
 if (( $# < 1 )); then
   echo "Usage: $(basename $0) YYYYMMDDHH [satbias_path]"
   echo "YYYYMMDDHH is the cycle before the first JEDIVAR/GETKF_SOLVER task"
