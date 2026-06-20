@@ -220,12 +220,20 @@ with open(yfile, 'r') as infile, open(yfile2, 'w') as outfile:
                     break
             # ~~~~~~
             if not use_obs:  # check whether it is a satellite observation
+                sis_found = False
                 sname = line.split(':')[1].strip()
-                if sname in SAT_USELIST:
+                if SAT_USELIST == "__passthrough__":
+                    for obs in dcSatInfo:
+                        if obs in line:
+                            sis_found = True
+                            break
+                elif sname in SAT_USELIST:
+                    sis_found = True
+                # ~~~~~~~~
+                if sis_found:
                     summary_obs_use += f"{sname},"
                     use_obs = True
                     passivate = False # satellite monitoring needs further work
-                    break
 
         elif "obs filters:" in line:
             buffer_zone.append(line)

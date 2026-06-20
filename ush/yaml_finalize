@@ -173,7 +173,7 @@ for name, observer in dcObs.items():
 
     if use_conv_sat_info:
         if observer["is_sat_radiance"]:  # check against SAT_USELIST
-            if sname in SAT_USELIST:
+            if SAT_USELIST == "__passthrough__" or sname in SAT_USELIST:
                 # update channel information based on satinfo
                 for sis, info in dcSatInfo.items():
                     if sis == sname:
