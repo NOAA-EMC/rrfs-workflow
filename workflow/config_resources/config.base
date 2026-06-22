@@ -51,6 +51,24 @@ if [[ "${HISTORY_INTERVAL,,}" == "none" ]]; then
   export DO_POST=false
 fi
 
+# Configure what satellite SIS to use in the radiance DA, choose from the following list:
+# abi_g16, abi_g18, ahi_himawari8, airs_aqua, amsr2_gcom-w1, amsre_aqua,
+# amsua_aqua, amsua_metop-a, amsua_metop-b, amsua_metop-c, amsua_n15, amsua_n18, amsua_n19, amsub_n17, atms_n20, atms_n21, atms_npp,
+# avhrr3_metop-a, avhrr3_metop-b, avhrr3_metop-c, avhrr3_n18, avhrr3_n19, cris-fsr_n20, cris-fsr_n21, cris-fsr_npp,
+# gmi_gpm, hirs3_n17, hirs4_metop-a, hirs4_metop-b, hirs4_n19, iasi_metop-a, iasi_metop-b, iasi_metop-c,
+# imgr_g11, imgr_g12, imgr_g13, imgr_g14, imgr_g15, mhs_metop-a, mhs_metop-b, mhs_metop-c, mhs_n18, mhs_n19, saphir_meghat,
+# seviri_m08, seviri_m09, seviri_m10, seviri_m11, ssmi_f15, ssmis_f16, ssmis_f17, ssmis_f18, ssmis_f19, ssmis_f20
+# sndrD1_g11, sndrD1_g12, sndrD1_g13, sndrD1_g14, sndrD1_g15, sndrD2_g11, sndrD2_g12, sndrD2_g13, sndrD2_g14, sndrD2_g15,
+# sndrD3_g11, sndrD3_g12, sndrD3_g13, sndrD3_g14, sndrD3_g15, sndrD4_g11, sndrD4_g12, sndrD4_g13, sndrD4_g14, sndrD4_g15,
+# tms_s02,
+#
+# Examples(note: please set it in the exp file instead of here):
+# sat_uselist="abi_g16,abi_g18,cris-fsr-n20,cris-fsr-n21"  # use ',' or ', ' to separate different SIS
+# # set it across multile lines:
+# sat_uselist="abi_g16,abi_g18, \
+# cris-fsr-n20,cris-fsr-n21"
+export SAT_USELIST=${SAT_USELIST:-''}
+
 # DO_CLEAN
 if ${DO_CLEAN:-false} && ! ${REALTIME:-false}; then
   export STMP_RETENTION_CYCS=${STMP_RETENTION_CYCS:-2}

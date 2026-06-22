@@ -28,6 +28,7 @@ export DO_NONVAR_CLOUD_ANA=true
 export DO_CHEMISTRY=false
 export DO_RADAR_REF=true  # does not work for 3DVar, only EnVar or GETKF
 export RADARREFL_TIMELEVEL="00"  # 00 15 30 45 min
+export SAT_USELIST=""  # check config.base on how to set up this variable
 export HYB_WGT_ENS=0.5
 export HYB_WGT_STATIC=0.5
 export HYB_ENS_TYPE=1      # 1.rrfs; 2.interpolated GEFS/GDAS; 0.TBD on the fly (rrfs->GDAS->3DVAR)

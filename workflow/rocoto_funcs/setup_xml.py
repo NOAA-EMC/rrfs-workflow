@@ -40,9 +40,6 @@ from rocoto_funcs.archive import archive
 
 
 def setup_xml(HOMErrfs, expdir):
-    if os.path.exists(f"{expdir}/config/satinfo") and os.getenv("USE_THE_LATEST_SATBIAS") is None:
-        env_vars = {'USE_THE_LATEST_SATBIAS': 'TRUE'}
-        os.environ.update(env_vars)
     NET = os.getenv('NET').lower()
     machine = os.getenv('MACHINE').lower()
     MESH_NAME = os.getenv("MESH_NAME")

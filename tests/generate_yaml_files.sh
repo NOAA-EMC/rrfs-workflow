@@ -26,6 +26,7 @@ export STATIC_BEC_MODEL=GSIBEC  # GSIBEC, BUMPBEC
 export EMPTY_OBS_SPACE_ACTION="skip output"  # skip output,  create output
 export ANALYSIS_VARIABLES=0  # "", 0, 5, 12, or a list of variables
 export DO_RADAR_REF=false  # false, true
+export SAT_USELIST="amsua_n19, atms_n20, atms_npp, abi_g16, abi_g18, atms_n21, amsua_metop-b, amsua_metop-c, cris-fsr_n20, cris-fsr_n21"
 
 #----------------------------------------------------------
 #  jedivar.yaml

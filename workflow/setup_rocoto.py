@@ -32,6 +32,7 @@ else:
 source(f"{HOMErrfs}/workflow/config_resources/config.machines")
 source(f"{HOMErrfs}/workflow/config_resources/config.meshdep")
 source(f"{HOMErrfs}/workflow/config_resources/config.base")
+NET = get_required_env('NET')
 if os.getenv('REALTIME', 'false').upper() == "TRUE":
     source(f"{HOMErrfs}/workflow/config_resources/config.realtime")
 
@@ -87,23 +88,28 @@ if os.getenv("DO_CHEMISTRY", "FALSE").upper() == "TRUE" and os.path.exists(f"{HO
 if os.path.exists(f"{HOMErrfs}/workflow/config.override"):
     shutil.copy(f'{HOMErrfs}/workflow/config.override', f'{expdir}/config.override')  # save a copy for reference
 
-# if DO_JEDI, copy the super YAML, convinfo, [satinfo] files to EXPDIR
+# if DO_JEDI, copy the super YAML, convinfo, satinfo files to EXPDIR
 if os.getenv("DO_JEDI", 'false').upper() == "TRUE":
-    if not os.path.exists('convinfo'):
-        print('convinfo not found under current directoy, copy from ${FIXrrfs}/jedi\n')
-        shutil.copy(f'{HOMErrfs}/fix/jedi/convinfo.rrfs', 'convinfo')
-    # copy convinfo to exp_configdir
-    shutil.copy('convinfo', f'{exp_configdir}/convinfo')
-    # if satinfo is available, copy it to exp_configdir
-    if os.path.exists('satinfo'):
-        shutil.copy('satinfo', f'{exp_configdir}/satinfo')
-    # copy jedivar.yaml or getkf yamls to exp_configdir
+    # copy jedivar/getkf yamls to exp_configdir
     if os.getenv('DO_ENSEMBLE', 'FALSE').upper() == "TRUE":
         shutil.copy(f'{HOMErrfs}/parm/getkf.yaml', f'{exp_configdir}/getkf.yaml')
+        ens_str = "_ens"
     else:
         shutil.copy(f'{HOMErrfs}/parm/jedivar.yaml', f'{exp_configdir}/jedivar.yaml')
         shutil.copy(f'{HOMErrfs}/parm/bec_bump.yaml', f'{exp_configdir}/bec_bump.yaml')
         shutil.copy(f'{HOMErrfs}/parm/bec_diffusion.yaml', f'{exp_configdir}/bec_diffusion.yaml')
+        ens_str = ""
+    # if convinfo/satinfo.${NET}{ens_str} don't exist under the current directory, copy default ones from ${FIXrrfs}/jedi
+    # if users already have customized convinfo/satinfo.${NET}{ens_str}, skip copying default ones
+    if not os.path.exists(f'convinfo.{NET}{ens_str}'):
+        print(f'convinfo.{NET}{ens_str} not found under current directoy, copy from ${{FIXrrfs}}/jedi\n')
+        shutil.copy(f'{HOMErrfs}/fix/jedi/convinfo.{NET}{ens_str}', f'convinfo.{NET}{ens_str}')
+    if not os.path.exists(f'satinfo.{NET}{ens_str}'):
+        print(f'satinfo.{NET}{ens_str} not found under current directoy, copy from ${{FIXrrfs}}/jedi\n')
+        shutil.copy(f'{HOMErrfs}/fix/jedi/satinfo.{NET}{ens_str}', f'satinfo.{NET}{ens_str}')
+    # copy corresponding convinfo/satinfo to exp_configdir
+    shutil.copy(f'convinfo.{NET}{ens_str}', f'{exp_configdir}/convinfo')
+    shutil.copy(f'satinfo.{NET}{ens_str}', f'{exp_configdir}/satinfo')
 #
 if os.getenv('DO_HOFX', 'FALSE').upper() == "TRUE":
     shutil.copy(f'{HOMErrfs}/parm/hofx.yaml', f'{exp_configdir}/hofx.yaml')
@@ -156,7 +162,7 @@ if os.getenv('YAML_GEN_METHOD', '1') == '1':
     srcdir = f'{HOMErrfs}/workflow/tools/qrocoto'
     dstdir = f'{expdir}/qrocoto'
     shutil.copytree(srcdir, dstdir, dirs_exist_ok=True)
-    if os.getenv("DO_JEDI", 'false').upper() == "TRUE" and os.path.exists('satinfo'):
+    if os.getenv("DO_JEDI", 'false').upper() == "TRUE" and os.getenv('SAT_USELIST', ''):
         print(f'''\nRun the following commands to prepare the initial satbias files:
   cd  {expdir}
   source qrocoto/load_qrocoto.sh
