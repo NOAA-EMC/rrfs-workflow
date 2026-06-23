@@ -3,7 +3,7 @@ import os
 import sys
 import hifiyaml4rrfs as hy
 import yamltools4rrfs as yj
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 args = sys.argv
 nargs = len(args) - 1
@@ -44,12 +44,19 @@ ANALYSIS_VARIABLES = os.getenv("ANALYSIS_VARIABLES", "0")  # 5, 12 or a list of 
 # determine the temporal grid for Gaussian Thinning
 time_mesh = 3
 THINNING_TIME_MESH = f"PT{time_mesh:02d}H"
-analysis_time = datetime.strptime(ANALYSIS_DATE, "%Y-%m-%dT%H:%M:%SZ")
+analysis_time = datetime.strptime(ANALYSIS_DATE, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
 delta = timedelta(hours=time_mesh / 2)
 time_min = analysis_time - delta
 time_max = analysis_time + delta
 THINNING_TIME_MIN = time_min.strftime("%Y-%m-%dT%H:%M:%SZ")
 THINNING_TIME_MAX = time_max.strftime("%Y-%m-%dT%H:%M:%SZ")
+#
+# set the obs time window for satellite radiance obs, default to 60 minutes
+delta = timedelta(minutes=60)
+time_min = analysis_time - delta
+time_max = analysis_time + delta
+SATRAD_TWINDOW_MIN = int(time_min.timestamp())  # seconds since epoch (i.e. 1970-01-01T00:00:00Z)
+SATRAD_TWINDOW_MAX = int(time_max.timestamp())  # seconds since epoch (i.e. 1970-01-01T00:00:00Z)
 
 # replacements for the @VAR@ patterns
 replacements = {
@@ -72,6 +79,8 @@ replacements = {
     "THINNING_TIME_MESH": f"{THINNING_TIME_MESH}",
     "THINNING_TIME_MIN": f"{THINNING_TIME_MIN}",
     "THINNING_TIME_MAX": f"{THINNING_TIME_MAX}",
+    "SATRAD_TWINDOW_MIN": f"{SATRAD_TWINDOW_MIN}",
+    "SATRAD_TWINDOW_MAX": f"{SATRAD_TWINDOW_MAX}",
 }
 
 # ------------------------------------------------------------------------------------
