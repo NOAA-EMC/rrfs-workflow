@@ -106,7 +106,7 @@ if [ "${CYCLE_TYPE}" != "spinup" ]; then
   do
     filename=$(basename "$file")
     if [[ "$filename" == SMOKE_RRFS_data_* ]] && cmp -s "$file" "$dummy_smoke_file"; then
-      echo "WARNING: $file is the dummy SMOKE_RRFS file"
+      echo "WARNING: no RAVE data in ${FIRE_RAVE_DIR}/${PDY}/rave, $file is the dummy SMOKE_RRFS file, smoke/dust forecast could be degraded"
       continue
    fi
     daystr=$(echo "$filename" | grep -o '[0-9]\{8\}' | head -1)
