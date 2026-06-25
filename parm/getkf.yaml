@@ -96,11 +96,11 @@ observations:
              type: H5File
              obsfile: data/obs/ioda_mrms_refl.nc
              missing file action: "warn"
-#         obsdataout:
-#           engine:
-#             type: H5File
-#             allow overwrite: true
-#             obsfile: jdiag_mrms_refl.nc
+         obsdataout:
+           engine:
+             type: H5File
+             allow overwrite: true
+             obsfile: jdiag_mrms_refl.nc
          io pool:
            write multiple files: false
          _source: mrms
@@ -138,14 +138,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_adpsfc_t181.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_adpsfc_t181.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [airTemperature]
          simulated variables: [airTemperature]
 
@@ -415,14 +415,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_adpsfc_t183.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_adpsfc_t183.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [airTemperature]
          simulated variables: [airTemperature]
 
@@ -690,14 +690,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_adpsfc_t187.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_adpsfc_t187.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [airTemperature]
          simulated variables: [airTemperature]
 
@@ -969,14 +969,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_adpsfc_q181.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_adpsfc_q181.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [specificHumidity]
          simulated variables: [specificHumidity]
 
@@ -1245,14 +1245,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_adpsfc_q183.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_adpsfc_q183.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [specificHumidity]
          simulated variables: [specificHumidity]
 
@@ -1520,14 +1520,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_adpsfc_q187.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_adpsfc_q187.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [specificHumidity]
          simulated variables: [specificHumidity]
 
@@ -1793,14 +1793,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_adpsfc_ps181.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_adpsfc_ps181.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [stationPressure]
          simulated variables: [stationPressure]
 
@@ -2065,14 +2065,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_adpsfc_ps187.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_adpsfc_ps187.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [stationPressure]
          simulated variables: [stationPressure]
 
@@ -2337,14 +2337,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_adpsfc_uv281.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_adpsfc_uv281.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -2655,14 +2655,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_adpsfc_uv284.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_adpsfc_uv284.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -2972,14 +2972,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_adpsfc_uv287.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_adpsfc_uv287.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -3289,14 +3289,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_adpupa_t120.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_adpupa_t120.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [airTemperature]
          simulated variables: [airTemperature]
 
@@ -3564,14 +3564,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_adpupa_t132.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_adpupa_t132.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [airTemperature]
          simulated variables: [airTemperature]
 
@@ -3839,14 +3839,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_adpupa_q120.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_adpupa_q120.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [specificHumidity]
          simulated variables: [specificHumidity]
 
@@ -4114,14 +4114,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_adpupa_q132.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_adpupa_q132.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [specificHumidity]
          simulated variables: [specificHumidity]
 
@@ -4389,14 +4389,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_adpupa_ps120.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_adpupa_ps120.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [stationPressure]
          simulated variables: [stationPressure]
 
@@ -4660,14 +4660,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_adpupa_uv220.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_adpupa_uv220.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -4971,14 +4971,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_adpupa_uv232.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_adpupa_uv232.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -5282,14 +5282,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_aircar_t133.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_aircar_t133.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [airTemperature]
          simulated variables: [airTemperature]
 
@@ -5557,14 +5557,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_aircar_q133.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_aircar_q133.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [specificHumidity]
          simulated variables: [specificHumidity]
 
@@ -5832,14 +5832,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_aircar_uv233.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_aircar_uv233.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -6143,14 +6143,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_aircft_t130.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_aircft_t130.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [airTemperature]
          simulated variables: [airTemperature]
 
@@ -6418,14 +6418,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_aircft_t131.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_aircft_t131.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [airTemperature]
          simulated variables: [airTemperature]
 
@@ -6693,14 +6693,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_aircft_t134.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_aircft_t134.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [airTemperature]
          simulated variables: [airTemperature]
 
@@ -6968,14 +6968,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_aircft_t135.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_aircft_t135.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [airTemperature]
          simulated variables: [airTemperature]
 
@@ -7243,14 +7243,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_aircft_q134.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_aircft_q134.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [specificHumidity]
          simulated variables: [specificHumidity]
 
@@ -7518,14 +7518,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_aircft_uv230.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_aircft_uv230.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -7829,14 +7829,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_aircft_uv231.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_aircft_uv231.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -8140,14 +8140,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_aircft_uv234.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_aircft_uv234.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -8451,14 +8451,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_aircft_uv235.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_aircft_uv235.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -8765,14 +8765,14 @@ observations:
            group variables: ["stationIdentification"]
            sort variable: "pressure"
            sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_gnss_ztd.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_gnss_ztd.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          simulated variables: [zenithTotalDelay]
          observed variables: [zenithTotalDelay]
 
@@ -8837,14 +8837,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_msonet_t188.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_msonet_t188.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [airTemperature]
          simulated variables: [airTemperature]
 
@@ -9112,14 +9112,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_msonet_q188.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_msonet_q188.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [specificHumidity]
          simulated variables: [specificHumidity]
 
@@ -9387,14 +9387,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_msonet_ps188.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_msonet_ps188.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [stationPressure]
          simulated variables: [stationPressure]
 
@@ -9655,14 +9655,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_msonet_uv288.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_msonet_uv288.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -10234,14 +10234,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_proflr_uv227.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_proflr_uv227.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -10589,14 +10589,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_rassda_t126.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_rassda_t126.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [airTemperature]
          simulated variables: [airTemperature]
 
@@ -10864,14 +10864,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_sfcshp_t180.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_sfcshp_t180.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [airTemperature]
          simulated variables: [airTemperature]
 
@@ -11139,14 +11139,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_sfcshp_t182.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_sfcshp_t182.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [airTemperature]
          simulated variables: [airTemperature]
 
@@ -11415,14 +11415,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_sfcshp_t183.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_sfcshp_t183.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [airTemperature]
          simulated variables: [airTemperature]
 
@@ -11690,14 +11690,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_sfcshp_q180.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_sfcshp_q180.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [specificHumidity]
          simulated variables: [specificHumidity]
 
@@ -11965,14 +11965,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_sfcshp_q182.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_sfcshp_q182.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [specificHumidity]
          simulated variables: [specificHumidity]
 
@@ -12241,14 +12241,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_sfcshp_q183.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_sfcshp_q183.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [specificHumidity]
          simulated variables: [specificHumidity]
 
@@ -12516,14 +12516,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_sfcshp_ps180.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_sfcshp_ps180.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [stationPressure]
          simulated variables: [stationPressure]
 
@@ -12796,14 +12796,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_sfcshp_uv280.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_sfcshp_uv280.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -13113,14 +13113,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_sfcshp_uv282.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_sfcshp_uv282.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -13431,14 +13431,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_sfcshp_uv284.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_sfcshp_uv284.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -13748,14 +13748,14 @@ observations:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
              sort order: "descending"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_vadwnd_uv224.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_vadwnd_uv224.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -14107,14 +14107,14 @@ observations:
              type: H5File
              obsfile: "data/obs/ioda_satwnd.abi_goes-16.nc"
              missing file action: "warn"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_satwnd_uv245_270.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_satwnd_uv245_270.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -14515,14 +14515,14 @@ observations:
              type: H5File
              obsfile: "data/obs/ioda_satwnd.abi_goes-18.nc"
              missing file action: "warn"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_satwnd_uv245_272.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_satwnd_uv245_272.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -14923,14 +14923,14 @@ observations:
              type: H5File
              obsfile: "data/obs/ioda_satwnd.abi_goes-16.nc"
              missing file action: "warn"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_satwnd_uv246_270.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_satwnd_uv246_270.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -15297,14 +15297,14 @@ observations:
              type: H5File
              obsfile: "data/obs/ioda_satwnd.abi_goes-18.nc"
              missing file action: "warn"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_satwnd_uv246_272.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_satwnd_uv246_272.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -15671,14 +15671,14 @@ observations:
              type: H5File
              obsfile: "data/obs/ioda_satwnd.abi_goes-16.nc"
              missing file action: "warn"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_satwnd_uv247_270.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_satwnd_uv247_270.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -16073,14 +16073,14 @@ observations:
              type: H5File
              obsfile: "data/obs/ioda_satwnd.abi_goes-18.nc"
              missing file action: "warn"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_satwnd_uv247_272.nc
-#             allow overwrite: true
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_satwnd_uv247_272.nc
+             allow overwrite: true
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
@@ -16482,11 +16482,11 @@ observations:
              type: H5File
              obsfile: "data/obs/ioda_amsua_n19.nc"
              missing file action: "warn"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_amsua_n19.nc
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_amsua_n19.nc
          simulated variables: [brightnessTemperature]
          observed variables: [brightnessTemperature]
          channels: *amsua_n19_channels
@@ -16917,11 +16917,11 @@ observations:
              type: H5File
              obsfile: "data/obs/ioda_atms_n20.nc"
              missing file action: "warn"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_atms_n20.nc
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_atms_n20.nc
          simulated variables: [brightnessTemperature]
          observed variables: [brightnessTemperature]
          channels: *atms_n20_channels
@@ -17506,11 +17506,11 @@ observations:
              type: H5File
              obsfile: "data/obs/ioda_atms_npp.nc"
              missing file action: "warn"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_atms_npp.nc
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_atms_npp.nc
          simulated variables: [brightnessTemperature]
          observed variables: [brightnessTemperature]
          channels: *atms_npp_channels
@@ -18083,13 +18083,13 @@ observations:
              type: H5File
              obsfile: "data/obs/ioda_abi_g16.nc"
              missing file action: "warn"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_abi_g16.nc
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_abi_g16.nc
          io pool:
-           max pool size: 80
+           max pool size: 1
          simulated variables: [brightnessTemperature]
          observed variables: [brightnessTemperature]
          channels: *abi_g16_channels
@@ -18819,13 +18819,13 @@ observations:
              type: H5File
              obsfile: "data/obs/ioda_abi_g18.nc"
              missing file action: "warn"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_abi_g18.nc
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_abi_g18.nc
          io pool:
-           max pool size: 80
+           max pool size: 1
          simulated variables: [brightnessTemperature]
          observed variables: [brightnessTemperature]
          channels: *abi_g18_channels
@@ -19569,11 +19569,11 @@ observations:
              type: H5File
              obsfile: "data/obs/ioda_atms_n21.nc"
              missing file action: "warn"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_atms_n21.nc
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_atms_n21.nc
          simulated variables: [brightnessTemperature]
          observed variables: [brightnessTemperature]
          channels: *atms_n21_channels
@@ -20147,11 +20147,11 @@ observations:
              type: H5File
              obsfile: "data/obs/ioda_amsua_metop-b.nc"
              missing file action: "warn"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_amsua_metop-b.nc
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_amsua_metop-b.nc
          simulated variables: [brightnessTemperature]
          observed variables: [brightnessTemperature]
          channels: *amsua_metop-b_channels
@@ -20571,11 +20571,11 @@ observations:
              type: H5File
              obsfile: "data/obs/ioda_amsua_metop-c.nc"
              missing file action: "warn"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_amsua_metop-c.nc
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_amsua_metop-c.nc
          simulated variables: [brightnessTemperature]
          observed variables: [brightnessTemperature]
          channels: *amsua_metop-c_channels
@@ -20993,13 +20993,13 @@ observations:
              type: H5File
              obsfile: data/obs/ioda_crisf4_n20.nc
              missing file action: "warn"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_cris-fsr_n20.nc
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_cris-fsr_n20.nc
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [radiance]
          simulated variables: [brightnessTemperature]
          derived variables: [brightnessTemperature]
@@ -21542,13 +21542,13 @@ observations:
              type: H5File
              obsfile: data/obs/ioda_crisf4_n21.nc
              missing file action: "warn"
-#         obsdataout:
-#           empty obs space action: "@emptyObsSpaceAction@"
-#           engine:
-#             type: H5File
-#             obsfile: jdiag_cris-fsr_n21.nc
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_cris-fsr_n21.nc
          io pool:
-           max pool size: 80
+           max pool size: 1
          observed variables: [radiance]
          simulated variables: [brightnessTemperature]
          derived variables: [brightnessTemperature]
