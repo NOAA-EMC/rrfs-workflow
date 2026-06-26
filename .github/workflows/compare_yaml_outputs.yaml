@@ -1,17 +1,19 @@
-name: Compare XML outputs
+name: Compare YAML outputs
 
 on:
   # workflow_dispatch:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
     paths:
-      - 'workflow/setup_rocoto.py'
-      - 'workflow/config_resources/**'
-      - 'workflow/exp/**'
-      - 'workflow/rocoto_funcs/**'
+      - 'parm/jedivar.yaml'
+      - 'parm/getkf.yaml'
+      - 'parm/bec*.yaml'
+      - 'ush/yaml_finalize'
+      - 'ush/yamltools4rrfs.py'
+      - 'ush/hifiyaml4rrfs.py'
 
 jobs:
-  compare-XML-outputs:
+  compare-YAML-outputs:
     if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
 
@@ -40,20 +42,20 @@ jobs:
         run: |
           mkdir -p base_branch/tests
           cd base_branch/tests
-          cp ../../pr_branch/tests/generate_xml_files.sh .
-          ./generate_xml_files.sh
+          cp ../../pr_branch/tests/generate_yaml_files.sh .
+          ./generate_yaml_files.sh
 
       - name: Run tests in PR branch
         run: |
           cd pr_branch/tests
-          ./generate_xml_files.sh
+          ./generate_yaml_files.sh
 
-      - name: Compare XML outputs
+      - name: Compare YAML outputs
         id: diff
         run: |
           mkdir -p diff_output
           has_diff=0
-          for file in $(find base_branch/tests/xml -name "*.xml"); do
+          for file in $(find base_branch/tests/yaml -name "*.yaml"); do
             rel_path=${file#base_branch/}
             pr_file="pr_branch/$rel_path"
             diff_output_file="diff_output/$(basename $file).diff"
@@ -70,8 +72,8 @@ jobs:
             fi
           done
           echo "has_diff=$has_diff" >> $GITHUB_OUTPUT
-          mv base_branch/tests/xml diff_output/base_branch
-          mv pr_branch/tests/xml diff_output/pr_branch
+          mv base_branch/tests/yaml diff_output/base_branch
+          mv pr_branch/tests/yaml diff_output/pr_branch
 
       - name: Echo diffs
         if: steps.diff.outputs.has_diff == '1'
@@ -84,7 +86,7 @@ jobs:
         if: steps.diff.outputs.has_diff == '1'
         uses: actions/upload-artifact@v4
         with:
-          name: xml-diffs
+          name: yaml-diffs
           path: diff_output/
 
       - name: fail if diffs exist
@@ -92,7 +94,7 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
         if: steps.diff.outputs.has_diff == '1'
         run: |
-          echo "!!! XML outputs have changed in the PR branch !!!"
+          echo "!!! YAML outputs have changed in the PR branch !!!"
           echo "Check the differences in the 'Echo diffs' section,"
           echo "Or download the zipped artifact from the 'Upload diff artifact' section to inspect them locally."
 

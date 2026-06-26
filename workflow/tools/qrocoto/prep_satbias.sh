@@ -2,17 +2,18 @@
 #
 # This script is to help users to prepare intial satbias files 
 #
-# shellcheck disable=1091,2154
-RUN="rrfs"
-
+# shellcheck disable=all
 if (( $# < 1 )); then
-  echo "Usage: $0 YYYYMMDDHH [satbias_path]"
+  echo "Usage: $(basename $0) YYYYMMDDHH [satbias_path]"
+  echo "YYYYMMDDHH is the cycle before the first JEDIVAR/GETKF_SOLVER task"
   echo "satbias_path is optional"
   echo "If satbias_path is missing, \$FIXrrfs/fix/satbias_init will be used"
   exit
 fi
 
 source ./exp.setup
+RUN=${NET}
+
 PDY=${1:0:8}
 cyc=${1:8:2}
 if ${DO_ENSEMBLE:-false}; then

@@ -62,7 +62,7 @@ if [[ -n "${ARCHIVE_STMP}" ]]; then
         find ${RUN}_fcst_${hr2}*/det/ -type f \( -name "diag*.nc" -o -name "history*.nc" -o -name "mpasout*.nc" \) >> "${workdir}/stmp.${CDATE:0:8}${grp_bgn2}-${grp_end2}"
       fi
       if [[ "${ARCHIVE_STMP}" == *mpassit* ]]; then
-        find ${RUN}_fcst_${hr2}*/det/ -type f -name "mpassit*.nc" >> "${workdir}/stmp.${CDATE:0:8}${grp_bgn2}-${grp_end2}"
+        find ${RUN}_mpassit_${hr2}*/det/ -type f -name "mpassit*.nc" >> "${workdir}/stmp.${CDATE:0:8}${grp_bgn2}-${grp_end2}"
       fi
     done
   done

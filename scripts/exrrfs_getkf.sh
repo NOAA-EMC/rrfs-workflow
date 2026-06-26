@@ -62,6 +62,7 @@ cd "${DATA}" || exit 1
 # generate namelist, streams, and getkf.yaml on the fly
 run_duration=1:00:00
 physics_suite=${PHYSICS_SUITE:-'mesoscale_reference'}
+lsm_scheme=${LSM_SCHEME:-'sf_ruc'}
 jedi_da=true #true
 pio_num_iotasks=${NODES}
 pio_stride=${PPN}

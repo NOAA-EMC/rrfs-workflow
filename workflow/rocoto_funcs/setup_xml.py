@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 #
 import os
-import sys
 import stat
 from rocoto_funcs.base import header_begin, header_entities, header_end, \
     wflow_begin, wflow_log, wflow_cycledefs, wflow_end
@@ -41,9 +40,6 @@ from rocoto_funcs.archive import archive
 
 
 def setup_xml(HOMErrfs, expdir):
-    if os.path.exists(f"{expdir}/config/satinfo") and os.getenv("USE_THE_LATEST_SATBIAS") is None:
-        env_vars = {'USE_THE_LATEST_SATBIAS': 'TRUE'}
-        os.environ.update(env_vars)
     NET = os.getenv('NET').lower()
     machine = os.getenv('MACHINE').lower()
     MESH_NAME = os.getenv("MESH_NAME")
@@ -133,7 +129,6 @@ def setup_xml(HOMErrfs, expdir):
                 graphics(xmlFile, expdir)
                 if not os.path.exists(f"{HOMErrfs}/workflow/sideload/pygraf"):
                     print("  *** DO_GRAPHICS=true but pygraf not cloned yet!!! ***\n  run `tools/clone_pygraf.sh` first\n")
-                    sys.exit(1)
             if os.getenv("DO_HOFX", "FALSE").upper() == "TRUE":
                 hofx(xmlFile, expdir)
             if os.getenv("DO_ARCHIVE", "FALSE").upper() == "TRUE":
@@ -172,6 +167,8 @@ def setup_xml(HOMErrfs, expdir):
                     getkf(xmlFile, expdir, 'POST')
             if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
                 nonvar_cldana(xmlFile, expdir, do_ensemble=True)
+            if os.getenv("DO_PYDAMONITOR", "FALSE").upper() == "TRUE":
+                pyDAmonitor(xmlFile, expdir)
             listEnsGrpInfo = smart_ens_groups('fcst')
             for dcEnsGrpInfo in listEnsGrpInfo["group_list"]:
                 fcst(xmlFile, expdir, do_ensemble=True, dcEnsGrpInfo=dcEnsGrpInfo)

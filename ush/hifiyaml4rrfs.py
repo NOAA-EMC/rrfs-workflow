@@ -6,16 +6,17 @@ import sys
 
 
 # load a YAML file
-def load(fpath, replacements=None):
-    # precompile regex to match @VAR@
-    pattern = re.compile(r"@(\w+)@")
+def load(fpath, replacements=None, pattern=r"@(\w+)@"):
+    # precompile regex to match template variables
+    # one more example: pattern=r"\{\{\s*(\w+)\s*\}\}" matches {{VAR}} and {{ VAR }}
+    compiled = re.compile(pattern)
 
     data = []
     with open(fpath, 'r') as infile:
         for line in infile:
             line = line.rstrip()  # strip all trailing empty spaces
             if replacements:
-                line = pattern.sub(lambda m: replacements.get(m.group(1), m.group(0)), line)
+                line = compiled.sub(lambda m: replacements.get(m.group(1), m.group(0)), line)
             data.append(line)
     return data
 
@@ -72,13 +73,18 @@ def dedent(block):
 
 
 # find the YAML block position of next peer or next ancestor
-# querystr="" to provide backward compatibility
 #   if querystr ends with ".../0/key" and "key" is in the first line
 #   we need to find the next_pos based on ".../key" instead of ".../0"
 def next_pos(data, pos, querystr=""):
-    if pos == -1:
+    if pos == -1 or pos >= len(data):
         return len(data)
     query_list = querystr.strip("/").split("/")
+
+    # skip the leading comment lines and find the actual start of a block
+    for i in range(pos, len(data)):
+        if not data[i].strip().startswith("#"):
+            pos = i
+            break
 
     line1 = data[pos]
     nspace, spaces, line1 = strip_indentations(line1)
@@ -111,11 +117,12 @@ def next_pos(data, pos, querystr=""):
     if next_pos is None:
         next_pos = end
     else:
-        # check if there are comment lines immediately before next_pos and with less indentations
+        # check if there are comment lines immediately before next_pos and with less or the same indentations
         # if yes, move next_pos back until a non-comment line
+        nspace_next = strip_indentations(data[next_pos])[0]
         for i in range(next_pos - 1, pos, -1):
             nspace2 = strip_indentations(data[i])[0]
-            if data[i].strip().startswith('#') and nspace2 <= nspace:
+            if data[i].strip().startswith('#') and nspace2 <= nspace_next:
                 next_pos = i
             else:
                 break
@@ -123,9 +130,10 @@ def next_pos(data, pos, querystr=""):
     return next_pos
 
 
-# get the start postion of a YAML block specificed by a querystr or linestr
+# get the start postion of a YAML block specificed by a querystr or linestr, excluding comment lines
 #    eg: querystr = "cost function/background error/components/1/convariance/members from template"
 #        linestr = "- filter: Temporal Thinning" # to find a line contains this linestr
+# returns the start position of a block (including the leading comment lines)
 def get_start_pos(data, querystr="", stop_on_error=False, linestr=""):
     errmsg = None
     if querystr:
@@ -134,7 +142,7 @@ def get_start_pos(data, querystr="", stop_on_error=False, linestr=""):
         if not linestr:  # linestr only takes effect when querystr="" and if linestr="", return
             return -1, None
         else:  # if linestr presents, create a placeholder querylist
-            query_list = ["place:holder:query:list:longmont:colorado:USA"]
+            query_list = [f"@linestr@:{linestr}"]
 
     cur = 0
     end = len(data)
@@ -145,18 +153,28 @@ def get_start_pos(data, querystr="", stop_on_error=False, linestr=""):
             line = data[i].strip()
             if s.isdigit():  # search for [ or -
                 line = re.sub(r'(["\']).*?\1', r'\1\1', line)  # remove all contents inside quotes
-                if "[" in line:
-                    errmsg = "!! Directly modfiying [....] needs further development !!"
-                    sys.stderr.write(f"{errmsg}\n")
-                    if stop_on_error:
-                        sys.exit(1)
-                elif "- " in line:
+                if "[" in line:  # a flow style list, only find the line with starting "["
+                    nextpos = i
+                    found = True
+                    break
+                elif "- " in line:  # a block style list
                     nextpos = i
                     knt = int(s)
                     for j in range(0, knt):
                         nextpos = next_pos(data, nextpos, querystr)
                     cur = nextpos
-                    if "- " not in data[cur]:  # out of the list index
+                    if cur >= len(data):
+                        errmsg = f"WARNNING: out of the list index '{querystr}' "
+                        sys.stderr.write(f"{errmsg}\n")
+                        if stop_on_error:
+                            sys.exit(1)
+                        found = False
+                        break
+                    # skip all leading comments
+                    dashpos = cur
+                    while dashpos < len(data) and data[dashpos].strip().startswith('#'):
+                        dashpos += 1
+                    if dashpos >= len(data) or "- " not in data[dashpos]:  # out of the list index
                         errmsg = f"WARNNING: out of the list index '{querystr}' "
                         sys.stderr.write(f"{errmsg}\n")
                         if stop_on_error:
@@ -165,7 +183,7 @@ def get_start_pos(data, querystr="", stop_on_error=False, linestr=""):
                     break
 
             else:  # dictionary key or linestr
-                if (linestr and linestr in data[i]) or f"{s}:" in line:
+                if (linestr and linestr in data[i] and not data[i].strip().startswith("#")) or f"{s}:" in line:
                     cur = i
                     found = True
                     break
@@ -174,11 +192,19 @@ def get_start_pos(data, querystr="", stop_on_error=False, linestr=""):
             if stop_on_error:
                 sys.stderr.write(f"{errmsg}\n")
                 sys.exit(1)
+            else:
+                break  # do not continue checking the left querystr
     # ~~~~~~~~~~~~~~~~~
+    # make sure "cur" does not point to a comment line
+    for i in range(cur, len(data)):
+        if not data[i].strip().startswith("#"):
+            cur = i
+            break
     return cur, errmsg
 
 
 # get the content of a YAML block referred to by a querystr
+#   add leading comment lines to the returned block
 def get(data, querystr, do_dedent=False):
     block = []
     if querystr == "":  # empty querystr, so dump the full YAML data
@@ -188,9 +214,11 @@ def get(data, querystr, do_dedent=False):
         pos1, _ = get_start_pos(data, querystr)
         pos2 = next_pos(data, pos1, querystr)
 
-    # check if there are comments immediately before this YAML block
+    nspace = strip_indentations(data[pos1])[0]
+    # check if there are comment lines immediately before this YAML block and with less or the same indentations
     for i in range(pos1 - 1, -1, -1):
-        if data[i].strip().startswith('#'):
+        nspace2 = strip_indentations(data[i])[0]
+        if data[i].strip().startswith('#') and nspace2 <= nspace:
             pos1 = i
         else:
             break  # exit the loop if non-comment
@@ -202,10 +230,11 @@ def get(data, querystr, do_dedent=False):
 
 
 # dump the content of a YAML block referred to by a querystr
-def dump(data, querystr="", fpath=None):
+#   the leading comment lines are included in the dumped block
+def dump(data, querystr="", fpath=None, do_dedent=False):
     if fpath is not None:
         outfile = open(fpath, 'w')
-    block = get(data, querystr)
+    block = get(data, querystr, do_dedent)
     for line in block:
         if fpath is None:
             print(line)
@@ -214,6 +243,7 @@ def dump(data, querystr="", fpath=None):
 
 
 # drop a YAML block specificed by a querystr
+#   drop the leading comment lines immediately preceding this block
 def drop(data, querystr):
     if querystr == "":
         return  # empty querystr, no drop action
@@ -223,9 +253,11 @@ def drop(data, querystr):
         return
     pos2 = next_pos(data, pos1, querystr)
 
-    # check if there are comments immediately before this YAML block
+    nspace = strip_indentations(data[pos1])[0]
+    # check if there are comment lines immediately before this YAML block and with less or the same indentations
     for i in range(pos1 - 1, -1, -1):
-        if data[i].strip().startswith('#'):
+        nspace2 = strip_indentations(data[i])[0]
+        if data[i].strip().startswith('#') and nspace2 <= nspace:
             pos1 = i
         else:
             break  # exit the loop if non-comment
@@ -234,6 +266,8 @@ def drop(data, querystr):
 
 
 # modify a YAML bock specified by a querystr with a newblock
+#   leading comment lines immediately preceding the old block will be lost
+#   so comment lines have to present in the new block to stay
 def modify(data, querystr, newblock):
     oneline_change = False
     if isinstance(newblock, str):  # if newblock is a string, convert it to a list
@@ -252,9 +286,10 @@ def modify(data, querystr, newblock):
     # get the number of indentation spaces in the "querystr" YAML block
     nspace, spaces, _ = strip_indentations(data[pos1])
 
-    # check if there are comments immediately before the "querystr" YAML block
+    # check if there are comment lines immediately before the "querystr" YAML block with less or the same indentations
     for i in range(pos1 - 1, -1, -1):
-        if data[i].strip().startswith('#'):
+        nspace2 = strip_indentations(data[i])[0]
+        if data[i].strip().startswith('#') and nspace2 <= nspace:
             pos1 = i
         else:
             break  # exit the loop if non-comment
@@ -269,6 +304,6 @@ def modify(data, querystr, newblock):
             newblock[i] = spaces + line
 
     if oneline_change:
-        data[pos1] = newblock[0]
+        data[pos1] = newblock[0] if newblock else ""
     else:
         data[pos1:pos2] = newblock

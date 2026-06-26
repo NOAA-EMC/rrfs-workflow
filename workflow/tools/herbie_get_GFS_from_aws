@@ -14,7 +14,7 @@ if nargs < 2:
 
 print(f'each cycle data will be downloaded to ./tmp/ temporarily and then moved to ./downloads/')
 from herbie import Herbie
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import os
 import shutil
 import time
@@ -30,8 +30,8 @@ if nargs > 2:
 cyc_interval = 6
 
 two_dates = date_range.split("-")
-date1 = datetime.strptime(two_dates[0], "%Y%m%d%H")
-date2 = datetime.strptime(two_dates[1], "%Y%m%d%H")
+date1 = datetime.strptime(two_dates[0], "%Y%m%d%H").replace(tzinfo=timezone.utc)
+date2 = datetime.strptime(two_dates[1], "%Y%m%d%H").replace(tzinfo=timezone.utc)
 cur_date = date1
 fhrs = fhr_range.split("-")
 

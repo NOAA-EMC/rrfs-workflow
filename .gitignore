@@ -24,6 +24,7 @@ fix/eu12km
 fix/global12km
 pygraf
 tests/xml
+tests/yaml
 workflow/OPSROOT
 modulefiles/rrfs/hostgeneric.*.lua
 workflow/tools/downloads/

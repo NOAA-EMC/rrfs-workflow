@@ -2,8 +2,8 @@
 import os
 import sys
 import hifiyaml4rrfs as hy
-import yamltools4rrfs as yt
-from datetime import datetime, timedelta
+import yamltools4rrfs as yj
+from datetime import datetime, timedelta, timezone
 
 args = sys.argv
 nargs = len(args) - 1
@@ -26,6 +26,7 @@ emptyObsSpaceAction = os.getenv("EMPTY_OBS_SPACE_ACTION", "@emptyObsSpaceAction@
 START_TYPE = os.getenv("START_TYPE", "START_TYPE_NOT_DEFINED")
 GETKF_TYPE = os.getenv("GETKF_TYPE", "TYPE_NOT_DEFINED")
 use_conv_sat_info = (os.getenv("USE_CONV_SAT_INFO", "True").upper() != "FALSE")
+SAT_USELIST = os.getenv("SAT_USELIST", "")
 
 STATIC_BEC_MODEL = os.getenv("STATIC_BEC_MODEL", "GSIBEC")
 GSIBEC_X = os.getenv("GSIBEC_X", "@GSIBEC_X@")
@@ -43,12 +44,19 @@ ANALYSIS_VARIABLES = os.getenv("ANALYSIS_VARIABLES", "0")  # 5, 12 or a list of 
 # determine the temporal grid for Gaussian Thinning
 time_mesh = 3
 THINNING_TIME_MESH = f"PT{time_mesh:02d}H"
-analysis_time = datetime.strptime(ANALYSIS_DATE, "%Y-%m-%dT%H:%M:%SZ")
+analysis_time = datetime.strptime(ANALYSIS_DATE, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
 delta = timedelta(hours=time_mesh / 2)
 time_min = analysis_time - delta
 time_max = analysis_time + delta
 THINNING_TIME_MIN = time_min.strftime("%Y-%m-%dT%H:%M:%SZ")
 THINNING_TIME_MAX = time_max.strftime("%Y-%m-%dT%H:%M:%SZ")
+#
+# set the obs time window for satellite radiance obs, default to 60 minutes
+delta = timedelta(minutes=60)
+time_min = analysis_time - delta
+time_max = analysis_time + delta
+SATRAD_TWINDOW_MIN = int(time_min.timestamp())  # seconds since epoch (i.e. 1970-01-01T00:00:00Z)
+SATRAD_TWINDOW_MAX = int(time_max.timestamp())  # seconds since epoch (i.e. 1970-01-01T00:00:00Z)
 
 # determine the temporal grid for Gaussian Thinning
 time_mesh = 3
@@ -81,6 +89,8 @@ replacements = {
     "THINNING_TIME_MESH": f"{THINNING_TIME_MESH}",
     "THINNING_TIME_MIN": f"{THINNING_TIME_MIN}",
     "THINNING_TIME_MAX": f"{THINNING_TIME_MAX}",
+    "SATRAD_TWINDOW_MIN": f"{SATRAD_TWINDOW_MIN}",
+    "SATRAD_TWINDOW_MAX": f"{SATRAD_TWINDOW_MAX}",
 }
 
 # ------------------------------------------------------------------------------------
@@ -149,8 +159,8 @@ if ytype == "getkf" and GETKF_TYPE == "solver":
 # ------------------------------------------------------------------------------------
 # read convinfo and/or satinfo if use_conv_sat_info
 if use_conv_sat_info:
-    dcConvInfo = yt.load_convinfo()
-    dcSatInfo = yt.load_satinfo()
+    dcConvInfo = yj.load_convinfo()
+    dcSatInfo = yj.load_satinfo()
     if not dcConvInfo:
         sys.stderr.write("INFO: no convinfo, or empty/corrupt convinfo\n")
     if not dcSatInfo:
@@ -162,6 +172,7 @@ if is_pass2:
     use_conv_sat_info = True
     dcConvInfo = {'refl10cm': {'iuse': '1'}}
     dcSatInfo = {}
+    SAT_USELIST = ''
     bec_diffusion = hy.load("bec_diffusion.yaml")
     hy.modify(data, 'cost function/background error', bec_diffusion)  # use diffusion BEC
     hy.modify(data, 'variational/iterations/0/ninner', 'ninner: 75')  # first outer loop uses 75 iterations
@@ -172,20 +183,22 @@ if is_pass2:
 head_end, _ = hy.get_start_pos(data, "observations/observers")  # get the YAML head section
 output = data[0:head_end + 1]
 # assemble observers
-dcObs = yt.get_all_obs(data, shallow=True)
+dcObs = yj.get_all_obs(data, shallow=True)
 for name, observer in dcObs.items():
     sname = observer["sname"]
     tmp = data[observer["pos1"]:observer["pos2"]]  # a shallow copy when slicing
     if ytype == "getkf" and (GETKF_TYPE == "solver" or GETKF_TYPE == "post"):
-        yt.getkf_observer_tweak(tmp, GETKF_TYPE)
+        yj.getkf_observer_tweak(tmp, GETKF_TYPE)
 
     if use_conv_sat_info:
-        if observer["is_sat_radiance"]:  # check against satinfo
-            for sis, info in dcSatInfo.items():
-                if sis == sname:
-                    yt.update_sat_anchors(tmp, dcSatInfo)
-                    output.extend(tmp)
-                    break
+        if observer["is_sat_radiance"]:  # check against SAT_USELIST
+            if SAT_USELIST == "__passthrough__" or sname in SAT_USELIST:
+                # update channel information based on satinfo
+                for sis, info in dcSatInfo.items():
+                    if sis == sname:
+                        yj.update_sat_anchors(tmp, dcSatInfo)
+                        break
+                output.extend(tmp)
         else:  # check against convinfo
             for iname, info in dcConvInfo.items():
                 if iname == sname:
