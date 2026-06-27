@@ -28,7 +28,7 @@ cd "${DATA}" || exit 1
 #
 fcst_len_hrs_cycles=${FCST_LEN_HRS_CYCLES:-"01 01"}
 my_fcst_length=$("${USHrrfs}/find_fcst_length.sh" "${fcst_len_hrs_cycles}" "${cyc}" )
-export FCST_LENGTH="${my_fcst_length}"
+# export FCST_LENGTH="${my_fcst_length}" #tmp.debug: the variable is not used anywhere
 echo "forecast length for this cycle is ${my_fcst_length}"
 #
 # ... Set some date variables
@@ -52,8 +52,8 @@ MMp=$(date -d "${CDATE:0:8} ${CDATE:8:2} - 1 day" +%m)
 DDp=$(date -d "${CDATE:0:8} ${CDATE:8:2} - 1 day" +%d)
 HHp=$(date -d "${CDATE:0:8} ${CDATE:8:2}- 1 day" +%H)
 #
-current_day="${YYYY}${MM}${DD}" #$(date -d "${YYYY}${MM}${DD}")
-current_hh="${HH}" #$(date -d "${HH}" +"%H")
+current_day="${YYYY}${MM}${DD}"
+current_hh="${HH}"
 #
 #prev_hh=$(date -d "$current_hh -24 hour" +"%H")
 previous_day=$(date '+%C%y%m%d' -d "$current_day-1 days")
@@ -105,7 +105,7 @@ VINTERP_SCRIPT=${USHrrfs}/chem_vinterp.py
 INTERP_WEIGHTS_DIR=${CHEM_INPUT}/grids/interpolation_weights/
 SCRIP_FILES_DIR=${CHEM_INPUT}/grids/scrip_files/
 # Now set the same for the scrip file:
-if [[ "${SCRIP_FILES_DIR}/mpas_${MESH_NAME}_scrip.nc" ]]; then
+if [[ -s "${SCRIP_FILES_DIR}/mpas_${MESH_NAME}_scrip.nc" ]]; then
    ln -s "${SCRIP_FILES_DIR}/mpas_${MESH_NAME}_scrip.nc" ./
 else
    echo "WARNING: NO SCRIP file available for this domain in ${SCRIP_FILES_DIR}, you will need to supply it as an argument to ${SCRIPT}"
@@ -114,12 +114,7 @@ fi
 #
 # Set a few things for the CONDA environment
 export REGRID_WRAPPER_LOG_DIR=${DATA}
-regrid_wrapper_dir=${REGRID_WRAPPER_DIR} #/lfs5/BMC/rtwbl/rap-chem/mpas_rt/working/ben_interp/regrid-wrapper/
-PYTHONDIR=${regrid_wrapper_dir}/src
-#regrid_conda_env=${REGRID_CONDA_ENV}  #CONDAENV=/lfs5/BMC/rtwbl/rap-chem/miniconda/envs/regrid-wrapper
-#export PATH=${regrid_conda_env}/bin:${PATH}
-#export ESMFMKFILE=${regrid_conda_env}/lib/esmf.mk
-export PYTHONPATH=${PYTHONDIR}:${PYTHONPATH}
+export PYTHONPATH="${REGRID_WRAPPER_DIR}/src":${PYTHONPATH}
 #
 #==================================================================================================#
 if [[ "${CHEM_GROUP}" == "smoke" ]]; then
@@ -141,9 +136,11 @@ fi # bio/pollen
 if [[ "${CHEM_GROUP}" == "GOES_AOD" ]] ; then
   source "${USHrrfs}"/chem_prep_goes_aod.sh
 fi
+
 if [[ "${CHEM_GROUP}" == "ssalt" ]] ; then
   echo "NOTHING to prepare -- exiting"
 fi
+
 if [[ "${CHEM_GROUP}" == "dust" ]]; then
   if [[ ! -s "${FIXrrfs}/chemistry/dust/fengsha_dust_inputs.${MESH_NAME}.nc" ]]; then
      source "${HOMErrfs}/workflow/tools/chem_prep_dust.sh"
