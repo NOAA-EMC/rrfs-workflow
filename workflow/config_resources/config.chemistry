@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Aloha! This file is to setup chemistry configurations
-#
+# shellcheck disable=SC2154
 # turn off DA by default. If doing DA, need to change them back to true
 export DO_IODA=false
 export DO_JEDI=false
