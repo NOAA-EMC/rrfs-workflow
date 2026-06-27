@@ -46,5 +46,5 @@
 [submodule "sorc/chem-regrid-wrapper"]
 	path = sorc/chem-regrid-wrapper
 	url = https://github.com/RRFSx/regrid-wrapper.git
-	branch = mpas_aero_v0
+	branch = main
 	ignore = all
