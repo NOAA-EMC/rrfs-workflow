@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2154,SC2153,SC2012
+# shellcheck disable=SC2154,SC2153,SC2012,SC2016
 # rrfslint: file-disable=RRFS005
 #
-# TODO, if residential wood burning emissions are turned on, we need to use the
 if [[ "${CHEM_GROUPS,,}" == *rwc* ]]; then
-   GRA2PES_SECTOR=total_minus_res #to not double count those emissions
+   GRA2PES_SECTOR=total_minus_res # to not double count those emissions
 else
    GRA2PES_SECTOR=total
 fi
@@ -152,7 +151,7 @@ if [[ "${ANTHRO_EMISINV}" == *NEMO* ]]; then
       # file for that same year and month (e.g., matching 201705*)
       if [[ ! -r "${testfile}" ]]; then
          YYYYMM="${testdate:0:6}"
-         first_available=$(ls -1 "${INDIR_NEMO}/${isect}/"emis_mole_${isect}_${YYYYMM}*.ncf 2>/dev/null | head -n 1)
+         first_available=$(ls -1 "${INDIR_NEMO}/${isect}/emis_mole_${isect}_${YYYYMM}"*.ncf 2>/dev/null | head -n 1)
          if [[ -n "${first_available}" ]]; then
             testfile="${first_available}"
          fi
