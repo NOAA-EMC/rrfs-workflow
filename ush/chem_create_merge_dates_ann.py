@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 # Purpose: Creates all annual merge dates files including ramp-ups
 # Usage: Change variables for run days and year.

@@ -30,7 +30,7 @@ for tracer in ${EXTRA_CHEMICAL_TRACERS//,/ }; do
     # \t  = tab character (x4)
     # %s  = string 2 (uppercase)
     # \n  = newline
-    printf "%s\t\t\t\t%s\n" "$tracer" "$tracer_upper" >> histlist_3d
+    printf "%s\t\t\t\t%s\n" "${tracer}" "${tracer_upper}" >> histlist_3d
 done
 # Make sure we didn't create any duplicates
 awk '!seen[$0]++' histlist_2d  > temp_histlist_2d && mv temp_histlist_2d histlist_2d

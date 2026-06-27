@@ -133,7 +133,7 @@ if [[ -s "${UMBRELLA_PREP_CHEM_DATA}/rwc.init.nc" ]]; then
 fi
 #
 # Extra chemical tracers
-if [[ "${#EXTRA_CHEMICAL_TRACERS[@]}" -gt 0 ]]; then
+if (( "${#EXTRA_CHEMICAL_TRACERS[@]}" > 0 )); then
    n_extra=$(echo "${EXTRA_CHEMICAL_TRACERS//,/ }" | wc -w)
    echo "adding ${#EXTRA_CHEMICAL_TRACERS[@]} to the tracer list"
    sed -i "s/config_extra_chemical_tracers[[:space:]]*=[[:space:]]*''/config_extra_chemical_tracers = ',${EXTRA_CHEMICAL_TRACERS},'/g" namelist.atmosphere
@@ -141,7 +141,7 @@ if [[ "${#EXTRA_CHEMICAL_TRACERS[@]}" -gt 0 ]]; then
 fi 
 
 # MIE tables
-if [[ "${CONFIG_MIE_AOD_OPT}" -gt 0 ]]; then
+if (( CONFIG_MIE_AOD_OPT > 0 )); then
    sed -i '/^&physics$/a \    aer_opt = 2' namelist.atmosphere
    if [[ -e "${FIXrrfs}/chemistry/optics/AERO_OPT.TBL" ]]; then
       echo "AERO_OPT.TBL exists in fix directory, linking to run dir"
