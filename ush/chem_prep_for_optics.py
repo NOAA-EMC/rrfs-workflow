@@ -91,9 +91,9 @@ def main():
     water_file = "refract_water.txt"
     dust_file = "refract_dust_kwcp_fou.txt"
     smoke_file = "refract_biomass_new.txt"
-    nh4so4_file = "refract_ammoniumsulfate.txt"
-    no3_file = "refract_nitrate.txt"
-    unspc_file = "refract_soa_dinar.txt"
+    # nh4so4_file = "refract_ammoniumsulfate.txt"
+    # no3_file = "refract_nitrate.txt"
+    # unspc_file = "refract_soa_dinar.txt"
     output_file = "AERO_OPT.TBL"
 
     # Number of bands

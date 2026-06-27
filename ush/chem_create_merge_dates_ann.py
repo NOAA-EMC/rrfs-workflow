@@ -148,7 +148,7 @@ def getRepWeek(year, month, holidays):
                 hWk = True
 
         # Return the rep_week if there were no holidays
-        if hWk == False:
+        if hWk is False:
             break
 
     return rep_week

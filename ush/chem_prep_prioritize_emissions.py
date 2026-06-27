@@ -79,7 +79,7 @@ def prioritize_emissions(primary_nc, secondary_nc):
 
                 # MPAS FIX: Force the exact original dimension order (Time, nCells, nkanthro)
                 # We use the original da_pri.dims and swap the padding appropriately
-                dim_order = [d for d in ds_pri[var].dims if d != 'nkanthro'] + ['nkanthro'] if 'nkanthro' in ds_sec.dims else ds_pri[var].dims
+                # dim_order = [d for d in ds_pri[var].dims if d != 'nkanthro'] + ['nkanthro'] if 'nkanthro' in ds_sec.dims else ds_pri[var].dims
                 # Fallback to standard MPAS order if guessing fails
                 if set(['Time', 'nCells', 'nkanthro']).issubset(da_merged.dims):
                     da_merged = da_merged.transpose('Time', 'nCells', 'nkanthro')
