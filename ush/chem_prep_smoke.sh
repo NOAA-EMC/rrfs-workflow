@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2154,SC2153,SC2012
+# shellcheck disable=SC2154,SC2153,SC2012,SC2016
 # Remove any old files
 rm -f "${UMBRELLA_PREP_CHEM_DATA}"/smoke.init*nc # why we need this?
 
