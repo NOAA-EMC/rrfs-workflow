@@ -71,7 +71,7 @@ def write_tbl(
 ):
     with open(outpath, "w") as f:
         f.write(f"{nsw} {nlw} {naero} ! Header: nswbands, nlwbands, num_aero_spc\n")
-        #f.write(f"{header_string}\n")
+        # f.write(f"{header_string}\n")
         for block in species_blocks:
             f.write(f"{block['sw_name']}\n")
             for i, (r, im) in enumerate(zip(block["sw_r"], block["sw_i"]), start=1):
@@ -86,7 +86,7 @@ def main():
     # ============================================================================
     # CONFIGURATION - Modify these values as needed
     # ============================================================================
-    
+
     # Input files
     water_file = "refract_water.txt"
     dust_file = "refract_dust_kwcp_fou.txt"
@@ -95,27 +95,27 @@ def main():
     no3_file = "refract_nitrate.txt"
     unspc_file = "refract_soa_dinar.txt"
     output_file = "AERO_OPT.TBL"
-    
+
     # Number of bands
     nsw = 4  # Number of shortwave bands , now match with original RRTMG swbands
     nlw = 16  # Number of longwave bands
     naero = 6  # Number of aerosol species
-    
+
     # Shortwave band edges (micrometers)
     wavmin = [0.25, 0.35, 0.55, 0.998]
     wavmax = [0.35, 0.45, 0.65, 1.000]
-    
+
     # Longwave wavenumber band edges (cm^-1)
     wavenumber1 = [10., 350., 500., 630., 700., 820., 980., 1080., 1180., 1390., 1480., 1800., 2080., 2250., 2390., 2600.]
     wavenumber2 = [350., 500., 630., 700., 820., 980., 1080., 1180., 1390., 1480., 1800., 2080., 2250., 2390., 2600., 3250.]
-    
+
     # Header string
     header_string = "AERO_OPT.TBL"
-    
+
     # ============================================================================
     # Optional: Override configuration with command-line arguments
     # ============================================================================
-    
+
     p = argparse.ArgumentParser()
     p.add_argument("--water", default=water_file)
     p.add_argument("--dust", default=dust_file)
@@ -133,7 +133,7 @@ def main():
     # ============================================================================
     # Processing ! user may change or add sw_name, lw_name as they increase the species
     # ============================================================================
-    
+
     wl_sw = sw_band_centers(wavmin[: args.nsw], wavmax[: args.nsw])
     wl_lw = lw_band_centers_um(wavenumber1[: args.nlw], wavenumber2[: args.nlw])
 
@@ -155,7 +155,7 @@ def main():
 
     species_blocks = [
         dict(sw_name="WATER_DATA", lw_name="WATER_LW_PART", sw_r=w_sw_r, sw_i=w_sw_i, lw_r=w_lw_r, lw_i=w_lw_i),
-        dict(sw_name="DUST_DATA",  lw_name="DUST_LW_DATA",  sw_r=d_sw_r, sw_i=d_sw_i, lw_r=d_lw_r, lw_i=d_lw_i),
+        dict(sw_name="DUST_DATA", lw_name="DUST_LW_DATA", sw_r=d_sw_r, sw_i=d_sw_i, lw_r=d_lw_r, lw_i=d_lw_i),
         dict(sw_name="SMOKE_DATA", lw_name="SMOKE_LW_DATA", sw_r=s_sw_r, sw_i=s_sw_i, lw_r=s_lw_r, lw_i=s_lw_i),
         dict(sw_name="NH4SO4_DATA", lw_name="NH4SO4_LW_DATA", sw_r=s_sw_r, sw_i=s_sw_i, lw_r=s_lw_r, lw_i=s_lw_i),
         dict(sw_name="NO3_DATA", lw_name="NO3_LW_DATA", sw_r=s_sw_r, sw_i=s_sw_i, lw_r=s_lw_r, lw_i=s_lw_i),
@@ -170,8 +170,9 @@ def main():
         species_blocks=species_blocks,
         header_string=args.header,
     )
-    
+
     print(f"Program End Successfully")
+
 
 if __name__ == "__main__":
     main()
