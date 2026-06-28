@@ -1,6 +1,8 @@
+#!/usr/bin/env python
 import xarray as xr
 import sys
 import os
+
 
 def prioritize_emissions(primary_nc, secondary_nc):
     # Load datasets fully into memory
@@ -27,7 +29,7 @@ def prioritize_emissions(primary_nc, secondary_nc):
             ds_out[var] = da
 
     print("\n--- Processing 'e_ant' Variables ---")
-    
+
     # Calculate how many layers we need to add to the primary data
     pad_size = max(0, n_sec - n_pri)
 
@@ -35,36 +37,36 @@ def prioritize_emissions(primary_nc, secondary_nc):
     for var in ds_pri.data_vars:
         if var.startswith('e_ant'):
             da_pri = ds_pri[var]
-            
+
             # Create a purely 2D spatial mask by dropping 'nkanthro'
             if 'nkanthro' in da_pri.dims:
                 da_spatial = da_pri.isel(nkanthro=0, drop=True)
             else:
                 da_spatial = da_pri
-                
+
             valid_mask_2d = (da_spatial != 0) & (da_spatial.notnull())
-            
+
             if var in ds_sec.data_vars:
                 # CASE 1: Exists in both datasets
                 da_sec = ds_sec[var]
-                
+
                 # Pad the primary variable with zeros for the upper layers
                 if pad_size > 0:
                     da_pri_padded = da_pri.pad(nkanthro=(0, pad_size), constant_values=0)
                     da_pri_padded = da_pri_padded.assign_coords(nkanthro=da_sec['nkanthro'])
                 else:
                     da_pri_padded = da_pri
-                
+
                 # Explicitly expand the 2D mask to a 3D mask that perfectly matches da_sec
                 valid_mask_3d = valid_mask_2d.broadcast_like(da_sec)
-                
+
                 # Merge the data
                 da_merged = xr.where(valid_mask_3d, da_pri_padded, da_sec)
-                
+
                 # MPAS FIX: Force the exact original dimension order
                 da_merged = da_merged.transpose(*da_sec.dims)
                 print(f"Case 1 (Merged spatial coverage): {var}")
-                
+
             else:
                 # CASE 2: Exists in primary only
                 if pad_size > 0:
@@ -73,16 +75,16 @@ def prioritize_emissions(primary_nc, secondary_nc):
                         da_pri_padded = da_pri_padded.assign_coords(nkanthro=ds_sec['nkanthro'])
                 else:
                     da_pri_padded = da_pri
-                    
+
                 da_merged = da_pri_padded
-                
+
                 # MPAS FIX: Force the exact original dimension order (Time, nCells, nkanthro)
                 # We use the original da_pri.dims and swap the padding appropriately
-                dim_order = [d for d in ds_pri[var].dims if d != 'nkanthro'] + ['nkanthro'] if 'nkanthro' in ds_sec.dims else ds_pri[var].dims
+                # dim_order = [d for d in ds_pri[var].dims if d != 'nkanthro'] + ['nkanthro'] if 'nkanthro' in ds_sec.dims else ds_pri[var].dims
                 # Fallback to standard MPAS order if guessing fails
                 if set(['Time', 'nCells', 'nkanthro']).issubset(da_merged.dims):
                     da_merged = da_merged.transpose('Time', 'nCells', 'nkanthro')
-                    
+
                 print(f"Case 2 (Padded primary-only variable): {var}")
 
             # Re-apply attributes and clear encoding
@@ -96,11 +98,11 @@ def prioritize_emissions(primary_nc, secondary_nc):
             print(f"Case 3 (Copied secondary-only variable): {var}")
             da_new = ds_sec[var].copy()
             da_new.encoding.clear()
-            
+
             # MPAS FIX: Force dimension order
             if set(['Time', 'nCells', 'nkanthro']).issubset(da_new.dims):
                 da_new = da_new.transpose('Time', 'nCells', 'nkanthro')
-                
+
             ds_out[var] = da_new
 
     # Ensure global attributes remain intact
@@ -108,13 +110,14 @@ def prioritize_emissions(primary_nc, secondary_nc):
 
     print("\n--- Saving output ---")
     temp_nc = primary_nc + ".tmp"
-    
+
     # MPAS FIX: Explicitly set Time as an unlimited dimension
     unlimited = ['Time'] if 'Time' in ds_out.dims else None
     ds_out.to_netcdf(temp_nc, unlimited_dims=unlimited)
-    
+
     os.replace(temp_nc, primary_nc)
     print(f"Successfully processed emissions and saved into: {primary_nc}")
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:

@@ -6,7 +6,7 @@ rm -f "${UMBRELLA_PREP_CHEM_DATA}"/goes.aod.init*nc # why we need this?
 GOES_INPUT=/scratch4/BMC/zrtrr/jdduda/smoke_mask/GOES
 # output directories
 GOES_OUTPUTDIR=${DATA}
-OUTPUTFILE=${UMBRELLA_PREP_CHEM_DATA}/goes.aod.init.nc
+# OUTPUTFILE=${UMBRELLA_PREP_CHEM_DATA}/goes.aod.init.nc
 
 #
 srun python -u "${SCRIPT}" \

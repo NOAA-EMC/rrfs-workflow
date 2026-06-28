@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2154,SC2153,SC2012
+# shellcheck disable=SC2154,SC2153,SC2012,SC2016
 # Remove any old files
 rm -f "${UMBRELLA_PREP_CHEM_DATA}"/smoke.init*nc # why we need this?
 
@@ -34,15 +34,15 @@ do
   if [[ "${EBB_DCYCLE}" == -1 ]]; then
      # Peristence emissions, only 24 forecasts are possible
      # Beyond that we need to repeat the emissions
-     timestr1=$(date +%Y%m%d%H -d "$previous_day + $ihour2 hours")
+     timestr1=$(date +%Y%m%d%H -d "${previous_day} + ${ihour2} hours")
   else
      # Either NOWcast (1 emission file per current forecast hour) or
      # Forecasted emissions requiring the previous 24 hours
-     timestr1=$(date +%Y%m%d%H -d "$current_day + $ihour hours")
+     timestr1=$(date +%Y%m%d%H -d "${current_day} + ${ihour} hours")
   fi
 
-  timestr2=$(date +%Y-%m-%d_%H -d "$current_day + $ihour hours")
-  timestr3=$(date +%Y-%m-%d_%H:00:00 -d "$current_day + $ihour hours")
+  timestr2=$(date +%Y-%m-%d_%H -d "${current_day} + ${ihour} hours")
+  timestr3=$(date +%Y-%m-%d_%H:00:00 -d "${current_day} + ${ihour} hours")
   #
   EMISFILE="${UMBRELLA_PREP_CHEM_DATA}/smoke.init.retro.${timestr2}.00.00.nc"
   EMISFILE2="${RAVE_OUTPUTDIR}/${MESH_NAME}-${FIRE_DATASET}-${timestr1}.nc"

@@ -1,5 +1,7 @@
+#!/usr/bin/env python
 import xarray as xr
 import sys
+
 
 def merge_netcdf_files(input_files, variables, output_filename):
     """
@@ -14,8 +16,8 @@ def merge_netcdf_files(input_files, variables, output_filename):
         print(f"Opening {len(input_files)} files...")
         print(f"Obtaining {variables}")
         ds = xr.open_mfdataset(
-            input_files, 
-            concat_dim="ROW", 
+            input_files,
+            concat_dim="ROW",
             combine="nested",
             data_vars=list(variables),
         )
@@ -29,8 +31,9 @@ def merge_netcdf_files(input_files, variables, output_filename):
     except Exception as e:
         print(f"An error occurred: {e}")
 
+
 if __name__ == "__main__":
-#
+    #
     files = sys.argv[3:]
     vars_to_keep = sys.argv[2].split(',')
     output = sys.argv[1]

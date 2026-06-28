@@ -1,10 +1,9 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2154,SC2153,SC2012
+# shellcheck disable=SC2154,SC2153,SC2012,SC2016
 # rrfslint: file-disable=RRFS005
 #
-# TODO, if residential wood burning emissions are turned on, we need to use the
 if [[ "${CHEM_GROUPS,,}" == *rwc* ]]; then
-   GRA2PES_SECTOR=total_minus_res #to not double count those emissions
+   GRA2PES_SECTOR=total_minus_res # to not double count those emissions
 else
    GRA2PES_SECTOR=total
 fi
@@ -104,12 +103,12 @@ if [[ -r ${EMISFILE_BASE_RAW1_GRA2PES} ]] && [[ -r ${EMISFILE_BASE_RAW2_GRA2PES}
             ncks -d Time,${t_ix},${t_ix} "${EMISFILE}" "${EMISFILE_FINAL}"
             echo "Created file #${ihour}/${my_fcst_length} at ${EMISFILE_FINAL}"
             ncrename -v PM25-PRI,e_ant_in_unspc_fine "${EMISFILE_FINAL}"
-	    ncrename -v PM10-PRI,e_ant_in_unspc_coarse "${EMISFILE_FINAL}"
+            ncrename -v PM10-PRI,e_ant_in_unspc_coarse "${EMISFILE_FINAL}"
             ncrename -v HC01,e_ant_in_ch4 "${EMISFILE_FINAL}"
-	    ncrename -v CO,e_ant_in_co "${EMISFILE_FINAL}"
-	    ncrename -v NH3,e_ant_in_nh3 "${EMISFILE_FINAL}"
-	    ncrename -v NOX,e_ant_in_nox "${EMISFILE_FINAL}"
-	    ncrename -v SO2,e_ant_in_so2 "${EMISFILE_FINAL}"
+            ncrename -v CO,e_ant_in_co "${EMISFILE_FINAL}"
+            ncrename -v NH3,e_ant_in_nh3 "${EMISFILE_FINAL}"
+            ncrename -v NOX,e_ant_in_nox "${EMISFILE_FINAL}"
+            ncrename -v SO2,e_ant_in_so2 "${EMISFILE_FINAL}"
             ln -sf "${EMISFILE_FINAL}" "${LINKEDEMISFILE}"
          fi
      done
@@ -127,14 +126,14 @@ if [[ "${ANTHRO_EMISINV}" == *NEMO* ]]; then
 # We need to determine the representative day for the current forecast day
  # First create the smk_merge_dates file if one doesn't exist
    if [[ ! -r "${MERGEDATEFILE}" ]]; then
-      srun -n 1 python "${HOMErrfs}/ush/chem_create_merge_dates_ann.py" ${NEMO_YEAR}
+      srun -n 1 "${HOMErrfs}/ush/chem_create_merge_dates_ann.py" ${NEMO_YEAR}
       # Put it in the shared directory?
       cp "smk_merge_dates_${NEMO_YEAR}.txt" "${MERGEDATEFILE}"
       # In case no permissions, set datefile as one created here
       MERGEDATEFILE="${DATA}/smk_merge_dates_${NEMO_YEAR}.txt"
    fi
  # Then get the day of the year in the NEMO BASE YEAR (2017) that is closest to today's day of the week in the calendar postion
-   YYYYMMDD_NEMO_BASE_YEAR=$(python "${HOMErrfs}/ush/chem_get_merge_date.py" "${YYYY}" "${JJJ}" "${NEMO_YEAR}")
+   YYYYMMDD_NEMO_BASE_YEAR=$("${HOMErrfs}/ush/chem_get_merge_date.py" "${YYYY}" "${JJJ}" "${NEMO_YEAR}")
    JJJ_NEMO_BASE_YEAR=$(date +%-j -d "${YYYYMMDD_NEMO_BASE_YEAR}")
    NEMO_EMISFILES_TO_CAT=()
    isect_knt=0
@@ -152,7 +151,7 @@ if [[ "${ANTHRO_EMISINV}" == *NEMO* ]]; then
       # file for that same year and month (e.g., matching 201705*)
       if [[ ! -r "${testfile}" ]]; then
          YYYYMM="${testdate:0:6}"
-         first_available=$(ls -1 "${INDIR_NEMO}/${isect}/"emis_mole_${isect}_${YYYYMM}*.ncf 2>/dev/null | head -n 1)
+         first_available=$(ls -1 "${INDIR_NEMO}/${isect}/emis_mole_${isect}_${YYYYMM}"*.ncf 2>/dev/null | head -n 1)
          if [[ -n "${first_available}" ]]; then
             testfile="${first_available}"
          fi
@@ -167,7 +166,7 @@ if [[ "${ANTHRO_EMISINV}" == *NEMO* ]]; then
    NEMO_VAR_LIST=("POC,PEC,PMOTHR,PMC,PAL,PCA,PCL,PFE,PK,PMG,PMN,PNA,PNCOM,PNH4,PNO3,PSI,PSO4,PTI,CO,NO,NO2,NH3,SO2")
    NEMO_PM_VAR_LIST=("POC,PEC,PMOTHR,PAL,PCA,PCL,PFE,PK,PMG,PMN,PNA,PNCOM,PNH4,PNO3,PSI,PSO4,PTI")
    NEI_VAR_LIST=("LATITUDE,LONGITUDE,STKDM,STKHT,STKFLW,STKTK,STKVE")
-   srun -n 1 python "${HOMErrfs}/ush/chem_merge_emissions.py" "${EMISFILE_NEMO_SECTORSUM}" "${NEMO_VAR_LIST[@]}" "${NEMO_EMISFILES_TO_CAT[@]}"
+   srun -n 1 "${HOMErrfs}/ush/chem_merge_emissions.py" "${EMISFILE_NEMO_SECTORSUM}" "${NEMO_VAR_LIST[@]}" "${NEMO_EMISFILES_TO_CAT[@]}"
    # Append the dims - TODO, can only append variables to dim file, not other way around ...
    mv "${EMISFILE_NEMO_SECTORSUM}" "${EMISFILE_NEMO_SECTORSUM}_tmp.nc"
    cp "${INPUT_GRID_NEMO}" "${EMISFILE_NEMO_SECTORSUM}"
@@ -240,8 +239,8 @@ if [[ "${ANTHRO_EMISINV}" == *NEMO* ]]; then
       isect_knt=$((isect_knt+1))
    done
    ## Cat all of the point source files together
-   srun -n 1 python "${HOMErrfs}/ush/chem_merge_pt_emissions.py" "${NEMO_EMISFILE_PT_PROCESSED}" "${NEMO_VAR_LIST[@]}" "${NEMO_EMISFILES_PT_TO_CAT[@]}"
-   srun -n 1 python "${HOMErrfs}/ush/chem_merge_pt_emissions.py" "${NEMO_STACKFILE_PROCESSED}" "${NEI_VAR_LIST[@]}" "${NEMO_STACKFILES_TO_CAT[@]}"
+   srun -n 1 "${HOMErrfs}/ush/chem_merge_pt_emissions.py" "${NEMO_EMISFILE_PT_PROCESSED}" "${NEMO_VAR_LIST[@]}" "${NEMO_EMISFILES_PT_TO_CAT[@]}"
+   srun -n 1 "${HOMErrfs}/ush/chem_merge_pt_emissions.py" "${NEMO_STACKFILE_PROCESSED}" "${NEI_VAR_LIST[@]}" "${NEMO_STACKFILES_TO_CAT[@]}"
 
    # Update variable names for the chosen mechanism 
    ncap2 -O -s "e_ant_pt_in_unspc_fine=${NEMO_PM_VAR_LIST//,/+}" "${NEMO_EMISFILE_PT_PROCESSED}" "${NEMO_EMISFILE_PT_PROCESSED}"
@@ -289,7 +288,7 @@ do
      HH_EMIS=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${ihour} hours" +%H)
      LINKEDEMISFILE="${UMBRELLA_PREP_CHEM_DATA}/anthro.init.${YYYY_EMIS}-${MM_EMIS}-${DD_EMIS}_${HH_EMIS}.00.00.nc"
      if [[ "${ANTHRO_EMISINV}" == *GRA2PES* ]] && [[ "${ANTHRO_EMISINV}" == *NEMO* ]]; then
-        srun -n 1 python "${HOMErrfs}/ush/chem_prep_prioritize_emissions.py" "${EMISFILE_NEMO_PROCESSED}_${HH_EMIS}.nc" "${LINKEDEMISFILE}"
+        srun -n 1 "${HOMErrfs}/ush/chem_prep_prioritize_emissions.py" "${EMISFILE_NEMO_PROCESSED}_${HH_EMIS}.nc" "${LINKEDEMISFILE}"
         ln -sf "${EMISFILE_NEMO_PROCESSED}_${HH_EMIS}.nc" "${LINKEDEMISFILE}"
      elif  [[ ! "${ANTHRO_EMISINV}" == *GRA2PES* ]] && [[ "${ANTHRO_EMISINV}" == *NEMO* ]]; then
         ln -sf "${EMISFILE_NEMO_PROCESSED}_${HH_EMIS}.nc" "${LINKEDEMISFILE}"
