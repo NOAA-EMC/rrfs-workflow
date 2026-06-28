@@ -28,7 +28,7 @@ cd "${DATA}" || exit 1
 #
 fcst_len_hrs_cycles=${FCST_LEN_HRS_CYCLES:-"01 01"}
 my_fcst_length=$("${USHrrfs}/find_fcst_length.sh" "${fcst_len_hrs_cycles}" "${cyc}" )
-export FCST_LENGTH="${my_fcst_length}"
+export FCST_LENGTH="${my_fcst_length}"  # FCST_LENGTH is needed by chem-regrid
 echo "forecast length for this cycle is ${my_fcst_length}"
 #
 # ... Set some date variables
