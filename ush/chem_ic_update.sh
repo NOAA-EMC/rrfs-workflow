@@ -32,31 +32,4 @@ if [[ "${found}" == "true" ]]; then
         ncks -A -v "${species}" "${mpasout}" init.nc
       fi
    done
-#else
-#   if [[ "${CHEM_GROUPS,,}" == *dust* ]]; then
-#     ncap2 -O -s "dust_fine=1.e-12*qv" init.nc init.nc
-#     ncap2 -O -s "dust_coarse=1.e-12*qv" init.nc init.nc
-#   fi
-#   if [[ "${CHEM_GROUPS,,}" == *smoke* ]]; then
-#     ncap2 -O -s "smoke_fine=1.e-12*qv" init.nc init.nc
-#     ncap2 -O -s "smoke_coarse=1.e-12*qv" init.nc init.nc
-#   fi
-#   if [[ "${CHEM_GROUPS,,}" == *pollen* ]]; then
-#     ncap2 -O -s "polp_tree=1.e-12*qv" init.nc init.nc
-#     ncap2 -O -s "polp_grass=1.e-12*qv" init.nc init.nc
-#     ncap2 -O -s "polp_weed=1.e-12*qv" init.nc init.nc
-#     ncap2 -O -s "pols_all=1.e-12*qv" init.nc init.nc
-#   fi
-#   if [[ "${CHEM_GROUPS,,}" == *anthro* ]]; then
-#     ncap2 -O -s "smoke_fine=1.e-12*qv" init.nc init.nc
-#     ncap2 -O -s "smoke_coarse=1.e-12*qv" init.nc init.nc
-#     ncap2 -O -s "dust_fine=1.e-12*qv" init.nc init.nc
-#     ncap2 -O -s "dust_coarse=1.e-12*qv" init.nc init.nc
-#     ncap2 -O -s "unspc_fine=1.e-12*qv" init.nc init.nc
-#     ncap2 -O -s "unspc_coarse=1.e-12*qv" init.nc init.nc
-#   fi
-#   if [[ "${CHEM_GROUPS,,}" == *ssalt* ]]; then
-#     ncap2 -O -s "ssalt_fine=1.e-12*qv" init.nc init.nc
-#     ncap2 -O -s "ssalt_coarse=1.e-12*qv" init.nc init.nc
-#   fi
 fi
