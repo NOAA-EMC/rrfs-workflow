@@ -23,7 +23,7 @@ ${cpreq} "${FIXrrfs}"/jedi/obsop_name_map.yaml .
 ${cpreq} "${FIXrrfs}"/jedi/keptvars.yaml .
 ${cpreq} "${FIXrrfs}"/jedi/geovars.yaml .
 #
-# create data directory 
+# create data directory
 #
 mkdir -p data; cd data || exit 1
 mkdir -p obs ens jdiag
@@ -33,7 +33,11 @@ mkdir -p obs ens jdiag
 if [[ ${GETKF_TYPE} == observer* ]]; then
   source "${USHrrfs}/copy_obs.sh" "getkf"
 else
-  ln -snf "${UMBRELLA_GETKF_OBSERVER_DATA}"/jdiag* jdiag/
+  if [[ -d "${UMBRELLA_GETKF_OBSERVER_DATA}" ]]; then
+    ln -snf "${UMBRELLA_GETKF_OBSERVER_DATA}"/jdiag* jdiag/
+  elif [[ -d "${UMBRELLA_GETKF_OBSERVER_SOLVER_DATA}" ]]; then
+    ln -snf "${UMBRELLA_GETKF_OBSERVER_SOLVER_DATA}"/jdiag* jdiag/
+  fi
 fi
 #
 # determine whether to begin new cycles and link correct ensembles
@@ -129,10 +133,11 @@ if [[ ${START_TYPE} == "warm" ]] || [[ ${START_TYPE} == "cold" && ${COLDSTART_CY
   fi
 
   # move jdiag* files to the umbrella directory if observer
-  if [[ "${GETKF_TYPE}" == "observer" || "${GETKF_TYPE}" == "post" ]]; then
+  if [[ ${GETKF_TYPE} == observer* || "${GETKF_TYPE}" == "post" ]]; then
     cp "${DATA}"/jdiag* "${COMOUT}/getkf_${GETKF_TYPE}/${WGF}"
     mv jdiag* "${UMBRELLA_GETKF_DATA}"/.
-  else # move post mean to umbrella if solver
+  # move post mean to umbrella if solver or observer_solver
+  elif [[ "${GETKF_TYPE}" == "observer_solver" || "${GETKF_TYPE}" == "solver" ]]; then
     mv "${DATA}"/data/ens/mem000.nc "${UMBRELLA_GETKF_DATA}"/post_mean.nc
   fi
 

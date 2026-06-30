@@ -98,7 +98,10 @@ def getkf(xmlFile, expdir, taskType):
         dependencies = f'''
   <dependency>
   <and>{timedep}
+   <or>
     <taskdep task="getkf_solver"/>
+    <taskdep task="getkf_observer_solver"/>
+   </or>
   </and>
   </dependency>'''
     #
