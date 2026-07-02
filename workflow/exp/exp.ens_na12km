@@ -20,6 +20,8 @@ export DO_DETERMINISTIC=false
 export ENS_SIZE=30
 export ZETA_LEVELS="L65.txt"
 #
+export USE_MERRA2=false  # false: default GOCART aerosol climatology; true: MERRA2 aerosol climatology
+#
 export DO_IODA=false
 export DO_JEDI=false
 export DO_NONVAR_CLOUD_ANA=false

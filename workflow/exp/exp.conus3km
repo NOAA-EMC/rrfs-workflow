@@ -15,6 +15,8 @@ export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed i
 #
 export ZETA_LEVELS="L60.txt"
 #
+export USE_MERRA2=false  # false: default GOCART aerosol climatology; true: MERRA2 aerosol climatology
+#
 export DO_IODA=true
 export DO_JEDI=true
 #export SNUDGETYPES="GGG" # G=gsd_update_soiltq from GSI; P=2022 J Hydro paper; chars=SoilT,SnowT,SoilQ

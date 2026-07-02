@@ -26,6 +26,7 @@ def lbc(xmlFile, expdir, do_ensemble=False):
         'GROUP_INDEX': f'#group_index#',
         'GROUP_TOTAL_NUM': f'{lbc_group_total_num}',
         'NSOIL_LEVELS': os.getenv('NSOIL_LEVELS', '9'),
+        'USE_MERRA2': os.getenv('USE_MERRA2', 'FALSE').upper(),
     }
 
     if os.getenv('DO_CHEMISTRY', 'FALSE').upper() == "TRUE":
