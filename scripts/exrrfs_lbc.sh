@@ -94,9 +94,9 @@ ln -snf "${FIXrrfs}/${MESH_NAME}/${MESH_NAME}.invariant.nc_L${nlevel}_${prefix}"
 ${cpreq} "${FIXrrfs}/${MESH_NAME}/${MESH_NAME}.static.nc" static.nc
 ${cpreq} "${FIXrrfs}/${MESH_NAME}/graphinfo/${MESH_NAME}.graph.info.part.${NTASKS}" .
 if [[ "${USE_MERRA2^^}" == "TRUE" ]]; then
-ln -snf "${FIXrrfs}/physics/${PHYSICS_SUITE}/QNWFA_QNIFA_MERRA2_MONTHLY.dat" QNWFA_QNIFA_SIGMA_MONTHLY.dat
+  ln -snf "${FIXrrfs}/physics/${PHYSICS_SUITE}/QNWFA_QNIFA_MERRA2_MONTHLY.dat" QNWFA_QNIFA_SIGMA_MONTHLY.dat
 else
-ln -snf "${FIXrrfs}/physics/${PHYSICS_SUITE}/QNWFA_QNIFA_SIGMA_MONTHLY.dat" .
+  ln -snf "${FIXrrfs}/physics/${PHYSICS_SUITE}/QNWFA_QNIFA_SIGMA_MONTHLY.dat" .
 fi
 
 # run init_atmosphere_model
