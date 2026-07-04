@@ -374,7 +374,8 @@ else
         fi
       done
       if [ ${fallback_enable} == "YES" ]; then
-        print_info_msg "$VERBOSE" "cannot find background, fallback for product cycle"
+        print_info_msg "$VERBOSE" "WARNING: cannot find restart files in previous 1 hour, proceeding fallback for older cycle"
+        echo "WARNING: cannot find restart files in previous 1 hour, proceeding fallback for older cycle" | mail.py -s "RRFS prep_cyc fallback" -c ${MAILTO}
         fg_restart_dirname=forecast
         restart_prefix="${YYYYMMDD}.${HH}0000."
         if [ ${BKTYPE} -eq 2 ] && [ "${DO_ENSEMBLE}" = "FALSE" ]; then  #det cycle 09/21z start from n=1
@@ -397,7 +398,10 @@ else
            if [ -r "${checkfile}" ] ; then
              print_info_msg "$VERBOSE" "Found ${checkfile}; Use it as background for analysis "
              break
-    	 fi
+           else
+             print_info_msg "$VERBOSE" "WARNING: fallback cannot find restart files in previous ${n} hour"
+             echo "WARNING: fallback cannot find restart files in previous ${n} hour" | mail.py -s "RRFS prep_cyc fallback" -c ${MAILTO}
+    	   fi
            n=$((n + ${DA_CYCLE_INTERV}))
         done
       fi
@@ -470,6 +474,7 @@ if [ ${HH} -eq ${SNOWICE_update_hour} ] && [ "${CYCLE_TYPE}" = "prod" ] ; then
   else
     echo "${COMINobsproc} data does not exist!!"
     echo "WARNING: No snow update at ${HH}!!!!"
+    print_info_msg "$VERBOSE" "WARNING: In ${COMINobsproc}, NO IMSSNOW does not exist! Will continue without it (is data of opportunity)"
   fi
   if [ -r "latest.SNOW_IMS" ]; then
     ln -sf ./latest.SNOW_IMS                imssnow2
@@ -485,9 +490,11 @@ if [ ${HH} -eq ${SNOWICE_update_hour} ] && [ "${CYCLE_TYPE}" = "prod" ] ; then
     echo "${YYYYMMDDHH}(${CYCLE_TYPE}): update snow/ice using ${snowice_reference_time}"
   else
      echo "WARNING: No latest IMS SNOW file for update at ${YYYYMMDDHH}!!!!"
+     print_info_msg "$VERBOSE" "WARNING: In ${COMINobsproc}, NO IMSSNOW does not exist! Will continue without it (is data of opportunity)"
   fi
 else
   echo "NOTE: No update for IMS SNOW/ICE at ${YYYYMMDDHH}!"
+  print_info_msg "$VERBOSE" "WARNING: In ${COMINobsproc}, NOW_IMS does not exist! Will continue without it (is data of opportunity)"
 fi
 #
 #-----------------------------------------------------------------------
@@ -509,6 +516,7 @@ if [ ${HH} -eq ${SST_update_hour} ] && [ "${CYCLE_TYPE}" = "prod" ] ; then
   else
     echo "${COMINnsst} data does not exist!!"
     echo "WARNING: No SST update at ${HH}!!!!"
+    print_info_msg "$VERBOSE" "WARNING: In ${COMINnsst}, SST does not exist! Will continue without it (is data of opportunity)"
   fi
   if [ -r "latest.SST" ]; then
     cpreq -p ${FIXam}/RTG_SST_landmask.dat               RTG_SST_landmask.dat
@@ -535,9 +543,11 @@ EOF
     echo "${YYYYMMDDHH}(${CYCLE_TYPE}): update SST using ${sst_reference_time}"
   else
     echo "WARNING: No latest SST file for update at ${YYYYMMDDHH}!!!!"
+    print_info_msg "$VERBOSE" "WARNING: In ${COMINnsst}, SST does not exist! Will continue without it (is data of opportunity)"
   fi
 else
    echo "NOTE: No update for SST at ${YYYYMMDDHH}!"
+   print_info_msg "$VERBOSE" "WARNING: In ${COMINnsst}, SST does not exist! Will continue without it (is data of opportunity)"
 fi
 
 #-----------------------------------------------------------------------
