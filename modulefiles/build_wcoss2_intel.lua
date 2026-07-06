@@ -50,10 +50,26 @@ load(pathJoin("w3emc", os.getenv("w3emc_ver")))
 load(pathJoin("w3nco", os.getenv("w3nco_ver")))
 load(pathJoin("nemsio", os.getenv("nemsio_ver")))
 
+-- Load the official Python environment before locating the interpreter.
+load(pathJoin("python", os.getenv("python_ver")))
+load(pathJoin("ve/rrfs", os.getenv("rrfs_pythonve_ver")))
+
 setenv("INTEL_COMPILER_TYPE","CLASSIC")
 setenv("CMAKE_C_COMPILER","cc")
 setenv("CMAKE_CXX_COMPILER","CC")
 setenv("CMAKE_Fortran_COMPILER","ftn")
 setenv("CMAKE_Platform","wcoss2")
-setenv("BLENDINGPYTHON","/apps/spack/python/3.8.6/intel/19.1.3.304/pjn2nzkjvqgmjw4hmyz43v5x4jbxjzpk/bin/python")
-setenv("PYTHONPATH", "/apps/prod/python-modules/3.8.6/intel/19.1.3.304/lib/python3.8/site-packages:$PYTHONPATH")
+-- Use the Python executable selected by the loaded Python modules.
+local blending_python = capture("command -v python 2>/dev/null"):gsub("%s+$", "")
+
+if blending_python == "" or blending_python == "/usr/bin/python" then
+  LmodError(
+    "The RRFS Python environment was not loaded correctly. " ..
+    "Resolved Python: " .. blending_python
+  )
+end
+
+setenv("BLENDINGPYTHON", blending_python)
+
+-- Prevent user-installed packages from overriding the RRFS environment.
+setenv("PYTHONNOUSERSITE", "1")
