@@ -70,8 +70,6 @@ if [ ${WGF} = "firewx" ]; then
     LAT_CTR=38.9
     LON_CTR=-77.0
   fi
-  WRTCMP_cen_lat=${LAT_CTR}
-  WRTCMP_cen_lon=${LON_CTR}
 fi
 
 # define a new firewx_input variable
