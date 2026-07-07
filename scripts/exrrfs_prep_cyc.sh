@@ -374,7 +374,8 @@ else
         fi
       done
       if [ ${fallback_enable} == "YES" ]; then
-        print_info_msg "$VERBOSE" "cannot find background, fallback for product cycle"
+        print_info_msg "$VERBOSE" "WARNING: cannot find restart files in previous 1 hour, proceeding fallback for older cycle"
+        echo "WARNING: cannot find restart files in previous 1 hour, proceeding fallback for older cycle" | mail.py -s "RRFS prep_cyc fallback" -c ${MAILTO}
         fg_restart_dirname=forecast
         restart_prefix="${YYYYMMDD}.${HH}0000."
         if [ ${BKTYPE} -eq 2 ] && [ "${DO_ENSEMBLE}" = "FALSE" ]; then  #det cycle 09/21z start from n=1
@@ -397,7 +398,10 @@ else
            if [ -r "${checkfile}" ] ; then
              print_info_msg "$VERBOSE" "Found ${checkfile}; Use it as background for analysis "
              break
-    	 fi
+           else
+             print_info_msg "$VERBOSE" "WARNING: fallback cannot find restart files in previous ${n} hour"
+             echo "WARNING: fallback cannot find restart files in previous ${n} hour" | mail.py -s "RRFS prep_cyc fallback" -c ${MAILTO}
+    	   fi
            n=$((n + ${DA_CYCLE_INTERV}))
         done
       fi
