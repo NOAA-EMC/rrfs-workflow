@@ -751,21 +751,24 @@ if [ "${CYCLE_TYPE}" = "spinup" ]; then
   fi
 fi
 if [ ${Update_GVF} -ge 1 ]; then
-   latestGVF=$(ls ${DCOMINgvf}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm1}_c${YYYYMMDD}*.grib2)
-   latestGVF2=$(ls ${DCOMINgvf}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm2}_c${YYYYMMDDm1}*.grib2)
-   latestGVF3=$(ls ${DCOMINgvf}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm3}_c${YYYYMMDDm2}*.grib2)
-   if [ ! -r "${latestGVF}" ]; then
-     if [ -r "${latestGVF2}" ]; then
-       latestGVF=${latestGVF2}
+   shopt -s nullglob
+   latestGVF_array=(${DCOMINgvf}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm1}_c${YYYYMMDD}*.grib2)
+   latestGVF2_array=(${DCOMINgvf}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm2}_c${YYYYMMDDm1}*.grib2)
+   latestGVF3_array=(${DCOMINgvf}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm3}_c${YYYYMMDDm2}*.grib2)
+   shopt -u nullglob
+   if [ ! ${#latestGVF_array[@]} -gt 0 ]; then
+     if [ ${#latestGVF2_array[@]} -gt 0 ]; then
+       latestGVF="${latestGVF2_array[${#latestGVF2_array[@]}-1]}"
      else
-       if [ -r "${latestGVF3}" ]; then
-         latestGVF=${latestGVF3}
+       if [ ${#latestGVF3_array[@]} -gt 0 ]; then
+         latestGVF="${latestGVF3_array[${#latestGVF3_array[@]}-1]}"
        else
          print_info_msg "WARNING: cannot find GVF observation file"
        fi
      fi
-   fi
-
+   else
+     latestGVF="${latestGVF_array[${#latestGVF_array[@]}-1]}"
+   fi 
    if [ -r "${latestGVF}" ]; then
       cpreq -p ${latestGVF} ./GVF-WKL-GLB.grib2
       ln -sf ${FIX_GSI}/gvf_VIIRS_4KM.MAX.1gd4r.new  gvf_VIIRS_4KM.MAX.1gd4r.new
