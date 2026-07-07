@@ -884,14 +884,16 @@ if [ "${DO_RADDA}" = "TRUE" ]; then
   maxcounter=240
   while [ $satcounter -lt $maxcounter ]; do
     SAT_TIME=$($NDATE -$((10#${satcounter})) ${YYYYMMDDHH})
+    SATBIAS_CS_PDY=$(echo $SAT_TIME | cut -c1-8)
+    SATBIAS_CS=$(compath.py -o ${NET}/${rrfs_ver}/satbias/satbias.${SATBIAS_CS_PDY})
     echo $SAT_TIME
 
-    if [ -r ${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ]; then
-      echo " using satellite bias files from ${SATBIAS_OUT} ${spinup_or_prod_rrfs}.${SAT_TIME}"
-      cpreq -p ${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ./satbias_in
-      cpreq -p ${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias_pc ./satbias_pc
-      if [ -r ${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_radstat ]; then
-         cpreq -p ${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_radstat ./radstat.rrfs
+    if [ -r ${SATBIAS_CS}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ]; then
+      echo " using satellite bias files from ${SATBIAS_CS} ${spinup_or_prod_rrfs}.${SAT_TIME}"
+      cpreq -p ${SATBIAS_CS}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ./satbias_in
+      cpreq -p ${SATBIAS_CS}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias_pc ./satbias_pc
+      if [ -r ${SATBIAS_CS}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_radstat ]; then
+         cpreq -p ${SATBIAS_CS}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_radstat ./radstat.rrfs
       fi
 
       break
