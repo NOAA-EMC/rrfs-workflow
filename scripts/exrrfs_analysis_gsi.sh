@@ -885,7 +885,7 @@ if [ "${DO_RADDA}" = "TRUE" ]; then
   while [ $satcounter -lt $maxcounter ]; do
     SAT_TIME=$($NDATE -$((10#${satcounter})) ${YYYYMMDDHH})
     SATBIAS_CS_PDY=$(echo $SAT_TIME | cut -c1-8)
-    SATBIAS_CS=$(compath.py -o ${NET}/${rrfs_ver}/satbias/satbias.${SATBIAS_CS_PDY})
+    SATBIAS_CS=${COMrrfs}/satbias/satbias.${SATBIAS_CS_PDY}
     echo $SAT_TIME
 
     if [ -r ${SATBIAS_CS}/rrfs.${spinup_or_prod_rrfs}.${SAT_TIME}_satbias ]; then
