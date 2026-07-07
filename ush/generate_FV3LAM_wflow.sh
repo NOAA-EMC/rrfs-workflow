@@ -558,6 +558,7 @@ settings="\
 # data assimilation related parameters.
 #
   'do_dacycle': ${DO_DACYCLE}
+  'do_radda': ${DO_RADDA}
   'do_parallel_da': ${DO_PARALLEL_DA}
   'da_system': ${DA_SYSTEM}
   'do_duplicate_tagging': ${DO_DUPLICATE_TAGGING}
