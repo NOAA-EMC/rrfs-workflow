@@ -22,12 +22,18 @@ fi
 if [ "${CLEAN_MODE}" == "post" ]; then
   echo "Performing post-cycle cleanup for cyc $cyc."
 
-  # cleanup shared working directory
+  # cleanup working directory
   if [ "${KEEP_TMP^^}" != YES ]; then
     echo "Cleaning up shared workding directories for cyc $cyc ."
     if ls ${DATAROOT}/rrfs_*_${cyc}_${rrfs_ver_2d}_${envir} >/dev/null 2>&1; then
       rm -rf ${DATAROOT}/rrfs_*_${cyc}_${rrfs_ver_2d}_${envir}
     fi
+
+    echo "Cleaning up unique workding directories for cyc $cyc ."
+    if ls ${DATAROOT}/rrfs_*_${cyc}.*bqs* >/dev/null 2>&1; then
+      rm -rf ${DATAROOT}/rrfs_*_${cyc}.*bqs*
+    fi
+
   else
     echo "\$KEEP_TMP is set to YES. Skipping tmp cleanup."
   fi
