@@ -596,7 +596,7 @@ RRFS_UTIL_PREFIX=rrfs_util
 UFS_UTIL_PREFIX=ufs_util
 GSI_PREFIX=gsi
 AQM_UTIL_PREFIX=aqm_util
-BLIB_DIR=${HOME_DIR}/${BIN_DIR}/lib64
+BLIB_DIR=${HOME_DIR}/sorc/build/lib64
 LIB_DIR=${HOME_DIR}/lib
 
 [ -f ${EXEC_DIR}/adjust_soiltq.exe ] && mv ${EXEC_DIR}/adjust_soiltq.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_adjust_soiltq.exe
@@ -634,7 +634,7 @@ LIB_DIR=${HOME_DIR}/lib
 [ -f ${EXEC_DIR}/update_GVF.exe ] && mv ${EXEC_DIR}/update_GVF.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_update_GVF.exe
 [ -f ${EXEC_DIR}/update_ice.exe ] && mv ${EXEC_DIR}/update_ice.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_update_ice.exe
 [ -f ${EXEC_DIR}/use_raphrrr_sfc.exe ] && mv ${EXEC_DIR}/use_raphrrr_sfc.exe ${EXEC_DIR}/${RRFS_UTIL_PREFIX}_use_raphrrr_sfc.exe
-[ -f ${BLIB_DIR}/raymond.so ] && cp ${BLIB_DIR}/raymond.so ${LIB_DIR}/raymond.so
+[ -f ${BLIB_DIR}/raymond.so ] && mv ${BLIB_DIR}/raymond.so ${LIB_DIR}/raymond.so
 
 # For ops builds, remove version-controlled developer-only codes and
 # locally update git-index to hide these deletions from git (status).
