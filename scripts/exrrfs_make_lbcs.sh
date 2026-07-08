@@ -407,14 +407,18 @@ File fps exists on disk:
       echo "Found ${extrn_mdl_staging_dir}/$file "
     else
       fcsthr=$( echo $file | awk '{print substr($0, length($0)-2)}' | sed 's/^0*//'  )
-
+      if [ $((fcsthr % 3)) -eq 0 ]; then
+        echo "FATAL ERROR: Required ${files} is missing"
+        export err=7; err_chk
+      else
 print_info_msg "
 ========================================================================
 
-Missing $files for forecast hour $fcsthr !
+INFO: Operational GEFS does not generate $files for forecast hour $fcsthr !
 Need to do time interpolation!
 
 ========================================================================"
+      fi
 
       fcsthr_0=$(( fcsthr % 3 ))
       echo fcsthr_0=${fcsthr_0}
