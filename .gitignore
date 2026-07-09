@@ -1,8 +1,5 @@
 exec/
-fix/.agent
-fix/tmp
-fix/INIT_DONE
-fix/gsi
+fix/
 python_graphics/
 sorc/*/
 !sorc/manage_externals/
