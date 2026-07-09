@@ -44,6 +44,9 @@ HOMErrfs=$currentDir/..
 
 . ${HOMErrfs}/versions/run.ver
 COMOUT=/lfs/h1/ops/${envir}/com/rrfs/${rrfs_ver}/firewx_input
+if [ ! -e ${COMOUT} ]; then
+       mkdir -p ${COMOUT}
+fi
 
 TMP=/lfs/h1/nco/ptmp
 mkdir -p ${TMP}/`whoami`/firewx_setup
@@ -149,7 +152,9 @@ do
    echo "$cyc        $lt     $lg"
   done
 
+  if [ -s $COMOUT/rrfs_firewx_loc ]; then
   cp -p $COMOUT/rrfs_firewx_loc $COMOUT/rrfs_firewx_loc_prev
+  fi
   cp rrfs_firewx_loc $COMOUT/rrfs_firewx_loc
 
   fi #end prscc if statement
