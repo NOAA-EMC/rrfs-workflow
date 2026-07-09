@@ -87,6 +87,7 @@ suite para
           inlimit -s rrfs_submission
           family 00z
             edit CYC '00'
+            edit KEEPDATA 'YES'
             family preclean
               task jrrfs_clean_early
                 trigger :TIME >= 0001 and :TIME < 0300
@@ -11398,6 +11399,7 @@ suite para
               family analysis
                 edit MEM_TYPE 'MEMBER'
                 edit GSI_TYPE 'ANALYSIS'
+                edit KEEPDATA 'YES'
                 task jrrfs_det_analysis_gsi
                   trigger ../prep/jrrfs_det_prep_cyc==complete and /prod_clone/primary/00/obsproc/v1.2/rrfs/05z/dump/jobsproc_rrfs_dump==complete and /prod_clone/primary/00/obsproc/v1.2/rrfs/05z/prep/jobsproc_rrfs_prep==complete and ( /para/primary/00/rrfs/v1.0/04z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /para/primary/00/rrfs/v1.0/02z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete)
                 task jrrfs_det_update_lbc_soil
@@ -12340,7 +12342,7 @@ suite para
             endfamily
             family clean
               task jrrfs_clean
-                trigger ../det==complete and ../enkf==complete
+                trigger ../det==complete and ../enkf==complete and /para/primary/06/rrfs/v1.0/06z==complete
                 label storage ""
             endfamily
           endfamily
@@ -12360,6 +12362,7 @@ suite para
           inlimit -s rrfs_submission
           family 06z
             edit CYC '06'
+            edit KEEPDATA 'YES'
             family preclean
               task jrrfs_clean_early
                 trigger :TIME >= 0600 and :TIME < 0900
@@ -18694,7 +18697,7 @@ suite para
               family ics
                 edit BCGRPNUM '36'
                 task jrrfs_firewx_make_grid
-                  trigger :TIME >= 0615 and :TIME < 0705
+                  trigger :TIME >= 0615 and :TIME < 1205
                 task jrrfs_firewx_make_orog
                   trigger ./jrrfs_firewx_make_grid==complete
                 task jrrfs_firewx_make_sfc_climo
@@ -24231,6 +24234,7 @@ suite para
               family analysis
                 edit MEM_TYPE 'MEMBER'
                 edit GSI_TYPE 'ANALYSIS'
+                edit KEEPDATA 'YES'
                 task jrrfs_det_analysis_gsi
                   trigger ../prep/jrrfs_det_prep_cyc==complete and /prod_clone/primary/06/obsproc/v1.2/rrfs/11z/dump/jobsproc_rrfs_dump==complete and /prod_clone/primary/06/obsproc/v1.2/rrfs/11z/prep/jobsproc_rrfs_prep==complete and ( /para/primary/06/rrfs/v1.0/10z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /para/primary/06/rrfs/v1.0/08z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete )
                 task jrrfs_det_update_lbc_soil
@@ -25153,7 +25157,7 @@ suite para
             endfamily
             family clean
               task jrrfs_clean
-                trigger ../det==complete and ../enkf==complete
+                trigger ../det==complete and ../enkf==complete and /para/primary/12/rrfs/v1.0/12z==complete
                 label storage ""
             endfamily
           endfamily
@@ -25173,6 +25177,7 @@ suite para
           inlimit -s rrfs_submission
           family 12z
             edit CYC '12'
+            edit KEEPDATA 'YES'
             family preclean
               task jrrfs_clean_early
                 trigger :TIME >= 1200 and :TIME < 1500
@@ -36481,6 +36486,7 @@ suite para
               family analysis
                 edit MEM_TYPE 'MEMBER'
                 edit GSI_TYPE 'ANALYSIS'
+                edit KEEPDATA 'YES'
                 task jrrfs_det_analysis_gsi
                   trigger ../prep/jrrfs_det_prep_cyc==complete and /prod_clone/primary/12/obsproc/v1.2/rrfs/17z/dump/jobsproc_rrfs_dump==complete and /prod_clone/primary/12/obsproc/v1.2/rrfs/17z/prep/jobsproc_rrfs_prep==complete and ( /para/primary/12/rrfs/v1.0/16z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /para/primary/12/rrfs/v1.0/14z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete )
                 task jrrfs_det_update_lbc_soil
@@ -37422,7 +37428,7 @@ suite para
             endfamily
             family clean
               task jrrfs_clean
-                trigger ../det==complete and ../enkf==complete
+                trigger ../det==complete and ../enkf==complete and /para/primary/18/rrfs/v1.0/18z==complete
                 label storage ""
             endfamily
           endfamily
@@ -37442,6 +37448,7 @@ suite para
           inlimit -s rrfs_submission
           family 18z
             edit CYC '18'
+            edit KEEPDATA 'YES'
             family preclean
               task jrrfs_clean_early
                 trigger :TIME >= 1800 and :TIME < 2100
@@ -49311,6 +49318,7 @@ suite para
               family analysis
                 edit MEM_TYPE 'MEMBER'
                 edit GSI_TYPE 'ANALYSIS'
+                edit KEEPDATA 'YES'
                 task jrrfs_det_analysis_gsi
                   trigger ../prep/jrrfs_det_prep_cyc==complete and /prod_clone/primary/18/obsproc/v1.2/rrfs/23z/dump/jobsproc_rrfs_dump==complete and /prod_clone/primary/18/obsproc/v1.2/rrfs/23z/prep/jobsproc_rrfs_prep==complete and ( /para/primary/18/rrfs/v1.0/22z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /para/primary/18/rrfs/v1.0/20z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete)
                 task jrrfs_det_update_lbc_soil
@@ -50233,7 +50241,7 @@ suite para
             endfamily
             family clean
               task jrrfs_clean
-                trigger ../det==complete and ../enkf==complete
+                trigger ../det==complete and ../enkf==complete and /para/primary/00/rrfs/v1.0/00z==complete
                 label storage ""
             endfamily
           endfamily
