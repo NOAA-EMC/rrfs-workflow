@@ -151,17 +151,17 @@ for imem in  $(seq 1 $nens)
       ln -sf ${bkpath}/fv_core.res.tile1.nc  ./fv3sar_tile1_mem${memberstring}_dynvar
       ln -sf ${bkpath}/fv_tracer.res.tile1.nc   ./fv3sar_tile1_mem${memberstring}_tracer
       ln -sf ${bkpath}/sfc_data.nc  ./fv3sar_tile1_mem${memberstring}_sfcvar
+      ln -sf ${bkpath}/fv_core.res.tile1.nc  ./rec_fv3sar_tile1_mem${memberstring}_dynvar
+      ln -sf ${bkpath}/fv_tracer.res.tile1.nc   ./rec_fv3sar_tile1_mem${memberstring}_tracer
+      ln -sf ${bkpath}/sfc_data.nc  ./rec_fv3sar_tile1_mem${memberstring}_sfcvar
     else
       ln -sf ${bkpath}/fv_core.res.tile1.nc  ./fv3sar_tile1_mem${memberstring}_dynvar
       ln -sf ${bkpath}/fv_tracer.res.tile1.nc   ./fv3sar_tile1_mem${memberstring}_tracer
       ln -sf ${bkpath}/sfc_data.nc  ./fv3sar_tile1_mem${memberstring}_sfcvar
+      echo "cpreq -p  ${ctrlpath}/INPUT/fv_core.res.tile1.nc  ./rec_fv3sar_tile1_mem${memberstring}_dynvar" >> para_copy.sh
+      echo "cpreq -p  ${ctrlpath}/INPUT/fv_tracer.res.tile1.nc   ./rec_fv3sar_tile1_mem${memberstring}_tracer" >> para_copy.sh
+      echo "cpreq -p  ${ctrlpath}/INPUT/sfc_data.nc  ./rec_fv3sar_tile1_mem${memberstring}_sfcvar" >> para_copy.sh
     fi
-    #ln -sf ${bkpath}/fv_core.res.tile1.nc  ./rec_fv3sar_tile1_mem${memberstring}_dynvar
-    #ln -sf ${bkpath}/fv_tracer.res.tile1.nc   ./rec_fv3sar_tile1_mem${memberstring}_tracer
-    #ln -sf ${bkpath}/sfc_data.nc  ./rec_fv3sar_tile1_mem${memberstring}_sfcvar
-    echo "cpreq -p  ${ctrlpath}/INPUT/fv_core.res.tile1.nc  ./rec_fv3sar_tile1_mem${memberstring}_dynvar" >> para_copy.sh
-    echo "cpreq -p  ${ctrlpath}/INPUT/fv_tracer.res.tile1.nc   ./rec_fv3sar_tile1_mem${memberstring}_tracer" >> para_copy.sh
-    echo "cpreq -p  ${ctrlpath}/INPUT/sfc_data.nc  ./rec_fv3sar_tile1_mem${memberstring}_sfcvar" >> para_copy.sh
   else
     err_exit "Cannot find background: ${dynvarfile} ${tracerfile}"
   fi
@@ -169,8 +169,11 @@ for imem in  $(seq 1 $nens)
   (( imem += 1 ))
  done
 
- cpprocs=90
- mpiexec -n ${cpprocs} -ppn ${cpprocs} --cpu-bind core cfp ./para_copy.sh
+if [ ${DO_ENSFCST} = "FALSE" ] ; then
+  cpprocs=90
+  mpiexec -n ${cpprocs} -ppn ${cpprocs} --cpu-bind core cfp ./para_copy.sh
+fi
+
 #
 #-----------------------------------------------------------------------
 #
@@ -224,6 +227,7 @@ done
 # copy recentering file back to umbrella
 #
 #-----------------------------------------------------------------------
+if [ ${DO_ENSFCST} = "FALSE" ] ; then
 for imem in  $(seq 1 $nens)
   do
   ensmem=$( printf "%03d" $imem ) 
@@ -238,6 +242,7 @@ for imem in  $(seq 1 $nens)
   mv ./rec_fv3sar_tile1_mem${memberstring}_tracer  ${bkpath}/fv_tracer.res.tile1.nc
   mv ./rec_fv3sar_tile1_mem${memberstring}_sfcvar ${bkpath}/sfc_data.nc
 done
+fi
 #-----------------------------------------------------------------------
 #
 # touch a file to show completion of the task
