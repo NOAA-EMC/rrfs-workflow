@@ -29,6 +29,7 @@ def getkf(xmlFile, expdir, taskType):
         'ENS_SIZE': os.getenv("ENS_SIZE", '5'),
         'GETKF_TYPE': taskType.lower(),
         'USE_CONV_SAT_INFO': os.getenv('USE_CONV_SAT_INFO', 'TRUE').upper(),
+        'SAT_USELIST': os.getenv('SAT_USELIST', ''),
         'EMPTY_OBS_SPACE_ACTION': os.getenv('EMPTY_OBS_SPACE_ACTION', 'skip output'),
     }
     if taskType.upper() == "OBSERVER":

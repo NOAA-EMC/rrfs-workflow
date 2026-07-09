@@ -89,7 +89,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
         for i in range(1, int(sfc_update_look_back_hrs) + 1, 1):
             datadep_sfc = datadep_sfc + f'''\n        <datadep age="00:00:05"><cyclestr offset="-{i}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;/fcst_f{i:0>3}.done</cyclestr></datadep>'''
         sfc_dep = f'''
-      <or>{datadep_sfc}
+      <or>{timedep}{datadep_sfc}
       </or>'''
 
     #

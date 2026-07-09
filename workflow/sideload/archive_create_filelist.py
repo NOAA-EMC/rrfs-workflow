@@ -29,7 +29,7 @@ includes = []
 for pattern in items:
     if not pattern:
         continue
-    if f'/{WGF}' not in pattern:  # add WGF if missing
+    if f'/{WGF}' not in pattern and "nclprd" not in pattern:  # add WGF if missing, except nclprd
         pattern += f'/{WGF}'
     if pattern.endswith(f'/{WGF}') or pattern.endswith(f'/') or os.path.isdir(pattern):
         pattern += '/**/*'

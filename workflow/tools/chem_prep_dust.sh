@@ -14,36 +14,32 @@ if [[ -s ${DUST_EXTERNAL} ]]; then
 else
    echo "Interpolated dust file: ${DUST_EXTERNAL} does not exist, will attempt to create"
    srun python -u "${SCRIPT}" \
-              "FENGSHA_1" \
+              "FENGSHA_2D" \
               "${DATA}" \
               "${DUST_INPUTDIR}" \
               "${DUST_OUTPUTDIR}" \
               "${INTERP_WEIGHTS_DIR}" \
-              "${YYYY}${MM}${DD}${HH}" \
-              "${MESH_NAME}"
-   OUTFILE_1=${DUST_OUTPUTDIR}/FENGSHA_2022_NESDIS_inputs_${MESH_NAME}_v3.2.nc
-
+              "${YYYY}${MM}${DD}${HH}"
+   OUTFILE_2D=${DUST_OUTPUTDIR}/fengsha_dust_inputs.2D.${MESH_NAME}.nc
    srun python -u "${SCRIPT}" \
-              "FENGSHA_2" \
+              "FENGSHA_2D_Time" \
               "${DATA}" \
               "${DUST_INPUTDIR}" \
               "${DUST_OUTPUTDIR}" \
               "${INTERP_WEIGHTS_DIR}" \
-              "${YYYY}${MM}${DD}${HH}" \
-              "${MESH_NAME}"
-   OUTFILE_2=${DUST_OUTPUTDIR}/LAI_GVF_PC_DRAG_CLIMATOLOGY_2024v1.0.${MESH_NAME}.nc
-   ncks -A -v feff "${OUTFILE_2}" "${OUTFILE_1}"
-   cp "${OUTFILE_1}" "${DUST_INITFILE}"
-   ncrename -d Time,nMonths "${DUST_INITFILE}"
-   ncrename -v sep,sep_in -v sandfrac,sandfrac_in -v clayfrac,clayfrac_in -v uthres,uthres_in -v uthres_sg,uthres_sg_in -v feff,feff_m_in "${DUST_INITFILE}"
-   ncdump -hv albedo_drag "${DUST_INITFILE}"
-   #shellcheck disable=SC2181
-   if [[ $? -eq 0 ]]; then
-      # Processed old drag
-      ncrename -v albedo_drag,albedo_drag_m_in "${DUST_INITFILE}"
-   else
-      # Old drag = new drag
-      ncap2 -O -s 'albedo_drag_m_in=feff_m_in' "${DUST_INITFILE}" "${DUST_INITFILE}"
-   fi   
+              "${YYYY}${MM}${DD}${HH}"
+   OUTFILE_2D_Time=${DUST_OUTPUTDIR}/fengsha_dust_inputs.2D_Time.${MESH_NAME}.nc
+
+   ncrename -d Time,nMonths "${OUTFILE_2D_Time}"
+   ncpdq -O -a nCells,nMonths "${OUTFILE_2D_Time}" "${OUTFILE_2D_Time}"
+
+   ncks -A -v sandfrac,clayfrac,ssm,uthres "${OUTFILE_2D}" "${OUTFILE_2D_Time}"
+
+   cp "${OUTFILE_2D_Time}" "${DUST_INITFILE}"
+   ncrename -v ssm,ssm_in -v sandfrac,sandfrac_in -v clayfrac,clayfrac_in -v uthres,uthres_in -v rdrag,rdrag_m_in "${DUST_INITFILE}"
+
+   ncks -O -x -v xtime "${DUST_INITFILE}" "${DUST_INITFILE}"
+   ncks -A -v Time,xtime init.nc "${DUST_INITFILE}"
+
    ncks -O -6 "${DUST_INITFILE}" "${DUST_INITFILE}"
 fi

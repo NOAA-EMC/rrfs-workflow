@@ -108,7 +108,7 @@ for index in "${mem_list[@]}"; do # loop through all the members
         if [[ "${cyc}" == "${shr}" ]]; then
           source_file=""
           # look back ${NUM} cycles to find mpasout files for surface cycling
-          NUM=3
+          NUM=27
           for (( ii=cyc_interval; ii<=$(( NUM*cyc_interval )); ii=ii+cyc_interval )); do
             CDATEp=$(${NDATE} -${ii} "${CDATE}" )
             PDYii=${CDATEp:0:8}

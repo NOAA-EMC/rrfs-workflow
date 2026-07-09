@@ -14,7 +14,7 @@
 # 1. CHEM_GROUP    -- which chem emission group is this task performing? (anthro, pollen, dust)
 # 2. ANTHRO_EMISINV            -- undecided, may merge for custom dataset, or leave option to combine
 # 3. CHEM_INPUT             -- location of interpolated files, ready to be used
-# 4. MESH_NAME                -- name of the MPAS domain, required to know if we have weights or data intepolated to the domain 
+# 4. MESH_NAME                -- name of the MPAS domain, required to know if we have weights or data intepolated to the domain
 #
 # shellcheck disable=SC1091,SC2153,SC2154,SC2034
 # rrfslint: file-disable=all
@@ -28,11 +28,13 @@ cd "${DATA}" || exit 1
 #
 fcst_len_hrs_cycles=${FCST_LEN_HRS_CYCLES:-"01 01"}
 my_fcst_length=$("${USHrrfs}/find_fcst_length.sh" "${fcst_len_hrs_cycles}" "${cyc}" )
+export FCST_LENGTH="${my_fcst_length}"  # FCST_LENGTH is needed by chem-regrid
 echo "forecast length for this cycle is ${my_fcst_length}"
 #
 # ... Set some date variables
 #
 timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)
+JJJ=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%j)
 YYYY=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y)
 MM=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%m)
 DD=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%d)
@@ -50,12 +52,12 @@ MMp=$(date -d "${CDATE:0:8} ${CDATE:8:2} - 1 day" +%m)
 DDp=$(date -d "${CDATE:0:8} ${CDATE:8:2} - 1 day" +%d)
 HHp=$(date -d "${CDATE:0:8} ${CDATE:8:2}- 1 day" +%H)
 #
-current_day=$(date -d "${YYYY}${MM}${DD}")
-current_hh=$(date -d "${HH}" +"%H")
+current_day="${YYYY}${MM}${DD}"
+current_hh="${HH}"
 #
-prev_hh=$(date -d "$current_hh -24 hour" +"%H")
+#prev_hh=$(date -d "$current_hh -24 hour" +"%H")
 previous_day=$(date '+%C%y%m%d' -d "$current_day-1 days")
-previous_day="${previous_day} ${prev_hh}"
+previous_day="${previous_day} ${HH}"
 #
 if [[ ${DOW} -le 5 ]]; then
    DOW_STRING=weekdy
@@ -85,26 +87,34 @@ fi
 DOY_END=$(date -d "${CDATE:0:8} ${CDATE:8:2} + ${my_fcst_length} hours" +%j)  # Julian day
 #
 # Set the init/mesh file name and link here:\
-if [[ -r "${UMBRELLA_PREP_IC_DATA}"/init.nc ]]; then
+if [[ -r "${FIXrrfs}/${MESH_NAME}/${MESH_NAME}.static.nc" ]]; then
+   ln -sf "${FIXrrfs}/${MESH_NAME}/${MESH_NAME}.static.nc" init.nc
+   INIT_FILE=./init.nc
+elif [[ -r "${UMBRELLA_PREP_IC_DATA}"/init.nc ]]; then
    ln -sf "${UMBRELLA_PREP_IC_DATA}"/init.nc init.nc
-   INIT_FILE=./${MESH_NAME}.init.nc
+   INIT_FILE=./init.nc
+elif [[ -r "${UMBRELLA_PREP_IC_DATA}"/mpasout.nc ]]; then
+   ln -sf "${UMBRELLA_PREP_IC_DATA}"/mpasout.nc init.nc
+   INIT_FILE=./init.nc
 else
-   echo "WARNING: NO Init File available, cannot reinterpolate if files are missing, did you run the task out of order?"
+   echo "FATAL: NO Init File available, cannot reinterpolate if files are missing, did you run the task out of order?"
+   err_exit
 fi
-
-#
 SCRIPT=${USHrrfs}/chem_regrid.py
 VINTERP_SCRIPT=${USHrrfs}/chem_vinterp.py
 INTERP_WEIGHTS_DIR=${CHEM_INPUT}/grids/interpolation_weights/
+SCRIP_FILES_DIR=${CHEM_INPUT}/grids/scrip_files/
+# Now set the same for the scrip file:
+if [[ -s "${SCRIP_FILES_DIR}/mpas_${MESH_NAME}_scrip.nc" ]]; then
+   ln -s "${SCRIP_FILES_DIR}/mpas_${MESH_NAME}_scrip.nc" ./
+else
+   echo "WARNING: NO SCRIP file available for this domain in ${SCRIP_FILES_DIR}, you will need to supply it as an argument to ${SCRIPT}"
+fi
+#
 #
 # Set a few things for the CONDA environment
 export REGRID_WRAPPER_LOG_DIR=${DATA}
-regrid_wrapper_dir=${REGRID_WRAPPER_DIR} #/lfs5/BMC/rtwbl/rap-chem/mpas_rt/working/ben_interp/regrid-wrapper/
-PYTHONDIR=${regrid_wrapper_dir}/src
-regrid_conda_env=${REGRID_CONDA_ENV}  #CONDAENV=/lfs5/BMC/rtwbl/rap-chem/miniconda/envs/regrid-wrapper
-export PATH=${regrid_conda_env}/bin:${PATH}
-export ESMFMKFILE=${regrid_conda_env}/lib/esmf.mk
-export PYTHONPATH=${PYTHONDIR}:${PYTHONPATH}
+export PYTHONPATH="${REGRID_WRAPPER_DIR}/src":${PYTHONPATH}
 #
 #==================================================================================================#
 if [[ "${CHEM_GROUP}" == "smoke" ]]; then
@@ -122,6 +132,14 @@ fi # anthro
 if [[ "${CHEM_GROUP}" == "pollen" ]]; then
   source "${USHrrfs}"/chem_prep_pollen.sh
 fi # bio/pollen
+
+if [[ "${CHEM_GROUP}" == "GOES_AOD" ]] ; then
+  source "${USHrrfs}"/chem_prep_goes_aod.sh
+fi
+
+if [[ "${CHEM_GROUP}" == "ssalt" ]] ; then
+  echo "NOTHING to prepare -- exiting"
+fi
 
 if [[ "${CHEM_GROUP}" == "dust" ]]; then
   if [[ ! -s "${FIXrrfs}/chemistry/dust/fengsha_dust_inputs.${MESH_NAME}.nc" ]]; then

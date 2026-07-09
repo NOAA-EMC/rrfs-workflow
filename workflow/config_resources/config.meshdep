@@ -85,6 +85,18 @@ elif [[ ${MESH_NAME} == "conus3km" ]]; then
   export NONVAR_USERDX=3000
   export NONVAR_SEARCH_RAD=1
 
+elif [[ ${MESH_NAME} == "fwx1.25km" ]]; then
+  export FCST_DT=12
+  export FCST_SUBSTEPS=4
+  export FCST_RADT=10
+  export UPP_DOMAIN="fwx1.25."
+
+  export MPASSIT_NX=2600
+  export MPASSIT_NY=2600
+  export MPASSIT_DX=1250.0
+  export MPASSIT_REF_LAT=41.5
+  export MPASSIT_REF_LON=-112.5
+
 elif [[ ${MESH_NAME} == "south3.5km" ]]; then
   export FCST_DT=25
   export FCST_SUBSTEPS=4

@@ -43,3 +43,8 @@
 	path = workflow/sideload/pyDAmonitor
 	url = https://github.com/pyDAmonitor/pyDAmonitor.git
         ignore = all
+[submodule "sorc/chem-regrid-wrapper"]
+	path = sorc/chem-regrid-wrapper
+	url = https://github.com/RRFSx/regrid-wrapper.git
+	branch = main
+	ignore = all

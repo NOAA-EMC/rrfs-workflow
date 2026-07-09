@@ -43,6 +43,7 @@ def jedivar(xmlFile, expdir, spinup_mode=0):
         'ENS_BEC_LOOK_BACK_HRS': f'{ens_bec_look_back_hrs}',
         'ENS_SIZE': f'{ens_size}',
         'USE_CONV_SAT_INFO': os.getenv('USE_CONV_SAT_INFO', 'TRUE').upper(),
+        'SAT_USELIST': os.getenv('SAT_USELIST', ''),
         'EMPTY_OBS_SPACE_ACTION': os.getenv('EMPTY_OBS_SPACE_ACTION', 'skip output'),
         'STATIC_BEC_MODEL': os.getenv('STATIC_BEC_MODEL', 'GSIBEC'),
         'GSIBEC_X': os.getenv('GSIBEC_X', 'GSIBEC_X_not_defined'),
