@@ -45,7 +45,7 @@ HOMErrfs=$currentDir/..
 . ${HOMErrfs}/versions/run.ver
 COMOUT=/lfs/h1/ops/${envir}/com/rrfs/${rrfs_ver}/firewx_input
 if [ ! -e ${COMOUT} ]; then
-       mkdir -p ${COMOUT}
+  mkdir -p ${COMOUT}
 fi
 
 TMP=/lfs/h1/nco/ptmp
@@ -153,7 +153,7 @@ do
   done
 
   if [ -s $COMOUT/rrfs_firewx_loc ]; then
-  cp -p $COMOUT/rrfs_firewx_loc $COMOUT/rrfs_firewx_loc_prev
+    cp -p $COMOUT/rrfs_firewx_loc $COMOUT/rrfs_firewx_loc_prev
   fi
   cp rrfs_firewx_loc $COMOUT/rrfs_firewx_loc
 
