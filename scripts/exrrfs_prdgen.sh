@@ -180,7 +180,9 @@ fi
 # extract the output fields for the subset files
 if [ "${PREDEF_GRID_NAME}" != "RRFS_FIREWX_1.5km" ]; then
   wgrib2 ${COMOUT}/${fld2d} | grep -F -f ${FIX_UPP}/subset_fields_2dfld.txt | wgrib2 -i -grib ${DATA}/${subset} ${COMOUT}/${fld2d} >>$pgmout 2>>errfile
+  export err=$?; err_chk
   wgrib2 ${COMOUT}/${prslev} | grep -F -f ${FIX_UPP}/subset_fields_prslev.txt | wgrib2 -i -append -grib ${DATA}/${subset} ${COMOUT}/${prslev} >>$pgmout 2>>errfile
+  export err=$?; err_chk
 
   if [ ${DO_ENSFCST} != "TRUE" ]; then
     wgrib2 ${COMOUT}/${natlev} | grep -F -f ${FIX_UPP}/subset_fields_natlev.txt | wgrib2 -i -append -grib ${DATA}/${subset} ${COMOUT}/${natlev} >>$pgmout 2>>errfile
@@ -395,6 +397,7 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
           -new_grid_interpolation neighbor \
           -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
           -new_grid ${gridspecs} ${COMOUT}/${fld2d_subh_dom} >>$pgmout 2>>errfile
+        export err=$?; err_chk
         wgrib2 ${COMOUT}/${fld2d_subh_dom} -s > ${COMOUT}/${fld2d_subh_dom}.idx
 
 	if [[ $SENDDBN = 'YES' ]]; then
@@ -422,6 +425,7 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
       -new_grid_interpolation neighbor \
       -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
       -new_grid ${gridspecs} ${COMOUT}/${subset_conus} >>$pgmout 2>>errfile
+    export err=$?; err_chk
     wgrib2 ${COMOUT}/${subset_conus} -s > ${COMOUT}/${subset_conus}.idx
 
     if [ "${SENDDBN}" = "YES" ] ; then
@@ -466,6 +470,7 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
         -new_grid_interpolation neighbor \
         -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
         -new_grid ${gridspecs_13} ${COMOUT}/${prslev_na_13km} >>$pgmout 2>>errfile
+      export err=$?; err_chk
       wgrib2 ${COMOUT}/${prslev_na_13km} -s > ${COMOUT}/${prslev_na_13km}.idx
 
       wgrib2 inputs.grib2dfldna.uv -set_bitmap 1 -set_grib_type c3 \
@@ -473,6 +478,7 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
         -new_grid_interpolation neighbor \
         -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
         -new_grid ${gridspecs_13} ${COMOUT}/${fld2d_na_13km} >>$pgmout 2>>errfile
+      export err=$?; err_chk
       wgrib2 ${COMOUT}/${fld2d_na_13km} -s > ${COMOUT}/${fld2d_na_13km}.idx
 
 
@@ -563,6 +569,7 @@ EOF
    -new_grid_interpolation neighbor \
    -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
    -new_grid ${grid_specs_firewx} ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2 >>$pgmout 2>>errfile
+  export err=$?; err_chk
 
   wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2.idx
 
@@ -575,6 +582,7 @@ EOF
    -new_grid_interpolation neighbor \
    -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
    -new_grid ${grid_specs_firewx} ${COMOUT}/rrfs.t${cyc}z.2dfld.${gridspacing}.f${fhr}.firewx_lcc.grib2 >>$pgmout 2>>errfile
+  export err=$?; err_chk
 
   wgrib2 ${COMOUT}/rrfs.t${cyc}z.2dfld.${gridspacing}.f${fhr}.firewx_lcc.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.2dfld.${gridspacing}.f${fhr}.firewx_lcc.grib2.idx
 
