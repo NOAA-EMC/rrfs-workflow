@@ -535,9 +535,6 @@ EOF
     mv errfile errfile_updatesst
     sst_reference_time=$(wgrib2 -t latest.SST) 
     echo "${YYYYMMDDHH}(${CYCLE_TYPE}): update SST using ${sst_reference_time}"
-  else
-    echo "WARNING: No latest SST file for update at ${YYYYMMDDHH}!!!!"
-    print_info_msg "$VERBOSE" "WARNING: In ${COMINnsst}, SST does not exist! Will continue without it (is data of opportunity)"
   fi
 fi
 
