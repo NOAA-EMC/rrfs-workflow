@@ -542,9 +542,6 @@ EOF
     echo "WARNING: No latest SST file for update at ${YYYYMMDDHH}!!!!"
     print_info_msg "$VERBOSE" "WARNING: In ${COMINnsst}, SST does not exist! Will continue without it (is data of opportunity)"
   fi
-else
-   echo "NOTE: No update for SST at ${YYYYMMDDHH}!"
-   print_info_msg "$VERBOSE" "WARNING: In ${COMINnsst}, SST does not exist! Will continue without it (is data of opportunity)"
 fi
 
 #-----------------------------------------------------------------------
