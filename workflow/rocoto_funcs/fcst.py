@@ -17,6 +17,8 @@ def fcst(xmlFile, expdir, do_ensemble=False, dcEnsGrpInfo=None, do_spinup=False)
     # Task-specific EnVars beyond the task_common_vars
     extrn_mdl_source = os.getenv('IC_EXTRN_MDL_NAME', 'IC_PREFIX_not_defined')
     fcst_len_hrs_cycles = os.getenv('FCST_LEN_HRS_CYCLES', '03 03')
+    if do_spinup:
+        fcst_len_hrs_cycles = ('01 ' * 24).strip()  # spinup cycles only need 1h forecasts
     lbc_interval = os.getenv('LBC_INTERVAL', '3')
     history_interval = os.getenv('HISTORY_INTERVAL', '1')
     diag_interval = os.getenv('DIAG_INTERVAL', '1')

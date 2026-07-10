@@ -8,13 +8,8 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 def ioda_mrms_refl(xmlFile, expdir):
     task_id = 'ioda_mrms_refl'
     cycledefs = 'prod'
-    num_spinup_cycledef = int(os.getenv('NUM_SPINUP_CYCLEDEF', '0'))
-    if num_spinup_cycledef == 1:
+    if os.getenv("DO_SPINUP", "FALSE").upper() == "TRUE":
         cycledefs = 'prod,spinup'
-    elif num_spinup_cycledef == 2:
-        cycledefs = 'prod,spinup,spinup2'
-    elif num_spinup_cycledef == 3:
-        cycledefs = 'prod,spinup,spinup2,spinup3'
     OBSPATH_NSSLMOSIAC = os.getenv("OBSPATH_NSSLMOSIAC", 'OBSPATH_NSSLMOSIAC_not_defined')
     RADARREFL_TIMELEVEL = os.getenv("RADARREFL_TIMELEVEL", 'RADARREFL_TIMELEVEL_not_defined')
     MRMS_GRIDSPACINGDEG = os.getenv("MRMS_GRIDSPACINGDEG", 'MRMS_GRIDSPACINGDEG_not_defined')
