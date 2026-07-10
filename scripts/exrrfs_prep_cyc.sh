@@ -488,9 +488,6 @@ if [ ${HH} -eq ${SNOWICE_update_hour} ] && [ "${CYCLE_TYPE}" = "prod" ] ; then
 
     snowice_reference_time=$(wgrib2 -t latest.SNOW_IMS | tail -1) 
     echo "${YYYYMMDDHH}(${CYCLE_TYPE}): update snow/ice using ${snowice_reference_time}"
-  else
-     echo "WARNING: No latest IMS SNOW file for update at ${YYYYMMDDHH}!!!!"
-     print_info_msg "$VERBOSE" "WARNING: In ${COMINobsproc}, NO IMSSNOW does not exist! Will continue without it (is data of opportunity)"
   fi
 fi
 #
