@@ -15,7 +15,7 @@ ${cpreq} "${FIXrrfs}"/mpassit/diaglist                    diaglist
 ${cpreq} "${FIXrrfs}"/mpassit/histlist_2d                 histlist_2d
 ${cpreq} "${FIXrrfs}"/mpassit/histlist_3d                 histlist_3d
 ${cpreq} "${FIXrrfs}"/mpassit/histlist_soil               histlist_soil
-if [[ "${LSM_SCHEME^^}" == *noah* ]]; then
+if [[ "${LSM_SCHEME}" == *noah* ]]; then
   sed -i '/^snowfallac/d' histlist_2d  # sf_noah, sf_noahmp does not output variable density snowfall accumulation
 fi
 #
