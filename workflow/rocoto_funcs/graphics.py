@@ -23,6 +23,7 @@ def graphics(xmlFile, expdir):
         'TILE': '#tile#',
         'GRAPHICS_ZIP': os.getenv('GRAPHICS_ZIP', 'FALSE').upper(),
         'GRAPHICS_MODEL': os.getenv('GRAPHICS_MODEL', ''),
+        'UPP_DOMAIN': os.getenv('UPP_DOMAIN', 'conus.'),
     }
     # dependencies
     timedep = ""
