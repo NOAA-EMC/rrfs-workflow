@@ -21,6 +21,7 @@ fix/ar3.5km
 fix/ea5km
 fix/global*km
 fix/eu12km
+fix/fwx1.25km
 pygraf
 tests/xml
 tests/yaml

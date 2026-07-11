@@ -17,3 +17,9 @@ meshdir="/scratch3/BMC/wrfruc/FIX_MESHES"
 if [[ -d "${meshdir}" ]]; then
   ln -snf "${meshdir}"/*km "${HOMErrfs}/fix"
 fi
+
+# orion/hercules
+meshdir="/work/noaa/zrtrr/FIX_MESHES"
+if [[ -d "${meshdir}" ]]; then
+  ln -snf "${meshdir}"/*km "${HOMErrfs}/fix"
+fi
