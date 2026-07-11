@@ -19,9 +19,8 @@ sorc/build_timing.txt
 superyamls
 fix/ar3.5km
 fix/ea5km
-fix/global-15-3km
+fix/global*km
 fix/eu12km
-fix/global12km
 pygraf
 tests/xml
 tests/yaml
