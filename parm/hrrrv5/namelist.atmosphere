@@ -56,7 +56,7 @@
     config_physics_suite = 'hrrrv5'
     config_gwdo_scheme = 'bl_ugwp_gwdo'
     config_lsm_scheme    = '${lsm_scheme}'
-    num_soil_layers      = 9
+    num_soil_layers      = ${nsoillevels}
     config_pbl_scheme = 'bl_mynnedmf'
     config_mynn_mixscalars = 0
     config_mynn_mixaerosols = 1
