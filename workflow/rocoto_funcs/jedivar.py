@@ -32,6 +32,7 @@ def jedivar(xmlFile, expdir, spinup_mode=0):
         'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
         'PHYSICS_SUITE': f'{physics_suite}',
         'LSM_SCHEME': f'{lsm_scheme}',
+        'NSOIL_LEVELS': os.getenv('NSOIL_LEVELS', '9'),
         'REFERENCE_TIME': '@Y-@m-@dT@H:00:00Z',
         'YAML_GEN_METHOD': os.getenv('YAML_GEN_METHOD', '1'),
         'COLDSTART_CYCS_DO_DA': os.getenv('COLDSTART_CYCS_DO_DA', 'TRUE').upper(),

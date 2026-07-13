@@ -35,6 +35,8 @@ elif os.path.exists(f'{expdir}/rtma.xml'):
     NET = "rtma"
 elif os.path.exists(f'{expdir}/arps.xml'):
     NET = "arps"
+elif os.path.exists(f'{expdir}/global.xml'):
+    NET = "global"
 with open(f'{expdir}/{NET}.xml') as infile:
     for line in infile:
         if "COLDSTART_CYCS_DO_DA" in line:

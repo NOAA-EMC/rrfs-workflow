@@ -25,6 +25,12 @@ export MPASOUT_TIMELEVELS=${MPASOUT_TIMELEVELS:-""}
 export MPASOUT_SAVE2COM_HRS=${MPASOUT_SAVE2COM_HRS:-""}  # cycling mpasout.nc is saved by the 'save_for_next' task; specify other mpasout hours if needed, e.g. "02 03", "24", "24 48"
 #export POST_GROUP_SPEC="0-10 11-20 21-30 31-36" # customized group specification; setting this variable will overwrite POST_GROUP_TOT_NUM
 export REGRID_RRFS_GRIB2=${REGRID_RRFS_GRIB2:-false}
+export LSM_SCHEME=${LSM_SCHEME:-"sf_ruc"}
+if [[ "${LSM_SCHEME}" == *noah* ]]; then  # sf_noah, sf_noahmp
+  export NSOIL_LEVELS=${NSOIL_LEVELS:-4}
+else # sf_ruc
+  export NSOIL_LEVELS=${NSOIL_LEVELS:-9}
+fi
 
 # required options if DO_RTMA
 if [[ "${DO_RTMA^^}" == "TRUE" ]]; then
