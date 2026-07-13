@@ -34,9 +34,9 @@ if [[ ${GETKF_TYPE} == observer* ]]; then
   source "${USHrrfs}/copy_obs.sh" "getkf"
 else
   if [[ -d "${UMBRELLA_GETKF_OBSERVER_DATA}" ]]; then
-    ln -snf "${UMBRELLA_GETKF_OBSERVER_DATA}"/jdiag* jdiag/
+    ln -snf "${UMBRELLA_GETKF_OBSERVER_DATA}"/jdiag* jdiag/.
   elif [[ -d "${UMBRELLA_GETKF_OBSERVER_SOLVER_DATA}" ]]; then
-    ln -snf "${UMBRELLA_GETKF_OBSERVER_SOLVER_DATA}"/jdiag* jdiag/
+    ln -snf "${UMBRELLA_GETKF_OBSERVER_SOLVER_DATA}"/jdiag* jdiag/.
   fi
 fi
 #
