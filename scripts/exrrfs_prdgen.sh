@@ -1,5 +1,6 @@
 #!/bin/bash
 set -x
+set -o pipefail
 
 source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 
