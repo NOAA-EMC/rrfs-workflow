@@ -127,6 +127,15 @@ case ${MACHINE} in
     export QUEUE="batch"
     export PARTITION=${MACHINE}
     export CLUSTER=""
+    if [[ "${MACHINE}" == "hercules" ]]; then
+      export NODES_IC="<nodes>20:ppn=80</nodes>"
+      export NODES_LBC="<nodes>20:ppn=80</nodes>"
+      export NODES_FCST="<nodes>20:ppn=80</nodes>"
+      export NODES_MPASSIT="<nodes>2:ppn=80</nodes>"
+      export NODES_UPP="<nodes>1:ppn=80</nodes>"
+      export NODES_GETKF="<nodes>40:ppn=20</nodes>"
+      export NODES_RECENTER="<nodes>1:ppn=32</nodes>"
+    fi
     ;;
   "gaeac6")
     export IC_EXTRN_MDL_BASEDIR="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/May2024/GEFS"
