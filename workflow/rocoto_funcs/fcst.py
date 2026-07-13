@@ -17,6 +17,8 @@ def fcst(xmlFile, expdir, do_ensemble=False, dcEnsGrpInfo=None, do_spinup=False)
     # Task-specific EnVars beyond the task_common_vars
     extrn_mdl_source = os.getenv('IC_EXTRN_MDL_NAME', 'IC_PREFIX_not_defined')
     fcst_len_hrs_cycles = os.getenv('FCST_LEN_HRS_CYCLES', '03 03')
+    if do_spinup:
+        fcst_len_hrs_cycles = ('01 ' * 24).strip()  # spinup cycles only need 1h forecasts
     lbc_interval = os.getenv('LBC_INTERVAL', '3')
     history_interval = os.getenv('HISTORY_INTERVAL', '1')
     diag_interval = os.getenv('DIAG_INTERVAL', '1')
@@ -35,6 +37,7 @@ def fcst(xmlFile, expdir, do_ensemble=False, dcEnsGrpInfo=None, do_spinup=False)
         'MPASOUT_TIMELEVELS': os.getenv('MPASOUT_TIMELEVELS', ''),
         'PHYSICS_SUITE': f'{physics_suite}',
         'LSM_SCHEME': os.getenv('LSM_SCHEME', 'sf_ruc'),
+        'NSOIL_LEVELS': os.getenv('NSOIL_LEVELS', '9'),
         'FCST_LEN_HRS_CYCLES': f'{fcst_len_hrs_cycles}',
         'FCST_DT': os.getenv('FCST_DT', 'FCST_DT_not_defined'),
         'FCST_SUBSTEPS': os.getenv('FCST_SUBSTEPS', 'FCST_SUBSTEPS_not_defined'),

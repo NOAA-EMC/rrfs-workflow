@@ -12,7 +12,7 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 #
 pygrafdir="${HOMErrfs}/workflow/sideload/pygraf"
 image_list="${pygrafdir}/image_lists/regional_mpas_subset.yml"
-file_tmpl="rrfs.t${cyc}z.prslev.f0{FCST_TIME:02d}.conus.grib2"
+file_tmpl="${NET}.t${cyc}z.prslev.f0{FCST_TIME:02d}.${UPP_DOMAIN}grib2"
 model=${GRAPHICS_MODEL:-${NET}}
 ntasks=${NTASKS:-12}
 grib2_dir="${COMOUT}/upp/det"

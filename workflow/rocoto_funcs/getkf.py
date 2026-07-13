@@ -21,6 +21,7 @@ def getkf(xmlFile, expdir, taskType):
         'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
         'PHYSICS_SUITE': f'{physics_suite}',
         'LSM_SCHEME': f'{lsm_scheme}',
+        'NSOIL_LEVELS': os.getenv('NSOIL_LEVELS', '9'),
         'REFERENCE_TIME': '@Y-@m-@dT@H:00:00Z',
         'DO_RADAR_REF': os.getenv('DO_RADAR_REF', 'FALSE').upper(),
         'YAML_GEN_METHOD': os.getenv('YAML_GEN_METHOD', '1'),

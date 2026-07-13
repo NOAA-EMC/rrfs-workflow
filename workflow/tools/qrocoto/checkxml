@@ -7,6 +7,8 @@ elif [[ -s rtma.xml ]]; then
   NET=rtma
 elif [[ -s arps.xml ]]; then
   NET=arps
+elif [[ -s global.xml ]]; then
+  NET=global
 fi
 
 if (( $# > 0 )); then
