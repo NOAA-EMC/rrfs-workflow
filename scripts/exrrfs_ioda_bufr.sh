@@ -165,13 +165,6 @@ done
 ./offline_vad_thinning.py -i ioda_vadwnd.nc -o ioda_vadwnd_thinned.nc
 mv ioda_vadwnd_thinned.nc ioda_vadwnd.nc
 
-
-# Cast metadata to the type expected by OSDF
-${cpreq} "${USHrrfs}"/prep_ioda_cast.sh .
-for ioda_file in ioda*.nc; do
-  ./prep_ioda_cast.sh -i "${ioda_file}"
-done
-
 # file count sanity check and copy to COMOUT
 if ls ./ioda*nc; then
   ${cpreq} "${DATA}"/ioda*.nc "${COMOUT}/ioda_bufr/${WGF}"
