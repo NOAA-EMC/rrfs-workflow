@@ -25178,7 +25178,6 @@ suite para
           family 12z
             edit CYC '12'
             edit KEEPDATA 'YES'
-            edit rrfs_ver 'v1.0.19'
             family preclean
               task jrrfs_clean_early
                 trigger :TIME >= 1200 and :TIME < 1500
@@ -31873,7 +31872,6 @@ suite para
           endfamily
           family 13z
             edit CYC '13'
-            edit rrfs_ver 'v1.0.19'
             family preclean
               task jrrfs_clean_early
                 trigger :TIME >= 1300 and :TIME < 1600
