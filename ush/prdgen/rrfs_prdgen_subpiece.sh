@@ -44,9 +44,12 @@ elif [ $domain == "pr" ]; then
   parmfile=${DATA}/hi_pr_${subpiece}.txt
 fi
 
+set -o pipefail
+
 # Use different parm file for each subpiece
 if [[ "$inputfile" =~ "prslev" ]]; then
-  wgrib2 $comout/${inputfile} | grep -F -f ${parmfile} | wgrib2 -i -grib inputs.grib${domain} $comout/${inputfile}
+  wgrib2 $comout/${inputfile} | grep -F -f ${parmfile} | wgrib2 -i -grib inputs.grib${domain} $comout/${inputfile} >>$pgmout 2>>errfile
+  export err=$?; err_chk
   wgrib2 inputs.grib${domain} -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv inputs.grib${domain}.uv
 else
   wgrib2 $comout/${inputfile} -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv inputs.grib${domain}.uv
@@ -56,9 +59,11 @@ wgrib2 inputs.grib${domain}.uv -set_bitmap 1 -set_grib_type ${compress_type} \
   -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
   -new_grid_interpolation neighbor \
   -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
-  -new_grid ${gridspecs} ${domain}_${subpiece}.grib2
+  -new_grid ${gridspecs} ${domain}_${subpiece}.grib2 >>$pgmout 2>>errfile
 
-#export err=$?; err_chk
+export err=$?; err_chk
+
+set +o pipefail
 
 # Send data to COMOUT in the ex-script after the grid is re-assembled
 

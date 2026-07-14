@@ -105,42 +105,6 @@ DD=${YYYYMMDDHH:6:2}
 HH=${YYYYMMDDHH:8:2}
 YYYYMMDD=${YYYYMMDDHH:0:8}
 #
-#--------------------------------------------------------------------
-#
-# loop through ensemble members to link all the member files
-#
-#--------------------------------------------------------------------
-#
-imem=1
-for imem in  $(seq 1 $nens)
-  do
-  ensmem=$( printf "%03d" $imem ) 
-  memberstring=$( printf "%03d" $imem )
-
-  bkpath=${umbrella_forecast_data}/m${ensmem}/INPUT  # cycling, use background from RESTART
-
-  dynvarfile=${bkpath}/fv_core.res.tile1.nc
-  tracerfile=${bkpath}/fv_tracer.res.tile1.nc
-  if [ -r "${dynvarfile}" ] && [ -r "${tracerfile}" ] ; then
-    if [ ${DO_ENSFCST} = "TRUE" ] ; then
-      ln -sf ${bkpath}/fv_core.res.tile1.nc  ./fv3sar_tile1_mem${memberstring}_dynvar
-      ln -sf ${bkpath}/fv_tracer.res.tile1.nc   ./fv3sar_tile1_mem${memberstring}_tracer
-      ln -sf ${bkpath}/sfc_data.nc  ./fv3sar_tile1_mem${memberstring}_sfcvar
-    else
-      ln -sf ${bkpath}/fv_core.res.tile1.nc  ./fv3sar_tile1_mem${memberstring}_dynvar
-      ln -sf ${bkpath}/fv_tracer.res.tile1.nc   ./fv3sar_tile1_mem${memberstring}_tracer
-      ln -sf ${bkpath}/sfc_data.nc  ./fv3sar_tile1_mem${memberstring}_sfcvar
-    fi
-    ln -sf ${bkpath}/fv_core.res.tile1.nc  ./rec_fv3sar_tile1_mem${memberstring}_dynvar
-    ln -sf ${bkpath}/fv_tracer.res.tile1.nc   ./rec_fv3sar_tile1_mem${memberstring}_tracer
-    ln -sf ${bkpath}/sfc_data.nc  ./rec_fv3sar_tile1_mem${memberstring}_sfcvar
-  else
-    err_exit "Cannot find background: ${dynvarfile} ${tracerfile}"
-  fi
-
-  (( imem += 1 ))
- done
-#
 #-----------------------------------------------------------------------
 #
 # link the control member 
@@ -164,6 +128,52 @@ elif [ -r "${dynvarfile_control}" ] && [ -r "${tracerfile_control}" ] ; then
 else
   err_exit "Cannot find background: ${dynvarfile_control} or ${dynvarfile_control_spinup}"
 fi
+#
+#--------------------------------------------------------------------
+#
+# loop through ensemble members to link all the member files
+#
+#--------------------------------------------------------------------
+#
+touch ./para_copy.sh
+imem=1
+for imem in  $(seq 1 $nens)
+  do
+  ensmem=$( printf "%03d" $imem ) 
+  memberstring=$( printf "%03d" $imem )
+
+  bkpath=${umbrella_forecast_data}/m${ensmem}/INPUT  # cycling, use background from RESTART
+
+  dynvarfile=${bkpath}/fv_core.res.tile1.nc
+  tracerfile=${bkpath}/fv_tracer.res.tile1.nc
+  if [ -r "${dynvarfile}" ] && [ -r "${tracerfile}" ] ; then
+    if [ ${DO_ENSFCST} = "TRUE" ] ; then
+      ln -sf ${bkpath}/fv_core.res.tile1.nc  ./fv3sar_tile1_mem${memberstring}_dynvar
+      ln -sf ${bkpath}/fv_tracer.res.tile1.nc   ./fv3sar_tile1_mem${memberstring}_tracer
+      ln -sf ${bkpath}/sfc_data.nc  ./fv3sar_tile1_mem${memberstring}_sfcvar
+      ln -sf ${bkpath}/fv_core.res.tile1.nc  ./rec_fv3sar_tile1_mem${memberstring}_dynvar
+      ln -sf ${bkpath}/fv_tracer.res.tile1.nc   ./rec_fv3sar_tile1_mem${memberstring}_tracer
+      ln -sf ${bkpath}/sfc_data.nc  ./rec_fv3sar_tile1_mem${memberstring}_sfcvar
+    else
+      ln -sf ${bkpath}/fv_core.res.tile1.nc  ./fv3sar_tile1_mem${memberstring}_dynvar
+      ln -sf ${bkpath}/fv_tracer.res.tile1.nc   ./fv3sar_tile1_mem${memberstring}_tracer
+      ln -sf ${bkpath}/sfc_data.nc  ./fv3sar_tile1_mem${memberstring}_sfcvar
+      echo "cpreq -p  ${ctrlpath}/INPUT/fv_core.res.tile1.nc  ./rec_fv3sar_tile1_mem${memberstring}_dynvar" >> para_copy.sh
+      echo "cpreq -p  ${ctrlpath}/INPUT/fv_tracer.res.tile1.nc   ./rec_fv3sar_tile1_mem${memberstring}_tracer" >> para_copy.sh
+      echo "cpreq -p  ${ctrlpath}/INPUT/sfc_data.nc  ./rec_fv3sar_tile1_mem${memberstring}_sfcvar" >> para_copy.sh
+    fi
+  else
+    err_exit "Cannot find background: ${dynvarfile} ${tracerfile}"
+  fi
+
+  (( imem += 1 ))
+ done
+
+if [ ${DO_ENSFCST} = "FALSE" ] ; then
+  cpprocs=90
+  mpiexec -n ${cpprocs} -ppn ${cpprocs} --cpu-bind core cfp ./para_copy.sh
+fi
+
 #
 #-----------------------------------------------------------------------
 #
@@ -212,6 +222,27 @@ for files in $(ls rec_fv3sar_tile1_mem*)  ; do
   ncatted -a checksum,,d,,  $files
 done
 #
+#-----------------------------------------------------------------------
+#
+# copy recentering file back to umbrella
+#
+#-----------------------------------------------------------------------
+if [ ${DO_ENSFCST} = "FALSE" ] ; then
+for imem in  $(seq 1 $nens)
+  do
+  ensmem=$( printf "%03d" $imem ) 
+  memberstring=$( printf "%03d" $imem )
+  bkpath=${umbrella_forecast_data}/m${ensmem}/INPUT  # cycling, use background from RESTART
+
+  mv ${bkpath}/fv_core.res.tile1.nc ${bkpath}/bf_rec_fv_core.res.tile1.nc
+  mv ${bkpath}/fv_tracer.res.tile1.nc ${bkpath}/bf_rec_fv_tracer.res.tile1.nc
+  mv ${bkpath}/sfc_data.nc ${bkpath}/bf_rec_sfc_data.nc
+
+  mv ./rec_fv3sar_tile1_mem${memberstring}_dynvar ${bkpath}/fv_core.res.tile1.nc
+  mv ./rec_fv3sar_tile1_mem${memberstring}_tracer  ${bkpath}/fv_tracer.res.tile1.nc
+  mv ./rec_fv3sar_tile1_mem${memberstring}_sfcvar ${bkpath}/sfc_data.nc
+done
+fi
 #-----------------------------------------------------------------------
 #
 # touch a file to show completion of the task
