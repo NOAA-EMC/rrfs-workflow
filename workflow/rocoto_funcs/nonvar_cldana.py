@@ -64,7 +64,11 @@ def nonvar_cldana(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
     jedidep = ""
     if os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
         if os.getenv("DO_ENSEMBLE", "FALSE").upper() == "TRUE":
-            jedidep = f'\n    <taskdep task="getkf_solver"/>'
+            jedidep = f'''
+    <or>
+      <taskdep task="getkf_solver"/>
+      <taskdep task="getkf_observer_solver"/>
+    </or>'''
         elif do_spinup:
             jedidep = f'\n    <taskdep task="jedivar_spinup"/>'
         else:

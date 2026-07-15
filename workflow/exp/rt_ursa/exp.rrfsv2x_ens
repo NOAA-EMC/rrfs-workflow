@@ -26,6 +26,7 @@ export ENS_METADEP_FRAC_THRESHOLD=0.5
 #
 export DO_IODA=true
 export DO_JEDI=true
+export GETKF_ONESTEP=true
 export COLDSTART_CYCS_DO_DA=false
 export DO_RECENTER=true
 export DO_GETKF_POST=false
