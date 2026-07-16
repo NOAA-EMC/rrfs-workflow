@@ -69,12 +69,12 @@ def rrfs_domain_check(lat,lon):
   xc = np.matmul(prot,xe)	# Do NOT use the transpose of prot here
 
   xc = np.array(xc)
-  zp = float(xc[2]) + 1.0
+  zp = float(xc[2].item()) + 1.0
   xs = xc[0:2]/zp
 
   xs = np.array(xs)
 
-  s = kappa * (float(xs[0])*float(xs[0]) + float(xs[1])*float(xs[1]))
+  s = kappa * (float(xs[0].item())*float(xs[0].item()) + float(xs[1].item())*float(xs[1].item()))
   sc = 1.0 - s
   if (abs(s) >= 1.0):
     failure = True
@@ -85,32 +85,32 @@ def rrfs_domain_check(lat,lon):
   if (alpha > 0):
     ra = m.sqrt(alpha)
     razt = ra * xt[0]
-    xm[0] = m.atan(razt) / ra
+    xm[0] = np.arctan(razt) / ra
   elif (alpha < 0):
     ra = m.sqrt(-alpha)
     razt = ra * xt[0]
     if (abs(razt) >= 1.0):
       failure = True
-    xm[0] = m.atanh(razt) / ra
+    xm[0] = np.arctanh(razt) / ra
   else:
     xm[0] = xt[0]
 
   if (alpha > 0):
     ra = m.sqrt(alpha)
     razt = ra * xt[1]
-    xm[1] = m.atan(razt) / ra
+    xm[1] = np.arctan(razt) / ra
   elif (alpha < 0):
     ra = m.sqrt(-alpha)
     razt = ra * xt[1]
     if (abs(razt) >= 1.0):
       failure = True
-    xm[1] = m.atanh(razt) / ra
+    xm[1] = np.arctanh(razt) / ra
   else:
     xm[1] = xt[1]
 
   xm[0] = xm[0]/delx
   xm[1] = xm[1]/dely
-  print((xm))
+#  print((xm))
 
 # use xm to determine if point is good or bad
   if ((abs(xm[0])) < (npx/2)) and ((abs(xm[1])) < (npy/2)) and (failure == False):
@@ -130,6 +130,15 @@ def main():
 # RRFS Fire Weather center lat/lon - input arguments
   centlat = float(sys.argv[1])
   centlon = float(sys.argv[2])
+  if ((abs(centlat)) > 90.0) and ((abs(centlon)) > 180.0):
+    print(('WARNING: The center latitude and longitude must be between -90 to 90 degrees and -180 to 180 degrees, respectively.  Please choose a different center latitude and longitude.'))
+    sys.exit(1)
+  elif((abs(centlat)) > 90.0):  
+    print(('WARNING: The center latitude must be between -90 to 90 degrees.  Please choose a different center latitude.'))
+    sys.exit(1)
+  elif((abs(centlon)) > 180.0):  
+    print(('WARNING: The center longitude must be between -180 to 180 degrees.  Please choose a different center longitude.'))
+    sys.exit(1)
 
 # First check if the center lat/lon falls inside the RRFS domain
 
