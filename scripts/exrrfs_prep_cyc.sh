@@ -375,7 +375,9 @@ else
       done
       if [ ${fallback_enable} == "YES" ]; then
         print_info_msg "$VERBOSE" "WARNING: cannot find restart files in previous 1 hour, proceeding fallback for older cycle"
-        echo "WARNING: cannot find restart files in previous 1 hour, proceeding fallback for older cycle" | mail.py -s "RRFS prep_cyc fallback" -c ${MAILTO}
+        if [ ${SENDMAIL} == "YES" ]; then
+          echo "WARNING: cannot find restart files in previous 1 hour, proceeding fallback for older cycle" | mail.py -s "RRFS prep_cyc fallback" -c ${MAILTO}
+        fi
         fg_restart_dirname=forecast
         restart_prefix="${YYYYMMDD}.${HH}0000."
         if [ ${BKTYPE} -eq 2 ] && [ "${DO_ENSEMBLE}" = "FALSE" ]; then  #det cycle 09/21z start from n=1
@@ -400,7 +402,9 @@ else
              break
            else
              print_info_msg "$VERBOSE" "WARNING: fallback cannot find restart files in previous ${n} hour"
-             echo "WARNING: fallback cannot find restart files in previous ${n} hour" | mail.py -s "RRFS prep_cyc fallback" -c ${MAILTO}
+             if [ ${SENDMAIL} == "YES" ]; then
+               echo "WARNING: fallback cannot find restart files in previous ${n} hour" | mail.py -s "RRFS prep_cyc fallback" -c ${MAILTO}
+             fi
     	   fi
            n=$((n + ${DA_CYCLE_INTERV}))
         done
@@ -488,13 +492,7 @@ if [ ${HH} -eq ${SNOWICE_update_hour} ] && [ "${CYCLE_TYPE}" = "prod" ] ; then
 
     snowice_reference_time=$(wgrib2 -t latest.SNOW_IMS | tail -1) 
     echo "${YYYYMMDDHH}(${CYCLE_TYPE}): update snow/ice using ${snowice_reference_time}"
-  else
-     echo "WARNING: No latest IMS SNOW file for update at ${YYYYMMDDHH}!!!!"
-     print_info_msg "$VERBOSE" "WARNING: In ${COMINobsproc}, NO IMSSNOW does not exist! Will continue without it (is data of opportunity)"
   fi
-else
-  echo "NOTE: No update for IMS SNOW/ICE at ${YYYYMMDDHH}!"
-  print_info_msg "$VERBOSE" "WARNING: In ${COMINobsproc}, NOW_IMS does not exist! Will continue without it (is data of opportunity)"
 fi
 #
 #-----------------------------------------------------------------------
@@ -541,13 +539,7 @@ EOF
     mv errfile errfile_updatesst
     sst_reference_time=$(wgrib2 -t latest.SST) 
     echo "${YYYYMMDDHH}(${CYCLE_TYPE}): update SST using ${sst_reference_time}"
-  else
-    echo "WARNING: No latest SST file for update at ${YYYYMMDDHH}!!!!"
-    print_info_msg "$VERBOSE" "WARNING: In ${COMINnsst}, SST does not exist! Will continue without it (is data of opportunity)"
   fi
-else
-   echo "NOTE: No update for SST at ${YYYYMMDDHH}!"
-   print_info_msg "$VERBOSE" "WARNING: In ${COMINnsst}, SST does not exist! Will continue without it (is data of opportunity)"
 fi
 
 #-----------------------------------------------------------------------

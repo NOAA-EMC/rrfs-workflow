@@ -58,6 +58,7 @@ export rap_ver=v5.1
 
 export DBNLOG=YES
 export MAILTO="nco.spa@noaa.gov,Matthew.Pyle@noaa.gov,Lin.Gan@noaa.gov"
+export SENDMAIL="YES"
 
 #### NOT COMPLY WITH IMPLEMENTATION STANDARD - NEED TO BE REMOVED BEFORE CODE DELIVERY
 
