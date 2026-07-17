@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2153,SC1091,SC2154
-declare -rx PS4='+${SECONDS}s $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
+declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
 set -x
 
 cpreq=${cpreq:-cpreq}
@@ -9,16 +9,24 @@ cd "${DATA}"  || exit 1
 cyc_interval=${CYC_INTERVAL:-1}
 cyc=${CDATE:8:2}
 large_scale_file=${UMBRELLA_PREP_IC_DATA}/init.nc
+small_scale_file=""
+timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)
 
 for hr in ${BLENDING_CYCS:-"99"}; do
   shr=$(printf '%02d' $((10#$hr)) )
-  if [[ "${cyc}" == "${shr}" ]]; then
-    timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)
-    CDATEp=$("${NDATE}" -"${cyc_interval}" "${CDATE}" )
-    PDYii=${CDATEp:0:8}
-    cycii=${CDATEp:8:2}
-    fcststr="fcst"
-    small_scale_file=${COMINrrfs}/${RUN}.${PDYii}/${cycii}/${fcststr}/${WGF}${MEMDIR}/mpasout.${timestr}.nc
+  if [ "${cyc}" == "${shr}" ]; then
+    # look back ${NUM} cycles to find mpasout files as small scale file
+    NUM=3
+    for (( ii=cyc_interval; ii<=$(( NUM*cyc_interval )); ii=ii+cyc_interval )); do
+      CDATEp=$(${NDATE} -${ii} "${CDATE}" )
+      PDYii=${CDATEp:0:8}
+      cycii=${CDATEp:8:2}
+      file_mpasout="${COMINrrfs}/${RUN}.${PDYii}/${cycii}/fcst/${WGF}${memdir}/mpasout.${timestr}.nc"
+      if [[ -s "${file_mpasout}" ]]; then
+        small_scale_file="${file_mpasout}"
+        break
+      fi
+    done
 
     if [[ -r ${large_scale_file} ]] && [[ -r ${small_scale_file} ]] ; then
       blend_fields=blend_fields.nc
