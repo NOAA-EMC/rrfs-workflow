@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2153,SC1091,SC2154
-declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
+declare -rx PS4='+${SECONDS}s $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
 set -x
 
 cpreq=${cpreq:-cpreq}
@@ -14,7 +14,7 @@ timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)
 
 for hr in ${BLENDING_CYCS:-"99"}; do
   shr=$(printf '%02d' $((10#$hr)) )
-  if [ "${cyc}" == "${shr}" ]; then
+  if [[ "${cyc}" == "${shr}" ]]; then
     # look back ${NUM} cycles to find mpasout files as small scale file
     NUM=3
     for (( ii=cyc_interval; ii<=$(( NUM*cyc_interval )); ii=ii+cyc_interval )); do
