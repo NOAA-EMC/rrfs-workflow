@@ -259,7 +259,18 @@ def process_prod_tiles():
   if len(out_fed)==0:
     if any_input_files==0:
       print('WARNING: obs count=0 because no valid GLM tiles were found in '+obs_west+' or '+obs_east+ ' Is data of opportunity, but will email due to no files being found')
-      subject = "Missing GLM lightning data for RRFS"
+      subject = "Missing GLM Lightning Data of Opportunity for RRFS"
+      msg = (
+          f"WARNING: No GLM data was found in RRFS ush/generate_fire_emission.py script.\n"
+          f"The above script checks for filename patterns in the following directories, and found no matches:\n"
+          f'{obs_east}\n'
+          f'{obs_west}\n'
+          f'\n'
+          f'Proceeding cycle without GLM data.\n'
+          f'\n'
+          f'No immediate impact to integrity of delivered products.\n'
+          f'\n'
+          f'Ops action: identify cause of missing GLM data at above locations.\n'
       msg="WARNING: No GLM data was found in RRFS ush/process_lightning.py script"
       f = open("./warnglm.txt","w")
       f.write(msg)
