@@ -48,7 +48,7 @@ def mpas_blend(xmlFile, expdir, spinup_mode=0):
 
     if os.getenv("DO_BLENDING", "FALSE").upper() == "TRUE":
         datadep_neqs = ""
-        datadep_eqs = f'''      <datadep age="00:01:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.00.00.nc</cyclestr></datadep>'''
+        datadep_eqs = f'''      <datadep age="00:01:00"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;/</cyclestr><cyclestr>fcst_f{cyc_interval:0>3}.done</cyclestr></datadep>'''
 
     dependencies = f'''
   <dependency>
