@@ -167,6 +167,18 @@ if [ -r "${obs_file}" ]; then
    run_lightning=true
 else
    print_info_msg "$VERBOSE" "WARNING: ${obs_file} does not exist. Will continue without it (is data of opportunity)"
+   missing_data_flag=true
+   cat << EOF > email_warning.txt
+WARNING: Observation files are not available at the below path:
+${obs_file}
+
+RRFS cycle will continue without these files.
+
+No immediate impact to integrity of delivered products.
+
+Ops action: identify cause of missing observation data at the above path.
+
+EOF
 fi
 #
 #-----------------------------------------------------------------------
@@ -229,6 +241,18 @@ if [ -r "${obs_file}" ]; then
    run_cloud=true
 else
    print_info_msg "$VERBOSE" "WARNING: ${obs_file} does not exist. Will continue without it (is data of opportunity)"
+   missing_data_flag=true
+   cat << EOF >> email_warning.txt
+WARNING: Observation files are not available at the below path:
+${obs_file}
+
+RRFS cycle will continue without these files.
+
+No immediate impact to integrity of delivered products.
+
+Ops action: identify cause of missing observation data at the above path.
+
+EOF
 fi
 #
 #-----------------------------------------------------------------------
@@ -301,7 +325,24 @@ if [ -r "${obs_file}" ]; then
    run_metar=true
 else
    print_info_msg "$VERBOSE" "WARNING: ${obs_file} does not exist. Will continue without it (is data of opportunity here)"
+   missing_data_flag=true
+   cat << EOF >> email_warning.txt
+WARNING: Observation files are not available at the below path:
+${obs_file}
+
+RRFS cycle will continue without these files.
+
+No immediate impact to integrity of delivered products.
+
+Ops action: identify cause of missing observation data at the above path.
+
+EOF
 fi
+
+if [[ "$missing_data_flag" == true ]]; then
+   mail.py -s "Missing Observation Data of Opportunity for RRFS" -v ${MAIL_TO} < email_warning.txt
+fi
+
 #
 #-----------------------------------------------------------------------
 #
