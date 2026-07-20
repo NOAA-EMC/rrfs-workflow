@@ -609,14 +609,27 @@ do
     ((obs_file_count++))  # the counter if file is available
   else
     print_info_msg "$VERBOSE" "WARNING: ${obs_file} does not exist! Will continue without it (is data of opportunity)"
+    missing_data_flag=true
+    echo "$obs_file" >> missing_file_list
   fi
 done
 
 echo "number of obs files:" $obs_file_count
 if [ "$obs_file_count" -eq 0 ]; then
   err_exit "FATAL ERROR: no observation files were found in this analysis."
-fi
+elif [[ "$missing_data_flag" == true ]]; then
+  cat << EOF > email_warn.txt
+WARNING: Some observation files were unable to be found in this analysis:
 
+RRFS cycle will continue without these files.
+
+No immediate impact to integrity of delivered products.
+
+Ops action: identify cause of missing files at the following path(s):
+EOF
+  cat missing_file_list >> email_warn.txt
+  mail.py -s "Missing Observation Data of Opportunity for RRFS" -v ${MAIL_TO} < email_warn.txt
+fi
 #
 #-----------------------------------------------------------------------
 #
