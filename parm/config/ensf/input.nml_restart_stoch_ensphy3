@@ -303,7 +303,7 @@
 &nam_sppperts
     iseed_spp = 4, 5, 6, 7
     spp_lscale = 150000.0, 150000.0, 150000.0, 150000.0
-    spp_prt_list = 0.16, 0.16, 0.2, 0.2
+    spp_prt_list = 0.14, 0.14, 0.2, 0.2
     spp_sigtop1 = 0.1, 0.1, 0.1, 0.1
     spp_sigtop2 = 0.025, 0.025, 0.025, 0.025
     spp_stddev_cutoff = 1.5, 1.5, 1.5, 1.5
