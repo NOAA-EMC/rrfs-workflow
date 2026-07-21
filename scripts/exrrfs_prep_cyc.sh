@@ -458,6 +458,9 @@ else
     err_exit "Cannot find background: ${checkfile}"
   fi
 fi
+
+missing_data_flag=false
+
 #
 #-----------------------------------------------------------------------
 #
@@ -479,6 +482,13 @@ if [ ${HH} -eq ${SNOWICE_update_hour} ] && [ "${CYCLE_TYPE}" = "prod" ] ; then
     echo "${COMINobsproc} data does not exist!!"
     echo "WARNING: No snow update at ${HH}!!!!"
     print_info_msg "$VERBOSE" "WARNING: In ${COMINobsproc}, NO IMSSNOW does not exist! Will continue without it (is data of opportunity)"
+    missing_data_flag=true
+    echo "Cannot find IMSSNOW data matching any of the below filenames:" >> missing_file_list
+    echo "${COMINobsproc}/latest.SNOW_IMS" >> missing_file_list
+    echo "${COMINobsproc}/${YYJJJ2200000000}" >> missing_file_list
+    echo "${COMINobsproc}/${OBSTYPE_SOURCE}.${YYYYMMDD}/${OBSTYPE_SOURCE}.t${HH}z.imssnow.grib2" >> missing_file_list
+    echo "${COMINobsproc}/${OBSTYPE_SOURCE}_e.${YYYYMMDD}/${OBSTYPE_SOURCE}_e.t${HH}z.imssnow.grib2" >> missing_file_list
+    echo "" >> missing_file_list
   fi
   if [ -r "latest.SNOW_IMS" ]; then
     ln -sf ./latest.SNOW_IMS                imssnow2
@@ -515,6 +525,13 @@ if [ ${HH} -eq ${SST_update_hour} ] && [ "${CYCLE_TYPE}" = "prod" ] ; then
     echo "${COMINnsst} data does not exist!!"
     echo "WARNING: No SST update at ${HH}!!!!"
     print_info_msg "$VERBOSE" "WARNING: In ${COMINnsst}, SST does not exist! Will continue without it (is data of opportunity)"
+    missing_data_flag=true
+    echo "Cannot find SST data matching any of the below filenames:" >> missing_file_list
+    echo "${COMINnsst}/latest.SST" >> missing_file_list
+    echo "${COMINnsst}/${YYJJJ00000000}" >> missing_file_list
+    echo "${COMINnsst}/nsst.$YYYYMMDD/rtgssthr_grb_0.083.grib2" >> missing_file_list
+    echo "${COMINnsst}/nsst.$YYYYMMDDm1/rtgssthr_grb_0.083.grib2" >> missing_file_list
+    echo "" >> missing_file_list
   fi
   if [ -r "latest.SST" ]; then
     cpreq -p ${FIXam}/RTG_SST_landmask.dat               RTG_SST_landmask.dat
@@ -540,6 +557,21 @@ EOF
     sst_reference_time=$(wgrib2 -t latest.SST) 
     echo "${YYYYMMDDHH}(${CYCLE_TYPE}): update SST using ${sst_reference_time}"
   fi
+fi
+
+if [[ "$missing_data_flag" == true && "$SENDMAIL" == "YES" ]]; then
+  cat << EOF > email_warn.txt
+WARNING: Some files were unable to be found in this analysis:
+
+RRFS cycle will continue without these files.
+  
+No immediate impact to integrity of delivered products.
+  
+Ops action: identify cause of missing files below.
+
+EOF
+  cat missing_file_list >> email_warn.txt
+  mail.py -s "Missing Data of Opportunity for RRFS" -v ${MAIL_TO} < email_warn.txt
 fi
 
 #-----------------------------------------------------------------------
