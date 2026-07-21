@@ -272,7 +272,6 @@ def process_prod_tiles():
           f'\n'
           f'Ops action: identify cause of missing GLM data at above locations.\n'
       )
-      msg="WARNING: No GLM data was found in RRFS ush/process_lightning.py script"
       f = open("./warnglm.txt","w")
       f.write(msg)
       f.close()
