@@ -95,6 +95,7 @@ def generate_emiss_workflow(staticdir, ravedir, newges_dir, predef_grid):
            f'No immediate impact to integrity of delivered products.\n'
            f'\n'
            f'Ops action: identify cause of missing RAVE data at above locations.\n'
+       )
        f = open("./warn.txt","w")
        f.write(msg)
        f.close()
