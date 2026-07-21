@@ -20,6 +20,8 @@ export DO_DETERMINISTIC=false
 export ENS_SIZE=30
 export ZETA_LEVELS="L65.txt"
 #
+export USE_MERRA2=false  # false: default GOCART aerosol climatology; true: MERRA2 aerosol climatology
+#
 export DO_IODA=false
 export DO_JEDI=false
 export DO_NONVAR_CLOUD_ANA=false
@@ -118,16 +120,6 @@ case ${MACHINE} in
     export NODES_UPP="<nodes>1:ppn=80</nodes>"
     export NODES_ENSMEAN="<nodes>1:ppn=80</nodes>"
     export NODES_GETKF="<nodes>5:ppn=80</nodes>"
-    ;;
-  "jet")
-    export IC_EXTRN_MDL_BASEDIR="/lfs5/BMC/nrtrr/RRFS2_RETRO_DATA/May2024/GEFS"
-    export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
-    export OBSPATH="/lfs5/BMC/nrtrr/RRFS2_RETRO_DATA/May2024/obs_rap"
-    export OBSPATH_NSSLMOSIAC="/lfs5/BMC/nrtrr/RRFS2_RETRO_DATA/May2024/reflectivity"
-    export OBSPATH_AIRNOW="/lfs5/BMC/nrtrr/RRFS2_RETRO_DATA/May2024/airnow"
-    export ACCOUNT="nrtrr"
-    export QUEUE="batch"
-    export PARTITION="kjet"
     ;;
   "orion"|"hercules")
     export IC_EXTRN_MDL_BASEDIR="/work2/noaa/wrfruc/RRFS2_RETRO_DATA/May2024/GEFS"

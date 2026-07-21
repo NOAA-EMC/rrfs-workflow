@@ -35,8 +35,7 @@ srun python -u "${SCRIPT}" \
            "${EMISINPUTDIR}" \
            "${EMISOUTPUTDIR}" \
            "${INTERP_WEIGHTS_DIR}" \
-           "${YYYY}${MM}${DD}${HH}" \
-           "${MESH_NAME}"
+           "${YYYY}${MM}${DD}${HH}"
 if [[ ! -r "${EMISFILE}" ]]; then
    echo "Regrid failed, check the logs"
    exit 1 # do we need to exit the whole exrrfs_prep_chem.sh?

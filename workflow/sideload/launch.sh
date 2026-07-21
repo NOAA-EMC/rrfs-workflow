@@ -127,6 +127,10 @@ case ${task_id} in
     module load "rrfs/${MACHINE}.${COMPILER}"
     module load nco
     ;;
+  prep_chem)
+    module purge
+    module load "chem-regrid/${MACHINE}.${COMPILER}"
+    ;;
   *)
     module purge
     module load "rrfs/${MACHINE}.${COMPILER}"

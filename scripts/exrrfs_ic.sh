@@ -58,7 +58,11 @@ sed -e "s/@input_stream@/static.nc/" -e "s/@output_stream@/init.nc/" \
 ln -snf "${UMBRELLA_UNGRIB_IC_DATA}/${prefix}:${start_time:0:13}" .
 ${cpreq} "${FIXrrfs}/${MESH_NAME}/${MESH_NAME}.static.nc" static.nc
 ${cpreq} "${FIXrrfs}/${MESH_NAME}/graphinfo/${MESH_NAME}.graph.info.part.${NTASKS}" .
-ln -snf "${FIXrrfs}/physics/${PHYSICS_SUITE}/QNWFA_QNIFA_SIGMA_MONTHLY.dat" .
+if [[ "${USE_MERRA2^^}" == "TRUE" ]]; then
+  ln -snf "${FIXrrfs}/physics/${PHYSICS_SUITE}/QNWFA_QNIFA_MERRA2_MONTHLY.dat" QNWFA_QNIFA_SIGMA_MONTHLY.dat
+else
+  ln -snf "${FIXrrfs}/physics/${PHYSICS_SUITE}/QNWFA_QNIFA_SIGMA_MONTHLY.dat" .
+fi
 
 # run init_atmosphere_model
 source prep_step

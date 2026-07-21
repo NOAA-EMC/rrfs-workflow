@@ -90,8 +90,9 @@ def smart_cycledefs():
     #
     # if we don't do DA at cold start cycles, let's exclude cold_cycs
     do_jedi = os.getenv('DO_JEDI', 'FALSE').upper() == 'TRUE'
+    do_nonvar_cld = os.getenv('DO_NONVAR_CLOUD_ANA', 'FALSE').upper() == 'TRUE'
     nocoldda = os.getenv('COLDSTART_CYCS_DO_DA', 'TRUE').upper() == 'FALSE'
-    if do_jedi and nocoldda:
+    if (do_jedi or do_nonvar_cld) and nocoldda:
         if spinup:  # if spinup, coldda only happens at spinup cycles
             spinup_hrs2 = [item for item in spinup_hrs if item not in list(map(int, cold_cycs))]
             valid_str = " ".join(f"{i}" for i in spinup_hrs2)
