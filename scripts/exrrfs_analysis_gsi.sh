@@ -265,7 +265,7 @@ if  [[ ${regional_ensemble_option:-1} -eq 1 || ${l_both_fv3sar_gfs_ens} = ".true
       shopt -u nullglob
 
       if [ ${#file_list[@]} -eq 0 ]; then
-        err_exit "FATAL ERROR: Missing ${COMINgfs}/enkfgdas.*/*/atmos/mem080/gdas*.atmf${loop}.${ftype} files"
+        echo "WARNING: Missing ${COMINgfs}/enkfgdas.*/*/atmos/mem080/gdas*.atmf${loop}.${ftype} files"
 
       else
       for timelist in "${file_list[@]}"; do
