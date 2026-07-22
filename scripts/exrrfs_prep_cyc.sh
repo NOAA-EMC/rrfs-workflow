@@ -631,17 +631,10 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ "${CYCLE_TYPE}" = "spinup" ]; then  # cy
           done
       fi
 
-      # check if there are tracer file in continue cycle data space:
-      if [ "${bkpath_find}" = "missing" ]; then
-        # All required file should exist
-        # err_exit "FATAL: missing fv_tracer.res.tile1.nc"
-        echo "WARNING: can not find fv_tracer for smoke/dust cycling at ${HH}"
-      fi
-
       # cycle smoke/dust
       rm -f cycle_smoke_dust.done
       if [ "${bkpath_find}" = "missing" ]; then
-        print_info_msg "Warning: cannot find smoke/dust files from previous cycle"
+        print_info_msg "WARNING: did not find smoke/dust files from previous cycle, but can proceed without them."
         touch ${COMOUT}/cycle_smoke_dust_skipped.txt
       else
         checkfile=${bkpath_find}/${restart_prefix_find}fv_tracer.res.tile1.nc
