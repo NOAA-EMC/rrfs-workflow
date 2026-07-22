@@ -339,8 +339,11 @@ Ops action: identify cause of missing observation data at the above path.
 EOF
 fi
 
-if [[ "$missing_data_flag" == true ]]; then
-   mail.py -s "Missing Observation Data of Opportunity for RRFS" -v ${MAIL_TO} < email_warning.txt
+# only email for det system twice per day
+if [[ "$missing_data_flag" == true && "$WGF" == "det" && "$CYCLE_TYPE" == "prod" ]]; then
+   if [[ "$cyc" == "13" || "$cyc" == "19" ]]; then
+      mail.py -s "Missing Observation Data of Opportunity for RRFS" -v ${MAIL_TO} < email_warning.txt
+   fi
 fi
 
 #
