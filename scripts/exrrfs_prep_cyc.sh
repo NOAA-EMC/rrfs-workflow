@@ -483,11 +483,8 @@ if [ ${HH} -eq ${SNOWICE_update_hour} ] && [ "${CYCLE_TYPE}" = "prod" ] ; then
     echo "WARNING: No snow update at ${HH}!!!!"
     print_info_msg "$VERBOSE" "WARNING: In ${COMINobsproc}, NO IMSSNOW does not exist! Will continue without it (is data of opportunity)"
     missing_data_flag=true
-    echo "Cannot find IMSSNOW data matching any of the below filenames:" >> missing_file_list
-    echo "${COMINobsproc}/latest.SNOW_IMS" >> missing_file_list
-    echo "${COMINobsproc}/${YYJJJ2200000000}" >> missing_file_list
+    echo "Cannot find IMSSNOW data matching the below filename:" >> missing_file_list
     echo "${COMINobsproc}/${OBSTYPE_SOURCE}.${YYYYMMDD}/${OBSTYPE_SOURCE}.t${HH}z.imssnow.grib2" >> missing_file_list
-    echo "${COMINobsproc}/${OBSTYPE_SOURCE}_e.${YYYYMMDD}/${OBSTYPE_SOURCE}_e.t${HH}z.imssnow.grib2" >> missing_file_list
     echo "" >> missing_file_list
   fi
   if [ -r "latest.SNOW_IMS" ]; then
@@ -526,10 +523,7 @@ if [ ${HH} -eq ${SST_update_hour} ] && [ "${CYCLE_TYPE}" = "prod" ] ; then
     echo "WARNING: No SST update at ${HH}!!!!"
     print_info_msg "$VERBOSE" "WARNING: In ${COMINnsst}, SST does not exist! Will continue without it (is data of opportunity)"
     missing_data_flag=true
-    echo "Cannot find SST data matching any of the below filenames:" >> missing_file_list
-    echo "${COMINnsst}/latest.SST" >> missing_file_list
-    echo "${COMINnsst}/${YYJJJ00000000}" >> missing_file_list
-    echo "${COMINnsst}/nsst.$YYYYMMDD/rtgssthr_grb_0.083.grib2" >> missing_file_list
+    echo "Cannot find SST data matching the below filename:" >> missing_file_list
     echo "${COMINnsst}/nsst.$YYYYMMDDm1/rtgssthr_grb_0.083.grib2" >> missing_file_list
     echo "" >> missing_file_list
   fi
