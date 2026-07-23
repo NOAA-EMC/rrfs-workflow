@@ -266,7 +266,7 @@ if  [[ ${regional_ensemble_option:-1} -eq 1 || ${l_both_fv3sar_gfs_ens} = ".true
       if [ ${#file_list[@]} -eq 0 ]; then
         echo "WARNING: Missing ${COMINgfs}/enkfgdas.*/??/mem080/model/atmos/history/enkfgdas*.atm.f${loop}.${ftype} files"
       else
-        for timelist in $(ls ${COMINgfs}/enkfgdas.*/??/mem080/model/atmos/history/enkfgdas*.atm.f${loop}.${ftype}); do
+        for timelist in "${file_list[@]}"; do
           availtimeyyyymmdd=$(echo ${timelist} | cut -d'/' -f9 | cut -c 10-17)
           availtimehh=$(echo ${timelist} | cut -d'/' -f10)
           availtime=${availtimeyyyymmdd}${availtimehh}
