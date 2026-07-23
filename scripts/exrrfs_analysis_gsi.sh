@@ -260,27 +260,34 @@ if  [[ ${regional_ensemble_option:-1} -eq 1 || ${l_both_fv3sar_gfs_ens} = ".true
   "WCOSS2")
 
     for loop in $loops; do
-      for timelist in $(ls ${COMINgfs}/enkfgdas.*/??/mem080/model/atmos/history/enkfgdas*.atm.f${loop}.${ftype}); do
-        availtimeyyyymmdd=$(echo ${timelist} | cut -d'/' -f9 | cut -c 10-17)
-        availtimehh=$(echo ${timelist} | cut -d'/' -f10)
-        availtime=${availtimeyyyymmdd}${availtimehh}
+      shopt -s nullglob
+      file_list=(${COMINgfs}/enkfgdas.*/??/mem080/model/atmos/history/enkfgdas*.atm.f${loop}.${ftype})
 
-        loopfcst=$(echo ${loop}| cut -c 1-3)      # for nemsio 009s to get 009
-        stamp_avail=$(date -d "${availtimeyyyymmdd} ${availtimehh} ${loopfcst} hours" +%s)
+      if [ ${#file_list[@]} -eq 0 ]; then
+        echo "WARNING: Missing ${COMINgfs}/enkfgdas.*/??/mem080/model/atmos/history/enkfgdas*.atm.f${loop}.${ftype} files"
+      else
+        for timelist in $(ls ${COMINgfs}/enkfgdas.*/??/mem080/model/atmos/history/enkfgdas*.atm.f${loop}.${ftype}); do
+          availtimeyyyymmdd=$(echo ${timelist} | cut -d'/' -f9 | cut -c 10-17)
+          availtimehh=$(echo ${timelist} | cut -d'/' -f10)
+          availtime=${availtimeyyyymmdd}${availtimehh}
 
-        hourDiff=$(echo "($stampcycle - $stamp_avail) / (60 * 60 )" | bc);
-        if [[ ${stampcycle} -lt ${stamp_avail} ]]; then
-           hourDiff=$(echo "($stamp_avail - $stampcycle) / (60 * 60 )" | bc);
-        fi
+          loopfcst=$(echo ${loop}| cut -c 1-3)      # for nemsio 009s to get 009
+          stamp_avail=$(date -d "${availtimeyyyymmdd} ${availtimehh} ${loopfcst} hours" +%s)
 
-        if [[ ${hourDiff} -lt ${minHourDiff} ]]; then
-           minHourDiff=${hourDiff}
-           enkfcstname=enkfgdas.t${availtimehh}z.atm.f${loop}
-           eyyyymmdd=$(echo ${availtime} | cut -c1-8)
-           ehh=$(echo ${availtime} | cut -c9-10)
-           foundgdasens="true"
-        fi
-      done
+          hourDiff=$(echo "($stampcycle - $stamp_avail) / (60 * 60 )" | bc);
+          if [[ ${stampcycle} -lt ${stamp_avail} ]]; then
+             hourDiff=$(echo "($stamp_avail - $stampcycle) / (60 * 60 )" | bc);
+          fi
+
+          if [[ ${hourDiff} -lt ${minHourDiff} ]]; then
+             minHourDiff=${hourDiff}
+             enkfcstname=enkfgdas.t${availtimehh}z.atm.f${loop}
+             eyyyymmdd=$(echo ${availtime} | cut -c1-8)
+             ehh=$(echo ${availtime} | cut -c9-10)
+             foundgdasens="true"
+          fi
+        done
+      fi
     done
 
     if [ ${foundgdasens} = "true" ]
