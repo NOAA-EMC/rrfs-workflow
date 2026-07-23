@@ -375,7 +375,7 @@ else
       done
       if [ ${fallback_enable} == "YES" ]; then
         print_info_msg "$VERBOSE" "WARNING: cannot find restart files in previous 1 hour, proceeding fallback for older cycle"
-        if [ ${SENDMAIL} == "YES" ]; then
+        if [ ${SENDMAIL} == "YES" ] && [ ! ${WGF} == "enkf" ]; then
           echo "WARNING: cannot find restart files in previous 1 hour, proceeding fallback for older cycle" | mail.py -s "RRFS prep_cyc fallback" -c ${MAILTO}
         fi
         fg_restart_dirname=forecast
@@ -402,13 +402,55 @@ else
              break
            else
              print_info_msg "$VERBOSE" "WARNING: fallback cannot find restart files in previous ${n} hour"
-             if [ ${SENDMAIL} == "YES" ]; then
+             if [ ${SENDMAIL} == "YES" ] && [ ! ${WGF} == "enkf" ]; then
                echo "WARNING: fallback cannot find restart files in previous ${n} hour" | mail.py -s "RRFS prep_cyc fallback" -c ${MAILTO}
              fi
+             export missing_restart_file=${checkfile}
+             export missing_restart_bkpath=${bkpath}
     	   fi
            n=$((n + ${DA_CYCLE_INTERV}))
         done
       fi
+    fi
+  fi
+
+  # Implement prep_cyc_alert_singleton capability; all 30 members will output status in the flag file
+  if [ ${WGF} == "enkf" ]; then
+    export umbrella_prep_cyc_fallback_flag=${umbrella_prep_cyc_fallback}/prep_cyc_flag.status
+    if [ -f ${umbrella_prep_cyc_fallback_flag} ]; then
+      # Ensure no duplicate record for each member
+      flock -w 60 "${umbrella_prep_cyc_fallback}/file.lock" -c 'sed -i "/${mem_num}/d" "${umbrella_prep_cyc_fallback_flag}"'
+    else
+      mkdir -p ${umbrella_prep_cyc_fallback}
+    fi
+    if [ ! -z ${fallback_enable} ] && [ ${fallback_enable} == "YES" ];then
+      # Output status in the flag file if the restart file not found
+      flock -w 60 "${umbrella_prep_cyc_fallback}/file.lock" -c 'echo "WARNING: rrfs prep cycle member ${mem_num} in cycle ${cyc} cannot find restart files ${missing_restart_file} in previous 1 hour, it is degraded proceeding fallback in ${missing_restart_bkpath}, check rrfs enkf forecast job jrrfs_enkf_save_restart_${mem_num}_f1 from previous cycle for possible issue." >> "${umbrella_prep_cyc_fallback_flag}"'
+      # Start alert action if all 30 member has registered its status and at least one member has issue
+      if [ $(cat ${umbrella_prep_cyc_fallback_flag}|wc -l) -eq 30 ] && [ $(grep fallback ${umbrella_prep_cyc_fallback_flag}|wc -l) -gt 0 ]; then
+        # Enter coordinator stage
+        file_email_locking_status=""
+        if [ -f ${umbrella_prep_cyc_fallback}/email.lock ]; then
+          # Exception handling on singleton instance
+          file_email_locking_status=$(cat "${umbrella_prep_cyc_fallback}/email.lock")
+        fi
+        if [[ -z ${file_email_locking_status} ]]; then
+          # Send out email and update the status
+          exec 9> "${umbrella_prep_cyc_fallback}/email.lock"
+          flock -x 9
+          if [ ! -s ${umbrella_prep_cyc_fallback}/email.lock ]; then
+            mail.py -s "RRFS prep_cyc fallback" -c ${MAILTO} < ${umbrella_prep_cyc_fallback_flag}
+            echo "Sent ${mem_num}" >> "${umbrella_prep_cyc_fallback}/email.lock"
+          fi
+          exec 9>&-
+        else
+          # Exception handling if email has already been sent
+          echo "email alert already sent"
+        fi
+      fi
+    else
+      # Output status in the flag file if the restart file is found
+      flock -w 60 "${umbrella_prep_cyc_fallback}/file.lock" -c 'echo "NOTE: ${mem_num} found restart files in previous 1 hour" >> "${umbrella_prep_cyc_fallback_flag}"'
     fi
   fi
 
