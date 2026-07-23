@@ -262,6 +262,7 @@ if  [[ ${regional_ensemble_option:-1} -eq 1 || ${l_both_fv3sar_gfs_ens} = ".true
     for loop in $loops; do
       shopt -s nullglob
       file_list=(${COMINgfs}/enkfgdas.*/??/mem080/model/atmos/history/enkfgdas*.atm.f${loop}.${ftype})
+      shopt -u nullglob
 
       if [ ${#file_list[@]} -eq 0 ]; then
         echo "WARNING: Missing ${COMINgfs}/enkfgdas.*/??/mem080/model/atmos/history/enkfgdas*.atm.f${loop}.${ftype} files"
