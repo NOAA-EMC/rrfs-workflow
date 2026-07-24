@@ -69,10 +69,10 @@ fi
 # tms_s02,
 #
 # Examples(note: please set it in the exp file instead of here):
-# sat_uselist="abi_g16,abi_g18,cris-fsr-n20,cris-fsr-n21"  # use ',' or ', ' to separate different SIS
+# sat_uselist="abi_g16,abi_g18,cris-fsr_n20,cris-fsr_n21"  # use ',' or ', ' to separate different SIS
 # # set it across multile lines:
 # sat_uselist="abi_g16,abi_g18, \
-# cris-fsr-n20,cris-fsr-n21"
+# cris-fsr_n20,cris-fsr_n21"
 export SAT_USELIST=${SAT_USELIST:-''}
 
 # DO_CLEAN
