@@ -286,6 +286,8 @@ if  [[ ${regional_ensemble_option:-1} -eq 1 || ${l_both_fv3sar_gfs_ens} = ".true
     if [ ${foundgdasens} = "true" ]
     then
       ls ${COMINgfs}/enkfgdas.${eyyyymmdd}/${ehh}/atmos/mem???/${enkfcstname}.nc > filelist03
+    else
+         print_info_msg "$VERBOSE" "WARNING: GDAS ensembles do not exist! Will continue without it for a pure 3DVAR analsysis (is data of opportunity)"
     fi
 
     ;;
