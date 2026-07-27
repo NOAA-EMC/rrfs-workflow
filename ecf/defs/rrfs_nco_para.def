@@ -20670,7 +20670,7 @@ suite para
                 edit MEM_TYPE 'MEMBER'
                 edit GSI_TYPE 'ANALYSIS'
                 task jrrfs_det_analysis_gsi
-                  trigger (:TIME >= 0831 and :TIME < 2031) and ../prep/jrrfs_det_prep_cyc==complete and /prod_clone/primary/06/obsproc/v1.2/rrfs/08z/dump/jobsproc_rrfs_dump==complete and /prod_clone/primary/06/obsproc/v1.2/rrfs/08z/prep/jobsproc_rrfs_prep==complete and ( /para/primary/06/rrfs/v1.0/07z/enkf/forecast==complete or (( :TIME >= 0836 and :TIME < 2036) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete))
+                  trigger (:TIME >= 0831 and :TIME < 2031) and ../prep/jrrfs_det_prep_cyc==complete and /prod_clone/primary/06/obsproc/v1.2/rrfs/08z/dump/jobsproc_rrfs_dump==complete and /prod_clone/primary/06/obsproc/v1.2/rrfs/08z/prep/jobsproc_rrfs_prep==complete and ( /para/primary/06/rrfs/v1.0/07z/enkf/forecast==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete))
                 task jrrfs_det_update_lbc_soil
                   trigger ./jrrfs_det_analysis_gsi==complete
                 task jrrfs_det_analysis_gsi_diag
@@ -20678,7 +20678,7 @@ suite para
                 task jrrfs_det_analysis_nonvarcld
                   trigger ./jrrfs_det_update_lbc_soil==complete and ../init/jrrfs_det_process_bufr==complete
                 task jrrfs_det_analysis_gsi_spinup
-                  trigger (:TIME >= 0831 and :TIME < 2031) and ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod_clone/primary/06/obsproc/v1.2/rrfs/08z/prep/jobsproc_rrfs_prep==complete and ( /para/primary/06/rrfs/v1.0/07z/enkf/forecast==complete or (( :TIME >= 0836 and :TIME < 2036) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete))
+                  trigger (:TIME >= 0831 and :TIME < 2031) and ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod_clone/primary/06/obsproc/v1.2/rrfs/08z/prep/jobsproc_rrfs_prep==complete and ( /para/primary/06/rrfs/v1.0/07z/enkf/forecast==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete))
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_update_lbc_soil_spinup
                   trigger ./jrrfs_det_analysis_gsi_spinup==complete
@@ -45754,7 +45754,7 @@ suite para
                 edit MEM_TYPE 'MEMBER'
                 edit GSI_TYPE 'ANALYSIS'
                 task jrrfs_det_analysis_gsi
-                  trigger (:TIME >= 2031 or :TIME < 0831) and ../prep/jrrfs_det_prep_cyc==complete and /prod_clone/primary/18/obsproc/v1.2/rrfs/20z/dump/jobsproc_rrfs_dump==complete and /prod_clone/primary/18/obsproc/v1.2/rrfs/20z/prep/jobsproc_rrfs_prep==complete and ( /para/primary/18/rrfs/v1.0/19z/enkf/forecast==complete or ( (:TIME >= 2036 or :TIME < 0836) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete ))
+                  trigger (:TIME >= 2031 or :TIME < 0831) and ../prep/jrrfs_det_prep_cyc==complete and /prod_clone/primary/18/obsproc/v1.2/rrfs/20z/dump/jobsproc_rrfs_dump==complete and /prod_clone/primary/18/obsproc/v1.2/rrfs/20z/prep/jobsproc_rrfs_prep==complete and ( /para/primary/18/rrfs/v1.0/19z/enkf/forecast==complete or ( (:TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete ))
                 task jrrfs_det_update_lbc_soil
                   trigger ./jrrfs_det_analysis_gsi==complete
                 task jrrfs_det_analysis_gsi_diag
@@ -45762,7 +45762,7 @@ suite para
                 task jrrfs_det_analysis_nonvarcld
                   trigger ./jrrfs_det_update_lbc_soil==complete and ../init/jrrfs_det_process_bufr==complete
                 task jrrfs_det_analysis_gsi_spinup
-                  trigger (:TIME >= 2031 or :TIME < 0831) and ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod_clone/primary/18/obsproc/v1.2/rrfs/20z/prep/jobsproc_rrfs_prep==complete and ( /para/primary/18/rrfs/v1.0/19z/enkf/forecast==complete or ( (:TIME >= 2036 or :TIME < 0836) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete ))
+                  trigger (:TIME >= 2031 or :TIME < 0831) and ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod_clone/primary/18/obsproc/v1.2/rrfs/20z/prep/jobsproc_rrfs_prep==complete and ( /para/primary/18/rrfs/v1.0/19z/enkf/forecast==complete or ( (:TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete ))
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_update_lbc_soil_spinup
                   trigger ./jrrfs_det_analysis_gsi_spinup==complete
