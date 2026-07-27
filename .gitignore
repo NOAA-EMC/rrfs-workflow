@@ -1,6 +1,6 @@
 exec/
 fix/
-lib/
+lib/*
 python_graphics/
 sorc/*/
 !sorc/manage_externals/
