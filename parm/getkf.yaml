@@ -173,6 +173,22 @@ observations:
          # ------------------
          # airTemperature (181)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/airTemperature
+             value: is_not_valid
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/airTemperature
+             is_not_in: 181
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -449,6 +465,22 @@ observations:
          # ------------------
          # airTemperature (183)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/airTemperature
+             value: is_not_valid
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/airTemperature
+             is_not_in: 183
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -723,6 +755,22 @@ observations:
          # ------------------
          # airTemperature (187)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/airTemperature
+             value: is_not_valid
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/airTemperature
+             is_not_in: 187
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -1001,6 +1049,22 @@ observations:
          # ------------------
          # specificHumidity (181)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/specificHumidity
+             value: is_not_valid
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/specificHumidity
+             is_not_in: 181
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -1276,6 +1340,22 @@ observations:
          # ------------------
          # specificHumidity (183)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/specificHumidity
+             value: is_not_valid
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/specificHumidity
+             is_not_in: 183
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -1544,6 +1624,22 @@ observations:
          # ------------------
          # specificHumidity (187)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/specificHumidity
+             value: is_not_valid
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/specificHumidity
+             is_not_in: 187
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -1818,6 +1914,22 @@ observations:
          # ------------------
          # stationPressure (181)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/stationPressure
+             value: is_not_valid
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/stationPressure
+             is_not_in: 181
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -2089,6 +2201,22 @@ observations:
          # ------------------
          # stationPressure (187)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/stationPressure
+             value: is_not_valid
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/stationPressure
+             is_not_in: 187
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -2365,6 +2493,28 @@ observations:
          # ------------------
          # wind (281)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/windEastward
+             value: is_not_valid
+           - variable: ObsValue/windNorthward
+             value: is_not_valid
+           where operator: or
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 281
+           - variable: ObsType/windNorthward
+             is_not_in: 281
+           where operator: or
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -2682,6 +2832,27 @@ observations:
          # ------------------
          # wind (284)
          # ------------------
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/windEastward
+             value: is_not_valid
+           - variable: ObsValue/windNorthward
+             value: is_not_valid
+           where operator: or
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 284
+           - variable: ObsType/windNorthward
+             is_not_in: 284
+           where operator: or
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -2998,6 +3169,27 @@ observations:
          # ------------------
          # wind (287)
          # ------------------
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/windEastward
+             value: is_not_valid
+           - variable: ObsValue/windNorthward
+             value: is_not_valid
+           where operator: or
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 287
+           - variable: ObsType/windNorthward
+             is_not_in: 287
+           where operator: or
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -3313,6 +3505,22 @@ observations:
          # ------------------
          # airTemperature (120)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/airTemperature
+             value: is_not_valid
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/airTemperature
+             is_not_in: 120
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -3587,6 +3795,22 @@ observations:
          # ------------------
          # airTemperature (132)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/airTemperature
+             value: is_not_valid
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/airTemperature
+             is_not_in: 132
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -3861,6 +4085,22 @@ observations:
          # ------------------
          # specificHumidity (120)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/specificHumidity
+             value: is_not_valid
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/specificHumidity
+             is_not_in: 120
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -4135,6 +4375,22 @@ observations:
          # ------------------
          # specificHumidity (132)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/specificHumidity
+             value: is_not_valid
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/specificHumidity
+             is_not_in: 132
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -4405,6 +4661,22 @@ observations:
          # ------------------
          # stationPressure (120)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/stationPressure
+             value: is_not_valid
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/stationPressure
+             is_not_in: 120
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -4680,6 +4952,28 @@ observations:
          # ------------------
          # wind (220)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/windEastward
+             value: is_not_valid
+           - variable: ObsValue/windNorthward
+             value: is_not_valid
+           where operator: or
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 220
+           - variable: ObsType/windNorthward
+             is_not_in: 220
+           where operator: or
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -4990,6 +5284,28 @@ observations:
          # ------------------
          # wind (232)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/windEastward
+             value: is_not_valid
+           - variable: ObsValue/windNorthward
+             value: is_not_valid
+           where operator: or
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 232
+           - variable: ObsType/windNorthward
+             is_not_in: 232
+           where operator: or
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -5299,6 +5615,22 @@ observations:
          # ------------------
          # airTemperature (133)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/airTemperature
+             value: is_not_valid
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/airTemperature
+             is_not_in: 133
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -5573,6 +5905,22 @@ observations:
          # ------------------
          # specificHumidity (133)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/specificHumidity
+             value: is_not_valid
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/specificHumidity
+             is_not_in: 133
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -5848,6 +6196,28 @@ observations:
          # ------------------
          # wind (233)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/windEastward
+             value: is_not_valid
+           - variable: ObsValue/windNorthward
+             value: is_not_valid
+           where operator: or
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 233
+           - variable: ObsType/windNorthward
+             is_not_in: 233
+           where operator: or
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -6157,6 +6527,22 @@ observations:
          # ------------------
          # airTemperature (130)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/airTemperature
+             value: is_not_valid
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/airTemperature
+             is_not_in: 130
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -6431,6 +6817,22 @@ observations:
          # ------------------
          # airTemperature (131)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/airTemperature
+             value: is_not_valid
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/airTemperature
+             is_not_in: 131
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -6705,6 +7107,22 @@ observations:
          # ------------------
          # airTemperature (134)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/airTemperature
+             value: is_not_valid
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/airTemperature
+             is_not_in: 134
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -6979,6 +7397,22 @@ observations:
          # ------------------
          # airTemperature (135)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/airTemperature
+             value: is_not_valid
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/airTemperature
+             is_not_in: 135
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -7253,6 +7687,22 @@ observations:
          # ------------------
          # specificHumidity (134)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/specificHumidity
+             value: is_not_valid
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/specificHumidity
+             is_not_in: 134
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -7528,6 +7978,28 @@ observations:
          # ------------------
          # wind (230)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/windEastward
+             value: is_not_valid
+           - variable: ObsValue/windNorthward
+             value: is_not_valid
+           where operator: or
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 230
+           - variable: ObsType/windNorthward
+             is_not_in: 230
+           where operator: or
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -7838,6 +8310,28 @@ observations:
          # ------------------
          # wind (231)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/windEastward
+             value: is_not_valid
+           - variable: ObsValue/windNorthward
+             value: is_not_valid
+           where operator: or
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 231
+           - variable: ObsType/windNorthward
+             is_not_in: 231
+           where operator: or
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -8148,6 +8642,28 @@ observations:
          # ------------------
          # wind (234)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/windEastward
+             value: is_not_valid
+           - variable: ObsValue/windNorthward
+             value: is_not_valid
+           where operator: or
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 234
+           - variable: ObsType/windNorthward
+             is_not_in: 234
+           where operator: or
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -8458,6 +8974,28 @@ observations:
          # ------------------
          # wind (235)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/windEastward
+             value: is_not_valid
+           - variable: ObsValue/windNorthward
+             value: is_not_valid
+           where operator: or
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 235
+           - variable: ObsType/windNorthward
+             is_not_in: 235
+           where operator: or
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -8841,6 +9379,22 @@ observations:
          # ------------------
          # airTemperature (188)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/airTemperature
+             value: is_not_valid
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/airTemperature
+             is_not_in: 188
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -9115,6 +9669,22 @@ observations:
          # ------------------
          # specificHumidity (188)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/specificHumidity
+             value: is_not_valid
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/specificHumidity
+             is_not_in: 188
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -9382,6 +9952,22 @@ observations:
          # ------------------
          # stationPressure (188)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/stationPressure
+             value: is_not_valid
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/stationPressure
+             is_not_in: 188
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -9657,6 +10243,28 @@ observations:
          # ------------------
          # wind (288)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/windEastward
+             value: is_not_valid
+           - variable: ObsValue/windNorthward
+             value: is_not_valid
+           where operator: or
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 288
+           - variable: ObsType/windNorthward
+             is_not_in: 288
+           where operator: or
+           action:
+             name: reduce obs space
+
          # Mesonet winds provider/station use lists
          - filter: RejectList  # initially reject all providers
          - filter: AcceptList  # accept back selected providers
@@ -10235,6 +10843,28 @@ observations:
          # ------------------
          # wind (227)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/windEastward
+             value: is_not_valid
+           - variable: ObsValue/windNorthward
+             value: is_not_valid
+           where operator: or
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 227
+           - variable: ObsType/windNorthward
+             is_not_in: 227
+           where operator: or
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -10588,6 +11218,22 @@ observations:
          # ------------------
          # airTemperature (126)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/airTemperature
+             value: is_not_valid
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/airTemperature
+             is_not_in: 126
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -10862,6 +11508,22 @@ observations:
          # ------------------
          # airTemperature (180)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/airTemperature
+             value: is_not_valid
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/airTemperature
+             is_not_in: 180
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -11136,6 +11798,22 @@ observations:
          # ------------------
          # airTemperature (182)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/airTemperature
+             value: is_not_valid
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/airTemperature
+             is_not_in: 182
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -11411,6 +12089,22 @@ observations:
          # ------------------
          # airTemperature (183)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/airTemperature
+             value: is_not_valid
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/airTemperature
+             is_not_in: 183
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -11685,6 +12379,22 @@ observations:
          # ------------------
          # specificHumidity (180)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/specificHumidity
+             value: is_not_valid
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/specificHumidity
+             is_not_in: 180
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -11959,6 +12669,22 @@ observations:
          # ------------------
          # specificHumidity (182)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/specificHumidity
+             value: is_not_valid
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/specificHumidity
+             is_not_in: 182
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -12234,6 +12960,22 @@ observations:
          # ------------------
          # specificHumidity (183)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/specificHumidity
+             value: is_not_valid
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/specificHumidity
+             is_not_in: 183
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -12504,6 +13246,22 @@ observations:
          # ------------------
          # stationPressure (180)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/stationPressure
+             value: is_not_valid
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/stationPressure
+             is_not_in: 180
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -12788,6 +13546,28 @@ observations:
          # ------------------
          # wind (280)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/windEastward
+             value: is_not_valid
+           - variable: ObsValue/windNorthward
+             value: is_not_valid
+           where operator: or
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 280
+           - variable: ObsType/windNorthward
+             is_not_in: 280
+           where operator: or
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -13104,6 +13884,28 @@ observations:
          # ------------------
          # wind (282)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/windEastward
+             value: is_not_valid
+           - variable: ObsValue/windNorthward
+             value: is_not_valid
+           where operator: or
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 282
+           - variable: ObsType/windNorthward
+             is_not_in: 282
+           where operator: or
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -13421,6 +14223,28 @@ observations:
          # ------------------
          # wind (284)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/windEastward
+             value: is_not_valid
+           - variable: ObsValue/windNorthward
+             value: is_not_valid
+           where operator: or
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 284
+           - variable: ObsType/windNorthward
+             is_not_in: 284
+           where operator: or
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -13737,6 +14561,28 @@ observations:
          # ------------------
          # wind (224)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/windEastward
+             value: is_not_valid
+           - variable: ObsValue/windNorthward
+             value: is_not_valid
+           where operator: or
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 224
+           - variable: ObsType/windNorthward
+             is_not_in: 224
+           where operator: or
+           action:
+             name: reduce obs space
+
          # Reject all obs with QualityMarker > 3
          - filter: RejectList
            filter variables:
@@ -14092,6 +14938,28 @@ observations:
          # ------------------
          # wind (245)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/windEastward
+             value: is_not_valid
+           - variable: ObsValue/windNorthward
+             value: is_not_valid
+           where operator: or
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 245
+           - variable: ObsType/windNorthward
+             is_not_in: 245
+           where operator: or
+           action:
+             name: reduce obs space
+
          # Time window filter
          - filter: Bounds Check
            udescriptor: "time_window_check"
@@ -14499,6 +15367,28 @@ observations:
          # ------------------
          # wind (245)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/windEastward
+             value: is_not_valid
+           - variable: ObsValue/windNorthward
+             value: is_not_valid
+           where operator: or
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 245
+           - variable: ObsType/windNorthward
+             is_not_in: 245
+           where operator: or
+           action:
+             name: reduce obs space
+
          # Time window filter
          - filter: Bounds Check
            udescriptor: "time_window_check"
@@ -14906,6 +15796,28 @@ observations:
          # ------------------
          # wind (246)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/windEastward
+             value: is_not_valid
+           - variable: ObsValue/windNorthward
+             value: is_not_valid
+           where operator: or
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 246
+           - variable: ObsType/windNorthward
+             is_not_in: 246
+           where operator: or
+           action:
+             name: reduce obs space
+
          # Time window filter
          - filter: Bounds Check
            udescriptor: "time_window_check"
@@ -15279,6 +16191,28 @@ observations:
          # ------------------
          # wind (246)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/windEastward
+             value: is_not_valid
+           - variable: ObsValue/windNorthward
+             value: is_not_valid
+           where operator: or
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 246
+           - variable: ObsType/windNorthward
+             is_not_in: 246
+           where operator: or
+           action:
+             name: reduce obs space
+
          # Time window filter
          - filter: Bounds Check
            udescriptor: "time_window_check"
@@ -15649,6 +16583,28 @@ observations:
          # ------------------
          # wind (247)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/windEastward
+             value: is_not_valid
+           - variable: ObsValue/windNorthward
+             value: is_not_valid
+           where operator: or
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 247
+           - variable: ObsType/windNorthward
+             is_not_in: 247
+           where operator: or
+           action:
+             name: reduce obs space
+
          # Accept, reject, or passivate (monitor)
          - filter: Perform Action
            udescriptor: "iuse_check"
@@ -16050,6 +17006,28 @@ observations:
          # ------------------
          # wind (247)
          # ------------------
+         # Reject all obs not in variable type
+         - filter: Perform Action
+           where:
+           - variable: ObsValue/windEastward
+             value: is_not_valid
+           - variable: ObsValue/windNorthward
+             value: is_not_valid
+           where operator: or
+           action:
+             name: reduce obs space
+
+         # Reject all obs not in bufr type
+         - filter: Perform Action
+           where:
+           - variable: ObsType/windEastward
+             is_not_in: 247
+           - variable: ObsType/windNorthward
+             is_not_in: 247
+           where operator: or
+           action:
+             name: reduce obs space
+
          # Accept, reject, or passivate (monitor)
          - filter: Perform Action
            udescriptor: "iuse_check"
