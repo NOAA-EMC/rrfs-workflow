@@ -512,11 +512,7 @@ missing_data_flag=false
 #
 if [ ${HH} -eq ${SNOWICE_update_hour} ] && [ "${CYCLE_TYPE}" = "prod" ] ; then
   echo "Update snow cover based on imssnow  at ${SNOWICE_update_hour}z"
-  if [ -r "${COMINobsproc}/latest.SNOW_IMS" ]; then
-    cpreq -p ${COMINobsproc}/latest.SNOW_IMS .
-  elif [ -r "${COMINobsproc}/${YYJJJ2200000000}" ]; then
-    cpreq -p ${COMINobsproc}/${YYJJJ2200000000} latest.SNOW_IMS
-  elif [ -r "${COMINobsproc}/${OBSTYPE_SOURCE}.${YYYYMMDD}/${OBSTYPE_SOURCE}.t${HH}z.imssnow.grib2" ]; then
+  if [ -r "${COMINobsproc}/${OBSTYPE_SOURCE}.${YYYYMMDD}/${OBSTYPE_SOURCE}.t${HH}z.imssnow.grib2" ]; then
     cpreq -p ${COMINobsproc}/${OBSTYPE_SOURCE}.${YYYYMMDD}/${OBSTYPE_SOURCE}.t${HH}z.imssnow.grib2  latest.SNOW_IMS
   elif [ -r "${COMINobsproc}/${OBSTYPE_SOURCE}_e.${YYYYMMDD}/${OBSTYPE_SOURCE}_e.t${HH}z.imssnow.grib2" ]; then
     cpreq -p ${COMINobsproc}/${OBSTYPE_SOURCE}_e.${YYYYMMDD}/${OBSTYPE_SOURCE}_e.t${HH}z.imssnow.grib2  latest.SNOW_IMS
@@ -552,11 +548,7 @@ fi
 #
 if [ ${HH} -eq ${SST_update_hour} ] && [ "${CYCLE_TYPE}" = "prod" ] ; then
   echo "Update SST at ${SST_update_hour}z"
-  if [ -r "${COMINnsst}/latest.SST" ]; then
-    cpreq -p ${COMINnsst}/latest.SST .
-  elif [ -r "${COMINnsst}/${YYJJJ00000000}" ]; then
-    cpreq -p ${COMINnsst}/${YYJJJ00000000} latest.SST
-  elif [ -r "${COMINnsst}/nsst.$YYYYMMDD/rtgssthr_grb_0.083.grib2" ]; then 
+  if [ -r "${COMINnsst}/nsst.$YYYYMMDD/rtgssthr_grb_0.083.grib2" ]; then 
     cpreq -p ${COMINnsst}/nsst.$YYYYMMDD/rtgssthr_grb_0.083.grib2 latest.SST
   elif [ -r "${COMINnsst}/nsst.$YYYYMMDDm1/rtgssthr_grb_0.083.grib2" ]; then 
     cpreq -p ${COMINnsst}/nsst.$YYYYMMDDm1/rtgssthr_grb_0.083.grib2 latest.SST
