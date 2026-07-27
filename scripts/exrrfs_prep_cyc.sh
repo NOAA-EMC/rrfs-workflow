@@ -809,6 +809,12 @@ if [ ${Update_GVF} -ge 1 ]; then
          latestGVF="${latestGVF3_array[${#latestGVF3_array[@]}-1]}"
        else
          print_info_msg "WARNING: cannot find GVF observation file"
+         missing_data_flag=true
+         echo "Cannot find viirs GVF observation data matching the below filenames:" >> missing_file_list
+         echo "${DCOMINgvf}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm1}_c${YYYYMMDD}*.grib2" >> missing_file_list
+         echo "${DCOMINgvf}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm2}_c${YYYYMMDDm1}*.grib2" >> missing_file_list
+         echo "${DCOMINgvf}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm3}_c${YYYYMMDDm2}*.grib2" >> missing_file_list
+         echo "" >> missing_file_list
        fi
      fi
    else
