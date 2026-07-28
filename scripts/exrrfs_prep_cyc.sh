@@ -587,21 +587,6 @@ EOF
   fi
 fi
 
-if [[ "$missing_data_flag" == true && "$SENDMAIL" == "YES" ]]; then
-  cat << EOF > email_warn.txt
-WARNING: Some files were unable to be found in this analysis:
-
-RRFS cycle will continue without these files.
-  
-No immediate impact to integrity of delivered products.
-  
-Ops action: identify cause of missing files below.
-
-EOF
-  cat missing_file_list >> email_warn.txt
-  mail.py -s "Missing Data of Opportunity for RRFS" -v ${MAIL_TO} < email_warn.txt
-fi
-
 #-----------------------------------------------------------------------
 #
 #  smoke/dust cycling
@@ -809,12 +794,14 @@ if [ ${Update_GVF} -ge 1 ]; then
          latestGVF="${latestGVF3_array[${#latestGVF3_array[@]}-1]}"
        else
          print_info_msg "WARNING: cannot find GVF observation file"
-         missing_data_flag=true
-         echo "Cannot find viirs GVF observation data matching the below filenames:" >> missing_file_list
-         echo "${DCOMINgvf}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm1}_c${YYYYMMDD}*.grib2" >> missing_file_list
-         echo "${DCOMINgvf}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm2}_c${YYYYMMDDm1}*.grib2" >> missing_file_list
-         echo "${DCOMINgvf}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm3}_c${YYYYMMDDm2}*.grib2" >> missing_file_list
-         echo "" >> missing_file_list
+         if [ ${HH} -eq "15" ]; then
+           missing_data_flag=true
+           echo "Cannot find viirs GVF observation data matching the below filenames:" >> missing_file_list
+           echo "${DCOMINgvf}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm1}_c${YYYYMMDD}*.grib2" >> missing_file_list
+           echo "${DCOMINgvf}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm2}_c${YYYYMMDDm1}*.grib2" >> missing_file_list
+           echo "${DCOMINgvf}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm3}_c${YYYYMMDDm2}*.grib2" >> missing_file_list
+           echo "" >> missing_file_list
+         fi
        fi
      fi
    else
@@ -846,6 +833,23 @@ if [ ${Update_GVF} -ge 1 ]; then
 fi
 
 fi
+
+# Send emails for missing data of opportunity
+if [[ "$missing_data_flag" == true && "$SENDMAIL" == "YES" ]]; then
+  cat << EOF > email_warn.txt
+WARNING: Some files were unable to be found in this analysis:
+
+RRFS cycle will continue without these files.
+  
+No immediate impact to integrity of delivered products.
+  
+Ops action: identify cause of missing files below.
+
+EOF
+  cat missing_file_list >> email_warn.txt
+  mail.py -s "Missing Data of Opportunity for RRFS" -v ${MAIL_TO} < email_warn.txt
+fi
+
 #-----------------------------------------------------------------------
 #
 # go to INPUT directory.

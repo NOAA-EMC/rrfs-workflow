@@ -78,7 +78,7 @@ def generate_emiss_workflow(staticdir, ravedir, newges_dir, predef_grid):
        i_tools.create_dummy(intp_dir, current_day, tgt_latt, tgt_lont, cols, rows)
 
        cyc = os.environ.get('cyc')
-       cycle_type = os.environ.get('cycle_type')
+       cycle_type = os.environ.get('CYCLE_TYPE')
        wgf = os.environ.get('WGF')
        if cyc == "13" or cyc == "19":
            if wgf == "det" and cycle_type == "prod":

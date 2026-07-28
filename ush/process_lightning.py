@@ -260,7 +260,7 @@ def process_prod_tiles():
     if any_input_files==0:
       print('WARNING: obs count=0 because no valid GLM tiles were found in '+obs_west+' or '+obs_east+ ' Is data of opportunity, but will email due to no files being found')
       cyc = os.environ.get('cyc')
-      cycle_type = os.environ.get('cycle_type')
+      cycle_type = os.environ.get('CYCLE_TYPE')
       wgf = os.environ.get('WGF')
       if cyc == "13" or cyc == "19":
           if wgf == "det" and cycle_type == "prod":
