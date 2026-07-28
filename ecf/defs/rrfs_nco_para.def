@@ -6777,7 +6777,7 @@ suite para
             endfamily
             family clean
               task jrrfs_clean
-                trigger ../det==complete and ../enkf==complete and ../ensf==complete and ../firewx==complete
+                trigger ../det==complete and ../enkf==complete and ../ensf==complete and ../firewx==complete and /para/primary/06/rrfs/v1.0/06z/ensf==complete and :TIME > 0600
                 label storage ""
             endfamily
           endfamily
@@ -19086,7 +19086,7 @@ suite para
             endfamily
             family clean
               task jrrfs_clean
-                trigger ../det==complete and ../enkf==complete and ../ensf==complete and ../firewx==complete
+                trigger ../det==complete and ../enkf==complete and ../ensf==complete and ../firewx==complete and /para/primary/12/rrfs/v1.0/12z/ensf==complete and :TIME > 1200
                 label storage ""
             endfamily
           endfamily
@@ -31866,7 +31866,7 @@ suite para
             endfamily
             family clean
               task jrrfs_clean
-                trigger ../det==complete and ../enkf==complete and ../ensf==complete and ../firewx==complete
+                trigger ../det==complete and ../enkf==complete and ../ensf==complete and ../firewx==complete and /para/primary/18/rrfs/v1.0/18z/ensf==complete and :TIME > 1800
                 label storage ""
             endfamily
           endfamily
@@ -44171,7 +44171,7 @@ suite para
             endfamily
             family clean
               task jrrfs_clean
-                trigger ../det==complete and ../enkf==complete and ../ensf==complete and ../firewx==complete
+                trigger ../det==complete and ../enkf==complete and ../ensf==complete and ../firewx==complete and /para/primary/00/rrfs/v1.0/00z/ensf==complete and ( :TIME > 0000 and :TIME < 1200)
                 label storage ""
             endfamily
           endfamily
