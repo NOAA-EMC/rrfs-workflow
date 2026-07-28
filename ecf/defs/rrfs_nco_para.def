@@ -20670,7 +20670,7 @@ suite para
                 edit MEM_TYPE 'MEMBER'
                 edit GSI_TYPE 'ANALYSIS'
                 task jrrfs_det_analysis_gsi
-                  trigger (:TIME >= 0831 and :TIME < 2031) and ../prep/jrrfs_det_prep_cyc==complete and /prod_clone/primary/06/obsproc/v1.2/rrfs/08z/dump/jobsproc_rrfs_dump==complete and /prod_clone/primary/06/obsproc/v1.2/rrfs/08z/prep/jobsproc_rrfs_prep==complete and ( /para/primary/06/rrfs/v1.0/07z/enkf/forecast==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete)
+                  trigger (:TIME >= 0831 and :TIME < 2031) and ../prep/jrrfs_det_prep_cyc==complete and /prod_clone/primary/06/obsproc/v1.2/rrfs/08z/dump/jobsproc_rrfs_dump==complete and /prod_clone/primary/06/obsproc/v1.2/rrfs/08z/prep/jobsproc_rrfs_prep==complete and ( /para/primary/06/rrfs/v1.0/07z/enkf/forecast==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete))
                 task jrrfs_det_update_lbc_soil
                   trigger ./jrrfs_det_analysis_gsi==complete
                 task jrrfs_det_analysis_gsi_diag
@@ -20678,7 +20678,7 @@ suite para
                 task jrrfs_det_analysis_nonvarcld
                   trigger ./jrrfs_det_update_lbc_soil==complete and ../init/jrrfs_det_process_bufr==complete
                 task jrrfs_det_analysis_gsi_spinup
-                  trigger ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod_clone/primary/06/obsproc/v1.2/rrfs/08z/prep/jobsproc_rrfs_prep==complete and ( /para/primary/06/rrfs/v1.0/07z/enkf/forecast==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete)
+                  trigger (:TIME >= 0831 and :TIME < 2031) and ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod_clone/primary/06/obsproc/v1.2/rrfs/08z/prep/jobsproc_rrfs_prep==complete and ( /para/primary/06/rrfs/v1.0/07z/enkf/forecast==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete))
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_update_lbc_soil_spinup
                   trigger ./jrrfs_det_analysis_gsi_spinup==complete
@@ -21082,97 +21082,97 @@ suite para
                 edit GSI_TYPE 'OBSERVER'
                 edit MEM_TYPE 'MEAN'
                 task jrrfs_enkf_prep_cyc_ensmean
-                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem001_f001==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem001_f2==complete
+                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem001_f001==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem001_f2==complete)
                   edit MEMBER_NAME 'ensmean'
                 task jrrfs_enkf_prep_cyc_mem001
-                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem001_f001==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem001_f2==complete
+                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem001_f001==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem001_f2==complete)
                   edit MEMBER_NAME '001'
                 task jrrfs_enkf_prep_cyc_mem002
-                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem002_f001==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem002_f2==complete
+                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem002_f001==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem002_f2==complete)
                   edit MEMBER_NAME '002'
                 task jrrfs_enkf_prep_cyc_mem003
-                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem003_f001==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem003_f2==complete
+                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem003_f001==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem003_f2==complete)
                   edit MEMBER_NAME '003'
                 task jrrfs_enkf_prep_cyc_mem004
-                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem004_f001==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem004_f2==complete
+                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem004_f001==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem004_f2==complete)
                   edit MEMBER_NAME '004'
                 task jrrfs_enkf_prep_cyc_mem005
-                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem005_f001==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem005_f2==complete
+                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem005_f001==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem005_f2==complete)
                   edit MEMBER_NAME '005'
                 task jrrfs_enkf_prep_cyc_mem006
-                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem006_f001==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem006_f2==complete
+                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem006_f001==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem006_f2==complete)
                   edit MEMBER_NAME '006'
                 task jrrfs_enkf_prep_cyc_mem007
-                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem007_f001==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem007_f2==complete
+                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem007_f001==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem007_f2==complete)
                   edit MEMBER_NAME '007'
                 task jrrfs_enkf_prep_cyc_mem008
-                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem008_f001==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem008_f2==complete
+                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem008_f001==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem008_f2==complete)
                   edit MEMBER_NAME '008'
                 task jrrfs_enkf_prep_cyc_mem009
-                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem009_f001==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem009_f2==complete
+                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem009_f001==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem009_f2==complete)
                   edit MEMBER_NAME '009'
                 task jrrfs_enkf_prep_cyc_mem010
-                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem010_f001==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem010_f2==complete
+                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem010_f001==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem010_f2==complete)
                   edit MEMBER_NAME '010'
                 task jrrfs_enkf_prep_cyc_mem011
-                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem011_f001==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem011_f2==complete
+                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem011_f001==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem011_f2==complete)
                   edit MEMBER_NAME '011'
                 task jrrfs_enkf_prep_cyc_mem012
-                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem012_f001==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem012_f2==complete
+                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem012_f001==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem012_f2==complete)
                   edit MEMBER_NAME '012'
                 task jrrfs_enkf_prep_cyc_mem013
-                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem013_f001==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem013_f2==complete
+                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem013_f001==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem013_f2==complete)
                   edit MEMBER_NAME '013'
                 task jrrfs_enkf_prep_cyc_mem014
-                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem014_f001==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem014_f2==complete
+                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem014_f001==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem014_f2==complete)
                   edit MEMBER_NAME '014'
                 task jrrfs_enkf_prep_cyc_mem015
-                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem015_f001==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem015_f2==complete
+                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem015_f001==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem015_f2==complete)
                   edit MEMBER_NAME '015'
                 task jrrfs_enkf_prep_cyc_mem016
-                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem016_f001==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem016_f2==complete
+                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem016_f001==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem016_f2==complete)
                   edit MEMBER_NAME '016'
                 task jrrfs_enkf_prep_cyc_mem017
-                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem017_f001==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem017_f2==complete
+                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem017_f001==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem017_f2==complete)
                   edit MEMBER_NAME '017'
                 task jrrfs_enkf_prep_cyc_mem018
-                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem018_f001==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem018_f2==complete
+                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem018_f001==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem018_f2==complete)
                   edit MEMBER_NAME '018'
                 task jrrfs_enkf_prep_cyc_mem019
-                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem019_f001==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem019_f2==complete
+                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem019_f001==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem019_f2==complete)
                   edit MEMBER_NAME '019'
                 task jrrfs_enkf_prep_cyc_mem020
-                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem020_f001==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem020_f2==complete
+                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem020_f001==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem020_f2==complete)
                   edit MEMBER_NAME '020'
                 task jrrfs_enkf_prep_cyc_mem021
-                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem021_f001==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem021_f2==complete
+                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem021_f001==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem021_f2==complete)
                   edit MEMBER_NAME '021'
                 task jrrfs_enkf_prep_cyc_mem022
-                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem022_f001==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem022_f2==complete
+                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem022_f001==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem022_f2==complete)
                   edit MEMBER_NAME '022'
                 task jrrfs_enkf_prep_cyc_mem023
-                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem023_f001==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem023_f2==complete
+                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem023_f001==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem023_f2==complete)
                   edit MEMBER_NAME '023'
                 task jrrfs_enkf_prep_cyc_mem024
-                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem024_f001==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem024_f2==complete
+                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem024_f001==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem024_f2==complete)
                   edit MEMBER_NAME '024'
                 task jrrfs_enkf_prep_cyc_mem025
-                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem025_f001==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem025_f2==complete
+                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem025_f001==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem025_f2==complete)
                   edit MEMBER_NAME '025'
                 task jrrfs_enkf_prep_cyc_mem026
-                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem026_f001==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem026_f2==complete
+                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem026_f001==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem026_f2==complete)
                   edit MEMBER_NAME '026'
                 task jrrfs_enkf_prep_cyc_mem027
-                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem027_f001==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem027_f2==complete
+                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem027_f001==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem027_f2==complete)
                   edit MEMBER_NAME '027'
                 task jrrfs_enkf_prep_cyc_mem028
-                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem028_f001==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem028_f2==complete
+                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem028_f001==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem028_f2==complete)
                   edit MEMBER_NAME '028'
                 task jrrfs_enkf_prep_cyc_mem029
-                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem029_f001==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem029_f2==complete
+                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem029_f001==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem029_f2==complete)
                   edit MEMBER_NAME '029'
                 task jrrfs_enkf_prep_cyc_mem030
-                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem030_f001==complete or /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem030_f2==complete
+                  trigger /para/primary/06/rrfs/v1.0/07z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem030_f001==complete or (( :TIME >= 0841 and :TIME < 2040) and /para/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_mem030_f2==complete)
                   edit MEMBER_NAME '030'
                 task jrrfs_enkf_calc_ensmean
                   trigger ./jrrfs_enkf_prep_cyc_mem001==complete and ./jrrfs_enkf_prep_cyc_mem002==complete and ./jrrfs_enkf_prep_cyc_mem003==complete and ./jrrfs_enkf_prep_cyc_mem004==complete and ./jrrfs_enkf_prep_cyc_mem005==complete and ./jrrfs_enkf_prep_cyc_mem006==complete and ./jrrfs_enkf_prep_cyc_mem007==complete and ./jrrfs_enkf_prep_cyc_mem008==complete and ./jrrfs_enkf_prep_cyc_mem009==complete and ./jrrfs_enkf_prep_cyc_mem010==complete and ./jrrfs_enkf_prep_cyc_mem011==complete and ./jrrfs_enkf_prep_cyc_mem012==complete and ./jrrfs_enkf_prep_cyc_mem013==complete and ./jrrfs_enkf_prep_cyc_mem014==complete and ./jrrfs_enkf_prep_cyc_mem015==complete and ./jrrfs_enkf_prep_cyc_mem016==complete and ./jrrfs_enkf_prep_cyc_mem017==complete and ./jrrfs_enkf_prep_cyc_mem018==complete and ./jrrfs_enkf_prep_cyc_mem019==complete and ./jrrfs_enkf_prep_cyc_mem020==complete and ./jrrfs_enkf_prep_cyc_mem021==complete and ./jrrfs_enkf_prep_cyc_mem022==complete and ./jrrfs_enkf_prep_cyc_mem023==complete and ./jrrfs_enkf_prep_cyc_mem024==complete and ./jrrfs_enkf_prep_cyc_mem025==complete and ./jrrfs_enkf_prep_cyc_mem026==complete and ./jrrfs_enkf_prep_cyc_mem027==complete and ./jrrfs_enkf_prep_cyc_mem028==complete and ./jrrfs_enkf_prep_cyc_mem029==complete and ./jrrfs_enkf_prep_cyc_mem030==complete and ./jrrfs_enkf_prep_cyc_ensmean==complete
@@ -45754,7 +45754,7 @@ suite para
                 edit MEM_TYPE 'MEMBER'
                 edit GSI_TYPE 'ANALYSIS'
                 task jrrfs_det_analysis_gsi
-                  trigger (:TIME >= 2031 or :TIME < 0831) and ../prep/jrrfs_det_prep_cyc==complete and /prod_clone/primary/18/obsproc/v1.2/rrfs/20z/dump/jobsproc_rrfs_dump==complete and /prod_clone/primary/18/obsproc/v1.2/rrfs/20z/prep/jobsproc_rrfs_prep==complete and ( /para/primary/18/rrfs/v1.0/19z/enkf/forecast==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete )
+                  trigger (:TIME >= 2031 or :TIME < 0831) and ../prep/jrrfs_det_prep_cyc==complete and /prod_clone/primary/18/obsproc/v1.2/rrfs/20z/dump/jobsproc_rrfs_dump==complete and /prod_clone/primary/18/obsproc/v1.2/rrfs/20z/prep/jobsproc_rrfs_prep==complete and ( /para/primary/18/rrfs/v1.0/19z/enkf/forecast==complete or ( (:TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete ))
                 task jrrfs_det_update_lbc_soil
                   trigger ./jrrfs_det_analysis_gsi==complete
                 task jrrfs_det_analysis_gsi_diag
@@ -45762,7 +45762,7 @@ suite para
                 task jrrfs_det_analysis_nonvarcld
                   trigger ./jrrfs_det_update_lbc_soil==complete and ../init/jrrfs_det_process_bufr==complete
                 task jrrfs_det_analysis_gsi_spinup
-                  trigger ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod_clone/primary/18/obsproc/v1.2/rrfs/20z/prep/jobsproc_rrfs_prep==complete and ( /para/primary/18/rrfs/v1.0/19z/enkf/forecast==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete )
+                  trigger (:TIME >= 2031 or :TIME < 0831) and ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod_clone/primary/18/obsproc/v1.2/rrfs/20z/prep/jobsproc_rrfs_prep==complete and ( /para/primary/18/rrfs/v1.0/19z/enkf/forecast==complete or ( (:TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete ))
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_update_lbc_soil_spinup
                   trigger ./jrrfs_det_analysis_gsi_spinup==complete
@@ -46166,97 +46166,97 @@ suite para
                 edit GSI_TYPE 'OBSERVER'
                 edit MEM_TYPE 'MEAN'
                 task jrrfs_enkf_prep_cyc_ensmean
-                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem001_f001==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem001_f2==complete
+                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem001_f001==complete or (( :TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem001_f2==complete)
                   edit MEMBER_NAME 'ensmean'
                 task jrrfs_enkf_prep_cyc_mem001
-                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem001_f001==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem001_f2==complete
+                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem001_f001==complete or (( :TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem001_f2==complete)
                   edit MEMBER_NAME '001'
                 task jrrfs_enkf_prep_cyc_mem002
-                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem002_f001==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem002_f2==complete
+                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem002_f001==complete or (( :TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem002_f2==complete)
                   edit MEMBER_NAME '002'
                 task jrrfs_enkf_prep_cyc_mem003
-                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem003_f001==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem003_f2==complete
+                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem003_f001==complete or (( :TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem003_f2==complete)
                   edit MEMBER_NAME '003'
                 task jrrfs_enkf_prep_cyc_mem004
-                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem004_f001==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem004_f2==complete
+                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem004_f001==complete or (( :TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem004_f2==complete)
                   edit MEMBER_NAME '004'
                 task jrrfs_enkf_prep_cyc_mem005
-                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem005_f001==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem005_f2==complete
+                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem005_f001==complete or (( :TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem005_f2==complete)
                   edit MEMBER_NAME '005'
                 task jrrfs_enkf_prep_cyc_mem006
-                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem006_f001==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem006_f2==complete
+                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem006_f001==complete or (( :TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem006_f2==complete)
                   edit MEMBER_NAME '006'
                 task jrrfs_enkf_prep_cyc_mem007
-                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem007_f001==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem007_f2==complete
+                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem007_f001==complete or (( :TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem007_f2==complete)
                   edit MEMBER_NAME '007'
                 task jrrfs_enkf_prep_cyc_mem008
-                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem008_f001==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem008_f2==complete
+                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem008_f001==complete or (( :TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem008_f2==complete)
                   edit MEMBER_NAME '008'
                 task jrrfs_enkf_prep_cyc_mem009
-                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem009_f001==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem009_f2==complete
+                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem009_f001==complete or (( :TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem009_f2==complete)
                   edit MEMBER_NAME '009'
                 task jrrfs_enkf_prep_cyc_mem010
-                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem010_f001==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem010_f2==complete
+                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem010_f001==complete or (( :TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem010_f2==complete)
                   edit MEMBER_NAME '010'
                 task jrrfs_enkf_prep_cyc_mem011
-                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem011_f001==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem011_f2==complete
+                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem011_f001==complete or (( :TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem011_f2==complete)
                   edit MEMBER_NAME '011'
                 task jrrfs_enkf_prep_cyc_mem012
-                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem012_f001==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem012_f2==complete
+                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem012_f001==complete or (( :TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem012_f2==complete)
                   edit MEMBER_NAME '012'
                 task jrrfs_enkf_prep_cyc_mem013
-                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem013_f001==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem013_f2==complete
+                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem013_f001==complete or (( :TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem013_f2==complete)
                   edit MEMBER_NAME '013'
                 task jrrfs_enkf_prep_cyc_mem014
-                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem014_f001==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem014_f2==complete
+                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem014_f001==complete or (( :TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem014_f2==complete)
                   edit MEMBER_NAME '014'
                 task jrrfs_enkf_prep_cyc_mem015
-                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem015_f001==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem015_f2==complete
+                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem015_f001==complete or (( :TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem015_f2==complete)
                   edit MEMBER_NAME '015'
                 task jrrfs_enkf_prep_cyc_mem016
-                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem016_f001==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem016_f2==complete
+                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem016_f001==complete or (( :TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem016_f2==complete)
                   edit MEMBER_NAME '016'
                 task jrrfs_enkf_prep_cyc_mem017
-                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem017_f001==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem017_f2==complete
+                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem017_f001==complete or (( :TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem017_f2==complete)
                   edit MEMBER_NAME '017'
                 task jrrfs_enkf_prep_cyc_mem018
-                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem018_f001==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem018_f2==complete
+                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem018_f001==complete or (( :TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem018_f2==complete)
                   edit MEMBER_NAME '018'
                 task jrrfs_enkf_prep_cyc_mem019
-                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem019_f001==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem019_f2==complete
+                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem019_f001==complete or (( :TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem019_f2==complete)
                   edit MEMBER_NAME '019'
                 task jrrfs_enkf_prep_cyc_mem020
-                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem020_f001==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem020_f2==complete
+                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem020_f001==complete or (( :TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem020_f2==complete)
                   edit MEMBER_NAME '020'
                 task jrrfs_enkf_prep_cyc_mem021
-                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem021_f001==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem021_f2==complete
+                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem021_f001==complete or (( :TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem021_f2==complete)
                   edit MEMBER_NAME '021'
                 task jrrfs_enkf_prep_cyc_mem022
-                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem022_f001==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem022_f2==complete
+                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem022_f001==complete or (( :TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem022_f2==complete)
                   edit MEMBER_NAME '022'
                 task jrrfs_enkf_prep_cyc_mem023
-                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem023_f001==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem023_f2==complete
+                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem023_f001==complete or (( :TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem023_f2==complete)
                   edit MEMBER_NAME '023'
                 task jrrfs_enkf_prep_cyc_mem024
-                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem024_f001==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem024_f2==complete
+                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem024_f001==complete or (( :TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem024_f2==complete)
                   edit MEMBER_NAME '024'
                 task jrrfs_enkf_prep_cyc_mem025
-                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem025_f001==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem025_f2==complete
+                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem025_f001==complete or (( :TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem025_f2==complete)
                   edit MEMBER_NAME '025'
                 task jrrfs_enkf_prep_cyc_mem026
-                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem026_f001==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem026_f2==complete
+                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem026_f001==complete or (( :TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem026_f2==complete)
                   edit MEMBER_NAME '026'
                 task jrrfs_enkf_prep_cyc_mem027
-                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem027_f001==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem027_f2==complete
+                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem027_f001==complete or (( :TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem027_f2==complete)
                   edit MEMBER_NAME '027'
                 task jrrfs_enkf_prep_cyc_mem028
-                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem028_f001==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem028_f2==complete
+                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem028_f001==complete or (( :TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem028_f2==complete)
                   edit MEMBER_NAME '028'
                 task jrrfs_enkf_prep_cyc_mem029
-                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem029_f001==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem029_f2==complete
+                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem029_f001==complete or (( :TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem029_f2==complete)
                   edit MEMBER_NAME '029'
                 task jrrfs_enkf_prep_cyc_mem030
-                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem030_f001==complete or /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem030_f2==complete
+                  trigger /para/primary/18/rrfs/v1.0/19z/enkf/forecast/jrrfs_enkf_save_restart_spinup_mem030_f001==complete or (( :TIME >= 2040 or :TIME < 0841) and /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_mem030_f2==complete)
                   edit MEMBER_NAME '030'
                 task jrrfs_enkf_calc_ensmean
                   trigger ./jrrfs_enkf_prep_cyc_mem001==complete and ./jrrfs_enkf_prep_cyc_mem002==complete and ./jrrfs_enkf_prep_cyc_mem003==complete and ./jrrfs_enkf_prep_cyc_mem004==complete and ./jrrfs_enkf_prep_cyc_mem005==complete and ./jrrfs_enkf_prep_cyc_mem006==complete and ./jrrfs_enkf_prep_cyc_mem007==complete and ./jrrfs_enkf_prep_cyc_mem008==complete and ./jrrfs_enkf_prep_cyc_mem009==complete and ./jrrfs_enkf_prep_cyc_mem010==complete and ./jrrfs_enkf_prep_cyc_mem011==complete and ./jrrfs_enkf_prep_cyc_mem012==complete and ./jrrfs_enkf_prep_cyc_mem013==complete and ./jrrfs_enkf_prep_cyc_mem014==complete and ./jrrfs_enkf_prep_cyc_mem015==complete and ./jrrfs_enkf_prep_cyc_mem016==complete and ./jrrfs_enkf_prep_cyc_mem017==complete and ./jrrfs_enkf_prep_cyc_mem018==complete and ./jrrfs_enkf_prep_cyc_mem019==complete and ./jrrfs_enkf_prep_cyc_mem020==complete and ./jrrfs_enkf_prep_cyc_mem021==complete and ./jrrfs_enkf_prep_cyc_mem022==complete and ./jrrfs_enkf_prep_cyc_mem023==complete and ./jrrfs_enkf_prep_cyc_mem024==complete and ./jrrfs_enkf_prep_cyc_mem025==complete and ./jrrfs_enkf_prep_cyc_mem026==complete and ./jrrfs_enkf_prep_cyc_mem027==complete and ./jrrfs_enkf_prep_cyc_mem028==complete and ./jrrfs_enkf_prep_cyc_mem029==complete and ./jrrfs_enkf_prep_cyc_mem030==complete and ./jrrfs_enkf_prep_cyc_ensmean==complete
