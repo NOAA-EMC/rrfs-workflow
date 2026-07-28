@@ -86,6 +86,9 @@ case ${task_id} in
     module load "RDAS/${MACHINE}.${COMPILER}"
     module load nco
     export LD_LIBRARY_PATH=${HOMErrfs}/sorc/RDASApp/build/lib64:${LD_LIBRARY_PATH}
+    if [[ ${MACHINE,,} == "ursa" ]]; then # special needs at ursa
+      module load impi-collective-settings/1.0.0
+    fi
     ;;
   ioda_mrms_refl)
     module purge

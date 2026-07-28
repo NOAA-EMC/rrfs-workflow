@@ -69,8 +69,10 @@ physics_suite=${PHYSICS_SUITE:-'mesoscale_reference'}
 lsm_scheme=${LSM_SCHEME:-'sf_ruc'}
 nsoillevels=${NSOIL_LEVELS:-9}
 jedi_da=true #true
-pio_num_iotasks=${NODES}
-pio_stride=${PPN}
+pio_stride=10
+pio_num_iotasks=$(( NODES * PPN / 10 ))
+#pio_num_iotasks=${NODES}
+#pio_stride=${PPN}
 
 # We set dt, substeps, radt values to avoid errors in reading namelist.atmosphere
 # but they will NOT be used since no model integration in DA steps
