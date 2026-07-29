@@ -32,7 +32,6 @@ module load nco/${nco_ver}
 
 export WGF="%WGF%"
 export MEMBER_NAME="%MEMBER_NAME%"
-export FHR="%FHR%"
 export CYCLE_TYPE="%CYCLE_TYPE%"
 export CYCLE_SUBTYPE="%CYCLE_SUBTYPE%"
 module list
