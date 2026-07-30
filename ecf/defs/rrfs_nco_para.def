@@ -44219,7 +44219,7 @@ suite para
                 edit MEM_TYPE 'MEMBER'
                 edit GSI_TYPE 'ANALYSIS'
                 task jrrfs_det_analysis_gsi
-                  trigger ../prep/jrrfs_det_prep_cyc==complete and /prod_clone/primary/12/obsproc/v1.2/rrfs/17z/dump/jobsproc_rrfs_dump==complete and /prod_clone/primary/12/obsproc/v1.2/rrfs/17z/prep/jobsproc_rrfs_prep==complete and ( /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /para/primary/12/rrfs/v1.0/16z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete )
+                  trigger ../prep/jrrfs_det_prep_cyc==complete and /prod_clone/primary/18/obsproc/v1.2/rrfs/19z/dump/jobsproc_rrfs_dump==complete and /prod_clone/primary/18/obsproc/v1.2/rrfs/19z/prep/jobsproc_rrfs_prep==complete and ( /para/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /para/primary/12/rrfs/v1.0/16z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete )
                 task jrrfs_det_update_lbc_soil
                   trigger ./jrrfs_det_analysis_gsi==complete
                 task jrrfs_det_analysis_gsi_diag
