@@ -81,5 +81,5 @@ def nonvar_cldana(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
   </dependency>'''
     #
     xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv, dependencies,
-             metatask, meta_id, meta_bgn, meta_end)
+             metatask, meta_id, meta_bgn, meta_end, command_id="NONVAR_CLDANA")
 # end of nonvar_cldana --------------------------------------------------------
