@@ -1430,11 +1430,11 @@ suite para
               edit CYCLE_TYPE 'prod'
               family init
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 0025 and :TIME < 0625 and ../../det/init/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0022 and :TIME < 0622
                 task jrrfs_enkf_process_lightning
-                  trigger :TIME >= 0015 and :TIME < 0615 and ../../det/init/jrrfs_det_process_lightning==complete
+                  trigger :TIME >= 0015 and :TIME < 0615
                 task jrrfs_enkf_process_bufr
-                  trigger :TIME >= 0035 and :TIME < 0635 and ../../det/init/jrrfs_det_process_bufr==complete
+                  trigger :TIME >= 0035 and :TIME < 0635
               endfamily
               family ics
                 trigger :TIME >= 0020 and :TIME < 0620 and ../det/ics==complete and /prod_clone/primary/18/gefs/v12.3/members/d0_16/jgefs_pgrb2abp5_f192_done == complete
@@ -7192,11 +7192,11 @@ suite para
               edit CYCLE_TYPE 'prod'
               family init
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 0125 and :TIME < 0725 and ../../det/init/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0122 and :TIME < 0722
                 task jrrfs_enkf_process_lightning
-                  trigger :TIME >= 0115 and :TIME < 0715 and ../../det/init/jrrfs_det_process_lightning==complete
+                  trigger :TIME >= 0115 and :TIME < 0715
                 task jrrfs_enkf_process_bufr
-                  trigger :TIME >= 0135 and :TIME < 0735 and ../../det/init/jrrfs_det_process_bufr==complete
+                  trigger :TIME >= 0135 and :TIME < 0735
               endfamily
               family prep
                 trigger :TIME >= 0120 and :TIME < 0720
@@ -8148,11 +8148,11 @@ suite para
               edit CYCLE_TYPE 'prod'
               family init
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 0215 and :TIME < 0815 and ../../det/init/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0222 and :TIME < 0822
                 task jrrfs_enkf_process_lightning
-                  trigger :TIME >= 0215 and :TIME < 0815 and ../../det/init/jrrfs_det_process_lightning==complete
+                  trigger :TIME >= 0215 and :TIME < 0815
                 task jrrfs_enkf_process_bufr
-                  trigger :TIME >= 0235 and :TIME < 0835 and ../../det/init/jrrfs_det_process_bufr==complete
+                  trigger :TIME >= 0235 and :TIME < 0835
               endfamily
               family prep
                 trigger :TIME >= 0220 and :TIME < 0820
@@ -9053,7 +9053,7 @@ suite para
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 0335 and :TIME < 0935
                 task jrrfs_det_process_smoke_spinup
-                  trigger :TIME >= 0335 and :TIME < 0935
+                  trigger ( :TIME >= 0335 and :TIME < 0935 ) and jrrfs_det_process_smoke==complete
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_radar_spinup
                   trigger :TIME >= 0325 and :TIME < 0925
@@ -9482,11 +9482,11 @@ suite para
               edit CYCLE_TYPE 'prod'
               family init
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 0325 and :TIME < 0925 and ../../det/init/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0322 and :TIME < 0922
                 task jrrfs_enkf_process_lightning
-                  trigger :TIME >= 0315 and :TIME < 0915 and ../../det/init/jrrfs_det_process_lightning==complete
+                  trigger :TIME >= 0315 and :TIME < 0915
                 task jrrfs_enkf_process_bufr
-                  trigger :TIME >= 0335 and :TIME < 0935 and ../../det/init/jrrfs_det_process_bufr==complete
+                  trigger :TIME >= 0335 and :TIME < 0935
               endfamily
               family prep
                 trigger :TIME >= 0320 and :TIME < 0920
@@ -10046,7 +10046,7 @@ suite para
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 0435 and :TIME < 1035
                 task jrrfs_det_process_smoke_spinup
-                  trigger :TIME >= 0435 and :TIME < 1035
+                  trigger ( :TIME >= 0435 and :TIME < 1035 ) and jrrfs_det_process_smoke==complete
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_radar_spinup
                   trigger :TIME >= 0425 and :TIME < 1025
@@ -10471,11 +10471,11 @@ suite para
               edit CYCLE_TYPE 'prod'
               family init
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 0425 and :TIME < 1025 and ../../det/init/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0422 and :TIME < 1022
                 task jrrfs_enkf_process_lightning
-                  trigger :TIME >= 0415 and :TIME < 1015 and ../../det/init/jrrfs_det_process_lightning==complete
+                  trigger :TIME >= 0415 and :TIME < 1015
                 task jrrfs_enkf_process_bufr
-                  trigger :TIME >= 0435 and :TIME < 1035 and ../../det/init/jrrfs_det_process_bufr==complete
+                  trigger :TIME >= 0435 and :TIME < 1035
               endfamily
               family prep
                 trigger :TIME >= 0420 and :TIME < 1020
@@ -11376,7 +11376,7 @@ suite para
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 0535 and :TIME < 1135
                 task jrrfs_det_process_smoke_spinup
-                  trigger :TIME >= 0535 and :TIME < 1135
+                  trigger ( :TIME >= 0535 and :TIME < 1135 ) and jrrfs_det_process_smoke==complete
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_radar_spinup
                   trigger :TIME >= 0525 and :TIME < 1125
@@ -11802,11 +11802,11 @@ suite para
               edit CYCLE_TYPE 'prod'
               family init
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 0525 and :TIME < 1125 and ../../det/init/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0522 and :TIME < 1122
                 task jrrfs_enkf_process_lightning
-                  trigger :TIME >= 0515 and :TIME < 1115 and ../../det/init/jrrfs_det_process_lightning==complete
+                  trigger :TIME >= 0515 and :TIME < 1115
                 task jrrfs_enkf_process_bufr
-                  trigger :TIME >= 0535 and :TIME < 1135 and ../../det/init/jrrfs_det_process_bufr==complete
+                  trigger :TIME >= 0535 and :TIME < 1135
               endfamily
               family prep
                 trigger :TIME >= 0520 and :TIME < 1120
@@ -12381,7 +12381,7 @@ suite para
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 0635 and :TIME < 1235
                 task jrrfs_det_process_smoke_spinup
-                  trigger :TIME >= 0635 and :TIME < 1235
+                  trigger ( :TIME >= 0635 and :TIME < 1235 ) and jrrfs_det_process_smoke==complete
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_radar_spinup
                   trigger :TIME >= 0625 and :TIME < 1225
@@ -13739,11 +13739,11 @@ suite para
               edit CYCLE_TYPE 'prod'
               family init
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 0625 and :TIME < 1225 and ../../det/init/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0622 and :TIME < 1222
                 task jrrfs_enkf_process_lightning
-                  trigger :TIME >= 0615 and :TIME < 1215 and ../../det/init/jrrfs_det_process_lightning==complete
+                  trigger :TIME >= 0615 and :TIME < 1215
                 task jrrfs_enkf_process_bufr
-                  trigger :TIME >= 0635 and :TIME < 1235 and ../../det/init/jrrfs_det_process_bufr==complete
+                  trigger :TIME >= 0635 and :TIME < 1235
               endfamily
               family ics
                 trigger :TIME >= 0620 and :TIME < 1220 and ../det/ics==complete and /prod_clone/primary/00/gefs/v12.3/members/d0_16/jgefs_pgrb2abp5_f192_done == complete
@@ -19110,7 +19110,7 @@ suite para
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 0735 and :TIME < 1335
                 task jrrfs_det_process_smoke_spinup
-                  trigger :TIME >= 0735 and :TIME < 1335
+                  trigger ( :TIME >= 0735 and :TIME < 1335 ) and jrrfs_det_process_smoke==complete
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_radar_spinup
                   trigger :TIME >= 0725 and :TIME < 1325
@@ -19537,11 +19537,11 @@ suite para
               family init
                 edit CYCLE_TYPE 'spinup'
                 task jrrfs_enkf_process_radar_spinup
-                  trigger :TIME >= 0725 and :TIME < 1325 and ../../det/init/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0722 and :TIME < 1322
                 task jrrfs_enkf_process_lightning_spinup
-                  trigger :TIME >= 0715 and :TIME < 1315 and ../../det/init/jrrfs_det_process_lightning==complete
+                  trigger :TIME >= 0715 and :TIME < 1315
                 task jrrfs_enkf_process_bufr_spinup
-                  trigger :TIME >= 0735 and :TIME < 1335 and ../../det/init/jrrfs_det_process_bufr==complete
+                  trigger :TIME >= 0735 and :TIME < 1335
               endfamily
               family ics
                 trigger :TIME >= 0720 and :TIME < 1320 and /prod_clone/primary/00/gfs/v16.3/enkfgdas/post/jenkfgdas_post_f007 == complete
@@ -20646,7 +20646,7 @@ suite para
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 0835 and :TIME < 1435
                 task jrrfs_det_process_smoke_spinup
-                  trigger :TIME >= 0835 and :TIME < 1435
+                  trigger ( :TIME >= 0835 and :TIME < 1435 ) and jrrfs_det_process_smoke==complete
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_radar_spinup
                   trigger :TIME >= 0825 and :TIME < 1425
@@ -21071,11 +21071,11 @@ suite para
               edit CYCLE_TYPE 'prod'
               family init
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 0825 and :TIME < 1425 and ../../det/init/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0822 and :TIME < 1422
                 task jrrfs_enkf_process_lightning
-                  trigger :TIME >= 0815 and :TIME < 1415 and ../../det/init/jrrfs_det_process_lightning==complete
+                  trigger :TIME >= 0815 and :TIME < 1415
                 task jrrfs_enkf_process_bufr
-                  trigger :TIME >= 0835 and :TIME < 1435 and ../../det/init/jrrfs_det_process_bufr==complete
+                  trigger :TIME >= 0835 and :TIME < 1435
               endfamily
               family prep
                 trigger :TIME >= 0820 and :TIME < 1420
@@ -22367,11 +22367,11 @@ suite para
               edit CYCLE_TYPE 'prod'
               family init
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 0925 and :TIME < 1525 and ../../det/init/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 0922 and :TIME < 1522
                 task jrrfs_enkf_process_lightning
-                  trigger :TIME >= 0915 and :TIME < 1515 and ../../det/init/jrrfs_det_process_lightning==complete
+                  trigger :TIME >= 0915 and :TIME < 1515
                 task jrrfs_enkf_process_bufr
-                  trigger :TIME >= 0935 and :TIME < 1535 and ../../det/init/jrrfs_det_process_bufr==complete
+                  trigger :TIME >= 0935 and :TIME < 1535
               endfamily
               family prep
                 trigger :TIME >= 0920 and :TIME < 1520
@@ -23321,11 +23321,11 @@ suite para
               edit CYCLE_TYPE 'prod'
               family init
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 1025 and :TIME < 1625 and ../../det/init/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 1022 and :TIME < 1622
                 task jrrfs_enkf_process_lightning
-                  trigger :TIME >= 1015 and :TIME < 1615 and ../../det/init/jrrfs_det_process_lightning==complete
+                  trigger :TIME >= 1015 and :TIME < 1615
                 task jrrfs_enkf_process_bufr
-                  trigger :TIME >= 1035 and :TIME < 1635 and ../../det/init/jrrfs_det_process_bufr==complete
+                  trigger :TIME >= 1035 and :TIME < 1635
               endfamily
               family prep
                 trigger :TIME >= 1020 and :TIME < 1620
@@ -24618,11 +24618,11 @@ suite para
               edit CYCLE_TYPE 'prod'
               family init
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 1125 and :TIME < 1725 and ../../det/init/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 1122 and :TIME < 1722
                 task jrrfs_enkf_process_lightning
-                  trigger :TIME >= 1115 and :TIME < 1715 and ../../det/init/jrrfs_det_process_lightning==complete
+                  trigger :TIME >= 1115 and :TIME < 1715
                 task jrrfs_enkf_process_bufr
-                  trigger :TIME >= 1135 and :TIME < 1735 and ../../det/init/jrrfs_det_process_bufr==complete
+                  trigger :TIME >= 1135 and :TIME < 1735
               endfamily
               family prep
                 trigger :TIME >= 1120 and :TIME < 1720
@@ -26520,11 +26520,11 @@ suite para
               edit CYCLE_TYPE 'prod'
               family init
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 1225 and :TIME < 1825 and ../../det/init/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 1222 and :TIME < 1822
                 task jrrfs_enkf_process_lightning
-                  trigger :TIME >= 1220 and :TIME < 1820 and ../../det/init/jrrfs_det_process_lightning==complete
+                  trigger :TIME >= 1220 and :TIME < 1820
                 task jrrfs_enkf_process_bufr
-                  trigger :TIME >= 1235 and :TIME < 1835 and ../../det/init/jrrfs_det_process_bufr==complete
+                  trigger :TIME >= 1235 and :TIME < 1835
               endfamily
               family ics
                 trigger :TIME >= 1220 and :TIME < 1820 and ../det/ics==complete and /prod_clone/primary/06/gefs/v12.3/members/d0_16/jgefs_pgrb2abp5_f192_done == complete
@@ -32281,11 +32281,11 @@ suite para
               edit CYCLE_TYPE 'prod'
               family init
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 1325 and :TIME < 1925 and ../../det/init/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 1322 and :TIME < 1922
                 task jrrfs_enkf_process_lightning
-                  trigger :TIME >= 1315 and :TIME < 1915 and ../../det/init/jrrfs_det_process_lightning==complete
+                  trigger :TIME >= 1315 and :TIME < 1915
                 task jrrfs_enkf_process_bufr
-                  trigger :TIME >= 1335 and :TIME < 1935 and ../../det/init/jrrfs_det_process_bufr==complete
+                  trigger :TIME >= 1335 and :TIME < 1935
               endfamily
               family prep
                 trigger :TIME >= 1320 and :TIME < 1920
@@ -33236,11 +33236,11 @@ suite para
               edit CYCLE_TYPE 'prod'
               family init
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 1425 and :TIME < 2025 and ../../det/init/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 1422 and :TIME < 2022
                 task jrrfs_enkf_process_lightning
-                  trigger :TIME >= 1415 and :TIME < 2015 and ../../det/init/jrrfs_det_process_lightning==complete
+                  trigger :TIME >= 1415 and :TIME < 2015
                 task jrrfs_enkf_process_bufr
-                  trigger :TIME >= 1435 and :TIME < 2035 and ../../det/init/jrrfs_det_process_bufr==complete
+                  trigger :TIME >= 1435 and :TIME < 2035
               endfamily
               family prep
                 trigger :TIME >= 1420 and :TIME < 2020
@@ -34141,7 +34141,7 @@ suite para
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 1535 and :TIME < 2135
                 task jrrfs_det_process_smoke_spinup
-                  trigger :TIME >= 1535 and :TIME < 2135
+                  trigger ( :TIME >= 1535 and :TIME < 2135 ) and jrrfs_det_process_smoke==complete
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_radar_spinup
                   trigger :TIME >= 1525 and :TIME < 2125
@@ -34570,11 +34570,11 @@ suite para
               edit CYCLE_TYPE 'prod'
               family init
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 1525 and :TIME < 2125 and ../../det/init/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 1522 and :TIME < 2122
                 task jrrfs_enkf_process_lightning
-                  trigger :TIME >= 1515 and :TIME < 2115 and ../../det/init/jrrfs_det_process_lightning==complete
+                  trigger :TIME >= 1515 and :TIME < 2115
                 task jrrfs_enkf_process_bufr
-                  trigger :TIME >= 1535 and :TIME < 2135 and ../../det/init/jrrfs_det_process_bufr==complete
+                  trigger :TIME >= 1535 and :TIME < 2135
               endfamily
               family prep
                 trigger :TIME >= 1520 and :TIME < 2120
@@ -35133,7 +35133,7 @@ suite para
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 1635 and :TIME < 2235
                 task jrrfs_det_process_smoke_spinup
-                  trigger :TIME >= 1635 and :TIME < 2235
+                  trigger ( :TIME >= 1635 and :TIME < 2235 ) and jrrfs_det_process_smoke==complete
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_radar_spinup
                   trigger :TIME >= 1625 and :TIME < 2225
@@ -35558,11 +35558,11 @@ suite para
               edit CYCLE_TYPE 'prod'
               family init
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 1625 and :TIME < 2225 and ../../det/init/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 1622 and :TIME < 2222
                 task jrrfs_enkf_process_lightning
-                  trigger :TIME >= 1615 and :TIME < 2215 and ../../det/init/jrrfs_det_process_lightning==complete
+                  trigger :TIME >= 1615 and :TIME < 2215
                 task jrrfs_enkf_process_bufr
-                  trigger :TIME >= 1635 and :TIME < 2235 and ../../det/init/jrrfs_det_process_bufr==complete
+                  trigger :TIME >= 1635 and :TIME < 2235
               endfamily
               family prep
                 trigger :TIME >= 1620 and :TIME < 2220
@@ -36463,7 +36463,7 @@ suite para
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 1735 and :TIME < 2335
                 task jrrfs_det_process_smoke_spinup
-                  trigger :TIME >= 1735 and :TIME < 2335
+                  trigger ( :TIME >= 1735 and :TIME < 2335 ) and jrrfs_det_process_smoke==complete
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_radar_spinup
                   trigger :TIME >= 1725 and :TIME < 2325
@@ -36889,11 +36889,11 @@ suite para
               edit CYCLE_TYPE 'prod'
               family init
                 task jrrfs_enkf_process_radar
-                  trigger :TIME >= 1725 and :TIME < 2325 and ../../det/init/jrrfs_det_process_radar==complete
+                  trigger :TIME >= 1722 and :TIME < 2322
                 task jrrfs_enkf_process_lightning
-                  trigger :TIME >= 1715 and :TIME < 2315 and ../../det/init/jrrfs_det_process_lightning==complete
+                  trigger :TIME >= 1715 and :TIME < 2315
                 task jrrfs_enkf_process_bufr
-                  trigger :TIME >= 1735 and :TIME < 2335 and ../../det/init/jrrfs_det_process_bufr==complete
+                  trigger :TIME >= 1735 and :TIME < 2335
               endfamily
               family prep
                 trigger :TIME >= 1720 and :TIME < 2320
@@ -37467,7 +37467,7 @@ suite para
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 1835 or :TIME < 0035
                 task jrrfs_det_process_smoke_spinup
-                  trigger :TIME >= 1835 or :TIME < 0035
+                  trigger ( :TIME >= 1835 or :TIME < 0035 ) and jrrfs_det_process_smoke==complete
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_radar_spinup
                   trigger :TIME >= 1825 or :TIME < 0025
@@ -38825,11 +38825,11 @@ suite para
               edit CYCLE_TYPE 'prod'
               family init
                 task jrrfs_enkf_process_radar
-                  trigger ( :TIME >= 1825 or :TIME < 0025 ) and ../../det/init/jrrfs_det_process_radar==complete
+                  trigger ( :TIME >= 1822 or :TIME < 0022 )
                 task jrrfs_enkf_process_lightning
-                  trigger ( :TIME >= 1815 or :TIME < 0015 ) and ../../det/init/jrrfs_det_process_lightning==complete
+                  trigger ( :TIME >= 1815 or :TIME < 0015 )
                 task jrrfs_enkf_process_bufr
-                  trigger ( :TIME >= 1835 or :TIME < 0035 ) and ../../det/init/jrrfs_det_process_bufr==complete
+                  trigger ( :TIME >= 1835 or :TIME < 0035 )
               endfamily
               family ics
                 trigger ( :TIME >= 1820 or :TIME < 0020 ) and ../det/ics==complete and /prod_clone/primary/12/gefs/v12.3/members/d0_16/jgefs_pgrb2abp5_f192_done == complete
@@ -44195,7 +44195,7 @@ suite para
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 1935 or :TIME < 0135
                 task jrrfs_det_process_smoke_spinup
-                  trigger :TIME >= 1935 or :TIME < 0135
+                  trigger ( :TIME >= 1935 or :TIME < 0135 ) and jrrfs_det_process_smoke==complete
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_radar_spinup
                   trigger :TIME >= 1925 or :TIME < 0125
@@ -44621,11 +44621,11 @@ suite para
               family init
                 edit CYCLE_TYPE 'spinup'
                 task jrrfs_enkf_process_radar_spinup
-                  trigger ( :TIME >= 1925 or :TIME < 0125 ) and ../../det/init/jrrfs_det_process_radar==complete
+                  trigger ( :TIME >= 1922 or :TIME < 0122 )
                 task jrrfs_enkf_process_lightning_spinup
-                  trigger ( :TIME >= 1915 or :TIME < 0115 ) and ../../det/init/jrrfs_det_process_lightning==complete
+                  trigger ( :TIME >= 1915 or :TIME < 0115 )
                 task jrrfs_enkf_process_bufr_spinup
-                  trigger ( :TIME >= 1935 or :TIME < 0135 ) and ../../det/init/jrrfs_det_process_bufr==complete
+                  trigger ( :TIME >= 1935 or :TIME < 0135 )
               endfamily
               family ics
                 trigger /prod_clone/primary/12/gfs/v16.3/enkfgdas/post/jenkfgdas_post_f007 == complete and ( :TIME >= 1920 or :TIME < 0120 )
@@ -45730,7 +45730,7 @@ suite para
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 2035 or :TIME < 0235
                 task jrrfs_det_process_smoke_spinup
-                  trigger :TIME >= 2035 or :TIME < 0235
+                  trigger ( :TIME >= 2035 or :TIME < 0235 ) and jrrfs_det_process_smoke==complete
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_radar_spinup
                   trigger :TIME >= 2025 or :TIME < 0225
@@ -46155,11 +46155,11 @@ suite para
               edit CYCLE_TYPE 'prod'
               family init
                 task jrrfs_enkf_process_radar
-                  trigger ( :TIME >= 2025 or :TIME < 0225 ) and ../../det/init/jrrfs_det_process_radar==complete
+                  trigger ( :TIME >= 2022 or :TIME < 0222 )
                 task jrrfs_enkf_process_lightning
-                  trigger ( :TIME >= 2015 or :TIME < 0215 ) and ../../det/init/jrrfs_det_process_lightning==complete
+                  trigger ( :TIME >= 2015 or :TIME < 0215 )
                 task jrrfs_enkf_process_bufr
-                  trigger ( :TIME >= 2035 or :TIME < 0235 ) and ../../det/init/jrrfs_det_process_bufr==complete
+                  trigger ( :TIME >= 2035 or :TIME < 0235 )
               endfamily
               family prep
                 trigger :TIME >= 2020 or :TIME < 0220
@@ -47451,11 +47451,11 @@ suite para
               edit CYCLE_TYPE 'prod'
               family init
                 task jrrfs_enkf_process_radar
-                  trigger ((:TIME >= 2125 and :TIME < 2359 ) or :TIME < 0325) and ../../det/init/jrrfs_det_process_radar==complete
+                  trigger ((:TIME >= 2122 and :TIME < 2359 ) or :TIME < 0322)
                 task jrrfs_enkf_process_lightning
-                  trigger ((:TIME >= 2115 and :TIME < 2359 ) or :TIME < 0315) and ../../det/init/jrrfs_det_process_lightning==complete
+                  trigger ((:TIME >= 2115 and :TIME < 2359 ) or :TIME < 0315)
                 task jrrfs_enkf_process_bufr
-                  trigger ((:TIME >= 2135 and :TIME < 2359 ) or :TIME < 0335) and ../../det/init/jrrfs_det_process_bufr==complete
+                  trigger ((:TIME >= 2135 and :TIME < 2359 ) or :TIME < 0335)
               endfamily
               family prep
                 trigger ((:TIME >= 2120 and :TIME < 2359 ) or :TIME < 0320)
@@ -48405,11 +48405,11 @@ suite para
               edit CYCLE_TYPE 'prod'
               family init
                 task jrrfs_enkf_process_radar
-                  trigger ((:TIME >= 2225 and :TIME < 2359 ) or :TIME < 0425) and ../../det/init/jrrfs_det_process_radar==complete
+                  trigger ((:TIME >= 2222 and :TIME < 2359 ) or :TIME < 0422)
                 task jrrfs_enkf_process_lightning
-                  trigger ((:TIME >= 2215 and :TIME < 2359 ) or :TIME < 0415) and ../../det/init/jrrfs_det_process_lightning==complete
+                  trigger ((:TIME >= 2215 and :TIME < 2359 ) or :TIME < 0415)
                 task jrrfs_enkf_process_bufr
-                  trigger ((:TIME >= 2235 and :TIME < 2359 ) or :TIME < 0435) and ../../det/init/jrrfs_det_process_bufr==complete
+                  trigger ((:TIME >= 2235 and :TIME < 2359 ) or :TIME < 0435)
               endfamily
               family prep
                 trigger (:TIME >= 2220 and :TIME < 2359 ) or :TIME < 0420
@@ -49702,11 +49702,11 @@ suite para
               edit CYCLE_TYPE 'prod'
               family init
                 task jrrfs_enkf_process_radar
-                  trigger ((:TIME >= 2325 and :TIME < 2359 ) or :TIME < 0525) and ../../det/init/jrrfs_det_process_radar==complete
+                  trigger ((:TIME >= 2322 and :TIME < 2359 ) or :TIME < 0522)
                 task jrrfs_enkf_process_lightning
-                  trigger ((:TIME >= 2315 and :TIME < 2359 ) or :TIME < 0515) and ../../det/init/jrrfs_det_process_lightning==complete
+                  trigger ((:TIME >= 2315 and :TIME < 2359 ) or :TIME < 0515)
                 task jrrfs_enkf_process_bufr
-                  trigger ((:TIME >= 2335 and :TIME < 2359 ) or :TIME < 0535) and ../../det/init/jrrfs_det_process_bufr==complete
+                  trigger ((:TIME >= 2335 and :TIME < 2359 ) or :TIME < 0535)
               endfamily
               family prep
                 trigger (:TIME >= 2320 and :TIME < 2359 ) or :TIME < 0520
