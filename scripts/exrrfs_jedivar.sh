@@ -170,7 +170,7 @@ if [[ ${START_TYPE} == "warm" ]] || [[ ${START_TYPE} == "cold" && ${COLDSTART_CY
   #
   # Run jedivar in the 2nd pass for reflectivity DA
   #
-  if [[ ${START_TYPE} == "warm" && ${DO_RADAR_REF^^} == "TRUE" && ${ens_count} -eq ${ens_size} ]]; then
+  if [[ ${START_TYPE} == "warm" && ${DO_RADAR_REF^^} == "TRUE" ]] && (( ens_count == ens_size )); then
     export ANALYSIS_VARIABLES="12"
     ${cpreq}  "${EXPDIR}/config/bec_diffusion.yaml" "${DATA}"/bec_diffusion.yaml
     ln -sf "${FIXrrfs}/${MESH_NAME}/diffusionloc/${MESH_NAME}_L${nlevel}_15km11levels" data/diffusionloc
