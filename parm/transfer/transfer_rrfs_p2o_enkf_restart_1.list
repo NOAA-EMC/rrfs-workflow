@@ -1,0 +1,165 @@
+# This file specifies the directories to be transfered and, optionally, the files within
+# those directories to include or exclude.  If one directory is specified per line, it
+# will be used as both the source and destination.  If two directories are specified per
+# line, separated by one or more spaces, the first will be used as the source and the
+# second the destination.  Directories that begin with "com/" will be resolved using
+# the compath.py utility.  Rules may be placed below each directory or directory pair
+# and must begin with one of the following characters:
+#  -  exclude, specifies an exclude pattern
+#  +  include, specifies an include pattern
+#  .  merge, specifies a merge-file to read for more rules
+#  :  dir-merge, specifies a per-directory merge-file
+#  H  hide, specifies a pattern for hiding files from the transfer
+#  S  show, files that match the pattern are not hidden
+#  P  protect, specifies a pattern for protecting files from deletion
+#  R  risk, files that match the pattern are not protected
+#  !  clear, clears the current include/exclude list (takes no arg)
+#  B  bytes, relative size of the path in relation to the other paths in the list
+#  D  delete, delete extraneous files from destination directories (takes no arg)
+#  E  encrypt, enables data encryption [two cores should be allocated] (takes no arg)
+#  T  two-way syncronization will update both sides with latest changes (takes no arg)
+#  Z  compress data as it is sent, accepts optional compression level argument (1-9)
+# Rules higher in the list take precedence over lower ones.  By default, all files in a
+# directory are included, so if no exclude patterns match that file, it will be
+# transfered.
+
+
+/lfs/h1/ops/para/com/rrfs/_SHORTVER_/enkfrrfs._PDY_/ _COMROOT_/rrfs/_SHORTVER_/enkfrrfs._PDY_/
++ /*/
++ /*/m???/
++ /*/m???/forecast/
++ /*/m???/forecast/RESTART/
++ /23/m001/forecast/RESTART/*.000000.*
++ /23/m002/forecast/RESTART/*.000000.*
++ /23/m003/forecast/RESTART/*.000000.*
++ /23/m004/forecast/RESTART/*.000000.*
++ /23/m005/forecast/RESTART/*.000000.*
++ /22/m001/forecast/RESTART/*.230000.*
++ /22/m002/forecast/RESTART/*.230000.*
++ /22/m003/forecast/RESTART/*.230000.*
++ /22/m004/forecast/RESTART/*.230000.*
++ /22/m005/forecast/RESTART/*.230000.*
++ /21/m001/forecast/RESTART/*.220000.*
++ /21/m002/forecast/RESTART/*.220000.*
++ /21/m003/forecast/RESTART/*.220000.*
++ /21/m004/forecast/RESTART/*.220000.*
++ /21/m005/forecast/RESTART/*.220000.*
++ /20/m001/forecast/RESTART/*.210000.*
++ /20/m002/forecast/RESTART/*.210000.*
++ /20/m003/forecast/RESTART/*.210000.*
++ /20/m004/forecast/RESTART/*.210000.*
++ /20/m005/forecast/RESTART/*.210000.*
++ /19_spinup/m001/forecast/RESTART/*.200000.*
++ /19_spinup/m002/forecast/RESTART/*.200000.*
++ /19_spinup/m003/forecast/RESTART/*.200000.*
++ /19_spinup/m004/forecast/RESTART/*.200000.*
++ /19_spinup/m005/forecast/RESTART/*.200000.*
++ /18/m001/forecast/RESTART/*.190000.*
++ /18/m002/forecast/RESTART/*.190000.*
++ /18/m003/forecast/RESTART/*.190000.*
++ /18/m004/forecast/RESTART/*.190000.*
++ /18/m005/forecast/RESTART/*.190000.*
++ /17/m001/forecast/RESTART/*.180000.*
++ /17/m002/forecast/RESTART/*.180000.*
++ /17/m003/forecast/RESTART/*.180000.*
++ /17/m004/forecast/RESTART/*.180000.*
++ /17/m005/forecast/RESTART/*.180000.*
++ /16/m001/forecast/RESTART/*.170000.*
++ /16/m002/forecast/RESTART/*.170000.*
++ /16/m003/forecast/RESTART/*.170000.*
++ /16/m004/forecast/RESTART/*.170000.*
++ /16/m005/forecast/RESTART/*.170000.*
++ /15/m001/forecast/RESTART/*.160000.*
++ /15/m002/forecast/RESTART/*.160000.*
++ /15/m003/forecast/RESTART/*.160000.*
++ /15/m004/forecast/RESTART/*.160000.*
++ /15/m005/forecast/RESTART/*.160000.*
++ /14/m001/forecast/RESTART/*.150000.*
++ /14/m002/forecast/RESTART/*.150000.*
++ /14/m003/forecast/RESTART/*.150000.*
++ /14/m004/forecast/RESTART/*.150000.*
++ /14/m005/forecast/RESTART/*.150000.*
++ /13/m001/forecast/RESTART/*.140000.*
++ /13/m002/forecast/RESTART/*.140000.*
++ /13/m003/forecast/RESTART/*.140000.*
++ /13/m004/forecast/RESTART/*.140000.*
++ /13/m005/forecast/RESTART/*.140000.*
++ /12/m001/forecast/RESTART/*.130000.*
++ /12/m002/forecast/RESTART/*.130000.*
++ /12/m003/forecast/RESTART/*.130000.*
++ /12/m004/forecast/RESTART/*.130000.*
++ /12/m005/forecast/RESTART/*.130000.*
++ /11/m001/forecast/RESTART/*.120000.*
++ /11/m002/forecast/RESTART/*.120000.*
++ /11/m003/forecast/RESTART/*.120000.*
++ /11/m004/forecast/RESTART/*.120000.*
++ /11/m005/forecast/RESTART/*.120000.*
++ /10/m001/forecast/RESTART/*.110000.*
++ /10/m002/forecast/RESTART/*.110000.*
++ /10/m003/forecast/RESTART/*.110000.*
++ /10/m004/forecast/RESTART/*.110000.*
++ /10/m005/forecast/RESTART/*.110000.*
++ /09/m001/forecast/RESTART/*.100000.*
++ /09/m002/forecast/RESTART/*.100000.*
++ /09/m003/forecast/RESTART/*.100000.*
++ /09/m004/forecast/RESTART/*.100000.*
++ /09/m005/forecast/RESTART/*.100000.*
++ /08/m001/forecast/RESTART/*.090000.*
++ /08/m002/forecast/RESTART/*.090000.*
++ /08/m003/forecast/RESTART/*.090000.*
++ /08/m004/forecast/RESTART/*.090000.*
++ /08/m005/forecast/RESTART/*.090000.*
++ /07_spinup/m001/forecast/RESTART/*.080000.*
++ /07_spinup/m002/forecast/RESTART/*.080000.*
++ /07_spinup/m003/forecast/RESTART/*.080000.*
++ /07_spinup/m004/forecast/RESTART/*.080000.*
++ /07_spinup/m005/forecast/RESTART/*.080000.*
++ /06/m001/forecast/RESTART/*.070000.*
++ /06/m002/forecast/RESTART/*.070000.*
++ /06/m003/forecast/RESTART/*.070000.*
++ /06/m004/forecast/RESTART/*.070000.*
++ /06/m005/forecast/RESTART/*.070000.*
++ /05/m001/forecast/RESTART/*.060000.*
++ /05/m002/forecast/RESTART/*.060000.*
++ /05/m003/forecast/RESTART/*.060000.*
++ /05/m004/forecast/RESTART/*.060000.*
++ /05/m005/forecast/RESTART/*.060000.*
++ /04/m001/forecast/RESTART/*.050000.*
++ /04/m002/forecast/RESTART/*.050000.*
++ /04/m003/forecast/RESTART/*.050000.*
++ /04/m004/forecast/RESTART/*.050000.*
++ /04/m005/forecast/RESTART/*.050000.*
++ /03/m001/forecast/RESTART/*.040000.*
++ /03/m002/forecast/RESTART/*.040000.*
++ /03/m003/forecast/RESTART/*.040000.*
++ /03/m004/forecast/RESTART/*.040000.*
++ /03/m005/forecast/RESTART/*.040000.*
++ /02/m001/forecast/RESTART/*.030000.*
++ /02/m002/forecast/RESTART/*.030000.*
++ /02/m003/forecast/RESTART/*.030000.*
++ /02/m004/forecast/RESTART/*.030000.*
++ /02/m005/forecast/RESTART/*.030000.*
++ /01/m001/forecast/RESTART/*.020000.*
++ /01/m002/forecast/RESTART/*.020000.*
++ /01/m003/forecast/RESTART/*.020000.*
++ /01/m004/forecast/RESTART/*.020000.*
++ /01/m005/forecast/RESTART/*.020000.*
++ /00/m001/forecast/RESTART/*.010000.*
++ /00/m002/forecast/RESTART/*.010000.*
++ /00/m003/forecast/RESTART/*.010000.*
++ /00/m004/forecast/RESTART/*.010000.*
++ /00/m005/forecast/RESTART/*.010000.*
+- *
+B 1000000
+
+/lfs/h1/ops/para/com/rrfs/_SHORTVER_/enkfrrfs._PDYm1_/ _COMROOT_/rrfs/_SHORTVER_/enkfrrfs._PDYm1_/
++ /23/
++ /23/m???/
++ /23/m???/forecast/
++ /23/m001/forecast/RESTART/***
++ /23/m002/forecast/RESTART/***
++ /23/m003/forecast/RESTART/***
++ /23/m004/forecast/RESTART/***
++ /23/m005/forecast/RESTART/***
+- *
+B 1000000

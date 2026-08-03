@@ -24,27 +24,20 @@
 # transfered.
 
 
-/lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/para/com/rrfs/_SHORTVER_/enkfrrfs._PDY_/ _COMROOT_/rrfs/_SHORTVER_/enkfrrfs._PDY_/
-+ /*/
-+ /*/m???/
-+ /*/m???/forecast/
-+ /*/m011/forecast/RESTART/***
-+ /*/m012/forecast/RESTART/***
-+ /*/m013/forecast/RESTART/***
-+ /*/m014/forecast/RESTART/***
-+ /*/m015/forecast/RESTART/***
-- *
+/lfs/h1/ops/para/com/rrfs/_SHORTVER_/rrfs._PDY_/ _COMROOT_/rrfs/_SHORTVER_/rrfs._PDY_/
++ /??/
+- /??/*natlev*
+- /??/*prslev*
+- /??/forecast/RESTART/
++ /??_spinup/
++ /??_spinup/***
 B 1000000
 
-#/lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/para/com/rrfs/_SHORTVER_/enkfrrfs._PDYm1_/ _COMROOT_/rrfs/_SHORTVER_/enkfrrfs._PDYm1_/
-#+ /*/
-#+ /*/m???/
-#+ /*/m???/forecast/
-#+ /*/m011/forecast/RESTART/***
-#+ /*/m012/forecast/RESTART/***
-#+ /*/m013/forecast/RESTART/***
-#+ /*/m014/forecast/RESTART/***
-#+ /*/m015/forecast/RESTART/***
-#- *
-#B 1000000
-
+/lfs/h1/ops/para/com/rrfs/_SHORTVER_/rrfs._PDYm1_/ _COMROOT_/rrfs/_SHORTVER_/rrfs._PDYm1_/
++ /??/
+- /??/*natlev*
+- /??/*prslev*
+- /??/forecast/RESTART/
++ /??_spinup/
++ /??_spinup/***
+B 1000000

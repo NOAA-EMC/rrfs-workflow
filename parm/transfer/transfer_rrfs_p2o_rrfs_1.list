@@ -24,27 +24,17 @@
 # transfered.
 
 
-/lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/para/com/rrfs/_SHORTVER_/enkfrrfs._PDY_/ _COMROOT_/rrfs/_SHORTVER_/enkfrrfs._PDY_/
-+ /*/
-+ /*/m???/
-+ /*/m???/forecast/
-+ /*/m001/forecast/RESTART/***
-+ /*/m002/forecast/RESTART/***
-+ /*/m003/forecast/RESTART/***
-+ /*/m004/forecast/RESTART/***
-+ /*/m005/forecast/RESTART/***
+/lfs/h1/ops/para/com/rrfs/_SHORTVER_/rrfs._PDY_/ _COMROOT_/rrfs/_SHORTVER_/rrfs._PDY_/
++ /??/
++ /??/*natlev*
++ /??/*prslev*
 - *
 B 1000000
 
-#/lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/para/com/rrfs/_SHORTVER_/enkfrrfs._PDYm1_/ _COMROOT_/rrfs/_SHORTVER_/enkfrrfs._PDYm1_/
-#+ /*/
-#+ /*/m???/
-#+ /*/m???/forecast/
-#+ /*/m001/forecast/RESTART/***
-#+ /*/m002/forecast/RESTART/***
-#+ /*/m003/forecast/RESTART/***
-#+ /*/m004/forecast/RESTART/***
-#+ /*/m005/forecast/RESTART/***
-#- *
-#B 1000000
+/lfs/h1/ops/para/com/rrfs/_SHORTVER_/rrfs._PDYm1_/ _COMROOT_/rrfs/_SHORTVER_/rrfs._PDYm1_/
++ /??/
++ /??/*natlev*
++ /??/*prslev*
+- *
+B 1000000
 

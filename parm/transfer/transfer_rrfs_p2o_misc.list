@@ -23,62 +23,35 @@
 # directory are included, so if no exclude patterns match that file, it will be
 # transfered.
 
-/lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/para/com/rrfs/_SHORTVER_/firewx_input/ _COMROOT_/rrfs/_SHORTVER_/firewx_input/
-+ /_PDY_*/
-+ /_PDYm1_*/
-+ /_PDYm2_*/
-+ /_PDYm3_*/
-+ /_PDYm4_*/
-+ /_PDYm5_*/
-+ /_PDYm6_*/
-+ /_PDYm7_*/
+/lfs/h1/ops/para/com/rrfs/_SHORTVER_/firewx_input/ _COMROOT_/rrfs/_SHORTVER_/firewx_input/
+B 1000000
+
+/lfs/h1/ops/para/com/rrfs/_SHORTVER_/firewx._PDY_/ _COMROOT_/rrfs/_SHORTVER_/firewx._PDY_/
+B 1000000
+
+/lfs/h1/ops/para/com/rrfs/_SHORTVER_/firewx._PDYm1_/ _COMROOT_/rrfs/_SHORTVER_/firewx._PDYm1_/
+B 1000000
+
+/lfs/h1/ops/para/com/rrfs/_SHORTVER_/HOURLY_HWP/ _COMROOT_/rrfs/_SHORTVER_/HOURLY_HWP/
++ /hourly_hwp._PDY_/***
++ /hourly_hwp._PDYm1_/***
 - *
 B 1000000
 
-/lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/para/com/rrfs/_SHORTVER_/HOURLY_HWP/ _COMROOT_/rrfs/_SHORTVER_/HOURLY_HWP/
-+ /*_PDY_*
-+ /*_PDYm1_*
-+ /*_PDYm2_*
-+ /*_PDYm3_*
-+ /*_PDYm4_*
-+ /*_PDYm5_*
-+ /*_PDYm6_*
-+ /*_PDYm7_*
+/lfs/h1/ops/para/com/rrfs/_SHORTVER_/RAVE_INTP/ _COMROOT_/rrfs/_SHORTVER_/RAVE_INTP/
++ /rave_intp._PDY_/***
++ /rave_intp._PDYm1_/***
 - *
 B 1000000
 
-/lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/para/com/rrfs/_SHORTVER_/RAVE_INTP/ _COMROOT_/rrfs/_SHORTVER_/RAVE_INTP/
-+ /*_PDY_*
-+ /*_PDYm1_*
-+ /*_PDYm2_*
-+ /*_PDYm3_*
-+ /*_PDYm4_*
-+ /*_PDYm5_*
-+ /*_PDYm6_*
-+ /*_PDYm7_*
+/lfs/h1/ops/para/com/rrfs/_SHORTVER_/satbias/ _COMROOT_/rrfs/_SHORTVER_/satbias/
++ /satbias._PDY_/***
++ /satbias._PDYm1_/***
 - *
 B 1000000
 
-/lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/para/com/rrfs/_SHORTVER_/satbias/ _COMROOT_/rrfs/_SHORTVER_/satbias/
-+ /*_PDY_*
-+ /*_PDYm1_*
-+ /*_PDYm2_*
-+ /*_PDYm3_*
-+ /*_PDYm4_*
-+ /*_PDYm5_*
-+ /*_PDYm6_*
-+ /*_PDYm7_*
-- *
-B 1000000
-
-/lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/para/com/rrfs/_SHORTVER_/surface/ _COMROOT_/rrfs/_SHORTVER_/surface/
-+ /*_PDY_*
-+ /*_PDYm1_*
-+ /*_PDYm2_*
-+ /*_PDYm3_*
-+ /*_PDYm4_*
-+ /*_PDYm5_*
-+ /*_PDYm6_*
-+ /*_PDYm7_*
+/lfs/h1/ops/para/com/rrfs/_SHORTVER_/surface/ _COMROOT_/rrfs/_SHORTVER_/surface/
++ /surface._PDY_/***
++ /surface._PDYm1_/***
 - *
 B 1000000

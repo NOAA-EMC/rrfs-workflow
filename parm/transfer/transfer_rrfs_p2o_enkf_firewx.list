@@ -24,18 +24,18 @@
 # transfered.
 
 
-/lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/para/com/rrfs/_SHORTVER_/enkfrrfs._PDY_/ _COMROOT_/rrfs/_SHORTVER_/enkfrrfs._PDY_/
+/lfs/h1/ops/para/com/rrfs/_SHORTVER_/enkfrrfs._PDY_/ _COMROOT_/rrfs/_SHORTVER_/enkfrrfs._PDY_/
 - /??/m???/forecast/RESTART/
 - /??_spinup/m???/forecast/RESTART/
 B 1000000
 
-/lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/para/com/rrfs/_SHORTVER_/enkfrrfs._PDYm1_/ _COMROOT_/rrfs/_SHORTVER_/enkfrrfs._PDYm1_/
+/lfs/h1/ops/para/com/rrfs/_SHORTVER_/enkfrrfs._PDYm1_/ _COMROOT_/rrfs/_SHORTVER_/enkfrrfs._PDYm1_/
 - /??/m???/forecast/RESTART/
 - /??_spinup/m???/forecast/RESTART/
 B 1000000
 
-/lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/para/com/rrfs/_SHORTVER_/firewx._PDY_/ _COMROOT_/rrfs/_SHORTVER_/firewx._PDY_/
+/lfs/h1/ops/para/para/com/rrfs/_SHORTVER_/firewx._PDY_/ _COMROOT_/rrfs/_SHORTVER_/firewx._PDY_/
 B 1000000
 
-/lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/para/com/rrfs/_SHORTVER_/firewx._PDYm1_/ _COMROOT_/rrfs/_SHORTVER_/firewx._PDYm1_/
+/lfs/h1/ops/para/para/com/rrfs/_SHORTVER_/firewx._PDYm1_/ _COMROOT_/rrfs/_SHORTVER_/firewx._PDYm1_/
 B 1000000
