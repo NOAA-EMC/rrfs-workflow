@@ -249,6 +249,22 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
      print_info_msg "$VERBOSE" "NSSL grib2 file levels = $numgrib2"
   else
      echo "WARNING: Not enough radar reflectivity files in ${NSSL} available for loop ${bigmin}.  Will continue without it (radar data not critical)"
+     # only email for det system twice per day
+     if [[ "$WGF" == "det" && "$CYCLE_TYPE" == "prod" ]]; then
+        if [[ "$cyc" == "13" || "$cyc" == "19" ]]; then
+           cat << EOF > radar_warning.txt
+WARNING: Not enough radar reflectivity files are available at the below path:
+${NSSL}
+
+RRFS cycle will continue without these files.
+
+No immediate impact to integrity of delivered products.
+
+Ops action: identify cause of missing radar data at the above path.
+EOF
+           mail.py -s "Missing Radar Data of Opportunity for RRFS" -v ${MAIL_TO} < radar_warning.txt
+        fi
+     fi
      continue
   fi
   #

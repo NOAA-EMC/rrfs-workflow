@@ -618,6 +618,8 @@ do
     ((obs_file_count++))  # the counter if file is available
   else
     print_info_msg "$VERBOSE" "WARNING: ${obs_file} does not exist! Will continue without it (is data of opportunity)"
+    missing_data_flag=true
+    echo "$obs_file" >> missing_file_list
   fi
 done
 
@@ -626,7 +628,6 @@ if [ "$obs_file_count" -eq 0 ]; then
   err_exit "FATAL ERROR: no observation files were found in this analysis."
 fi
 
-#
 #-----------------------------------------------------------------------
 #
 # Create links to fix files in the FIXgsi directory.
