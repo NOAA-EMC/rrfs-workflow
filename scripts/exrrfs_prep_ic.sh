@@ -102,7 +102,7 @@ for index in "${mem_list[@]}"; do # loop through all the members
   # do sfc cycling if no global blending
   #
   if [[ "${DO_BLENDING^^}" == "FALSE" ]]; then
-    if [[ "${DO_SFC_UPDATE}" == "TRUE" ]]; then
+    if [[ "${DO_SFC_UPDATE}" == "TRUE" ]] &&  (( spinup_mode != -1 )); then
       for hr in ${COLDSTART_CYCS:-"99"}; do
         shr=$(printf '%02d' $((10#$hr)) )
         if [[ "${cyc}" == "${shr}" ]]; then

@@ -82,7 +82,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
         datadep = "whatever"  # dependencies will be rewritten near the end of this file
     # sfc update dependencies
     sfc_dep = ""
-    if do_sfc_update == "TRUE":
+    if do_sfc_update == "TRUE" and spinup_mode != -1:
         dcTaskEnv['SFC_UPDATE_LOOK_BACK_HRS'] = sfc_update_look_back_hrs
         dcTaskEnv['SFC_UPDATE_SOURCE_DIR'] = os.getenv('SFC_UPDATE_SOURCE_DIR', '')
         datadep_sfc = ""
