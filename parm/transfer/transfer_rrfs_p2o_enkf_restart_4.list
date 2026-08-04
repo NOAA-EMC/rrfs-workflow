@@ -24,8 +24,15 @@
 # transfered.
 
 
-_COMROOT_/rrfs/_SHORTVER_/firewx._PDY_/
-B 1000000
-
-_COMROOT_/rrfs/_SHORTVER_/firewx._PDYm1_/
+/lfs/h1/ops/para/com/rrfs/_SHORTVER_/enkfrrfs._PDY_/ _COMROOT_/rrfs/_SHORTVER_/enkfrrfs._PDY_/
++ /11/
++ /11/m???/
++ /11/m???/forecast/
++ /11/m???/forecast/RESTART/
++ /11/m016/forecast/RESTART/*.120000.*
++ /11/m017/forecast/RESTART/*.120000.*
++ /11/m018/forecast/RESTART/*.120000.*
++ /11/m019/forecast/RESTART/*.120000.*
++ /11/m020/forecast/RESTART/*.120000.*
+- *
 B 1000000

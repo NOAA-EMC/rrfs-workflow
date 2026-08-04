@@ -23,15 +23,10 @@
 # directory are included, so if no exclude patterns match that file, it will be
 # transfered.
 
-
-/lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/para/com/rrfs/_SHORTVER_/rrfs._PDY_/ _COMROOT_/rrfs/_SHORTVER_/rrfs._PDY_/
-+ /??/
-+ /??/*prslev*
+/lfs/h1/ops/para/com/rrfs/_SHORTVER_/rrfs._PDY_/ _COMROOT_/rrfs/_SHORTVER_/rrfs._PDY_/
++ /11/
++ /11/forecast/
++ /11/forecast/RESTART/
++ /11/forecast/RESTART/*.120000.*
 - *
 B 1000000
-
-#/lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/para/com/rrfs/_SHORTVER_/rrfs._PDYm1_/ _COMROOT_/rrfs/_SHORTVER_/rrfs._PDYm1_/
-#+ /??/
-#+ /??/*prslev*
-#- *
-#B 1000000
