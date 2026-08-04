@@ -344,12 +344,12 @@ def xml_task(
         'jobname': f'{TAG}_{task_id}_c@H',
         'account': get_cascade_env(f'ACCOUNT_{task_id}'.upper()),
         'queue': get_cascade_env(f'QUEUE_{task_id}'.upper()),
-        'partition': get_cascade_env(f"PARTITION_{task_id}".upper()),
-        'walltime': get_cascade_env(f"WALLTIME_{task_id}".upper()),
-        'nodes': get_cascade_env(f"NODES_{task_id}".upper()),
-        'reservation': get_cascade_env(f"RESERVATION_{task_id}".upper()),
-        'cluster': get_cascade_env(f"CLUSTER_{task_id}".upper()),
-        'native': get_cascade_env(f"NATIVE_{task_id}".upper())
+        'partition': get_cascade_env(f'PARTITION_{task_id}'.upper()),
+        'walltime': get_cascade_env(f'WALLTIME_{task_id}'.upper()),
+        'nodes': get_cascade_env(f'NODES_{task_id}'.upper()),
+        'reservation': get_cascade_env(f'RESERVATION_{task_id}'.upper()),
+        'cluster': get_cascade_env(f'CLUSTER_{task_id}'.upper()),
+        'native': get_cascade_env(f'NATIVE_{task_id}'.upper())
     }
 
     myObjTask = objTask(
