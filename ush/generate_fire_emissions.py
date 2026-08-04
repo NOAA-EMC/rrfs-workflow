@@ -80,36 +80,38 @@ def generate_emiss_workflow(staticdir, ravedir, newges_dir, predef_grid):
        cyc = os.environ.get('cyc')
        cycle_type = os.environ.get('CYCLE_TYPE')
        wgf = os.environ.get('WGF')
-       if cyc == "13" or cyc == "19":
-           if wgf == "det" and cycle_type == "prod":
-               msg_pdy = os.environ.get('PDY')
-               msg_pdym1 = os.environ.get('PDYm1')
-               msg_pdym2 = os.environ.get('PDYm2')
-               msg_rave_dir = os.environ.get('FIRE_RAVE_DIR')
-        
-               subject = "Missing RAVE Data of Opportunity for RRFS"
-               msg = (
-                   f"WARNING: No RAVE data was found in RRFS ush/generate_fire_emission.py script.\n"
-                   f"No usable links were able to be made to the following files:\n"
-                   f'{msg_rave_dir}/{msg_pdy}/rave/RAVE-HrlyEmiss-3km_*\n'
-                   f'{msg_rave_dir}/{msg_pdym1}/rave/RAVE-HrlyEmiss-3km_*\n'
-                   f'{msg_rave_dir}/{msg_pdym2}/rave/RAVE-HrlyEmiss-3km_*\n'
-                   f'\n'
-                   f'Starting fresh with a dummy emissions file.\n'
-                   f'\n'
-                   f'No immediate impact to integrity of delivered products.\n'
-                   f'\n'
-                   f'Ops action: identify cause of missing RAVE data at above locations.\n'
-               )
-               f = open("./warn.txt","w")
-               f.write(msg)
-               f.close()
-        
-               alert_email_list=os.environ.get('MAILTO','nco.spa@noaa.gov')
-               cmd='mail.py -s '+ '"' + subject + '"' + ' -v "' + alert_email_list + '" < warn.txt '
-               print('cmd')
-               print(repr(cmd))
-               status=os.system(cmd)
+       sendmail = os.engiron.get('SENDMAIL')
+       if sendmail == "YES":
+           if cyc == "13" or cyc == "19":
+               if wgf == "det" and cycle_type == "prod":
+                   msg_pdy = os.environ.get('PDY')
+                   msg_pdym1 = os.environ.get('PDYm1')
+                   msg_pdym2 = os.environ.get('PDYm2')
+                   msg_rave_dir = os.environ.get('FIRE_RAVE_DIR')
+            
+                   subject = "Missing RAVE Data of Opportunity for RRFS"
+                   msg = (
+                       f"WARNING: No RAVE data was found in RRFS ush/generate_fire_emission.py script.\n"
+                       f"No usable links were able to be made to the following files:\n"
+                       f'{msg_rave_dir}/{msg_pdy}/rave/RAVE-HrlyEmiss-3km_*\n'
+                       f'{msg_rave_dir}/{msg_pdym1}/rave/RAVE-HrlyEmiss-3km_*\n'
+                       f'{msg_rave_dir}/{msg_pdym2}/rave/RAVE-HrlyEmiss-3km_*\n'
+                       f'\n'
+                       f'Starting fresh with a dummy emissions file.\n'
+                       f'\n'
+                       f'No immediate impact to integrity of delivered products.\n'
+                       f'\n'
+                       f'Ops action: identify cause of missing RAVE data at above locations.\n'
+                   )
+                   f = open("./warn.txt","w")
+                   f.write(msg)
+                   f.close()
+            
+                   alert_email_list=os.environ.get('MAILTO','nco.spa@noaa.gov')
+                   cmd='mail.py -s '+ '"' + subject + '"' + ' -v "' + alert_email_list + '" < warn.txt '
+                   print('cmd')
+                   print(repr(cmd))
+                   status=os.system(cmd)
 
 if __name__ == '__main__':
 
