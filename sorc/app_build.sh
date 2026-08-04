@@ -364,21 +364,21 @@ if [[ $BUILD_WORKAROUND = true ]]; then
   cp _workaround_/scripts/exrrfs_analysis_gsi.sh ../scripts/exrrfs_analysis_gsi.sh
 
   # Workaround for qmin=0 in JEDI
-  cp _workaround_/gsibec/constants.f90 RDASApp/sorc/_workaround_/gsibec/constants.f90
+  cp _workaround_/gsibec/constants.f90 RDASApp/sorc/gsibec/src/gsibec/gsi/constants.f90
 
   # Workaround for lnobalance option in JEDI
-  cp _workaround_/gsibec/gsimod.F90 RDASApp/sorc/_workaround_/gsibec/gsimod.F90
+  cp _workaround_/gsibec/gsimod.F90 RDASApp/sorc/gsibec/src/gsibec/gsi/gsimod.F90
 
   # Workaround for grid_ratio=1 in JEDI
-  cp _workaround_/gsibec/mod_fv3_lola.f90 RDASApp/sorc/_workaround_/gsibec/mod_fv3_lola.f90
+  cp _workaround_/gsibec/mod_fv3_lola.f90 RDASApp/sorc/gsibec/src/gsibec/gsi/mod_fv3_lola.f90
   cp _workaround_/fix/jedi/RRFS_CONUS_13km/gsiparm_regional.anl ../fix/jedi/RRFS_CONUS_13km/gsiparm_regional.anl
 
   # Workaround for JEDI JCB configuration
   cp _workaround_/parm/rdas-atmosphere-templates-fv3_c13.yaml ../parm/rdas-atmosphere-templates-fv3_c13.yaml
 
   # Configuration files for GSI and JEDI
-  cp _workaround_/ush/config_det_c13_3dvar_gsi_baseline003.sh ../ush/config_det_c13_3dvar_gsi_baseline003.sh
-  cp _workaround_/ush/config_det_c13_3dvar_jedi_baseline003.sh ../ush/config_det_c13_3dvar_jedi_baseline003.sh
+  cp _workaround_/ush/config_det_c13_3dvar_gsi_baseline004.sh ../ush/config_det_c13_3dvar_gsi_baseline004.sh
+  cp _workaround_/ush/config_det_c13_3dvar_jedi_baseline004.sh ../ush/config_det_c13_3dvar_jedi_baseline004.sh
 
 fi
 

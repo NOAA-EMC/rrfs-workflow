@@ -647,11 +647,8 @@ done
 #
 # This is done in the analysis task, rather than in ioda_bufr, because the
 # optional sonde extension step needs rsig information derived from the
-# background file. The final patch is also applied after sonde extension
-# because offline_ioda_sonde_ext.py does not preserve/update the
-# longitude_latitude_pressure variable needed by duplicate checking.
-# The final adpupa patch is always done here so the patch location does
-# not depend on EXT_SONDE.
+# background file. A final ioda_patch is no longer required to run after
+# sonde extension and was moved back to ioda_bufr step.
 #
 # EXT_SONDE=TRUE:
 #   create ioda_adpupa.sondeext.nc, then patch that file.
@@ -663,30 +660,20 @@ done
 #   data/obs/ioda_adpupa.nc
 #-----------------------------------------------------------------------
 #
-cp "${RDASAPP_DIR}"/rrfs-test/IODA/offline_ioda_patch.py .
-cp data/obs/ioda_adpupa.nc .
-
-adpupa_patch_input="ioda_adpupa.nc"
-adpupa_patch_output="ioda_adpupa_llp.nc"
-
 if [[ "${EXT_SONDE}" == "TRUE" ]]; then
+  cp data/obs/ioda_adpupa.nc .
   cp "${RDASAPP_DIR}"/rrfs-test/IODA/offline_rsig.py .
   cp "${RDASAPP_DIR}"/rrfs-test/IODA/offline_ioda_sonde_ext.py .
   ./offline_rsig.py
   ./offline_ioda_sonde_ext.py -i ioda_adpupa.nc -r rsig.txt -o ioda_adpupa.sondeext.nc
-  adpupa_patch_input="ioda_adpupa.sondeext.nc"
-  adpupa_patch_output="ioda_adpupa.sondeext_llp.nc"
+
+  if [[ ! -f "ioda_adpupa.sondeext.nc" ]]; then
+    echo "FATAL: expected patched adpupa file not found: ioda_adpupa.sondeext.nc" >&2
+    exit 1
+  fi
+
+  cp ioda_adpupa.sondeext.nc data/obs/ioda_adpupa.nc
 fi
-
-./offline_ioda_patch.py -o "${adpupa_patch_input}" --patch-timeoffset
-
-if [[ ! -f "${adpupa_patch_output}" ]]; then
-  echo "FATAL: expected patched adpupa file not found: ${adpupa_patch_output}" >&2
-  exit 1
-fi
-
-cp "${adpupa_patch_output}" data/obs/ioda_adpupa.nc
-
 #
 #-----------------------------------------------------------------------
 #
@@ -708,6 +695,7 @@ cp "${jedi_exec}" "${analworkdir}/${pgm}"
 ${APRUN} ./$pgm jedivar.yaml >>$pgmout 2>errfile
 export err=$?; err_chk
 cp $pgmout ${COMOUT}/rrfs.t${HH}z.jediout_${anav_type}.tm00
+cp $pgmout ./rrfs.t${HH}z.jediout_${anav_type}.tm00
 cp ${jcb_config} ${COMOUT}
 cp jedivar.yaml ${COMOUT}/jedivar_${anav_type}.yaml
 mv errfile errfile_jedi
@@ -721,8 +709,11 @@ mv errfile errfile_jedi
 #####################################################################
 # 1. Compute delp from ps (increments)
 #####################################################################
-cp "${RDASAPP_DIR}"/rrfs-test/IODA/offline_compute_delp_inc.py .
-python offline_compute_delp_inc.py --sfc_inc inc_jedi.sfc_data.nc --core_inc inc_jedi.fv_core.res.nc --akbk fv3_akbk
+#write_restart_all_reg: Skip air_pressure_at_surface  T
+#DELP increment is now directly output from new IO.
+#Temporarily keeping this available.
+#cp "${RDASAPP_DIR}"/rrfs-test/IODA/offline_compute_delp_inc.py .
+#python offline_compute_delp_inc.py --sfc_inc inc_jedi.sfc_data.nc --core_inc inc_jedi.fv_core.res.nc --akbk fv3_akbk
 
 #####################################################################
 # 2. Convert A-grid wind increments to D-grid wind increments

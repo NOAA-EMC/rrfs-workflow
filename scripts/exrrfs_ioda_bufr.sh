@@ -370,7 +370,7 @@ for ioda_file in ioda*.nc; do
     mv  "${base_name}_dc.nc" "${base_name}.nc"
     export pgm="offline_ioda_patch.py"
     if [[ "${ioda_file}" == *adpupa* ]]; then
-      echo "skip adpupa here; patched after offline sonde_ext in analysis_jedi"
+      ./offline_ioda_patch.py -o "${ioda_file}" --patch-timeoffset >> $pgmout
     else
       ./offline_ioda_patch.py -o "${ioda_file}" >> $pgmout
     fi

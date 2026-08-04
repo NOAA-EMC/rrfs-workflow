@@ -271,14 +271,14 @@ observations:
 #- satwnd_winds_252_174
 
 # GOES-16 satelliteIdentifier 270
-#- satwnd_winds_245_270
-#- satwnd_winds_246_270
-#- satwnd_winds_247_270
+- satwnd_winds_245_270
+- satwnd_winds_246_270
+- satwnd_winds_247_270
 
 # GOES-18 satelliteIdentifier 272
-#- satwnd_winds_245_272
-#- satwnd_winds_246_272
-#- satwnd_winds_247_272
+- satwnd_winds_245_272
+- satwnd_winds_246_272
+- satwnd_winds_247_272
 
 # GOES-19 satelliteIdentifier 273
 #- satwnd_winds_245_273
