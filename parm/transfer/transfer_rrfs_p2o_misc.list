@@ -23,28 +23,23 @@
 # directory are included, so if no exclude patterns match that file, it will be
 # transfered.
 
-
-/lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/para/com/rrfs/_SHORTVER_/enkfrrfs._PDY_/ _COMROOT_/rrfs/_SHORTVER_/enkfrrfs._PDY_/
-+ /*/
-+ /*/m???/
-+ /*/m???/forecast/
-+ /*/m001/forecast/RESTART/***
-+ /*/m002/forecast/RESTART/***
-+ /*/m003/forecast/RESTART/***
-+ /*/m004/forecast/RESTART/***
-+ /*/m005/forecast/RESTART/***
-- *
+/lfs/h1/ops/para/com/rrfs/_SHORTVER_/firewx_input/ _COMROOT_/rrfs/_SHORTVER_/firewx_input/
 B 1000000
 
-#/lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/para/com/rrfs/_SHORTVER_/enkfrrfs._PDYm1_/ _COMROOT_/rrfs/_SHORTVER_/enkfrrfs._PDYm1_/
-#+ /*/
-#+ /*/m???/
-#+ /*/m???/forecast/
-#+ /*/m001/forecast/RESTART/***
-#+ /*/m002/forecast/RESTART/***
-#+ /*/m003/forecast/RESTART/***
-#+ /*/m004/forecast/RESTART/***
-#+ /*/m005/forecast/RESTART/***
-#- *
-#B 1000000
+/lfs/h1/ops/para/com/rrfs/_SHORTVER_/firewx._PDY_/ _COMROOT_/rrfs/_SHORTVER_/firewx._PDY_/
+B 1000000
 
+/lfs/h1/ops/para/com/rrfs/_SHORTVER_/firewx._PDYm1_/ _COMROOT_/rrfs/_SHORTVER_/firewx._PDYm1_/
+B 1000000
+
+/lfs/h1/ops/para/com/rrfs/_SHORTVER_/HOURLY_HWP/ _COMROOT_/rrfs/_SHORTVER_/HOURLY_HWP/
+B 1000000
+
+/lfs/h1/ops/para/com/rrfs/_SHORTVER_/RAVE_INTP/ _COMROOT_/rrfs/_SHORTVER_/RAVE_INTP/
+B 1000000
+
+/lfs/h1/ops/para/com/rrfs/_SHORTVER_/satbias/ _COMROOT_/rrfs/_SHORTVER_/satbias/
+B 1000000
+
+/lfs/h1/ops/para/com/rrfs/_SHORTVER_/surface/ _COMROOT_/rrfs/_SHORTVER_/surface/
+B 1000000

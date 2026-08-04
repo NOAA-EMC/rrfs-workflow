@@ -23,62 +23,16 @@
 # directory are included, so if no exclude patterns match that file, it will be
 # transfered.
 
-/lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/para/com/rrfs/_SHORTVER_/firewx_input/ _COMROOT_/rrfs/_SHORTVER_/firewx_input/
-+ /_PDY_*/
-+ /_PDYm1_*/
-+ /_PDYm2_*/
-+ /_PDYm3_*/
-+ /_PDYm4_*/
-+ /_PDYm5_*/
-+ /_PDYm6_*/
-+ /_PDYm7_*/
-- *
-B 1000000
 
-/lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/para/com/rrfs/_SHORTVER_/HOURLY_HWP/ _COMROOT_/rrfs/_SHORTVER_/HOURLY_HWP/
-+ /*_PDY_*
-+ /*_PDYm1_*
-+ /*_PDYm2_*
-+ /*_PDYm3_*
-+ /*_PDYm4_*
-+ /*_PDYm5_*
-+ /*_PDYm6_*
-+ /*_PDYm7_*
-- *
-B 1000000
-
-/lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/para/com/rrfs/_SHORTVER_/RAVE_INTP/ _COMROOT_/rrfs/_SHORTVER_/RAVE_INTP/
-+ /*_PDY_*
-+ /*_PDYm1_*
-+ /*_PDYm2_*
-+ /*_PDYm3_*
-+ /*_PDYm4_*
-+ /*_PDYm5_*
-+ /*_PDYm6_*
-+ /*_PDYm7_*
-- *
-B 1000000
-
-/lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/para/com/rrfs/_SHORTVER_/satbias/ _COMROOT_/rrfs/_SHORTVER_/satbias/
-+ /*_PDY_*
-+ /*_PDYm1_*
-+ /*_PDYm2_*
-+ /*_PDYm3_*
-+ /*_PDYm4_*
-+ /*_PDYm5_*
-+ /*_PDYm6_*
-+ /*_PDYm7_*
-- *
-B 1000000
-
-/lfs/h3/emc/lam/noscrub/ecflow/ptmp/emc.lam/ecflow_rrfs/para/com/rrfs/_SHORTVER_/surface/ _COMROOT_/rrfs/_SHORTVER_/surface/
-+ /*_PDY_*
-+ /*_PDYm1_*
-+ /*_PDYm2_*
-+ /*_PDYm3_*
-+ /*_PDYm4_*
-+ /*_PDYm5_*
-+ /*_PDYm6_*
-+ /*_PDYm7_*
+/lfs/h1/ops/para/com/rrfs/_SHORTVER_/enkfrrfs._PDY_/ _COMROOT_/rrfs/_SHORTVER_/enkfrrfs._PDY_/
++ /11/
++ /11/m???/
++ /11/m???/forecast/
++ /11/m???/forecast/RESTART/
++ /11/m006/forecast/RESTART/*.120000.*
++ /11/m007/forecast/RESTART/*.120000.*
++ /11/m008/forecast/RESTART/*.120000.*
++ /11/m009/forecast/RESTART/*.120000.*
++ /11/m010/forecast/RESTART/*.120000.*
 - *
 B 1000000
