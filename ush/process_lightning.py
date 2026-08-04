@@ -257,7 +257,8 @@ def process_prod_tiles():
         out_lats = out_lats + [z for z in lat]
         out_lons = out_lons + [z for z in lon]
   if len(out_fed)==0:
-    if any_input_files==0:
+    sendmail = os.environ.get('SENDMAIL')
+    if sendmail == "YES" and any_input_files == 0:
       print('WARNING: obs count=0 because no valid GLM tiles were found in '+obs_west+' or '+obs_east+ ' Is data of opportunity, but will email due to no files being found')
       cyc = os.environ.get('cyc')
       cycle_type = os.environ.get('CYCLE_TYPE')
