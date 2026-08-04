@@ -24,9 +24,12 @@
 # transfered.
 
 _COMROOT_/rrfs/_SHORTVER_/firewx_input/
-+ /_PDY_*/
-+ /_PDYm1_*/
-- *
+B 1000000
+
+_COMROOT_/rrfs/_SHORTVER_/firewx._PDY_/
+B 1000000
+
+_COMROOT_/rrfs/_SHORTVER_/firewx._PDYm1_/
 B 1000000
 
 _COMROOT_/rrfs/_SHORTVER_/HOURLY_HWP/
