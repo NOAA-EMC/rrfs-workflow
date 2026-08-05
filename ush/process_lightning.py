@@ -257,19 +257,36 @@ def process_prod_tiles():
         out_lats = out_lats + [z for z in lat]
         out_lons = out_lons + [z for z in lon]
   if len(out_fed)==0:
-    if any_input_files==0:
+    sendmail = os.environ.get('SENDMAIL')
+    if sendmail == "YES" and any_input_files == 0:
       print('WARNING: obs count=0 because no valid GLM tiles were found in '+obs_west+' or '+obs_east+ ' Is data of opportunity, but will email due to no files being found')
-      subject = "Missing GLM lightning data for RRFS"
-      msg="WARNING: No GLM data was found in RRFS ush/process_lightning.py script"
-      f = open("./warnglm.txt","w")
-      f.write(msg)
-      f.close()
-
-      alert_email_list=os.environ.get('MAILTO','nco.spa@noaa.gov')
-      cmd='mail.py -s '+ '"' + subject + '"' + ' -v "' + alert_email_list + '" < warnglm.txt '
-      print('cmd')
-      print(repr(cmd))
-      status=os.system(cmd)
+      cyc = os.environ.get('cyc')
+      cycle_type = os.environ.get('CYCLE_TYPE')
+      wgf = os.environ.get('WGF')
+      if cyc == "13" or cyc == "19":
+          if wgf == "det" and cycle_type == "prod":
+              subject = "Missing GLM Lightning Data of Opportunity for RRFS"
+              msg = (
+                  f"WARNING: No GLM data was found in RRFS ush/generate_fire_emission.py script.\n"
+                  f"The above script checks for filename patterns in the following directories, and found no matches:\n"
+                  f'{obs_east}\n'
+                  f'{obs_west}\n'
+                  f'\n'
+                  f'Proceeding cycle without GLM data.\n'
+                  f'\n'
+                  f'No immediate impact to integrity of delivered products.\n'
+                  f'\n'
+                  f'Ops action: identify cause of missing GLM data at above locations.\n'
+              )
+              f = open("./warnglm.txt","w")
+              f.write(msg)
+              f.close()
+        
+              alert_email_list=os.environ.get('MAILTO','nco.spa@noaa.gov')
+              cmd='mail.py -s '+ '"' + subject + '"' + ' -v "' + alert_email_list + '" < warnglm.txt '
+              print('cmd')
+              print(repr(cmd))
+              status=os.system(cmd)
     else:
       print('WARNING: obs count=0 though valid GLM tiles were found (e.g., no nonzero obs after thinning) Is data of opportunity, so not a major concern.')
   # write output to NetCDF

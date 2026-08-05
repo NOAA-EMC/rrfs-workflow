@@ -500,6 +500,9 @@ else
     err_exit "Cannot find background: ${checkfile}"
   fi
 fi
+
+missing_data_flag=false
+
 #
 #-----------------------------------------------------------------------
 #
@@ -509,11 +512,7 @@ fi
 #
 if [ ${HH} -eq ${SNOWICE_update_hour} ] && [ "${CYCLE_TYPE}" = "prod" ] ; then
   echo "Update snow cover based on imssnow  at ${SNOWICE_update_hour}z"
-  if [ -r "${COMINobsproc}/latest.SNOW_IMS" ]; then
-    cpreq -p ${COMINobsproc}/latest.SNOW_IMS .
-  elif [ -r "${COMINobsproc}/${YYJJJ2200000000}" ]; then
-    cpreq -p ${COMINobsproc}/${YYJJJ2200000000} latest.SNOW_IMS
-  elif [ -r "${COMINobsproc}/${OBSTYPE_SOURCE}.${YYYYMMDD}/${OBSTYPE_SOURCE}.t${HH}z.imssnow.grib2" ]; then
+  if [ -r "${COMINobsproc}/${OBSTYPE_SOURCE}.${YYYYMMDD}/${OBSTYPE_SOURCE}.t${HH}z.imssnow.grib2" ]; then
     cpreq -p ${COMINobsproc}/${OBSTYPE_SOURCE}.${YYYYMMDD}/${OBSTYPE_SOURCE}.t${HH}z.imssnow.grib2  latest.SNOW_IMS
   elif [ -r "${COMINobsproc}/${OBSTYPE_SOURCE}_e.${YYYYMMDD}/${OBSTYPE_SOURCE}_e.t${HH}z.imssnow.grib2" ]; then
     cpreq -p ${COMINobsproc}/${OBSTYPE_SOURCE}_e.${YYYYMMDD}/${OBSTYPE_SOURCE}_e.t${HH}z.imssnow.grib2  latest.SNOW_IMS
@@ -521,6 +520,10 @@ if [ ${HH} -eq ${SNOWICE_update_hour} ] && [ "${CYCLE_TYPE}" = "prod" ] ; then
     echo "${COMINobsproc} data does not exist!!"
     echo "WARNING: No snow update at ${HH}!!!!"
     print_info_msg "$VERBOSE" "WARNING: In ${COMINobsproc}, NO IMSSNOW does not exist! Will continue without it (is data of opportunity)"
+    missing_data_flag=true
+    echo "Cannot find IMSSNOW data matching the below filename:" >> missing_file_list
+    echo "${COMINobsproc}/${OBSTYPE_SOURCE}.${YYYYMMDD}/${OBSTYPE_SOURCE}.t${HH}z.imssnow.grib2" >> missing_file_list
+    echo "" >> missing_file_list
   fi
   if [ -r "latest.SNOW_IMS" ]; then
     ln -sf ./latest.SNOW_IMS                imssnow2
@@ -545,11 +548,7 @@ fi
 #
 if [ ${HH} -eq ${SST_update_hour} ] && [ "${CYCLE_TYPE}" = "prod" ] ; then
   echo "Update SST at ${SST_update_hour}z"
-  if [ -r "${COMINnsst}/latest.SST" ]; then
-    cpreq -p ${COMINnsst}/latest.SST .
-  elif [ -r "${COMINnsst}/${YYJJJ00000000}" ]; then
-    cpreq -p ${COMINnsst}/${YYJJJ00000000} latest.SST
-  elif [ -r "${COMINnsst}/nsst.$YYYYMMDD/rtgssthr_grb_0.083.grib2" ]; then 
+  if [ -r "${COMINnsst}/nsst.$YYYYMMDD/rtgssthr_grb_0.083.grib2" ]; then 
     cpreq -p ${COMINnsst}/nsst.$YYYYMMDD/rtgssthr_grb_0.083.grib2 latest.SST
   elif [ -r "${COMINnsst}/nsst.$YYYYMMDDm1/rtgssthr_grb_0.083.grib2" ]; then 
     cpreq -p ${COMINnsst}/nsst.$YYYYMMDDm1/rtgssthr_grb_0.083.grib2 latest.SST
@@ -557,6 +556,10 @@ if [ ${HH} -eq ${SST_update_hour} ] && [ "${CYCLE_TYPE}" = "prod" ] ; then
     echo "${COMINnsst} data does not exist!!"
     echo "WARNING: No SST update at ${HH}!!!!"
     print_info_msg "$VERBOSE" "WARNING: In ${COMINnsst}, SST does not exist! Will continue without it (is data of opportunity)"
+    missing_data_flag=true
+    echo "Cannot find SST data matching the below filename:" >> missing_file_list
+    echo "${COMINnsst}/nsst.$YYYYMMDDm1/rtgssthr_grb_0.083.grib2" >> missing_file_list
+    echo "" >> missing_file_list
   fi
   if [ -r "latest.SST" ]; then
     cpreq -p ${FIXam}/RTG_SST_landmask.dat               RTG_SST_landmask.dat
@@ -791,6 +794,14 @@ if [ ${Update_GVF} -ge 1 ]; then
          latestGVF="${latestGVF3_array[${#latestGVF3_array[@]}-1]}"
        else
          print_info_msg "WARNING: cannot find GVF observation file"
+         if [ ${HH} -eq "15" ]; then
+           missing_data_flag=true
+           echo "Cannot find viirs GVF observation data matching the below filenames:" >> missing_file_list
+           echo "${DCOMINgvf}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm1}_c${YYYYMMDD}*.grib2" >> missing_file_list
+           echo "${DCOMINgvf}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm2}_c${YYYYMMDDm1}*.grib2" >> missing_file_list
+           echo "${DCOMINgvf}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm3}_c${YYYYMMDDm2}*.grib2" >> missing_file_list
+           echo "" >> missing_file_list
+         fi
        fi
      fi
    else
@@ -822,6 +833,23 @@ if [ ${Update_GVF} -ge 1 ]; then
 fi
 
 fi
+
+# Send emails for missing data of opportunity
+if [[ "$missing_data_flag" == true && "$SENDMAIL" == "YES" ]]; then
+  cat << EOF > email_warn.txt
+WARNING: Some files were unable to be found in this analysis:
+
+RRFS cycle will continue without these files.
+  
+No immediate impact to integrity of delivered products.
+  
+Ops action: identify cause of missing files below.
+
+EOF
+  cat missing_file_list >> email_warn.txt
+  mail.py -s "Missing Data of Opportunity for RRFS" -v ${MAIL_TO} < email_warn.txt
+fi
+
 #-----------------------------------------------------------------------
 #
 # go to INPUT directory.
