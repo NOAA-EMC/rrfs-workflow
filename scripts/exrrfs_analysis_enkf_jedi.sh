@@ -57,6 +57,16 @@ FV3 for the specified cycle.
 #
 valid_args=( "cycle_dir" "NWGES_DIR" "ob_type" )
 process_args valid_args "$@"
+#
+#-----------------------------------------------------------------------
+#
+# For debugging purposes, print out values of arguments passed to this
+# script.  Note that these will be printed out only if VERBOSE is set to
+# TRUE.
+#
+#-----------------------------------------------------------------------
+#
+print_input_args valid_args
 
 ulimit -s unlimited
 ulimit -v unlimited
@@ -167,7 +177,7 @@ for imem in  $(seq 1 $nens); do
     BKTYPE=1              # cold start
   fi
 
-  mkdir data/inputs/${memcharv0}
+  mkdir -p data/inputs/${memcharv0}
   if [ "${DO_PARALLEL_DA}" = "TRUE" ]; then
     bkpath=${bkpath}.jedi
   else
@@ -186,6 +196,27 @@ for imem in  $(seq 1 $nens); do
 
 done
 
+#
+#-----------------------------------------------------------------------
+#
+# Pre-process the phy_data for reflectivity assimilation. The na3km GETKF
+# JCB config always assimilates radar reflectivity, so this always runs
+# (unlike JEDI-Var, which gates it on DO_ENKF_RADAR_REF/anav_type). JEDI
+# only ever reads/writes the minimal extracted phy_data.nc_prepdbz file, so
+# after the analysis we merge the analyzed ref_f3d back into the full
+# phy_data.nc (see below) so the rest of the physics restart survives.
+#
+#-----------------------------------------------------------------------
+#
+set +x
+module purge ; module load intel udunits szip hdf5 netcdf gsl nco ; module list
+set -x
+cp ${USHdir}/prep_phydata_dbz.py .
+for imem in $(seq 1 $nens); do
+  memcharv0="mem"$(printf %03i $imem)
+  ncks -O -v ref_f3d data/inputs/${memcharv0}/phy_data.nc data/inputs/${memcharv0}/phy_data.nc_prepdbz
+  python prep_phydata_dbz.py data/inputs/${memcharv0}/phy_data.nc_prepdbz
+done
 
 #
 #-----------------------------------------------------------------------
@@ -202,32 +233,26 @@ WXFLOWLIB=${RDASAPP_DIR}/sorc/wxflow/src
 JCBLIB=${RDASAPP_DIR}/sorc/jcb/src
 export PYTHONPATH="${JCBLIB}:${WXFLOWLIB}:${PYIODALIB}:${PYTHONPATH}"
 
-cp ${PARMdir}/${JCB_CONFIG_ENKF_OBSERVER} .
-cp ${PARMdir}/${JCB_CONFIG_ENKF_SOLVER} .
+cp ${PARMdir}/${JCB_CONFIG_ENKF} .
 cp ${USHdir}/run_jcb.py .
+cp ${FIX_GSI}/gsd_sfcobs_uselist.txt .
+cp ${FIX_GSI}/gsd_sfcobs_provider.txt .
 
 #sed - rdas-atmosphere-templates.yaml
 # set other placeholders
 WIN_ISO="${YYYY}-${MM}-${DD}T${HH}:00:00Z"
 WIN_PREFIX="${YYYY}${MM}${DD}.${HH}0000."
 SUFFIX="${CDATE}"
-jedi_yaml_observer="jedienkf_observer.yaml"
-jedi_yaml_solver="jedienkf_solver.yaml"
+jedi_yaml="jedienkf.yaml"
 
 # do replacements
 sed -i \
   -e "s|@ATMOSPHERE_BACKGROUND_TIME_ISO@|'${WIN_ISO}'|" \
   -e "s|@ATMOSPHERE_BACKGROUND_TIME_PREFIX@|'${WIN_PREFIX}'|" \
   -e "s|@SUFFIX@|${SUFFIX}|g" \
-  ${JCB_CONFIG_ENKF_OBSERVER}
-sed -i \
-  -e "s|@ATMOSPHERE_BACKGROUND_TIME_ISO@|'${WIN_ISO}'|" \
-  -e "s|@ATMOSPHERE_BACKGROUND_TIME_PREFIX@|'${WIN_PREFIX}'|" \
-  -e "s|@SUFFIX@|${SUFFIX}|g" \
-  ${JCB_CONFIG_ENKF_SOLVER}
+  ${JCB_CONFIG_ENKF}
 
-python run_jcb.py "${YYYYMMDDHH}" "${JCB_CONFIG_ENKF_OBSERVER}" "${jedi_yaml_observer}"
-python run_jcb.py "${YYYYMMDDHH}" "${JCB_CONFIG_ENKF_SOLVER}" "${jedi_yaml_solver}"
+python run_jcb.py "${YYYYMMDDHH}" "${JCB_CONFIG_ENKF}" "${jedi_yaml}"
 
 #
 #-----------------------------------------------------------------------
@@ -272,36 +297,9 @@ fi
 
 #
 #-----------------------------------------------------------------------
-# Restripe the output directory for faster analysis writing
-#-----------------------------------------------------------------------
 #
-
-if [ "${PREDEF_GRID_NAME}" == "RRFS_NA_3km" ]; then
-  stripesize=30
-else
-  stripesize=8
-fi
-
-for imem in  $(seq 1 $nens); do
-  memcharv0="mem"$(printf %03i $imem)
-  mkdir ${memcharv0}
-  cd "${memcharv0}"
-  for f in inc_jedi.fv_core.res.nc \
-           inc_jedi.fv_srf_wnd.res.nc \
-           inc_jedi.fv_tracer.res.nc \
-           inc_jedi.phy_data.nc \
-           inc_jedi.sfc_data.nc
-  do
-    rm -f "$f"
-    lfs setstripe --stripe-count ${stripesize} --stripe-size 1048576 --pool disk "$f"
-  done
-  cd ..
-done
-
-#
-#-----------------------------------------------------------------------
-#
-# Run JEDI-based EnKF for the observer step
+# Run JEDI-based GETKF (single-shot, writes the full ensemble analysis
+# directly in place)
 #
 #-----------------------------------------------------------------------
 #
@@ -314,65 +312,17 @@ cp "${jedi_exec}" "${enkfworkdir}/${pgm}"
 
 . prep_step
 
-${APRUN} ./$pgm jedienkf_observer.yaml >>$pgmout 2>errfile
+${APRUN} ./$pgm ${jedi_yaml} >>$pgmout 2>errfile
 export err=$?; err_chk
-cp $pgmout ${COMOUT}/rrfs.t${HH}z.jediout_observer.tm00
-cp ${JCB_CONFIG_ENKF_OBSERVER} ${COMOUT}
-cp jedienkf_observer.yaml ${COMOUT}/jedienkf_observer.yaml
-mv errfile errfile_jedi_observer
-
-#
-#-----------------------------------------------------------------------
-#
-# Run JEDI-based EnKF for the solver step
-#
-#-----------------------------------------------------------------------
-#
-#export OOPS_TRACE=1
-#export OOPS_DEBUG=1
-export OMP_NUM_THREADS=1
-export pgm="fv3jedi_letkf.x"
-jedi_exec="${EXECdir}/bin/${pgm}"
-cp "${jedi_exec}" "${enkfworkdir}/${pgm}"
-
-. prep_step
-
-${APRUN} ./$pgm jedienkf_solver.yaml >>$pgmout 2>errfile
-export err=$?; err_chk
-cp $pgmout ${COMOUT}/rrfs.t${HH}z.jediout_solver.tm00
-cp ${JCB_CONFIG_ENKF_SOLVER} ${COMOUT}
-cp jedienkf_solver.yaml ${COMOUT}/jedienkf_solver.yaml
-mv errfile errfile_jedi_solver
+cp $pgmout ${COMOUT}/rrfs.t${HH}z.jediout.tm00
+cp ${JCB_CONFIG_ENKF} ${COMOUT}
+cp ${jedi_yaml} ${COMOUT}/${jedi_yaml}
+mv errfile errfile_jedi_enkf
 
 # Save the Jdiag files for diagnostic tools
 for diag in jdiag*.nc; do
   base=${diag%.nc}
   cp "$diag" "${COMOUT}/${base}_enkf.nc"
-done
-
-#
-#-----------------------------------------------------------------------
-#
-# Move increments to INPUT
-#
-#-----------------------------------------------------------------------
-#
-
-for imem in  $(seq 1 $nens); do
-  memchar="mem"$(printf %04i $imem)
-  memcharv0="mem"$(printf %03i $imem)
-  slash_ensmem_subdir=$memchar
-  if [ "${CYCLE_TYPE}" = "spinup" ]; then
-    bkpath=${cycle_dir}/${slash_ensmem_subdir}/fcst_fv3lam_spinup/INPUT
-  else
-    bkpath=${cycle_dir}/${slash_ensmem_subdir}/fcst_fv3lam/INPUT
-  fi
-  if [ "${DO_PARALLEL_DA}" = "TRUE" ]; then
-    bkpath=${bkpath}.jedi
-  else
-    bkpath=${bkpath}
-  fi
-  mv ${memcharv0}/* ${bkpath}
 done
 
 print_info_msg "

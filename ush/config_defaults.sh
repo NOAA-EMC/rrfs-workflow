@@ -819,8 +819,8 @@ beta_recenter=1.0
 #
 JCB_CONFIG_CONV="rdas-atmosphere-templates-fv3_c13.yaml"
 JCB_CONFIG_DBZ="rdas-atmosphere-templates-fv3_c13_dbz.yaml"
-JCB_CONFIG_ENKF_OBSERVER="rdas-atmosphere-templates-fv3_c13_getkf_observer.yaml"
-JCB_CONFIG_ENKF_SOLVER="rdas-atmosphere-templates-fv3_c13_getkf_solver.yaml"
+# New, one-step L/GETKF
+JCB_CONFIG_ENKF="rdas-atmosphere-templates-fv3_na3km_getkf.yaml"
 #
 #-----------------------------------------------------------------------
 #
