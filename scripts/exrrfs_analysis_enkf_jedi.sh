@@ -188,34 +188,13 @@ for imem in  $(seq 1 $nens); do
   ln -snf ${bkpath}/sfc_data.nc                data/inputs/${memcharv0}/sfc_data.nc
   if [[ "${DO_ENKF_RADAR_REF}" == "TRUE" ]]; then
     ln -snf ${bkpath}/phy_data.nc_prepdbz      data/inputs/${memcharv0}/phy_data.nc
+    ln -snf ${bkpath}/phy_data.nc_prepdbz      data/inputs/${memcharv0}/phy_data.nc_prepdbz
   else
     ln -snf ${bkpath}/phy_data.nc              data/inputs/${memcharv0}/phy_data.nc
   fi
   ln -snf ${bkpath}/fv_srf_wnd.res.tile1.nc    data/inputs/${memcharv0}/fv_srf_wnd.res.tile1.nc
   ln -snf ${bkpath}/coupler.res                data/inputs/${memcharv0}/coupler.res
 
-done
-
-#
-#-----------------------------------------------------------------------
-#
-# Pre-process the phy_data for reflectivity assimilation. The na3km GETKF
-# JCB config always assimilates radar reflectivity, so this always runs
-# (unlike JEDI-Var, which gates it on DO_ENKF_RADAR_REF/anav_type). JEDI
-# only ever reads/writes the minimal extracted phy_data.nc_prepdbz file, so
-# after the analysis we merge the analyzed ref_f3d back into the full
-# phy_data.nc (see below) so the rest of the physics restart survives.
-#
-#-----------------------------------------------------------------------
-#
-set +x
-module purge ; module load intel udunits szip hdf5 netcdf gsl nco ; module list
-set -x
-cp ${USHdir}/prep_phydata_dbz.py .
-for imem in $(seq 1 $nens); do
-  memcharv0="mem"$(printf %03i $imem)
-  ncks -O -v ref_f3d data/inputs/${memcharv0}/phy_data.nc data/inputs/${memcharv0}/phy_data.nc_prepdbz
-  python prep_phydata_dbz.py data/inputs/${memcharv0}/phy_data.nc_prepdbz
 done
 
 #
@@ -253,6 +232,29 @@ sed -i \
   ${JCB_CONFIG_ENKF}
 
 python run_jcb.py "${YYYYMMDDHH}" "${JCB_CONFIG_ENKF}" "${jedi_yaml}"
+
+#
+#-----------------------------------------------------------------------
+#
+# Perform some YAML post processing that JCB cannot handle yet. These sed
+# patches should be removed once JCB picks up the upstream OOPS/JEDI
+# functionality they work around (currently only available via a fork of
+# OOPS built into RDASApp).
+#
+#-----------------------------------------------------------------------
+#
+
+# Since JCB does not support OSDF yet, do a sed replacement to turn these on
+sed -i 's/^ *distribution:$/      use data frame container: true\
+      redistribution:/' "${jedi_yaml}"
+
+# JCB does not set linear observer so we need to change that
+sed -i 's/use linear observer: false/use linear observer: true/' "${jedi_yaml}"
+sed -i 's/do test prints: true/do test prints: false/' "${jedi_yaml}"
+
+# Turn off all jdiag (obsdataout) outputs -- writing these out is costly and
+# not currently used downstream. Revisit once a separate hofx task exists.
+sed -i '/^[[:space:]]*obsdataout:/,+6 s/^/#/' "${jedi_yaml}"
 
 #
 #-----------------------------------------------------------------------
@@ -320,10 +322,13 @@ cp ${jedi_yaml} ${COMOUT}/${jedi_yaml}
 mv errfile errfile_jedi_enkf
 
 # Save the Jdiag files for diagnostic tools
-for diag in jdiag*.nc; do
-  base=${diag%.nc}
-  cp "$diag" "${COMOUT}/${base}_enkf.nc"
-done
+# Disabled for now since obsdataout is commented out of the yaml above to
+# save runtime -- no jdiag files are produced. Revisit once a separate hofx
+# task exists to generate these outside of the main GETKF task.
+#for diag in jdiag*.nc; do
+#  base=${diag%.nc}
+#  cp "$diag" "${COMOUT}/${base}_enkf.nc"
+#done
 
 print_info_msg "
 ========================================================================
