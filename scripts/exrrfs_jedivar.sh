@@ -83,12 +83,12 @@ source "${USHrrfs}/copy_obs.sh" "jedivar"
 #  find ensemble forecasts based on user settings
 #
 source "${USHrrfs}/find_ensembles.sh"
+ens_size=$(( 10#${ENS_SIZE} ))
+ens_count=$(find ens -name "mem*.nc" | wc -l)
 #
 # For HYB_ENS_TYPE=0, check number of ensemble files, if not enough, default to pure 3DVar
 #
 if (( HYB_ENS_TYPE == 0 )) ; then
-  ens_size=$(( 10#${ENS_SIZE} ))
-  ens_count=$(find ens -name "mem*.nc" | wc -l)
   if (( ens_count < ens_size )); then
      echo "Number of ensemble files is ${ens_count}, less than 30, default to 3DVar"
      export HYB_WGT_ENS=0.0
@@ -170,7 +170,7 @@ if [[ ${START_TYPE} == "warm" ]] || [[ ${START_TYPE} == "cold" && ${COLDSTART_CY
   #
   # Run jedivar in the 2nd pass for reflectivity DA
   #
-  if [[ ${START_TYPE} == "warm" && ${DO_RADAR_REF^^} == "TRUE" ]]; then
+  if [[ ${START_TYPE} == "warm" && ${DO_RADAR_REF^^} == "TRUE" ]] && (( ens_count == ens_size )); then
     export ANALYSIS_VARIABLES="12"
     ${cpreq}  "${EXPDIR}/config/bec_diffusion.yaml" "${DATA}"/bec_diffusion.yaml
     ln -sf "${FIXrrfs}/${MESH_NAME}/diffusionloc/${MESH_NAME}_L${nlevel}_15km11levels" data/diffusionloc
@@ -201,6 +201,7 @@ if [[ ${START_TYPE} == "warm" ]] || [[ ${START_TYPE} == "cold" && ${COLDSTART_CY
   if  [[ -s log.pass2.out ]]; then
     cp "${DATA}"/log.pass2.out "${COMOUT}/jedivar/${WGF}"
   fi
+  touch "${COMOUT}/jedivar/${WGF}/jedivar.done"
 else
   echo "INFO: No DA at the cold start cycle"
 fi
