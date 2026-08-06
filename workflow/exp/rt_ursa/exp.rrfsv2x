@@ -23,7 +23,7 @@ export ZETA_LEVELS="L60.txt"
 export DO_IODA=true
 export DO_JEDI=true
 export SNUDGETYPES="GGG" # G=gsd_update_soiltq from GSI; P=2022 J Hydro paper; chars=SoilT,SnowT,SoilQ
-export COLDSTART_CYCS_DO_DA=true #true
+export COLDSTART_CYCS_DO_DA=true
 export DO_NONVAR_CLOUD_ANA=true
 export DO_CHEMISTRY=false
 export DO_RADAR_REF=true  # does not work for 3DVar, only EnVar or GETKF
