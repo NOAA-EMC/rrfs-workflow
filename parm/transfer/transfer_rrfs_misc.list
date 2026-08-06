@@ -23,9 +23,6 @@
 # directory are included, so if no exclude patterns match that file, it will be
 # transfered.
 
-_COMROOT_/rrfs/_SHORTVER_/firewx_input/
-B 1000000
-
 _COMROOT_/rrfs/_SHORTVER_/firewx._PDY_/
 B 1000000
 
