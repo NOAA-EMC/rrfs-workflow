@@ -70,9 +70,15 @@ APRUN="time"
 #
 if [ ${WGF} = "firewx" ]; then
   hh="${CDATE:8:2}"
-  firewx_loc="${COMINnam}/input/nam_firewx_loc"
-  LAT_CTR=`grep ${hh}z $firewx_loc | awk '{print $2}'`
-  LON_CTR=`grep ${hh}z $firewx_loc | awk '{print $3}'`
+  firewx_loc="${COMrrfs}/firewx_input/rrfs_firewx_loc"
+  if [ -s ${firewx_loc} ]; then
+    LAT_CTR=`grep ${hh}z $firewx_loc | awk '{print $2}'`
+    LON_CTR=`grep ${hh}z $firewx_loc | awk '{print $3}'`
+  else
+    echo "WARNING:  Did not find firewx_loc to to set center point.  Will default to DC region"
+    LAT_CTR=38.9
+    LON_CTR=-77.0
+  fi
 
   python ${USHrrfs}/rrfsfw_domain.py ${LAT_CTR} ${LON_CTR}
   if [ $? -ne 0 ]; then
