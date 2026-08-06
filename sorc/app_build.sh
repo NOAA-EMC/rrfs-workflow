@@ -354,6 +354,10 @@ if [[ $BUILD_WORKAROUND = true ]]; then
   # Workaround for qmin=0 in GSI
   cp _workaround_/gsi/constants.f90 gsi/src/gsi/constants.f90
 
+  # Workaround for disabling shared memory window for readobs in EnKF
+  cp _workaround_/enkf/mpi_readobs.f90 gsi/src/enkf/mpi_readobs.f90
+  cp _workaround_/enkf/params.f90 gsi/src/enkf/params.f90
+
   # Workaround for options in GSI
   cp _workaround_/fix/gsi/gsiparm.anl.sh ../fix/gsi/gsiparm.anl.sh
 
