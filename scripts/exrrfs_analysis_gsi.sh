@@ -260,7 +260,15 @@ if  [[ ${regional_ensemble_option:-1} -eq 1 || ${l_both_fv3sar_gfs_ens} = ".true
   "WCOSS2")
 
     for loop in $loops; do
-      for timelist in $(ls ${COMINgfs}/enkfgdas.*/*/atmos/mem080/gdas*.atmf${loop}.${ftype}); do
+      shopt -s nullglob
+      file_list=(${COMINgfs}/enkfgdas.*/*/atmos/mem080/gdas*.atmf${loop}.${ftype})
+      shopt -u nullglob
+
+      if [ ${#file_list[@]} -eq 0 ]; then
+        echo "WARNING: Missing ${COMINgfs}/enkfgdas.*/*/atmos/mem080/gdas*.atmf${loop}.${ftype} files"
+
+      else
+      for timelist in "${file_list[@]}"; do
         availtimeyyyymmdd=$(echo ${timelist} | cut -d'/' -f9 | cut -c 10-17)
         availtimehh=$(echo ${timelist} | cut -d'/' -f10)
         availtime=${availtimeyyyymmdd}${availtimehh}
@@ -281,6 +289,7 @@ if  [[ ${regional_ensemble_option:-1} -eq 1 || ${l_both_fv3sar_gfs_ens} = ".true
            foundgdasens="true"
         fi
       done
+      fi
     done
 
     if [ ${foundgdasens} = "true" ]
