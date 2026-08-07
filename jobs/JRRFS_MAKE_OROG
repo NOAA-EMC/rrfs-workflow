@@ -76,9 +76,6 @@ This is the J-job script for the task that generates orography files.
 # Send fix files to COM
 export COMrrfs=${COMrrfs:-$(compath.py rrfs/${rrfs_ver})}
 
-# Fire weather nest location from NAM
-export COMINnam=${COMINnam:-$(compath.py nam/${nam_ver})}
-
 mkdir -p "${DATA}/raw_topo"
 mkdir -p "${DATA}/raw_topo/tmp"
 #cd ${DATA}/raw_topo/tmp

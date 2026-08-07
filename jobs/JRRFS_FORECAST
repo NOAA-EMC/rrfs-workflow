@@ -71,12 +71,6 @@ spinup_prefix=""
 spinup_postfix=""
 if [ ${CYCLE_TYPE} = "spinup" ]; then
   spinup_prefix="_spinup"
-else
-  if [ ! "${DO_ENSEMBLE}" = "TRUE" ]; then
-    if [ "${WGF}" = "firewx" ]; then
-      export COMINnam=${COMINnam:-$(compath.py nam/${nam_ver})}   # Fire weather nest location from NAM
-    fi
-  fi
 fi
 if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
   spinup_postfix="/${mem_num}"
