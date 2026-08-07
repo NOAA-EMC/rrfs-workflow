@@ -99,11 +99,6 @@ export COMrrfs=${COMrrfs:-$(compath.py rrfs/${rrfs_ver})}
 export COMIN=${COMIN:-$(compath.py rrfs/${rrfs_ver})}
 export COMINgfs=${COMINgfs:-$(compath.py gfs/${gfs_ver})}
 
-if [ ${WGF} = "firewx" ]; then
-# Fire weather nest location from NAM
-  export COMINnam=${COMINnam:-$(compath.py nam/${nam_ver})}
-fi
-
 #-----------------------------------------------------------------------
 # Execute the script.
 #-----------------------------------------------------------------------
