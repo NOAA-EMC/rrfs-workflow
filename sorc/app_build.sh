@@ -357,6 +357,7 @@ if [[ $BUILD_WORKAROUND = true ]]; then
   # Workaround for disabling shared memory window for readobs in EnKF
   cp _workaround_/enkf/mpi_readobs.f90 gsi/src/enkf/mpi_readobs.f90
   cp _workaround_/enkf/params.f90 gsi/src/enkf/params.f90
+  cp _workaround_/scripts/exrrfs_analysis_enkf.sh ../scripts/exrrfs_analysis_enkf.sh
 
   # Workaround for options in GSI
   cp _workaround_/fix/gsi/gsiparm.anl.sh ../fix/gsi/gsiparm.anl.sh

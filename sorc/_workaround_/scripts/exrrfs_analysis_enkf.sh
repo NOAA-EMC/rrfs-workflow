@@ -351,7 +351,7 @@ use_gfs_nemsio=.true.,
 	lobsdiag_forenkf=.false.,
 	write_spread_diag=.false.,
 	netcdf_diag=${netcdf_diag:-.false.},
-        fv3_native=.true.,
+        fv3_native=.true.,use_shmem_window=.true.,
 	/
 	&satobs_enkf
 	sattypes_rad(1) = 'amsua_n15',     dsis(1) = 'amsua_n15',
