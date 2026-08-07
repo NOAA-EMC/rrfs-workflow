@@ -26,7 +26,8 @@ export ENS_METADEP_FRAC_THRESHOLD=0.5
 #
 export DO_IODA=true
 export DO_JEDI=true
-export COLDSTART_CYCS_DO_DA=false
+export GETKF_ONESTEP=true
+export COLDSTART_CYCS_DO_DA=true
 export DO_RECENTER=true
 export DO_GETKF_POST=false
 export DO_NONVAR_CLOUD_ANA=true
@@ -43,8 +44,8 @@ export DO_POST=false
 export HISTORY_INTERVAL=none
 export DIAG_INTERVAL=1
 
-export IC_OFFSET=39
-export LBC_OFFSET=39
+export IC_OFFSET=33
+export LBC_OFFSET=33
 export LBC_LENGTH=15
 export LBC_INTERVAL=1
 export LBC_UNGRIB_GROUP_TOTAL_NUM=1
@@ -52,10 +53,10 @@ export LBC_GROUP_TOTAL_NUM=2
 export PREP_LBC_LOOK_BACK_HRS=11
 
 export RETRO_PERIOD="2024052700-2024052712"
-export LBC_CYCS="03 15"
-export COLDSTART_CYCS="03 15"   # cycles to cold start from external models
+export LBC_CYCS="09 21"
+export COLDSTART_CYCS="09 21"   # cycles to cold start from external models
 export RECENTER_CYCS="${COLDSTART_CYCS}"
-export DET_RECENTERCYCS_DO_DA=false #true # whether or not do detministic DA at RECENTER_CYCS
+export DET_RECENTERCYCS_DO_DA=true #true # whether or not do detministic DA at RECENTER_CYCS
 #
 #export DO_PYDAMONITOR=true
 #export DO_GRAPHICS=true
@@ -78,7 +79,7 @@ export NODES_MPASSIT="<nodes>1:ppn=160</nodes>"
 export NODES_UPP="<nodes>1:ppn=160</nodes>"
 export NODES_RECENTER="<nodes>1:ppn=40</nodes>"
 export NODES_IODA_MRMS_REFL="<nodes>1:ppn=40</nodes>"
-export NODES_GETKF="<nodes>30:ppn=10</nodes>"
+export NODES_GETKF="<nodes>20:ppn=40</nodes>"
 export NODES_ENSMEAN="<nodes>2:ppn=60</nodes>"
 #
 export NODES_PREP_IC="<nodes>1:ppn=90</nodes>"
@@ -93,8 +94,8 @@ export KEEPDATA=YES
 export TASKTHROTTLE=60
 export MAXTRIES=3
 export CLEAN_BACK_DAYS=2
-export STMP_RETENTION_CYCS=26
-export COM_RETENTION_CYCS='{"default": 84, "lbc,fcst": 72}'   # use " inside and ' outside
+export STMP_RETENTION_CYCS=18
+export COM_RETENTION_CYCS='{"default": 48, "lbc,fcst": 36}'   # use " inside and ' outside
 export CYCLETHROTTLE=3600
 export CYCLELIFESPAN=3
 #

@@ -23,7 +23,7 @@ export ZETA_LEVELS="L60.txt"
 export DO_IODA=true
 export DO_JEDI=true
 export SNUDGETYPES="GGG" # G=gsd_update_soiltq from GSI; P=2022 J Hydro paper; chars=SoilT,SnowT,SoilQ
-export COLDSTART_CYCS_DO_DA=false #true
+export COLDSTART_CYCS_DO_DA=true
 export DO_NONVAR_CLOUD_ANA=true
 export DO_CHEMISTRY=false
 export DO_RADAR_REF=true  # does not work for 3DVar, only EnVar or GETKF
@@ -47,7 +47,8 @@ export GSIBEC_Y=20
 export DO_CYC=true
 export CYC_INTERVAL=1
 for i in {0..23};    do arr[$i]="03"; done # 3hr fcst
-for i in {0..23..12}; do arr[$i]="72"; done # 24hr fcst every 12hrs
+for i in {0..23..03}; do arr[$i]="12"; done # 12hr fcst every 3hrs
+for i in {0..23..12}; do arr[$i]="72"; done # 72hr fcst every 12hrs
 export FCST_LEN_HRS_CYCLES="${arr[*]}"
 export HISTORY_INTERVAL=1
 export DIAG_INTERVAL=1
@@ -66,15 +67,12 @@ export RETRO_PERIOD="2024052700-2024052800"
 export LBC_CYCS="00 12"  # evenly divide 24 hours, e.g., "00 12", "00 06 12 18", etc
 export COLDSTART_CYCS="03 15"   # cycles to cold start from external models
 export SST_UPDATE_CYCS="00 12"
-
-#export DO_SPINUP=true
-#export PRODSWITCH_CYCS="06 18"  # cycles to PROD switch to the spun-up ICs
 #
 # set as follows to start spinup at 03/15z
-#export DO_SPINUP=true
+export DO_SPINUP=true
 #export IC_OFFSET=3
 #export COLDSTART_CYCS="03 15"
-#export PRODSWITCH_CYCS="09 21"
+export PRODSWITCH_CYCS="09 21"
 #
 export DO_PYDAMONITOR=true
 export DO_GRAPHICS=true
@@ -109,8 +107,8 @@ export NODES_IODA_MRMS_REFL="<nodes>1:ppn=40</nodes>"
 #
 export KEEPDATA=YES
 export MAXTRIES=3
-export STMP_RETENTION_CYCS=26
-export COM_RETENTION_CYCS='{"default": 96, "lbc,fcst": 72, "upp,nclprd,pyDAmonitor": 960}'  # use " inside and ' outside
+export STMP_RETENTION_CYCS=18
+export COM_RETENTION_CYCS='{"default": 96, "lbc,fcst": 48, "upp,nclprd,pyDAmonitor": 960}'  # use " inside and ' outside
 export CYCLETHROTTLE=3600
 export CYCLELIFESPAN=2
 #
@@ -141,7 +139,7 @@ export STARTTIME_JEDIVAR="00:40:00"
 export STARTTIME_FCST="00:10:00"
 export STARTTIME_MPASSIT="00:15:00"
 export STARTTIME_UPP="00:15:00"
-export STARTTIME_PREP_IC="03:00:00"
+export STARTTIME_PREP_IC="02:00:00"
 export STARTTIME_PREP_LBC="00:15:00"
 export MORE_XML_ENTITIES=true
 export DO_CLEAN=true

@@ -88,7 +88,7 @@ ens_count=$(find ens -name "mem*.nc" | wc -l)
 #
 # For HYB_ENS_TYPE=0, check number of ensemble files, if not enough, default to pure 3DVar
 #
-if (( HYB_ENS_TYPE == 0 )) ; then
+if (( HYB_ENS_TYPE == 0 || HYB_ENS_TYPE == 1 )) ; then
   if (( ens_count < ens_size )); then
      echo "Number of ensemble files is ${ens_count}, less than 30, default to 3DVar"
      export HYB_WGT_ENS=0.0

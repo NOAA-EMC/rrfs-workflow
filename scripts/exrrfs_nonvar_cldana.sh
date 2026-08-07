@@ -111,8 +111,10 @@ err_chk
 # Copy log files to COM directory
 if [[ "${DO_SPINUP:-FALSE}" == "TRUE" ]];  then
   cp stdout_cloudanalysis* "${COMOUT}/nonvar_cldana_spinup/${WGF}${MEMDIR}/"
+  touch "${COMOUT}/nonvar_cldana_spinup/${WGF}${MEMDIR}/nonvar_cldana.done"
 else
   cp stdout_cloudanalysis* "${COMOUT}/nonvar_cldana/${WGF}${MEMDIR}/"
+  touch "${COMOUT}/nonvar_cldana/${WGF}${MEMDIR}/nonvar_cldana.done"
 fi
 
 exit 0
