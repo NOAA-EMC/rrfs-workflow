@@ -79,8 +79,7 @@ export COMOUT="${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}
 
 mkdir -p ${COMOUT}
 
-# Fire weather nest location from NAM
-export COMINnam=${COMINnam:-$(compath.py nam/${nam_ver})}
+export COMrrfs=$(compath.py ${NET}/${rrfs_ver})
 
 #-----------------------------------------------------------------------
 # Execute the script.

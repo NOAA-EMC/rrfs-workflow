@@ -79,6 +79,8 @@ hour zero).
 
 export COMINgfs=${COMINgfs:-$(compath.py gfs/${gfs_ver})}
 export COMINgefs=${COMINgefs:-$(compath.py gefs/${gefs_ver})}
+
+export COMrrfs=${COMrrfs:-$(compath.py rrfs/${rrfs_ver})}
 export COMIN=${COMIN:-$(compath.py rrfs/${rrfs_ver})}
 
 if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
@@ -93,9 +95,6 @@ else
     mv ${umbrella_lbcops_data} ${umbrella_lbcops_data}_$$
   fi
   mkdir -p ${umbrella_lbcops_data}
-  if [ $WGF = "firewx" ]; then
-    export COMINnam=${COMINnam:-$(compath.py nam/${nam_ver})}
-  fi
 fi
 mkdir -p ${COMOUT}
 

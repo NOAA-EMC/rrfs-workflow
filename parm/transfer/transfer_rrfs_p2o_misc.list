@@ -23,9 +23,6 @@
 # directory are included, so if no exclude patterns match that file, it will be
 # transfered.
 
-/lfs/h1/ops/para/com/rrfs/_SHORTVER_/firewx_input/ _COMROOT_/rrfs/_SHORTVER_/firewx_input/
-B 1000000
-
 /lfs/h1/ops/para/com/rrfs/_SHORTVER_/firewx._PDY_/ _COMROOT_/rrfs/_SHORTVER_/firewx._PDY_/
 B 1000000
 
