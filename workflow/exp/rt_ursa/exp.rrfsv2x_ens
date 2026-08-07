@@ -44,8 +44,8 @@ export DO_POST=false
 export HISTORY_INTERVAL=none
 export DIAG_INTERVAL=1
 
-export IC_OFFSET=39
-export LBC_OFFSET=39
+export IC_OFFSET=33
+export LBC_OFFSET=33
 export LBC_LENGTH=15
 export LBC_INTERVAL=1
 export LBC_UNGRIB_GROUP_TOTAL_NUM=1
@@ -95,7 +95,7 @@ export TASKTHROTTLE=60
 export MAXTRIES=3
 export CLEAN_BACK_DAYS=2
 export STMP_RETENTION_CYCS=18
-export COM_RETENTION_CYCS='{"default": 72, "lbc,fcst": 48}'   # use " inside and ' outside
+export COM_RETENTION_CYCS='{"default": 48, "lbc,fcst": 36}'   # use " inside and ' outside
 export CYCLETHROTTLE=3600
 export CYCLELIFESPAN=3
 #

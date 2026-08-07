@@ -162,7 +162,6 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
         datadep_spinup = datadep_spinup.lstrip('\n')
         dependencies = f'''
   <dependency>
-  <and>{timedep}
    <or>
     <and>
       <or>
@@ -174,7 +173,6 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
 {strneqs}{datadep_prod}
     </and>
    </or>
-  </and>
   </dependency>'''
     #
     xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv, dependencies, command_id="PREP_IC")
