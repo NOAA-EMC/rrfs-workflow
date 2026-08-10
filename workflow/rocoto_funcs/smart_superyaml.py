@@ -5,7 +5,7 @@ import hifiyaml as hy
 import yamltools4jedi as yj
 
 
-def smart_superyaml(HOMErrfs, ytype):
+def smart_superyaml(HOMErrfs, ytype, mesh):
     # make sure no "main.yaml" under parm/observers before further actions
     fmain = f'{HOMErrfs}/parm/observers/main.yaml'
     if os.path.islink(fmain):
@@ -39,13 +39,17 @@ def smart_superyaml(HOMErrfs, ytype):
                 absolute_pos = observer["pos1"] + pos
                 data[absolute_pos] = data[absolute_pos].replace("max pool size: 1", "max pool size: 80")
     #
+    # insert correct domain-specific polygon configuration
+    fpolygon = f'{HOMErrfs}/fix/{mesh}/{mesh}.polygon.yaml'
+    polygon = hy.load(fpolygon)
+    data[0:0] = polygon  # insert at the beginning
     # ------------------------------------------------------------------------
     # dump out the final yaml file
     hy.dump(data, fpath=fpacked)
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 3:
-        print(f"Usage: {sys.argv[0]} HOMErrfs getkf")
+    if len(sys.argv) != 4:
+        print(f"Usage: {sys.argv[0]} HOMErrfs getkf conus12km")
         sys.exit(1)
-    smart_superyaml(sys.argv[1], sys.argv[2])
+    smart_superyaml(sys.argv[1], sys.argv[2], sys.argv[3])

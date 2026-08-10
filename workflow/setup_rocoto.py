@@ -45,9 +45,9 @@ if os.path.exists(f"{HOMErrfs}/workflow/config.override"):
     source(f"{HOMErrfs}/workflow/config.override")
     print("NOTE: config.override found and some exp settings overwritten by it.\n")
 
+mesh = os.getenv("MESH_NAME", "conus3km")
 # Check compatibility of setup with nonvar cloud analysis
 if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
-    mesh = os.getenv("MESH_NAME", "conus3km")
     if mesh not in ["conus3km", "south3.5km", "conus12km"]:
         print(f'{mesh} is not compatible with the nonvar cloud analysis')
         print('Please set DO_NONVAR_CLOUD_ANA=false and try again')
@@ -93,11 +93,11 @@ if os.path.exists(f"{HOMErrfs}/workflow/config.override"):
 if os.getenv("DO_JEDI", 'false').upper() == "TRUE":
     # copy jedivar/getkf yamls to exp_configdir
     if os.getenv('DO_ENSEMBLE', 'FALSE').upper() == "TRUE":
-        smart_superyaml(HOMErrfs, 'getkf')
+        smart_superyaml(HOMErrfs, 'getkf', mesh)
         shutil.copy(f'{HOMErrfs}/parm/getkf.yaml', f'{exp_configdir}/getkf.yaml')
         ens_str = "_ens"
     else:
-        smart_superyaml(HOMErrfs, 'jedivar')
+        smart_superyaml(HOMErrfs, 'jedivar', mesh)
         shutil.copy(f'{HOMErrfs}/parm/jedivar.yaml', f'{exp_configdir}/jedivar.yaml')
         shutil.copy(f'{HOMErrfs}/parm/bec_bump.yaml', f'{exp_configdir}/bec_bump.yaml')
         shutil.copy(f'{HOMErrfs}/parm/bec_diffusion.yaml', f'{exp_configdir}/bec_diffusion.yaml')
@@ -115,7 +115,7 @@ if os.getenv("DO_JEDI", 'false').upper() == "TRUE":
     shutil.copy(f'satinfo.{NET}{ens_str}', f'{exp_configdir}/satinfo')
 #
 if os.getenv('DO_HOFX', 'FALSE').upper() == "TRUE":
-    smart_superyaml(HOMErrfs, 'hofx')
+    smart_superyaml(HOMErrfs, 'hofx', mesh)
     shutil.copy(f'{HOMErrfs}/parm/hofx.yaml', f'{exp_configdir}/hofx.yaml')
 
 # copyover the VERSION file

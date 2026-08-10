@@ -6,3 +6,4 @@ _polygon: &polygonConfig
   vertex latitudes: [47.7, 49.02, 52.96, 54.66, 55.22, 54.74, 53.25, 49.92, 48.89, 47.92, 35.78, 21.05, 20.03, 19.91, 21.52, 22.01, 20.01, 36.23, 47.7]
   action:
     name: reduce obs space
+
