@@ -5,6 +5,7 @@ import sys
 import os
 from rocoto_funcs.setup_xml import setup_xml
 from rocoto_funcs.base import source, get_required_env, run_git_command
+from rocoto_funcs.smart_superyaml import smart_superyaml
 print('Aloha!')
 #
 
@@ -92,9 +93,11 @@ if os.path.exists(f"{HOMErrfs}/workflow/config.override"):
 if os.getenv("DO_JEDI", 'false').upper() == "TRUE":
     # copy jedivar/getkf yamls to exp_configdir
     if os.getenv('DO_ENSEMBLE', 'FALSE').upper() == "TRUE":
+        smart_superyaml(HOMErrfs, 'getkf')
         shutil.copy(f'{HOMErrfs}/parm/getkf.yaml', f'{exp_configdir}/getkf.yaml')
         ens_str = "_ens"
     else:
+        smart_superyaml(HOMErrfs, 'jedivar')
         shutil.copy(f'{HOMErrfs}/parm/jedivar.yaml', f'{exp_configdir}/jedivar.yaml')
         shutil.copy(f'{HOMErrfs}/parm/bec_bump.yaml', f'{exp_configdir}/bec_bump.yaml')
         shutil.copy(f'{HOMErrfs}/parm/bec_diffusion.yaml', f'{exp_configdir}/bec_diffusion.yaml')
@@ -112,6 +115,7 @@ if os.getenv("DO_JEDI", 'false').upper() == "TRUE":
     shutil.copy(f'satinfo.{NET}{ens_str}', f'{exp_configdir}/satinfo')
 #
 if os.getenv('DO_HOFX', 'FALSE').upper() == "TRUE":
+    smart_superyaml(HOMErrfs, 'hofx')
     shutil.copy(f'{HOMErrfs}/parm/hofx.yaml', f'{exp_configdir}/hofx.yaml')
 
 # copyover the VERSION file
