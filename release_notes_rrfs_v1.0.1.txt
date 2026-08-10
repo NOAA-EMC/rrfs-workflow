@@ -1,5 +1,7 @@
 rrfs v1.0.1 - released 08/11/2026 
 
+google docs version: https://docs.google.com/document/d/15JqFbl6v35AfjdPlf6Mf7NGEsZdhYlPeD1Qr00aHcGY/edit?usp=sharing
+
 #####################
 Update overview
 #####################
@@ -12,7 +14,7 @@ Obtaining the package
 
 Is available as the feature branch https://github.com/MatthewPyle-NOAA/rrfs-workflow/tree/feature/gfsv17
 
-Clone it with this command (but change rrfs.v1.0.1 to whatever you want to call it in the directory that it is cloned into):
+Can clone it with this command (but change rrfs.v1.0.1 to whatever you want to call it in the directory that it is cloned into):
 
 git clone -b feature/gfsv17  https://github.com/MatthewPyle-NOAA/rrfs-workflow.git rrfs.v1.0.1
 
