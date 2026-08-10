@@ -6,8 +6,8 @@ version="v1.2.0"
 ACCOUNT="RRFS-DEV"
 
 # Directory settings (user-dependent)
-EXPT_BASEDIR="/lfs/h2/emc/da/noscrub/$USER/rrfs-workflow_conus3km/rrfs-workflow/expt_dirs/May2024_retro_enkf/$version"
-EXPT_SUBDIR="rrfs_conus_3km.enkf_jedi"
+EXPT_BASEDIR="/lfs/h2/emc/da/noscrub/$USER/rrfs-workflow/expt_dirs/May2024_retro_enkf/$version"
+EXPT_SUBDIR="rrfs_conus_3km.enkf"
 STMP="/lfs/h2/emc/stmp/$USER/May2024_retro/$version/$EXPT_SUBDIR"
 PTMP="/lfs/h2/emc/ptmp/$USER/May2024_retro/$version/$EXPT_SUBDIR"
 NWGES="/lfs/h2/emc/ptmp/$USER/May2024_retro/$version/$EXPT_SUBDIR"
@@ -51,9 +51,7 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    DO_ENSINIT="TRUE"
 fi
 NUM_ENS_MEMBERS=30
-JCB_CONFIG_ENKF_OBSERVER="rdas-atmosphere-templates-fv3_c3km_dbz_getkf_observer.yaml"
-JCB_CONFIG_ENKF_SOLVER="rdas-atmosphere-templates-fv3_c3km_dbz_getkf_solver.yaml"
-CONVINFO_FN="convinfo.rrfs_120_133_dbz"
+JCB_CONFIG_ENKF="rdas-atmosphere-templates-fv3_c3km_getkf.yaml"
 
 # Radar DA options
 DO_IODA_MRMS="TRUE"

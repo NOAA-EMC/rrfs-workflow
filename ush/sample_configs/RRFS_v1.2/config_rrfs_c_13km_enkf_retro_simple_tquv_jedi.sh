@@ -6,13 +6,12 @@ version="v1.2.0"
 ACCOUNT="RRFS-DEV"
 
 # Directory settings (user-dependent)
-EXPT_BASEDIR="/lfs/h2/emc/da/noscrub/$USER/rrfs-workflow_enkf/rrfs-workflow/expt_dirs/May2024_retro_enkf/$version"
+EXPT_BASEDIR="/lfs/h2/emc/da/noscrub/$USER/rrfs-workflow/expt_dirs/May2024_retro_enkf/$version"
 EXPT_SUBDIR="rrfs_conus_13km.enkf"
 STMP="/lfs/h2/emc/stmp/$USER/May2024_retro/$version/$EXPT_SUBDIR"
 PTMP="/lfs/h2/emc/ptmp/$USER/May2024_retro/$version/$EXPT_SUBDIR"
 NWGES="/lfs/h2/emc/ptmp/$USER/May2024_retro/$version/$EXPT_SUBDIR"
 ARCHIVEDIR="/NCEPDEV/emc-meso/5year/Samuel.Degelia/RRFSv1/May2024_retro/$version/$EXPT_SUBDIR/"
-#DO_ARCHIVE_RETRO="TRUE"
 DO_ARCHIVE_RETRO="FALSE"
 
 PREDEF_GRID_NAME=RRFS_CONUS_13km
@@ -44,16 +43,15 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    DO_ENKFUPDATE="TRUE"
    DO_RECENTER="FALSE"
    DO_ENS_GRAPHICS="FALSE"
-   DO_ENKF_RADAR_REF="FALSE"
+   DO_ENKF_RADAR_REF="TRUE"
    DO_ENSPOST="FALSE"
    DO_ENSINIT="TRUE"
 fi
 NUM_ENS_MEMBERS=30
-JCB_CONFIG_ENKF_OBSERVER="rdas-atmosphere-templates-fv3_c13_getkf_observer.yaml"
-JCB_CONFIG_ENKF_SOLVER="rdas-atmosphere-templates-fv3_c13_getkf_solver.yaml"
+JCB_CONFIG_ENKF="rdas-atmosphere-templates-fv3_c13_getkf.yaml"
 
 # Radar DA options
-DO_IODA_MRMS="FALSE"
+DO_IODA_MRMS="TRUE"
 DO_ENVAR_RADAR_REF="FALSE"
 DO_ENVAR_RADAR_REF_ONCE="TRUE"
 RADARREFL_TIMELEVEL=(0)
@@ -189,6 +187,5 @@ if [[ ${regional_ensemble_option} == "5" ]]; then
 #-------------------------------------------------
 # RRFSE directory contains ensemble restart files for GSI hybrid.
 RRFSE_NWGES="/lfs/h3/emc/lam/noscrub/hui.liu/runs_co13km/rrfs.v0.8.6/nwges_enkf"
-NUM_ENS_MEMBERS=30
 CYCL_HRS_PRODSTART_ENS=( "07" "19" )
 fi
