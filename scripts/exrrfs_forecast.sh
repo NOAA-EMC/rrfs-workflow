@@ -196,15 +196,43 @@ if [[ "${DA_SYSTEM}" = "JEDI" || "${DO_PARALLEL_DA}" = "TRUE" ]]; then
     cd ${run_dir}/${bkdir}
     ln -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  fv3_grid_spec
 
-    set +x
-    if ( ! time ( module purge ; module load intel udunits szip hdf5 netcdf gsl nco ; module list ; set -x ; \
-        LD_LIBRARY_PATH="/apps/ops/test/spack-stack-nco-1.9/oneapi/2024.2.1/hdf5-1.14.3-umtw5lv/lib:${LD_LIBRARY_PATH}" \
-        ${USHdir}/postproc_getkf_analysis.sh fv3_grid_spec fv_core.res.tile1.nc "${EXECdir}" "${APRUN_UA}" "${pgmout}") ); then
-      echo "Failed post-processing GETKF analysis (D-grid wind update)"
-      exit 6
-    else
-      echo "Successfully post-processed GETKF analysis"
+    # JEDI aliases the analyzed A-grid wind to ua_anl/va_anl and leaves every
+    # other analyzed variable in place under its normal name; the D-grid u/v
+    # wind (never touched by JEDI) still needs to be updated to match.
+    # rdas_ua2u.x's --in_anl mode does that in place: computes the A-grid
+    # wind increment (ua_anl-ua, va_anl-va), converts it to a D-grid
+    # increment, adds it to the background u/v already in the file, and
+    # removes ua_anl/va_anl (--remove_anl_winds).
+    gridfile="fv3_grid_spec"
+    anlfile="fv_core.res.tile1.nc"
+
+    if [ ! -f "${anlfile}" ]; then
+      echo "ERROR: analysis file not found: ${anlfile}"
+      exit 1
     fi
+    if [ ! -f "${gridfile}" ]; then
+      echo "ERROR: grid spec file not found: ${gridfile}"
+      exit 1
+    fi
+
+    export LD_LIBRARY_PATH="${RDASAPP_DIR}/build/lib64:${LD_LIBRARY_PATH}"
+    pgm="rdas_ua2u.x"
+    ua2u_exec="${EXECdir}/bin/${pgm}"
+    cp "${ua2u_exec}" "./${pgm}"
+
+    ${APRUN_UA} ./${pgm} ua_update_u \
+      --in_grid="${gridfile}" \
+      --in_anl="${anlfile}" \
+      --remove_anl_winds \
+      >>"${pgmout}" 2>errfile
+    export err=$?; err_chk
+    mv errfile errfile_ua2u
+
+    if [ ! -s "${anlfile}" ]; then
+      echo "ERROR: ${anlfile} missing or empty after rdas_ua2u.x"
+      exit 6
+    fi
+
     cd ${run_dir}
 
     # Copy DA results into INPUT
