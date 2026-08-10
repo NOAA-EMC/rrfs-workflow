@@ -1,4 +1,4 @@
-rrfs v1.0.1 - released 08/11/2026 
+rrfs v1.0.1 - released 08/10/2026 
 
 google docs version: https://docs.google.com/document/d/15JqFbl6v35AfjdPlf6Mf7NGEsZdhYlPeD1Qr00aHcGY/edit?usp=sharing
 
