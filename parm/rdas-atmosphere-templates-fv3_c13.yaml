@@ -45,7 +45,7 @@ control_variables:
 - northward_wind
 - virtual_temperature
 - water_vapor_mixing_ratio_wrt_moist_air
-- ozone_mass_mixing_ratio
+- mole_fraction_of_ozone_in_air
 - air_pressure_at_surface
 
 state_variables_to_inverse:

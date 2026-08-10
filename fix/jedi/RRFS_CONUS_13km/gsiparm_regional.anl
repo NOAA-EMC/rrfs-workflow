@@ -63,7 +63,7 @@ state_vector::
  tv       65      0     met_guess    tv
 # tsen     65      0     met_guess    tv,q
  q        65      1     met_guess    q
-#oz       65      1     met_guess    oz
+ oz       65      1     met_guess    oz
  prse     66      0     met_guess    prse
  ps        1      0     met_guess    ps
 # sst       1      0     met_guess    sst
@@ -76,6 +76,7 @@ control_vector::
  ps        1      0       1.00        -1.0     state    prse
  t        65      0       1.40        -1.0     state    tv
  q        65      1       0.80        -1.0     state    q
+ oz       65      1       0.80        -1.0     state    oz
 # sst       1      0       1.00        -1.0     state    sst
 # stl       1      0       1.00        -1.0     motley   sst
 # sti       1      0       1.00        -1.0     motley   sst
