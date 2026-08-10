@@ -40,13 +40,13 @@ increment_variables:
 - air_pressure_thickness
 - water_vapor_mixing_ratio_wrt_moist_air
 - ozone_mass_mixing_ratio
-#- cloud_liquid_water
-#- cloud_liquid_ice
-#- rain_water
-#- snow_water
-#- graupel
-#- upward_air_velocity
-#- equivalent_reflectivity_factor
+- cloud_liquid_water
+- cloud_liquid_ice
+- rain_water
+- snow_water
+- graupel
+- upward_air_velocity
+- equivalent_reflectivity_factor
 
 # Veritcal localization for GETKF
 vl_fraction_of_retained_variance: 0.850
@@ -286,7 +286,7 @@ observations:
 #- cris-fsr_n21
 
 # Radar
-#- mrms_refl
+- mrms_refl
 
 # Analysis iuse flag (default: passivate)
 # Upper-air conventional
