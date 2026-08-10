@@ -55,6 +55,7 @@
            <<: *polygonConfig
 
          - filter: Bounds Check
+           apply at iterations: 0,1
            identifier:
              name: QcMarkerCheck
              logging: false
@@ -67,6 +68,7 @@
 
          # Initial error assignment
          - filter: Perform Action
+           apply at iterations: 0,1
            identifier:
              name: ObsErrorInit
              logging: false
@@ -79,6 +81,7 @@
 
          # Terrain Height Discrepancy Check
          - filter: Difference Check
+           apply at iterations: 0,1
            identifier:
              name: TerrainHeightCheck
              logging: false
@@ -89,6 +92,7 @@
 
          # Gross Error Check
          - filter: Background Check
+           apply at iterations: 0,1
            identifier:
              name: GrossErrorCheck
              logging: false

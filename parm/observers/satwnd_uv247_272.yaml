@@ -83,6 +83,7 @@
 
          # Accept, reject, or passivate (monitor)
          - filter: Perform Action
+           apply at iterations: 0,1
            identifier:
              name: IuseCheck
              logging: false
@@ -117,6 +118,7 @@
 
          # Time window filter
          - filter: Bounds Check
+           apply at iterations: 0,1
            identifier:
              name: TimeWindowCheck
              logging: false
@@ -137,6 +139,7 @@
 
          # Duplicate Check
          - filter: Temporal Thinning
+           apply at iterations: 0,1
            identifier:
              name: DuplicateThinning
              logging: false
@@ -158,6 +161,7 @@
 
          # Online domain check
          - filter: Bounds Check
+           apply at iterations: 0,1
            identifier:
              name: RegionalDomainCheck
              logging: false
@@ -172,6 +176,7 @@
 
          # Initial error assignment
          - filter: Perform Action
+           apply at iterations: 0,1
            identifier:
              name: ObsErrorInit
              logging: false
@@ -196,6 +201,7 @@
 
          # Error inflation (windEastward) based on pressure check (setupw.f90)
          - filter: Perform Action
+           apply at iterations: 0,1
            identifier:
              name: ObsErrorFactorPressureCheckU
              logging: false
@@ -217,6 +223,7 @@
 
          # Error inflation (windNorthward) based on pressure check (setupw.f90)
          - filter: Perform Action
+           apply at iterations: 0,1
            identifier:
              name: ObsErrorFactorPressureCheckV
              logging: false
@@ -238,6 +245,7 @@
 
          # Bounds Check (ObsValue)
          - filter: Bounds Check
+           apply at iterations: 0,1
            identifier:
              name: ObsValueBoundsCheck
              logging: false
@@ -257,6 +265,7 @@
 
          # Reject obs with qiWithoutForecast < 90. OR > 100.
          - filter: Bounds Check
+           apply at iterations: 0,1
            identifier:
              name: QIFNCheck
              logging: false
@@ -278,6 +287,7 @@
 
          # Reject obs with satellite zenith angle > 68
          - filter: Bounds Check
+           apply at iterations: 0,1
            identifier:
              name: SatZenithAngleCheck
              logging: false
@@ -298,6 +308,7 @@
 
          # Reject obs with pressure < 150 mb
          - filter: Bounds Check
+           apply at iterations: 0,1
            identifier:
              name: HighAltitudeCheck
              logging: false
@@ -319,6 +330,7 @@
 
          # Reject obs over land (isli=1) where pressure > 850 mb
          - filter: Perform Action
+           apply at iterations: 0,1
            identifier:
              name: LandLowAltitudeCheck
              logging: false
@@ -340,6 +352,7 @@
 
          # Low wind speed check
          - filter: Perform Action
+           apply at iterations: 0,1
            identifier:
              name: LowWindSpeedCheck
              logging: false
@@ -359,6 +372,7 @@
 
          # AMV expected error norm check
          - filter: Perform Action
+           apply at iterations: 0,1
            identifier:
              name: AMVErrorNormCheck
              logging: false
@@ -380,6 +394,7 @@
 
          # Halve the ob error (based on read_satwnd.f90)
          - filter: Perform Action
+           apply at iterations: 0,1
            identifier:
              name: ObsErrorHalve
              logging: false
@@ -398,6 +413,7 @@
 
          # Reject when pressure is more than 50 mb above tropopause
          - filter: Difference Check
+           apply at iterations: 0,1
            identifier:
              name: TropopauseCheck
              logging: false
@@ -418,6 +434,7 @@
 
          # Reject obs within 110 mb of surface pressure over non-water surface
          - filter: Difference Check
+           apply at iterations: 0,1
            identifier:
              name: DifferenceCheckSurfacePressure
              logging: false
@@ -442,6 +459,7 @@
 
          # Reject when difference of wind direction between obs and background is more than 50 degrees
          - filter: Bounds Check
+           apply at iterations: 0,1
            identifier:
              name: WindDirectionCheck
              logging: false
@@ -462,6 +480,7 @@
 
          # Gross Error Check (windEastward)
          - filter: Background Check
+           apply at iterations: 0,1
            identifier:
              name: GrossErrorCheckU
              logging: false
@@ -483,6 +502,7 @@
 
          # Gross Error Check (windNorthward)
          - filter: Background Check
+           apply at iterations: 0,1
            identifier:
              name: GrossErrorCheckV
              logging: false

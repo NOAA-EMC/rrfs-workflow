@@ -43,6 +43,7 @@
          <<: *polygonConfig
 
        - filter: Background Check
+         apply at iterations: 0,1
          identifier:
            name: GrossErrorCheck
            logging: false

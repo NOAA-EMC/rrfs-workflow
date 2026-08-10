@@ -124,6 +124,7 @@
 
          # Online regional domain check
          - filter: Bounds Check
+           apply at iterations: 0,1
            identifier:
              name: RegionalDomainCheck
              logging: false
@@ -137,6 +138,7 @@
 
          # Initial error assignment
          - filter: Perform Action
+           apply at iterations: 0,1
            identifier:
              name: ObsErrorInit
              logging: false
@@ -200,6 +202,7 @@
 
          # Error inflation when QualityMarker == 3 (read_prepbufr.f90)
          - filter: Perform Action
+           apply at iterations: 0,1
            identifier:
              name: ObsErrorFactorPressureCheck
              logging: false
@@ -215,6 +218,7 @@
 
          # Error inflation when observation pressure < 100 hPa (read_prepbufr.f90)
          - filter: Perform Action
+           apply at iterations: 0,1
            identifier:
              name: ObsErrorFactorHighAltitude
              logging: false
@@ -230,6 +234,7 @@
 
          # Bounds Check (ObsError)
          - filter: Bounds Check
+           apply at iterations: 0,1
            identifier:
              name: ObsErrorBoundsCheck
              logging: false
@@ -245,6 +250,7 @@
 
          # Bounds Check (ObsValue)
          - filter: Bounds Check
+           apply at iterations: 0,1
            identifier:
              name: ObsValueBoundsCheck
              logging: false

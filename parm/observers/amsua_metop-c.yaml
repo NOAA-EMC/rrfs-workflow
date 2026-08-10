@@ -86,6 +86,7 @@
          <<: *polygonConfig
 
        - filter: Create Diagnostic Flags
+         apply at iterations: 0,1
          identifier:
            name: CreateDiagnosticFlags
            logging: false
@@ -100,6 +101,7 @@
        obs post filters:
        #Thinning
        - filter: Gaussian Thinning
+         apply at iterations: 0,1
          identifier:
            name: Thinning
            logging: false
@@ -116,6 +118,7 @@
            - name: reject
        # Regional domain check to remove data outside of model domain
        - filter: Bounds Check
+         apply at iterations: 0,1
          identifier:
            name: RegionalDomainCheck
            logging: false
@@ -130,6 +133,7 @@
            maxvalue: 0.5
         #Toss data if the hofx is missing or outside of range
        - filter: Domain Check
+         apply at iterations: 0,1
          identifier:
            name: HofXValidCheck
            logging: false
@@ -147,6 +151,7 @@
          action:
            name: reject
        - filter: BlackList
+         apply at iterations: 0,1
          identifier:
            name: ObsErrorInit
            logging: false
@@ -181,6 +186,7 @@
                         0.400,  0.550,  0.800,  3.000, 18.000]
        #  CLW Retrieval Check
        - filter: Bounds Check
+         apply at iterations: 0,1
          identifier:
            name: CLWRetCheckObs
            logging: false
@@ -199,6 +205,7 @@
            name: reject
        #  CLW Retrieval Check
        - filter: Bounds Check
+         apply at iterations: 0,1
          identifier:
            name: CLWRetCheckBkg
            logging: false
@@ -217,6 +224,7 @@
            name: reject
        #  Hydrometeor Check (cloud/precipitation affected chanels)
        - filter: Bounds Check
+         apply at iterations: 0,1
          identifier:
            name: HydrometeorCheck
            logging: false
@@ -264,6 +272,7 @@
            name: reject
        #  Topography check
        - filter: BlackList
+         apply at iterations: 0,1
          identifier:
            name: TopographyCheck
            logging: false
@@ -281,6 +290,7 @@
                channels: *amsua_metop-c_channels
        #  Transmittnace Top Check
        - filter: BlackList
+         apply at iterations: 0,1
          identifier:
            name: TransmitTopCheck
            logging: false
@@ -298,6 +308,7 @@
                channels: *amsua_metop-c_channels
        #  Surface Jacobian check
        - filter: BlackList
+         apply at iterations: 0,1
          identifier:
            name: SurfJacobianCheck
            logging: false
@@ -317,6 +328,7 @@
                obserr_dtempf: [0.500, 2.000, 1.000, 2.000, 4.500]
        #  Situation dependent Check
        - filter: BlackList
+         apply at iterations: 0,1
          identifier:
            name: SituDependCheck
            logging: false
@@ -401,6 +413,7 @@
 
        #  Gross check
        - filter: Background Check
+         apply at iterations: 0,1
          identifier:
            name: GrossErrorCheck
            logging: false
@@ -458,6 +471,7 @@
            name: reject
        #  Inter-channel check
        - filter: Bounds Check
+         apply at iterations: 0,1
          identifier:
            name: InterChannelCheck
            logging: false
@@ -477,6 +491,7 @@
            name: reject
        #  Useflag check
        - filter: Bounds Check
+         apply at iterations: 0,1
          identifier:
            name: UseflagCheck
            logging: false

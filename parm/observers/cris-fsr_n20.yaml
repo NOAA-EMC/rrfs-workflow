@@ -101,6 +101,7 @@
          <<: *polygonConfig
 
        - filter: Create Diagnostic Flags
+         apply at iterations: 0,1
          identifier:
            name: CreateDiagnosticFlags
            logging: false
@@ -139,6 +140,7 @@
        #          Assign channel wavenumbers in m-1
        # ----------------------------------------------------------------
        - filter: Variable Assignment
+         apply at iterations: 0,1
          identifier:
            name: VarAssign
            logging: false
@@ -247,6 +249,7 @@
        # Step 2: Transform radiance to brightness temperature
        # --------------------------------------------------------
        - filter: Variable Transforms
+         apply at iterations: 0,1
          identifier:
            name: BrightnessTempTransform
            logging: false
@@ -267,6 +270,7 @@
        # Step 3: Assign Observation Error
        # ----------------------------------
        - filter: Perform Action
+         apply at iterations: 0,1
          identifier:
            name: ObsErrorInit
            logging: false
@@ -283,6 +287,7 @@
        # Step 4: Create cloudFree variable
        # ----------------------------------
        - filter: Variable Assignment
+         apply at iterations: 0,1
          identifier:
            name: VarAssign
            logging: false
@@ -323,6 +328,7 @@
        #         Valid range: (50, 550)
        # ----------------------------------------
        - filter: Bounds Check
+         apply at iterations: 0,1
          identifier:
            name: ScanEdgeRemoval
            logging: false
@@ -339,6 +345,7 @@
        # Step 6: Data Thinning
        # ------------------------
        - filter: Gaussian Thinning
+         apply at iterations: 0,1
          identifier:
            name: Thinning
            logging: false
@@ -365,6 +372,7 @@
        # Step 7: online geo-domain Check, rejecting observations outside of regional MPAS domain
        # ----------------------------------------------------------------------------------------
        - filter: Bounds Check
+         apply at iterations: 0,1
          identifier:
            name: RegionalDomainCheck
            logging: false
@@ -387,6 +395,7 @@
        # Note, currenlty, CrIS wavenumber > 2000 are not assimilated, this is for future refernce (i.e., CrIS short-wave DA etc.)
        # ------------------------------------------------------------------------------------------------------------------------------------------------------------
        - filter: Perform Action
+         apply at iterations: 0,1
          identifier:
            name: ZenithAngleCheck
            logging: false
@@ -412,6 +421,7 @@
        # Note, currenlty, CrIS wavenumber > 2000 are not assimilated, this is for future refernce (i.e., CrIS short-wave DA etc.)
        # -----------------------------------------------------------------------------------------------------------------------------------------------
        - filter: Perform Action
+         apply at iterations: 0,1
          identifier:
            name: ZenithAngleCheck
            logging: false
@@ -432,6 +442,7 @@
        # Error Inflation Factor (EIF) as a function of terrain height, channel, and surface-to-space transmittance.
        # -----------------------------------------------------------------------------------------------------------
        - filter: Perform Action
+         apply at iterations: 0,1
          identifier:
            name: TopographyCheck
            logging: false
@@ -453,6 +464,7 @@
        # This obsfunction calculates the observation error inflation factor for satellite radiances as a function of model top-to-space transmittance.
        # ------------------------------------------------------------------------------------------------------------------------------------------------
        - filter: Perform Action
+         apply at iterations: 0,1
          identifier:
            name: TransmitTopCheck
            logging: false
@@ -478,6 +490,7 @@
        # 2 channel is not affected by clouds but too sensitive to surface condition
        # ----------------------------------------------------------------------------------------------------------------------------
        - filter: Bounds Check
+         apply at iterations: 0,1
          identifier:
            name: CloudDetect
            logging: false
@@ -505,6 +518,7 @@
        # Step 13: Surface Temperature Jacobian Check over Land, reduce influence of land pionts on window channels, surface temperaure jacobian oove land larger than 0.2, rejected
        # ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
        - filter: Bounds Check
+         apply at iterations: 0,1
          identifier:
            name: WindowChannelExtremeResidual
            logging: false
@@ -533,6 +547,7 @@
        # The brightness_temperature is rejected if the QC flags from this ObsFunction output value is bigger than maxvalue=1.0e-12.
        # ---------------------------------------------------------------------------------------------------------------------------------------------------------
        - filter: Bounds Check
+         apply at iterations: 0,1
          identifier:
            name: NearSSTRetCheckIR
            logging: false
@@ -560,6 +575,7 @@
        # a function of weighted surface temperature jacobian and surface emissivity jacobian.
        # -----------------------------------------------------------------------------------------------------------
        - filter: Perform Action
+         apply at iterations: 0,1
          identifier:
            name: SurfJacobianCheck
            logging: false
@@ -583,6 +599,7 @@
        # Filter out data if |obs-h(x)| > Residual Threshold; Residual Threshold = MIN( (3.0 * ( 1 / Errflat )^2 * (1 / Errftaotop )^2), ErrobsMax )
        # -------------------------------------------------------------------------------------------------------------------------------------------
        - filter: Background Check
+         apply at iterations: 0,1
          identifier:
            name: GrossErrorCheck
            logging: false
@@ -616,6 +633,7 @@
        # Step 17: Useflag Check
        # ------------------------
        - filter: Bounds Check
+         apply at iterations: 0,1
          identifier:
            name: UseflagCheck
            logging: false

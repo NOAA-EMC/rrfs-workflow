@@ -136,6 +136,7 @@
 
          # Online domain check
          - filter: Bounds Check
+           apply at iterations: 0,1
            identifier:
              name: RegionalDomainCheck
              logging: false
@@ -150,6 +151,7 @@
 
          # Initial error assignment
          - filter: Perform Action
+           apply at iterations: 0,1
            identifier:
              name: ObsErrorInit
              logging: false
@@ -172,6 +174,7 @@
 
          # Error inflation (windEastward) based on pressure check (setupw.f90)
          - filter: Perform Action
+           apply at iterations: 0,1
            identifier:
              name: ObsErrorFactorPressureCheckU
              logging: false
@@ -191,6 +194,7 @@
 
          # Error inflation (windNorthward) based on pressure check (setupw.f90)
          - filter: Perform Action
+           apply at iterations: 0,1
            identifier:
              name: ObsErrorFactorPressureCheckV
              logging: false
@@ -210,6 +214,7 @@
 
          # Error inflation (windEastward) based on errormod (qcmod.f90)
          - filter: Perform Action
+           apply at iterations: 0,1
            identifier:
              name: ObsErrorFactorConventionalU
              logging: false
@@ -232,6 +237,7 @@
 
          # Error inflation (windNorthward) based on errormod (qcmod.f90)
          - filter: Perform Action
+           apply at iterations: 0,1
            identifier:
              name: ObsErrorFactorConventionalV
              logging: false
@@ -254,6 +260,7 @@
 
          # Error inflation when QualityMarker == 3 (read_prepbufr.f90)
          - filter: Perform Action
+           apply at iterations: 0,1
            identifier:
              name: ObsErrorFactorQm3_
              logging: false
@@ -270,6 +277,7 @@
 
          # Error inflation when observation pressure < 50 hPa (read_prepbufr.f90)
          - filter: Perform Action
+           apply at iterations: 0,1
            identifier:
              name: ObsErrorFactorHighAltitude
              logging: false
@@ -286,6 +294,7 @@
 
          # Bounds Check (ObsError)
          - filter: Bounds Check
+           apply at iterations: 0,1
            identifier:
              name: ObsErrorBoundsCheck
              logging: false
@@ -300,6 +309,7 @@
 
          # Bounds Check (ObsValue)
          - filter: Bounds Check
+           apply at iterations: 0,1
            identifier:
              name: ObsValueBoundsCheck
              logging: false
@@ -314,6 +324,7 @@
 
          # Assign abs(windEastward)
          - filter: Variable Assignment
+           apply at iterations: 0,1
            identifier:
              name: VarAssign
              logging: false
@@ -330,6 +341,7 @@
 
          # Assign abs(windNorthward)
          - filter: Variable Assignment
+           apply at iterations: 0,1
            identifier:
              name: VarAssign
              logging: false
@@ -346,6 +358,7 @@
 
          # Reject when abs(windNorthward) < 1.0 .and. abs(windEastward) < 1.0
          - filter: Bounds Check
+           apply at iterations: 0,1
            identifier:
              name: LowWindSpeedCheck
              logging: false
@@ -369,6 +382,7 @@
 
          # Reject when pressure is less than 226 mb.
          - filter: Bounds Check
+           apply at iterations: 0,1
            identifier:
              name: PressureMinCheck
              logging: false

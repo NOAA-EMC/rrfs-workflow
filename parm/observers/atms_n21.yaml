@@ -99,6 +99,7 @@
          <<: *polygonConfig
 
        - filter: Create Diagnostic Flags
+         apply at iterations: 0,1
          identifier:
            name: CreateDiagnosticFlags
            logging: false
@@ -136,6 +137,7 @@
        # Step 0-B: Calculate derived variables
        # Calculate CLW retrieved from observation
        - filter: Variable Assignment
+         apply at iterations: 0,1
          identifier:
            name: CLWRetFromObs
            logging: false
@@ -151,6 +153,7 @@
                clwret_types: [ObsValue]
        # Calculate CLW retrieved from observation
        - filter: Variable Assignment
+         apply at iterations: 0,1
          identifier:
            name: CLWRetFromObs
            logging: false
@@ -167,6 +170,7 @@
 
        # Calculate symmetric retrieved CLW
        - filter: Variable Assignment
+         apply at iterations: 0,1
          identifier:
            name: CLWRetSymmetric
            logging: false
@@ -177,6 +181,7 @@
            value: 1000.0
 
        - filter: Variable Assignment
+         apply at iterations: 0,1
          identifier:
            name: VarAssign
            logging: false
@@ -204,6 +209,7 @@
 
        # Calculate scattering index from observation
        - filter: Variable Assignment
+         apply at iterations: 0,1
          identifier:
            name: SIRetFromObs
            logging: false
@@ -221,6 +227,7 @@
 
        # Calculate CLW obs/bkg match index
        - filter: Variable Assignment
+         apply at iterations: 0,1
          identifier:
            name: CLWRetFromObs
            logging: false
@@ -246,6 +253,7 @@
 
        # Calculate symmetric observation error
        - filter: Variable Assignment
+         apply at iterations: 0,1
          identifier:
            name: InitialObsError
            logging: false
@@ -284,6 +292,7 @@
 
        # Calculate Innovation@DerivedMetaData
        - filter: Variable Assignment
+         apply at iterations: 0,1
          identifier:
            name: Innovation
            logging: false
@@ -305,6 +314,7 @@
 
        # Toss the data if the hofx is missing or outside of range
        - filter: Domain Check
+         apply at iterations: 0,1
          identifier:
            name: HofXValidCheck
            logging: false
@@ -324,6 +334,7 @@
 
        # Regional Domain Check
        - filter: Bounds Check
+         apply at iterations: 0,1
          identifier:
            name: RegionalDomainCheck
            logging: false
@@ -339,6 +350,7 @@
 
        # Step 0-C: Assign Initial All-Sky Observation Error
        - filter: Perform Action
+         apply at iterations: 0,1
          identifier:
            name: ObsErrorInit
            logging: false
@@ -354,6 +366,7 @@
 
        # Step 1: Remove Observations from the Edge of the Scan
        - filter: Domain Check
+         apply at iterations: 0,1
          identifier:
            name: ScanEdgeRemoval
            logging: false
@@ -372,6 +385,7 @@
 
        # Step 2: data Thinning
        - filter: Gaussian Thinning
+         apply at iterations: 0,1
          identifier:
            name: Thinning
            logging: false
@@ -389,6 +403,7 @@
 
        # Step 3A: CLW Retrieval Check (observation_based)
        - filter: Bounds Check
+         apply at iterations: 0,1
          identifier:
            name: CLWRetCheckObs
            logging: false
@@ -406,6 +421,7 @@
 
        # Step 3B: CLW Retrieval Check (background_based)
        - filter: Bounds Check
+         apply at iterations: 0,1
          identifier:
            name: CLWRetCheckBkg
            logging: false
@@ -423,6 +439,7 @@
 
        # Step 4: Window Channel Sanity Check
        - filter: Bounds Check
+         apply at iterations: 0,1
          identifier:
            name: WindowChannelExtremeResidual
            logging: false
@@ -443,6 +460,7 @@
 
        # Step 5: Hydrometeor Check (cloud/precipitation affected chanels)
        - filter: Variable Assignment
+         apply at iterations: 0,1
          identifier:
            name: HydrometeorCheck
            logging: false
@@ -464,6 +482,7 @@
                  channels: *atms_n21_channels
 
        - filter: Bounds Check
+         apply at iterations: 0,1
          identifier:
            name: HydrometeorCheck
            logging: false
@@ -483,6 +502,7 @@
 
        # Step 6: Observation Error Inflation based on Topography Check
        - filter: Variable Assignment
+         apply at iterations: 0,1
          identifier:
            name: TopographyCheck
            logging: false
@@ -499,6 +519,7 @@
                channels: *atms_n21_channels
 
        - filter: Perform Action
+         apply at iterations: 0,1
          identifier:
            name: TopographyCheck
            logging: false
@@ -514,6 +535,7 @@
 
        # Step 7: Obs Error Inflation based on TOA Transmittancec Check
        - filter: Variable Assignment
+         apply at iterations: 0,1
          identifier:
            name: ObsErrorFactorTransmitTop
            logging: false
@@ -529,6 +551,7 @@
                channels: *atms_n21_channels
 
        - filter: Perform Action
+         apply at iterations: 0,1
          identifier:
            name: TransmitTopCheck
            logging: false
@@ -544,6 +567,7 @@
 
        # Step 8: Observation Error Inflation based on Surface Jacobian Check
        - filter: Variable Assignment
+         apply at iterations: 0,1
          identifier:
            name: SurfJacobianCheck
            logging: false
@@ -562,6 +586,7 @@
                obserr_dtempf: [0.500, 2.000, 1.000, 2.000, 4.500]
 
        - filter: Perform Action
+         apply at iterations: 0,1
          identifier:
            name: SurfJacobianCheck
            logging: false
@@ -577,6 +602,7 @@
 
        # Step 9: Situation Dependent Check
        - filter: Variable Assignment
+         apply at iterations: 0,1
          identifier:
            name: SituDependCheck
            logging: false
@@ -606,6 +632,7 @@
                obserr_clearsky: *atms_n21_error
 
        - filter: Perform Action
+         apply at iterations: 0,1
          identifier:
            name: SituDependCheck
            logging: false
@@ -622,6 +649,7 @@
        # Step 10: Gross check
        # Remove data if abs(Obs-HofX) > absolute threhold
        - filter: Variable Assignment
+         apply at iterations: 0,1
          identifier:
            name: GrossErrorCheck
            logging: false
@@ -635,6 +663,7 @@
                latitude_parameters: [25.0, 0.25, 0.04, 3.0]
 
        - filter: Variable Assignment
+         apply at iterations: 0,1
          identifier:
            name: VarAssign
            logging: false
@@ -666,6 +695,7 @@
                obserr_bound_max: *atms_n21_obserr_bound_max
 
        - filter: Background Check
+         apply at iterations: 0,1
          identifier:
            name: GrossErrorCheck
            logging: false
@@ -684,6 +714,7 @@
 
        # Step 11: Inter-Channel Check
        - filter: Bounds Check
+         apply at iterations: 0,1
          identifier:
            name: InterChannelCheck
            logging: false
@@ -708,6 +739,7 @@
 
        # Step 12: Useflag Check
        - filter: Bounds Check
+         apply at iterations: 0,1
          identifier:
            name: UseflagCheck
            logging: false

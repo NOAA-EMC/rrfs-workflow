@@ -105,6 +105,7 @@
          <<: *polygonConfig
 
        - filter: Create Diagnostic Flags
+         apply at iterations: 0,1
          identifier:
            name: CreateDiagnosticFlags
            logging: false
@@ -181,6 +182,7 @@
        #          this initial cloud fraction is applied to all 10 channels
        # ----------------------------------------------------------------------------------------------------------------------------
        - filter: Domain Check
+         apply at iterations: 0,1
          identifier:
            name: CloudFractionCheck
            logging: false
@@ -205,6 +207,7 @@
        #          max_exclusive is false (default) sincce STDB=1.3 will not be removed
        # ---------------------------------------------------------------------------------------------------------------
        - filter: Bounds Check
+         apply at iterations: 0,1
          identifier:
            name: ClearSkyStdCheck
            logging: false
@@ -249,6 +252,7 @@
        # Step 5 : Create a variable of thinning priority based on cloudFree and StdDev from ABI channel 13
        # ----------------------------------------------------------------------------------------------------
        - filter: Variable Assignment
+         apply at iterations: 0,1
          identifier:
            name: ClearSkyStdCheck
            logging: false
@@ -271,6 +275,7 @@
        # Step 6 : Data Thinning (spatial and temporal thinning)
        # ----------------------------------------------------------------------------------------------------
        - filter: Gaussian Thinning
+         apply at iterations: 0,1
          identifier:
            name: Thinning
            logging: false
@@ -308,6 +313,7 @@
        # Step 7 : Initial obs erro assignment
        # -----------------------------------
        - filter: Perform Action
+         apply at iterations: 0,1
          identifier:
            name: ObsErrorInit
            logging: false
@@ -328,6 +334,7 @@
        # Mixed/Other: 4.
        # ----------------------------------------------------------
        - filter: Variable Assignment
+         apply at iterations: 0,1
          identifier:
            name: SurfaceFlag
            logging: false
@@ -366,6 +373,7 @@
        # Step 9: Surface Parameter assignment from geovals
        # ----------------------------------------------------------
        - filter: Variable Assignment
+         apply at iterations: 0,1
          identifier:
            name: VarAssign
            logging: false
@@ -408,6 +416,7 @@
        # Step 10: online geo-domain Check, rejecting observations outside of regional MPAS domain
        # ----------------------------------------------------------------------------------------
        - filter: Bounds Check
+         apply at iterations: 0,1
          identifier:
            name: RegionalDomainCheck
            logging: false
@@ -430,6 +439,7 @@
        # Toss data if the hofx is missing or outside of range
        # ----------------------------------------------------------------------------------------------------
        - filter: Domain Check
+         apply at iterations: 0,1
          identifier:
            name: HofXValidCheck
            logging: false
@@ -452,6 +462,7 @@
        # Step 12a: Toss all channels 7, 11-16  data over land
        # ------------------------------------------------------
        - filter: RejectList
+         apply at iterations: 0,1
          identifier:
            name: SurfaceCheckLand
            logging: false
@@ -468,6 +479,7 @@
        # Setp 12b: Toss all channels data over snow
        # --------------------------------------------
        - filter: RejectList
+         apply at iterations: 0,1
          identifier:
            name: SurfaceCheckSnow
            logging: false
@@ -484,6 +496,7 @@
        # Step 12c: Toss all channels data over ice (reject if ice_area_fraction>=0.99)
        # ---------------------------------------------------------------------------------
        - filter: RejectList
+         apply at iterations: 0,1
          identifier:
            name: SurfaceCheckIce
            logging: false
@@ -500,6 +513,7 @@
        # Step 12d:  Toss all channels data over mixed surface
        # --------------------------------------------------------
        - filter: RejectList
+         apply at iterations: 0,1
          identifier:
            name: SurfaceCheckMixed
            logging: false
@@ -530,6 +544,7 @@
        # This obsfunction calculates the observation error inflation factor for satellite radiances as a function of model top-to-space transmittance.
        # ------------------------------------------------------------------------------------------------------------------------------------------------
        - filter: Perform Action
+         apply at iterations: 0,1
          identifier:
            name: TransmitTopCheck
            logging: false
@@ -549,6 +564,7 @@
        # Step 14:  MinResidual Cloud Detection Check
        # ---------------------------------------------------
        - filter: Bounds Check
+         apply at iterations: 0,1
          identifier:
            name: CloudDetect
            logging: false
@@ -577,6 +593,7 @@
        # This step would remove more data for channel 10
        # ---------------------------------------------------------------------------------------------------------------------
        - filter: Domain Check
+         apply at iterations: 0,1
          identifier:
            name: ClearSkyStdCheck
            logging: false
@@ -600,6 +617,7 @@
        # Step 16: Observation Error inflation: adjust error for channels 8-10 according to ch8 BT standard deviation
        # --------------------------------------------------------------------------------------------------------------
        - filter: Perform Action
+         apply at iterations: 0,1
          identifier:
            name: ObsErrorInflationStd1
            logging: false
@@ -619,6 +637,7 @@
            inflation factor: 1.1489
 
        - filter: Perform Action
+         apply at iterations: 0,1
          identifier:
            name: ObsErrorInflationStd2
            logging: false
@@ -639,6 +658,7 @@
            inflation factor: 1.2923
 
        - filter: Perform Action
+         apply at iterations: 0,1
          identifier:
            name: ObsErrorInflationStd3
            logging: false
@@ -659,6 +679,7 @@
            inflation factor: 1.4967
 
        - filter: Perform Action
+         apply at iterations: 0,1
          identifier:
            name: ObsErrorInflationStd4
            logging: false
@@ -683,6 +704,7 @@
        # The brightness_temperature is rejected if the QC flags from this ObsFunction output value is bigger than maxvalue=1.0e-12.
        # ---------------------------------------------------------------------------------------------------------------------------------------------------------
        - filter: Bounds Check
+         apply at iterations: 0,1
          identifier:
            name: NearSSTRetCheckIR
            logging: false
@@ -712,6 +734,7 @@
        # a function of weighted surface temperature jacobian and surface emissivity jacobian.
        # -----------------------------------------------------------------------------------------------------------
        - filter: Perform Action
+         apply at iterations: 0,1
          identifier:
            name: SurfJacobianCheck
            logging: false
@@ -736,6 +759,7 @@
        # this step would remove more data from channel 8
        # -----------------------------------------------------------------------------------------------------------
        - filter: Domain Check
+         apply at iterations: 0,1
          identifier:
            name: CloudFractionCheck
            logging: false
@@ -758,6 +782,7 @@
        # Step 20a: Variable assignment, OmF non bias corrected
        # -----------------------------------------------------------------------------------------------------------
        - filter: Variable Assignment
+         apply at iterations: 0,1
          identifier:
            name: SplitWindowCheck
            logging: false
@@ -789,6 +814,7 @@
        #           min_exclusive:true is uesed to reject when omFNBC= -0.75
        # ------------------------------------------------------------------------------------------------------------------
        - filter: Bounds Check
+         apply at iterations: 0,1
          identifier:
            name: SplitWindowCheck
            logging: false
@@ -810,6 +836,7 @@
        # Step 21: Gross check
        # ----------------------------------
        - filter: Background Check
+         apply at iterations: 0,1
          identifier:
            name: GrossErrorCheck
            logging: false
@@ -845,6 +872,7 @@
        # Step 22: Useflag Check
        # -------------------------------
        - filter: Bounds Check
+         apply at iterations: 0,1
          identifier:
            name: UseflagCheck
            logging: false
