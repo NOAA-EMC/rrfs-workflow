@@ -87,10 +87,10 @@ driver_save_posterior_ensemble_increments: false
 
 # Model things
 # ------------
-fv3lam_nml: input_lam_C3463_NP32X60.nml
+fv3lam_nml: input_lam_C3359_NP40X40.nml
 atmosphere_npz_ges: 65
-atmosphere_layout_x: 32
-atmosphere_layout_y: 60
+atmosphere_layout_x: 40
+atmosphere_layout_y: 40
 atmosphere_ntiles: 1
 atmosphere_io_layout_x: 1
 atmosphere_io_layout_y: 1
