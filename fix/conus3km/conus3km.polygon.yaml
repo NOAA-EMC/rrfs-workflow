@@ -1,0 +1,9 @@
+_polygon: &polygonConfig
+  # conus3km polygon.simplify: buffer_deg=0.30, tolerance=0.30, 20 vertices
+  inside point longitude: 262.52
+  inside point latitude: 42.58
+  vertex longitudes: [225.21, 225.55, 231.13, 241.75, 252.34, 262.27, 272.72, 282.92, 294.03, 299.5, 299.81, 294.0, 288.0, 274.73, 262.42, 250.19, 237.14, 236.68, 230.71, 225.21]
+  vertex latitudes: [47.93, 48.41, 50.27, 52.8, 54.2, 54.61, 54.17, 52.87, 50.24, 48.41, 47.91, 36.62, 20.57, 22.09, 22.57, 22.1, 20.55, 20.87, 37.26, 47.93]
+  action:
+    name: reduce obs space
+

@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2016
 rundir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+# generate jedivar.yaml and getkf.yaml
+../workflow/rocoto_funcs/smart_superyaml.py ../ getkf conus12km
+../workflow/rocoto_funcs/smart_superyaml.py ../ jedivar conus12km
+
 mkdir -p "${rundir}/yaml" "${rundir}/tmp"
 cd "${rundir}/tmp" || exit 1
 
