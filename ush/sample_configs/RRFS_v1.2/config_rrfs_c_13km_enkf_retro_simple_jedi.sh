@@ -7,14 +7,14 @@ ACCOUNT="RRFS-DEV"
 
 # Directory settings (user-dependent)
 EXPT_BASEDIR="/lfs/h2/emc/da/noscrub/$USER/rrfs-workflow/expt_dirs/May2024_retro_enkf/$version"
-EXPT_SUBDIR="rrfs_conus_3km.enkf"
+EXPT_SUBDIR="rrfs_conus_13km.enkf"
 STMP="/lfs/h2/emc/stmp/$USER/May2024_retro/$version/$EXPT_SUBDIR"
 PTMP="/lfs/h2/emc/ptmp/$USER/May2024_retro/$version/$EXPT_SUBDIR"
 NWGES="/lfs/h2/emc/ptmp/$USER/May2024_retro/$version/$EXPT_SUBDIR"
 ARCHIVEDIR="/NCEPDEV/emc-meso/5year/Samuel.Degelia/RRFSv1/May2024_retro/$version/$EXPT_SUBDIR/"
 DO_ARCHIVE_RETRO="FALSE"
 
-PREDEF_GRID_NAME=RRFS_CONUS_3km
+PREDEF_GRID_NAME=RRFS_CONUS_13km
 
 . set_rrfs_config_general.sh
 . set_rrfs_config_singlescaleloc.sh
@@ -29,14 +29,11 @@ QUEUE_PRDGEN="dev"
 QUEUE_ANALYSIS="dev"
 QUEUE_GRAPHICS="dev"
 
-NNODES_RUN_ENKF_JEDI=40
-PPN_RUN_ENKF_JEDI=40
-
 # JEDI and GSI EnKF options
 DO_IODA_BUFR="TRUE"
 DO_JEDIVAR="FALSE"
 DA_SYSTEM="JEDI"
-DO_PARALLEL_DA="FALSE"
+DO_PARALLEL_DA="TRUE"
 DO_DACOLD="FALSE"
 DO_DACYCLE="FALSE"
 DO_ENSEMBLE="TRUE"
@@ -51,7 +48,7 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    DO_ENSINIT="TRUE"
 fi
 NUM_ENS_MEMBERS=30
-JCB_CONFIG_ENKF="rdas-atmosphere-templates-fv3_c3km_getkf.yaml"
+JCB_CONFIG_ENKF="rdas-atmosphere-templates-fv3_c13_getkf.yaml"
 
 # Radar DA options
 DO_IODA_MRMS="TRUE"
@@ -60,7 +57,6 @@ DO_ENVAR_RADAR_REF_ONCE="TRUE"
 RADARREFL_TIMELEVEL=(0)
 FH_DFI_RADAR="0.0,0.25,0.5"
 diag_radardbz=.true.
-RADAR_REF_THINNING=2
 
 # Other options
 grid_ratio_fv3=1.0 # default: 2.0
@@ -178,7 +174,7 @@ EXTRN_MDL_SAVETYPE="GSL"
 envir="test"
 
 NET="rrfs"
-TAG="c3km"
+TAG="c13"
 
 NCL_REGION="conus"
 MODEL="rrfs"
@@ -190,15 +186,6 @@ RUN="rrfs"
 if [[ ${regional_ensemble_option} == "5" ]]; then
 #-------------------------------------------------
 # RRFSE directory contains ensemble restart files for GSI hybrid.
-RRFSE_NWGES="/lfs/h2/emc/ptmp/$USER/May2024_retro/$version/$EXPT_SUBDIR"
+RRFSE_NWGES="/lfs/h3/emc/lam/noscrub/hui.liu/runs_co13km/rrfs.v0.8.6/nwges_enkf"
 CYCL_HRS_PRODSTART_ENS=( "07" "19" )
 fi
-
-# clean options:
-CYCLE_THROTTLE=12
-CLEAN_CYCLEDEF="00 00-23 ${CYCLEDAY} ${CYCLEMONTH} ${STARTYEAR} *"
-CLEAN_OLDPROD_HRS=999
-CLEAN_OLDLOG_HRS=999
-CLEAN_NWGES_HRS=999
-CLEAN_OLDRUN_HRS=25
-CLEAN_OLDFCST_HRS=25
