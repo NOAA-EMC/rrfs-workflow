@@ -329,6 +329,10 @@ if [ "${EXTRN}" = true ]; then
     printf "... removing RDASApp ...\n"
     rm -rf "${SORC_DIR}/RDASApp"
   fi
+  if [ -d "${HOME_DIR}/exec/bin" ]; then
+    printf "... removing stale exec/bin (RDASApp fails to build if old binaries are left behind) ...\n"
+    rm -rf "${HOME_DIR}/exec/bin"
+  fi
 
   # run check-out
   python --version 1>/dev/null 2>/dev/null
