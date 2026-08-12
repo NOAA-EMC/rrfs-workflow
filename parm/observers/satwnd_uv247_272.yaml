@@ -53,6 +53,19 @@
              logging: false
            <<: *polygonConfig
 
+         # Time window filter
+         - filter: Domain Check
+           identifier:
+             name: TimeWindowCheck
+             logging: false
+           where:
+             - variable:
+                 name: MetaData/timeOffset # units: s
+               minvalue: -5400
+               maxvalue:  5400
+           action:
+             name: reduce obs space
+
          # Remove all invalid obs from this observer
          - filter: Perform Action
            identifier:
@@ -81,83 +94,39 @@
            action:
              name: reduce obs space
 
-         # Accept, reject, or passivate (monitor)
-         - filter: Perform Action
-           apply at iterations: 0,1
-           identifier:
-             name: IuseCheck
-             logging: false
-             diagnostic flag new: false
-           filter variables:
-           - name: windEastward
-           - name: windNorthward
-           where:
-           - variable: ObsType/windEastward
-             is_in: 247
-           - variable: MetaData/satelliteIdentifier
-             is_in: 272
-           action:
-             name: accept # accept, reject, passivate
-
-         # Reject all obs not 247
+         # Remove obs from other instruments
          - filter: Perform Action
            identifier:
-             name: ObsTypeCheck
+             name: ObsInstrumentCheck
              logging: false
-             diagnostic flag new: false
-           filter variables:
-           - name: windEastward
-           - name: windNorthward
            where:
-           - variable: ObsType/windEastward
-             is_not_in: 247
            - variable: MetaData/satelliteIdentifier
              is_not_in: 272
            action:
              name: reduce obs space
 
-         # Time window filter
-         - filter: Bounds Check
-           apply at iterations: 0,1
-           identifier:
-             name: TimeWindowCheck
-             logging: false
-           filter variables:
-           - name: windEastward
-           - name: windNorthward
-           test variables:
-           - name: MetaData/timeOffset # units: s
-           minvalue: -5400
-           maxvalue:  5400
-           where:
-           - variable: ObsType/windEastward
-             is_in: 247
-           - variable: MetaData/satelliteIdentifier
-             is_in: 272
-           action:
-             name: reduce obs space
-
          # Duplicate Check
-         - filter: Temporal Thinning
-           apply at iterations: 0,1
-           identifier:
-             name: DuplicateThinning
-             logging: false
-           filter variables:
-           - name: windEastward
-           - name: windNorthward
-           min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "2024-05-27T00:00:00Z"
-           category_variable:
-             name: MetaData/longitude_latitude_pressure
-           where:
-           - variable: ObsType/windEastward
-             is_in: 247
-           - variable: MetaData/satelliteIdentifier
-             is_in: 272
-           action:
-             name: reduce obs space
+#         - filter: DuplicateThinning
+#           identifier:
+#             name: DuplicateThinning
+#             logging: false
+#           filter variables:
+#           - name: windEastward
+#           - name: windNorthward
+#           analysis_time: "@ANALYSIS_DATE@"
+#           analysis_time_tolerance: PT0M
+#           min_spacing: PT90M
+#           equidistant_time_selection: after
+#           variable names:
+#           - MetaData/longitude
+#           - MetaData/latitude
+#           - MetaData/pressure
+#           tolerance:
+#           - 1.0e-6
+#           - 1.0e-6
+#           - 1.0e-6
+#           action:
+#             name: reduce obs space
 
          # Online domain check
          - filter: Bounds Check
