@@ -153,6 +153,7 @@ export NATIVE_UPP=${NATIVE_UPP:-""}
 
 # archive
 export WALLTIME_ARCHIVE=${WALLTIME_ARCHIVE:-"8:00:00"}
+export PARTITION_ARCHIVE=${PARTITION_ARCHIVE:-$PARTITION}
 
 # graphics
 export NODES_GRAPHICS=${NODES_GRAPHICS:-"<nodes>1:ppn=20</nodes>"}
