@@ -196,29 +196,35 @@ fi
 # create index files
 if [ -s ${COMOUT}/${prslev} ]; then
   wgrib2 ${COMOUT}/${prslev} -s > ${COMOUT}/${prslev}.idx
-  if [[ ${DO_ENSFCST} = "TRUE" ]] && [[ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]] && [[ ${SENDDBN} = "YES" ]]; then
+  if [[ ${SENDDBN} = "YES" ]]; then
+    if [[ "${DO_ENSFCST}" = "TRUE" ]] && [[ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]]; then
       $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_NA $job \
           ${COMOUT}/${prslev}
       $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_NA_IDX $job \
           ${COMOUT}/${prslev}.idx
+    fi
   fi
 fi
 if [ -s ${COMOUT}/${natlev} ]; then
   wgrib2 ${COMOUT}/${natlev} -s > ${COMOUT}/${natlev}.idx
-  if [[ ${DO_ENSFCST} != "TRUE" ]] && [[ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]] && [[ ${SENDDBN} = "YES" ]]; then
+  if [[ ${SENDDBN} = "YES" ]]; then
+    if [[ "${DO_ENSFCST}" != "TRUE" ]] && [[ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]]; then
       $DBNROOT/bin/dbn_alert MODEL RRFS_DET_NATLEV_NA $job \
           ${COMOUT}/${natlev}
       $DBNROOT/bin/dbn_alert MODEL RRFS_DET_NATLEV_NA_IDX $job \
           ${COMOUT}/${natlev}.idx
+    fi
   fi
 fi
 if [ -s ${COMOUT}/${fld2d} ]; then
   wgrib2 ${COMOUT}/${fld2d} -s > ${COMOUT}/${fld2d}.idx
-  if [[ ${DO_ENSFCST} = "TRUE" ]] && [[ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]] && [[ ${SENDDBN} = "YES" ]]; then
+  if [[ ${SENDDBN} = "YES" ]]; then
+    if [[ "${DO_ENSFCST}" = "TRUE" ]] && [[ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]]; then
       $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_2DFLD_NA $job \
           ${COMOUT}/${fld2d}
       $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_2DFLD_NA_IDX $job \
           ${COMOUT}/${fld2d}.idx
+    fi
   fi
 fi
 if [ -s ${COMOUT}/${subset} ]; then
@@ -227,7 +233,7 @@ fi
 
 if [ "${DO_ENSFCST}" != "TRUE" ] && [ ${fhr} != '000' ] && [ -e $COMOUT/${fld2d_subh} ]; then
   wgrib2 ${COMOUT}/${fld2d_subh} -s > ${COMOUT}/${fld2d_subh}.idx
-  if [[ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]] && [[ ${SENDDBN} = "YES" ]]; then
+  if [[ ${SENDDBN} = "YES" ]] && [[ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]]; then
       $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBH_NA $job \
           ${COMOUT}/${fld2d_subh}
       $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBH_NA_IDX $job \
@@ -305,6 +311,12 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
         cpreq ${DATAprdgen}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2 ${COMOUT}
         wgrib2 ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
       fi
+      if [[ ${SENDDBN} = "YES" ]] ; then
+        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_${domain} $job \
+            ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2
+        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_${domain}_IDX $job \
+            ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
+      fi  #SENDDBN
     else
       for task in $(seq ${tasks[count]})
       do
@@ -338,6 +350,12 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
         cpreq ${DATAprdgen}/prdgen_${domain}_1/${domain}_1.grib2 ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2
         wgrib2 ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
       fi
+      if [[ ${SENDDBN} = "YES" ]] ; then
+        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_${domain} $job \
+            ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2
+        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_${domain}_IDX $job \
+            ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
+      fi  #SENDDBN
     else
       if [[ $SENDCOM = 'YES' ]]; then
         cpreq ${DATAprdgen}/prdgen_${domain}_1/${domain}_1.grib2 ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2
@@ -372,6 +390,12 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
         cpreq ${DATAprdgen}/prdgen_${domain}_${task}/${domain}_${task}.grib2 ${COMOUT}/rrfs.t${cyc}z.${mem_num}.2dfld.${outspacing}.f${fhr}.${domain}.grib2
         wgrib2 ${COMOUT}/rrfs.t${cyc}z.${mem_num}.2dfld.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.${mem_num}.2dfld.${outspacing}.f${fhr}.${domain}.grib2.idx
       fi
+      if [[ ${SENDDBN} = "YES" ]] ; then
+        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_2DFLD_${domain} $job \
+            ${COMOUT}/rrfs.t${cyc}z.${mem_num}.2dfld.${outspacing}.f${fhr}.${domain}.grib2
+        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_2DFLD_${domain}_IDX $job \
+            ${COMOUT}/rrfs.t${cyc}z.${mem_num}.2dfld.${outspacing}.f${fhr}.${domain}.grib2.idx
+      fi  #SENDDBN
     else
       if [[ $SENDCOM = 'YES' ]]; then
         cpreq ${DATAprdgen}/prdgen_${domain}_${task}/${domain}_${task}.grib2 ${COMOUT}/rrfs.t${cyc}z.2dfld.${outspacing}.f${fhr}.${domain}.grib2
