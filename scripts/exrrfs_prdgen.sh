@@ -196,12 +196,30 @@ fi
 # create index files
 if [ -s ${COMOUT}/${prslev} ]; then
   wgrib2 ${COMOUT}/${prslev} -s > ${COMOUT}/${prslev}.idx
+  if [[ ${DO_ENSFCST} = "TRUE" ]] && [[ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]] && [[ ${SENDDBN} = "YES" ]]; then
+      $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_NA $job \
+          ${COMOUT}/${prslev}
+      $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_NA_IDX $job \
+          ${COMOUT}/${prslev}.idx
+  fi
 fi
 if [ -s ${COMOUT}/${natlev} ]; then
   wgrib2 ${COMOUT}/${natlev} -s > ${COMOUT}/${natlev}.idx
+  if [[ ${DO_ENSFCST} != "TRUE" ]] && [[ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]] && [[ ${SENDDBN} = "YES" ]]; then
+      $DBNROOT/bin/dbn_alert MODEL RRFS_DET_NATLEV_NA $job \
+          ${COMOUT}/${natlev}
+      $DBNROOT/bin/dbn_alert MODEL RRFS_DET_NATLEV_NA_IDX $job \
+          ${COMOUT}/${natlev}.idx
+  fi
 fi
 if [ -s ${COMOUT}/${fld2d} ]; then
   wgrib2 ${COMOUT}/${fld2d} -s > ${COMOUT}/${fld2d}.idx
+  if [[ ${DO_ENSFCST} = "TRUE" ]] && [[ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]] && [[ ${SENDDBN} = "YES" ]]; then
+      $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_2DFLD_NA $job \
+          ${COMOUT}/${fld2d}
+      $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_2DFLD_NA_IDX $job \
+          ${COMOUT}/${fld2d}.idx
+  fi
 fi
 if [ -s ${COMOUT}/${subset} ]; then
   wgrib2 ${COMOUT}/${subset} -s > ${COMOUT}/${subset}.idx
@@ -209,6 +227,12 @@ fi
 
 if [ "${DO_ENSFCST}" != "TRUE" ] && [ ${fhr} != '000' ] && [ -e $COMOUT/${fld2d_subh} ]; then
   wgrib2 ${COMOUT}/${fld2d_subh} -s > ${COMOUT}/${fld2d_subh}.idx
+  if [[ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]] && [[ ${SENDDBN} = "YES" ]]; then
+      $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBH_NA $job \
+          ${COMOUT}/${fld2d_subh}
+      $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBH_NA_IDX $job \
+          ${COMOUT}/${fld2d_subh}.idx
+  fi
 fi
 
 #  Generate products
