@@ -20,23 +20,17 @@
              allow overwrite: true
          io pool:
            max pool size: 1
-         observed variables: [airTemperature]
-         simulated variables: [airTemperature]
+         observed variables: [airTemperatureAt2M]
+         simulated variables: [airTemperatureAt2M]
 
        obs operator:
-           name: VertInterp
-           vertical coordinate: air_pressure
-           observation vertical coordinate: pressure
-           observation vertical coordinate group: MetaData
-           interpolation method: log-linear
-           #gsi geovals:
-           #  filename: "obsout/sfc_tsen_geoval_2024052700.nc"
-           #  levels_are_top_down: False
-           variables:
-           - name: airTemperature
+         name: Identity
 
        linear obs operator:
-         name: VertInterp
+         name: Identity
+         variable maps:
+         - name: airTemperatureAt2M
+           alias: air_temperature
 
        obs error:
          covariance model: diagonal
@@ -47,7 +41,7 @@
 
        obs filters:
          # ------------------
-         # airTemperature (181)
+         # airTemperatureAt2M (181)
          # ------------------
          # Reset the QCflags at the beginning of a new outer loop
          - filter: AcceptList
@@ -81,7 +75,7 @@
              name: ObsInvalidCheck
              logging: false
            where:
-           - variable: ObsValue/airTemperature
+           - variable: ObsValue/airTemperatureAt2M
              value: is_not_valid
            action:
              name: reduce obs space
@@ -92,7 +86,7 @@
              name: ObsTypeCheck
              logging: false
            where:
-           - variable: ObsType/airTemperature
+           - variable: ObsType/airTemperatureAt2M
              is_not_in: 181
            action:
              name: reduce obs space
@@ -104,9 +98,9 @@
              logging: false
              diagnostic flag new: false
            filter variables:
-           - name: airTemperature
+           - name: airTemperatureAt2M
            where:
-           - variable: QualityMarker/airTemperature
+           - variable: QualityMarker/airTemperatureAt2M
              is_in: 4-15
              value: is_not_valid
            where operator: or
@@ -119,7 +113,7 @@
              name: DuplicateThinning
              logging: false
            filter variables:
-           - name: airTemperature
+           - name: airTemperatureAt2M
            analysis_time: "@ANALYSIS_DATE@"
            analysis_time_tolerance: PT0M
            min_spacing: PT90M
@@ -131,6 +125,26 @@
            action:
              name: reduce obs space
 
+         - filter: Variable Assignment
+           identifier:
+             name: DerivedSurfaceTemperature
+             logging: false
+           assignments:
+           - name: DerivedObsValue/airTemperatureAt2M
+             type: float
+             function:
+               name: ObsFunction/ModelHeightAdjustedAirTemperature
+               options:
+                 elevation:
+                   name: MetaData/stationElevation
+                 temperature lapse rate in K/km:
+                   scheme: local
+                   level1: 1
+                   level2: 10
+                   bounds:
+                     minvalue: 0.5
+                     maxvalue: 10.0
+
          # Online regional domain check
          - filter: Bounds Check
            apply at iterations: 0,1
@@ -139,7 +153,7 @@
              logging: false
              diagnostic flag new: false
            filter variables:
-           - name: airTemperature
+           - name: airTemperatureAt2M
            test variables:
            - name:  GeoVaLs/observable_domain_mask
            minvalue: 0.0
@@ -153,9 +167,9 @@
              logging: false
              diagnostic flag new: false
            filter variables:
-           - name: airTemperature
+           - name: airTemperatureAt2M
            where:
-           - variable: ObsType/airTemperature
+           - variable: ObsType/airTemperatureAt2M
              is_in: 181
            action:
              name: assign error
@@ -170,56 +184,58 @@
 
 #         # Error inflation based on pressure check (setupt.f90)
 #         - filter: Perform Action
+#           apply at iterations: 0,1
 #           identifier:
 #             name: ObsErrorFactorPressureCheck
 #             logging: false
 #             diagnostic flag new: false
 #           filter variables:
-#           - name: airTemperature
+#           - name: airTemperatureAt2M
 #           where:
-#           - variable: ObsType/airTemperature
+#           - variable: ObsType/airTemperatureAt2M
 #             is_in: 181
 #           action:
 #             name: inflate error
 #             inflation variable:
 #               name: ObsFunction/ObsErrorFactorPressureCheck
 #               options:
-#                 variable: airTemperature
+#                 variable: airTemperatureAt2M
 #                 inflation factor: 8.0
 
 #         # Error inflation based on errormod (qcmod.f90)
 #         - filter: Perform Action
+#           apply at iterations: 0,1
 #           identifier:
-#             name: ObsErrorFactorPressureCheck
+#             name: ObsErrorFactorConventional
 #             logging: false
 #             diagnostic flag new: false
 #           filter variables:
-#           - name: airTemperature
+#           - name: airTemperatureAt2M
 #           where:
-#           - variable: ObsType/airTemperature
+#           - variable: ObsType/airTemperatureAt2M
 #             is_in: 181
 #           action:
 #             name: inflate error
 #             inflation variable:
 #               name: ObsFunction/ObsErrorFactorConventional
 #               options:
-#                 inflate variables: [airTemperature]
+#                 inflate variables: [airTemperatureAt2M]
 #                 pressure: MetaData/pressure
 
          # Error inflation when QualityMarker == 3 (read_prepbufr.f90)
          - filter: Perform Action
            apply at iterations: 0,1
            identifier:
-             name: ObsErrorFactorPressureCheck
+             name: ObsErrorFactorQm3_
              logging: false
              diagnostic flag new: false
            filter variables:
-           - name: airTemperature
+           - name: airTemperatureAt2M
            action:
              name: inflate error
              inflation factor: 1.2
            where:
-           - variable: QualityMarker/airTemperature
+           - variable: QualityMarker/airTemperatureAt2M
              is_in: 3
 
          # Error inflation when observation pressure < 100 hPa (read_prepbufr.f90)
@@ -230,7 +246,7 @@
              logging: false
              diagnostic flag new: false
            filter variables:
-           - name: airTemperature
+           - name: airTemperatureAt2M
            action:
              name: inflate error
              inflation factor: 1.2
@@ -246,9 +262,9 @@
              logging: false
              diagnostic flag new: false
            filter variables:
-           - name: airTemperature
+           - name: airTemperatureAt2M
            test variables:
-           - name:  ObsErrorData/airTemperature
+           - name:  ObsErrorData/airTemperatureAt2M
            minvalue: 0.0
            maxvalue: 1000
            action:
@@ -262,7 +278,7 @@
              logging: false
              diagnostic flag new: false
            filter variables:
-           - name: airTemperature
+           - name: airTemperatureAt2M
            minvalue: 100
            maxvalue: 400
            action:
@@ -276,13 +292,13 @@
              logging: false
              diagnostic flag new: false
            assignments:
-           - name: TempObsErrorData/airTemperature
+           - name: TempObsErrorData/airTemperatureAt2M
              type: float
              function:
                name: ObsFunction/Arithmetic
                options:
                  variables:
-                 - name: ObsErrorData/airTemperature
+                 - name: ObsErrorData/airTemperatureAt2M
            defer to post: true
 
          # Set ObsError set "error parameter" if < "max value"
@@ -293,16 +309,16 @@
              logging: false
              diagnostic flag new: false
            filter variables:
-           - name: airTemperature
+           - name: airTemperatureAt2M
            action:
              name: assign error
              error parameter: 1.0
            where:
            - variable:
-               name: ObsErrorData/airTemperature
+               name: ObsErrorData/airTemperatureAt2M
              maxvalue: 1.0
            - variable:
-               name: ObsErrorData/airTemperature
+               name: ObsErrorData/airTemperatureAt2M
              value: is_valid
            defer to post: true
 
@@ -314,16 +330,16 @@
              logging: false
              diagnostic flag new: false
            filter variables:
-           - name: airTemperature
+           - name: airTemperatureAt2M
            action:
              name: assign error
              error parameter: 3.0
            where:
            - variable:
-               name: ObsErrorData/airTemperature
+               name: ObsErrorData/airTemperatureAt2M
              minvalue: 3.0
            - variable:
-               name: ObsErrorData/airTemperature
+               name: ObsErrorData/airTemperatureAt2M
              value: is_valid
            defer to post: true
 
@@ -335,13 +351,13 @@
              logging: false
              diagnostic flag new: false
            filter variables:
-           - name: airTemperature
+           - name: airTemperatureAt2M
            threshold: 5.0
            action:
              name: reject
            where:
-           - variable: ObsType/airTemperature
-           - variable: QualityMarker/airTemperature
+           - variable: ObsType/airTemperatureAt2M
+           - variable: QualityMarker/airTemperatureAt2M
              is_not_in: 3
            defer to post: true
 
@@ -353,13 +369,13 @@
              logging: false
              diagnostic flag new: false
            filter variables:
-           - name: airTemperature
+           - name: airTemperatureAt2M
            threshold: 3.5
            action:
              name: reject
            where:
-           - variable: ObsType/airTemperature
-           - variable: QualityMarker/airTemperature
+           - variable: ObsType/airTemperatureAt2M
+           - variable: QualityMarker/airTemperatureAt2M
              is_in: 3
            defer to post: true
 
@@ -371,13 +387,13 @@
              logging: false
              diagnostic flag new: false
            filter variables:
-           - name: airTemperature
+           - name: airTemperatureAt2M
            action:
              name: assign error
-             error function: TempObsErrorData/airTemperature
+             error function: TempObsErrorData/airTemperatureAt2M
            where:
            - variable:
-               name: TempObsErrorData/airTemperature
+               name: TempObsErrorData/airTemperatureAt2M
              value: is_valid
            defer to post: true
 
