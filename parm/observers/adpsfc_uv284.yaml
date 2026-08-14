@@ -8,7 +8,6 @@
              type: H5File
              obsfile: "data/obs/ioda_adpsfc.nc"
              missing file action: "warn"
-             #obsfile: "obsout/sfcship_uv_obs_2024052700_dc.nc4"
            obsgrouping:
              group variables: ["stationIdentification"]
              sort variable: "pressure"
@@ -24,18 +23,15 @@
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
-       obs operator:
-           name: VertInterp
-           vertical coordinate: air_pressure
-           observation vertical coordinate: pressure
-           observation vertical coordinate group: MetaData
-           interpolation method: log-linear
-           #gsi geovals:
-           #  filename: "obsout/sfcship_uv_geoval_2024052700.nc"
-           #  levels_are_top_down: False
-           variables:
-           - name: windEastward
-           - name: windNorthward
+        obs operator:
+          name: VertInterp
+          vertical coordinate: height_above_mean_sea_level
+          observation vertical coordinate: height
+          observation vertical coordinate group: DerivedMetaData
+          interpolation method: linear
+          variables:
+          - name: windEastward
+          - name: windNorthward
 
        linear obs operator:
          name: VertInterp
@@ -78,6 +74,9 @@
              name: reduce obs space
 
          - filter: Perform Action
+           identifier:
+             name: ObsInvalidCheck
+             logging: false
            where:
            - variable: ObsValue/windEastward
              value: is_not_valid
@@ -137,6 +136,23 @@
            action:
              name: reduce obs space
 
+          ## Obs height adjustment
+          - filter: Variable Assignment
+            apply at iterations: 0,1
+            identifier:
+              name: SurfaceWindHeightAdjustment
+              logging: false
+            assignments:
+            - name: DerivedMetaData/height
+              type: float
+              function:
+                name: ObsFunction/LinearCombination
+                options:
+                  variables:
+                  - name: GeoVaLs/height_above_mean_sea_level_at_surface
+                  coefs: [1.0]
+                  intercept: 10.0
+
          # Online domain check
          - filter: Bounds Check
            apply at iterations: 0,1
@@ -173,7 +189,7 @@
                  xvar:
                    name: MetaData/pressure
                  xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
-                 errors: [1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079, 1.079]
+                 errors: [1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874]
 
          # Error inflation (windEastward) based on pressure check (setupw.f90)
          - filter: Perform Action
@@ -223,6 +239,7 @@
 
 #         # Error inflation (windEastward) based on errormod (qcmod.f90)
 #         - filter: Perform Action
+#           apply at iterations: 0,1
 #           identifier:
 #             name: ObsErrorFactorConventionalU
 #             logging: false
@@ -245,6 +262,7 @@
 
 #         # Error inflation (windNorthward) based on errormod (qcmod.f90)
 #         - filter: Perform Action
+#           apply at iterations: 0,1
 #           identifier:
 #             name: ObsErrorFactorConventionalV
 #             logging: false
