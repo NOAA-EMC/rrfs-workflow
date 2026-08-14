@@ -126,6 +126,7 @@
              name: reduce obs space
 
          - filter: Variable Assignment
+           apply at iterations: 0,1
            identifier:
              name: DerivedSurfaceTemperature
              logging: false
