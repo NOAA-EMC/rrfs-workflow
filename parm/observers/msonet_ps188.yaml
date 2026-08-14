@@ -124,6 +124,18 @@
 #           action:
 #             name: reduce obs space
 
+         # Derive airTemperatureAt2M from airTemperature
+         - filter: Variable Assignment
+           apply at iterations: 0,1
+           identifier:
+             name: DerivedAirTemperatureAt2M
+             logging: false
+           assignments:
+           - name: DerivedObsValue/airTemperatureAt2M
+             type: float
+             source variable:
+               name: ObsValue/airTemperature
+
          # Online regional domain check
          - filter: Bounds Check
            apply at iterations: 0,1
