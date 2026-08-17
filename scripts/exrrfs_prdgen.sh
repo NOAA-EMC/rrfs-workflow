@@ -312,9 +312,9 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
         wgrib2 ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
       fi
       if [[ ${SENDDBN} = "YES" ]] ; then
-        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_${domain} $job \
+        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_${DBNDOM} $job \
             ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2
-        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_${domain}_IDX $job \
+        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_${DBNDOM}_IDX $job \
             ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
       fi  #SENDDBN
     else
@@ -351,9 +351,9 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
         wgrib2 ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
       fi
       if [[ ${SENDDBN} = "YES" ]] ; then
-        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_${domain} $job \
+        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_${DBNDOM} $job \
             ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2
-        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_${domain}_IDX $job \
+        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_${DBNDOM}_IDX $job \
             ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
       fi  #SENDDBN
     else
@@ -391,9 +391,9 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
         wgrib2 ${COMOUT}/rrfs.t${cyc}z.${mem_num}.2dfld.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.${mem_num}.2dfld.${outspacing}.f${fhr}.${domain}.grib2.idx
       fi
       if [[ ${SENDDBN} = "YES" ]] ; then
-        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_2DFLD_${domain} $job \
+        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_2DFLD_${DBNDOM} $job \
             ${COMOUT}/rrfs.t${cyc}z.${mem_num}.2dfld.${outspacing}.f${fhr}.${domain}.grib2
-        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_2DFLD_${domain}_IDX $job \
+        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_2DFLD_${DBNDOM}_IDX $job \
             ${COMOUT}/rrfs.t${cyc}z.${mem_num}.2dfld.${outspacing}.f${fhr}.${domain}.grib2.idx
       fi  #SENDDBN
     else
