@@ -23,14 +23,14 @@
          observed variables: [specificHumidityAt2M]
          simulated variables: [specificHumidityAt2M]
 
-        obs operator:
-          name: Identity
+       obs operator:
+         name: Identity
 
-        linear obs operator:
-          name: Identity
-          variable maps:
-          - name: specificHumidityAt2M
-            alias: water_vapor_mixing_ratio_wrt_moist_air
+       linear obs operator:
+         name: Identity
+         variable maps:
+         - name: specificHumidityAt2M
+           alias: water_vapor_mixing_ratio_wrt_moist_air
 
        obs error:
          covariance model: diagonal
