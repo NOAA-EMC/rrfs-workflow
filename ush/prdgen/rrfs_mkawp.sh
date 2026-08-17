@@ -30,6 +30,11 @@ then
   # Only grab records that need WMO headers for AWIPS
   $WGRIB2 ${INPUTfile} | grep -F -f ${PARMrrfs}/wmo/rrfsparams_${gridspacing} | $WGRIB2 -i ${INPUTfile} -new_grid_winds grid -set_grib_type same -grib rrfs.t${cyc}z.${inputfile}.${gridspacing}.f${fhr}.na.grib2
 
+
+  # Add an interpolation step here?
+  # NA 13km - nps:248:60 -152:1084:13000 6:658:13000
+  # NA 3km - nps:248:60 -152:4700:3000 6:2850:3000
+
   # Run tocgrib2
 
   export pgm="tocgrib2"
