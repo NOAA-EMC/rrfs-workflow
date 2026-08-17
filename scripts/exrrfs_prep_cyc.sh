@@ -234,7 +234,7 @@ else
     done
   fi
   if [ "${DO_ENS_BLENDING}" = "TRUE" ] &&
-     [ -e $run_blending ] && [ ! -e $run_ensinit ] &&
+     [ -e $run_blending ] && [ ! -e $run_ensinit ] && [ ${run_ensinit_ct} -eq 0 ] &&
      [ "${CYCLE_TYPE}" = "spinup" ] && [ "${CYCLE_SUBTYPE}" = "spinup" ]; then
      BKTYPE=3
   fi
