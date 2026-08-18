@@ -162,7 +162,10 @@ YYJJJ2200000000=`date +"%y%j2200000000" -d "${START_DATE} 1 day ago"`
 #
 run_blending=${COMOUT}/run_blending
 run_ensinit=${COMOUT}/run_ensinit
-if [[ $CYCLE_SUBTYPE == "ensinit" && -e $run_blending && ! -e $run_ensinit ]]; then
+if [ $WGF = "enkf" ]; then
+  run_ensinit_ct=$(find ${COMOUT}/.. -name "run_ensinit"|wc -l)
+fi
+if [[ $CYCLE_SUBTYPE == "ensinit" && ${run_ensinit_ct} -eq 0 ]]; then
    echo "clean exit ensinit, blending used instead of ensinit."
    exit 0
 fi
@@ -231,7 +234,7 @@ else
     done
   fi
   if [ "${DO_ENS_BLENDING}" = "TRUE" ] &&
-     [ -e $run_blending ] && [ ! -e $run_ensinit ] &&
+     [ -e $run_blending ] && [ ! -e $run_ensinit ] && [ ${run_ensinit_ct} -eq 0 ] &&
      [ "${CYCLE_TYPE}" = "spinup" ] && [ "${CYCLE_SUBTYPE}" = "spinup" ]; then
      BKTYPE=3
   fi
