@@ -30,10 +30,10 @@ then
   # Add an interpolation step here?
   if [ $gridspacing == "3km" ]; then
     griddef="nps:248:60 -152:4750:3000 4:2950:3000"
-  elseif [ $gridspacing == "13km" ] ; then
+  elif [ $gridspacing == "13km" ] ; then
     griddef="nps:248:60 -152:1096:13000 4:681:13000"
   else
-    err_exit "FATAL ERROR: seeing an improper griddef definition in rrfs_mkawp.sh: $griddef"
+    err_exit "FATAL ERROR: seeing an improper gridspacing definition in rrfs_mkawp.sh: $gridspacing"
   fi
 
   # Only grab records that need WMO headers for AWIPS
