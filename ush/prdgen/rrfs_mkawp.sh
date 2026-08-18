@@ -21,6 +21,8 @@ fhr=$1
 inputfile=$2
 gridspacing=$3
 
+compress_type=c3
+
 runRRFS="000 003 006 009 012 015 018 021 024 027 030 033 036 039 042 045 048 051 054 057 060 066 072 078 084"
 if  echo $runRRFS |grep $fhr;
 then
@@ -37,10 +39,14 @@ then
   fi
 
   # Only grab records that need WMO headers for AWIPS
-  $WGRIB2 ${INPUTfile} | grep -F -f ${PARMrrfs}/wmo/rrfsparams_${gridspacing} | $WGRIB2 -i ${INPUTfile} -new_grid_winds grid -new_grid ${griddef} \
+ 
+  $WGRIB2 ${INPUTfile} | grep -F -f ${PARMrrfs}/wmo/rrfsparams_${gridspacing} | $WGRIB2 -i ${INPUTfile} -new_grid_winds grid -set_grib_type same -grib input.t${cyc}z.${inputfile}.${gridspacing}.f${fhr}.na.grib2
+
+  $WGRIB2 input.t${cyc}z.${inputfile}.${gridspacing}.f${fhr}.na.grib2  -set_bitmap 1 -set_grib_type ${compress_type} \
+  -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
   -new_grid_interpolation neighbor \
   -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
-  -set_grib_type same -grib rrfs.t${cyc}z.${inputfile}.${gridspacing}.f${fhr}.na.grib2
+  -new_grid ${griddef} rrfs.t${cyc}z.${inputfile}.${gridspacing}.f${fhr}.na.grib2
 
   # Run tocgrib2
 
