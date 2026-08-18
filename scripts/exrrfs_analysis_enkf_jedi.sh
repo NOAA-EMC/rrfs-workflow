@@ -57,16 +57,6 @@ FV3 for the specified cycle.
 #
 valid_args=( "cycle_dir" "NWGES_DIR" "ob_type" )
 process_args valid_args "$@"
-#
-#-----------------------------------------------------------------------
-#
-# For debugging purposes, print out values of arguments passed to this
-# script.  Note that these will be printed out only if VERBOSE is set to
-# TRUE.
-#
-#-----------------------------------------------------------------------
-#
-print_input_args valid_args
 
 ulimit -s unlimited
 ulimit -v unlimited
@@ -158,7 +148,7 @@ sed -i "s/hh/${HH}/"     coupler.res
 #
 #-----------------------------------------------------------------------
 #
-mkdir -p data/inputs
+mkdir data/inputs
 for imem in  $(seq 1 $nens); do
 
   memchar="mem"$(printf %04i $imem)
