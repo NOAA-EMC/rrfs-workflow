@@ -148,7 +148,7 @@ sed -i "s/hh/${HH}/"     coupler.res
 #
 #-----------------------------------------------------------------------
 #
-mkdir data/inputs
+mkdir -p data/inputs
 for imem in  $(seq 1 $nens); do
 
   memchar="mem"$(printf %04i $imem)
@@ -167,7 +167,7 @@ for imem in  $(seq 1 $nens); do
     BKTYPE=1              # cold start
   fi
 
-  mkdir -p data/inputs/${memcharv0}
+  mkdir data/inputs/${memcharv0}
   if [ "${DO_PARALLEL_DA}" = "TRUE" ]; then
     bkpath=${bkpath}.jedi
   else
