@@ -430,6 +430,7 @@ fi
 
 # update times in coupler.res to current cycle time
 cp ${fixgriddir}/fv3_coupler.res  coupler.res
+chmod 644 coupler.res
 sed -i "s/yyyy/${YYYY}/" coupler.res
 sed -i "s/mm/${MM}/"     coupler.res
 sed -i "s/dd/${DD}/"     coupler.res
@@ -647,8 +648,7 @@ done
 #
 # This is done in the analysis task, rather than in ioda_bufr, because the
 # optional sonde extension step needs rsig information derived from the
-# background file. A final ioda_patch is no longer required to run after
-# sonde extension and was moved back to ioda_bufr step.
+# background file.
 #
 # EXT_SONDE=TRUE:
 #   create ioda_adpupa.sondeext.nc, then patch that file.
@@ -709,11 +709,11 @@ mv errfile errfile_jedi
 #####################################################################
 # 1. Compute delp from ps (increments)
 #####################################################################
-#write_restart_all_reg: Skip air_pressure_at_surface  T
-#DELP increment is now directly output from new IO.
-#Temporarily keeping this available.
-#cp "${RDASAPP_DIR}"/rrfs-test/IODA/offline_compute_delp_inc.py .
-#python offline_compute_delp_inc.py --sfc_inc inc_jedi.sfc_data.nc --core_inc inc_jedi.fv_core.res.nc --akbk fv3_akbk
+#export pgm="offline_compute_delp_inc.py"
+#cp "${RDASAPP_DIR}"/rrfs-test/IODA/$pgm .
+#python $pgm --sfc_inc inc_jedi.sfc_data.nc --core_inc inc_jedi.fv_core.res.nc --akbk fv3_akbk >>$pgmout 2>errfile
+#export err=$?; err_chk
+#mv errfile errfile_diagnose_delp
 
 #####################################################################
 # 2. Convert A-grid wind increments to D-grid wind increments
@@ -725,180 +725,9 @@ cp "${ua2u_exec}" "${analworkdir}/${pgm}"
 
 mv inc_jedi.fv_core.res.nc agrid_inc_jedi.fv_core.res.nc
 
-${APRUN_UA} ./${pgm} ua_update_u --in_grid=fv3_grid_spec --in_file=agrid_inc_jedi.fv_core.res.nc --out_file=inc_jedi.fv_core.res.nc >>$pgmout 2>errfile
+${APRUN_UA} ./${pgm} ua_update_u --in_grid=fv3_grid_spec --in_anl=fv3_dynvars --remove_anl_winds >>$pgmout 2>errfile
 export err=$?; err_chk
 mv errfile errfile_ua2u
-
-# Verify that the converter produced output
-if [ ! -s inc_jedi.fv_core.res.nc ]; then
-  echo "ERROR: inc_jedi.fv_core.res.nc missing or empty after rdas_ua2u.x"
-  exit 6
-fi
-#####################################################################
-# 3. Convert doubles to floats
-#####################################################################
-files=(
-  inc_jedi.fv_core.res.nc
-  inc_jedi.fv_tracer.res.nc
-)
-
-for file in "${files[@]}"; do
-
-  # Extract variable names declared as double
-  vars=$(ncks -m "$file" | awk '/^ *double /{gsub("double",""); gsub("\\(.*",""); gsub(";",""); print $1}')
-
-  # Convert each variable to float (from double)
-  for v in $vars; do
-    ncap2 -O -s "${v}=float(${v})" "$file" "$file"
-  done
-done
-
-#####################################################################
-# 4. Core background + increments
-#####################################################################
-BKG=fv3_dynvars
-INC=inc_jedi.fv_core.res.nc
-OUT=fv_core_analysis.res.tile1.nc
-
-# Make Time a record dimension (unlimited dimension)
-ncks --mk_rec_dmn Time "$INC" tmp_inc.nc
-mv tmp_inc.nc "$INC"
-
-# Copy background
-ncks -O "$BKG" tmp_bkg.nc
-
-# Make a temporary increment file with renamed variables
-ncks -O "$INC" tmp_inc.nc
-ncrename -v u,u_inc tmp_inc.nc
-ncrename -v v,v_inc tmp_inc.nc
-ncrename -v T,T_inc tmp_inc.nc
-ncrename -v ua,ua_inc tmp_inc.nc
-ncrename -v va,va_inc tmp_inc.nc
-ncrename -v delp,delp_inc tmp_inc.nc
-if [[ ${anav_type} == "radardbz" || ${anav_type} == "conv_dbz" ]]; then
-  ncrename -v W,W_inc tmp_inc.nc
-fi
-
-# Append increment vars to tmp_bkg.nc
-ncks -A tmp_inc.nc tmp_bkg.nc
-
-# Perform addition in place
-addstr="u=u+u_inc; v=v+v_inc; T=T+T_inc; ua=ua+ua_inc; va=va+va_inc; delp=delp+delp_inc;"
-varlist="u_inc,v_inc,T_inc,ua_inc,va_inc,delp_inc"
-if [[ ${anav_type} == "radardbz" || ${anav_type} == "conv_dbz" ]]; then
-  addstr="${addstr} W=W+W_inc;"
-  varlist="${varlist},W_inc"
-fi
-ncap2 -O -s "${addstr}" tmp_bkg.nc "$OUT"
-
-# Remove increment variables
-ncks -O -x -v ${varlist} "$OUT" "$OUT"
-
-# Cleanup
-rm -f tmp_inc.nc tmp_bkg.nc
-
-#####################################################################
-# 5. Tracer background + increments
-#####################################################################
-BKGtr=fv3_tracer
-INCtr=inc_jedi.fv_tracer.res.nc
-OUTtr=fv_tracer_analysis.res.tile1.nc
-
-# Make Time a record dimension (unlimited dimension)
-ncks --mk_rec_dmn Time "$INCtr" tmp_inctr.nc
-mv tmp_inctr.nc "$INCtr"
-
-# Copy background
-ncks -O "$BKGtr" tmp_bkgtr.nc
-
-# Make a temporary increment file with renamed variables
-ncks -O "$INCtr" tmp_inctr.nc
-ncrename -v sphum,sphum_inc tmp_inctr.nc
-ncrename -v o3mr,o3mr_inc   tmp_inctr.nc
-if [[ ${anav_type} == "radardbz" || ${anav_type} == "conv_dbz" ]]; then
-  ncrename -v ice_wat,ice_wat_inc  tmp_inctr.nc
-  ncrename -v liq_wat,liq_wat_inc  tmp_inctr.nc
-  ncrename -v rainwat,rainwat_inc  tmp_inctr.nc
-  ncrename -v snowwat,snowwat_inc  tmp_inctr.nc
-  ncrename -v graupel,graupel_inc  tmp_inctr.nc
-fi
-
-# Append increment vars into OUT
-ncks -A tmp_inctr.nc tmp_bkgtr.nc
-
-# Perform addition in place
-addstr="sphum=sphum+sphum_inc; o3mr=o3mr+o3mr_inc;"
-varlist="sphum_inc,o3mr_inc"
-if [[ ${anav_type} == "radardbz" || ${anav_type} == "conv_dbz" ]]; then
-  addstr="${addstr} ice_wat=ice_wat+ice_wat_inc;"
-  addstr="${addstr} liq_wat=liq_wat+liq_wat_inc;"
-  addstr="${addstr} rainwat=rainwat+rainwat_inc;"
-  addstr="${addstr} snowwat=snowwat+snowwat_inc;"
-  addstr="${addstr} graupel=graupel+graupel_inc;"
-  varlist="${varlist},ice_wat_inc,liq_wat_inc,rainwat_inc,snowwat_inc,graupel_inc"
-fi
-
-ncap2 -O \
-  -s "${addstr}" \
-  tmp_bkgtr.nc "$OUTtr"
-
-# Remove increment variables
-ncks -O -x -v ${varlist} "$OUTtr" "$OUTtr"
-
-# Cleanup
-rm -f tmp_inctr.nc tmp_bkgtr.nc
-
-#####################################################################
-# 6. Physics background + increments (only for radar DA)
-#####################################################################
-if [[ ${anav_type} == "radardbz" || ${anav_type} == "conv_dbz" ]]; then
-  BKGph=fv3_phyvars_prepdbz
-  INCph=inc_jedi.phy_data.nc
-  OUTph=phy_data_analysis.nc
-
-  # Make Time a record dimension (unlimited dimension)
-  ncks --mk_rec_dmn Time "$INCph" tmp_incph.nc
-  mv tmp_incph.nc "$INCph"
-
-  # Copy background
-  ncks -O "$BKGph" tmp_bkgph.nc
-
-  # Make a temporary increment file with renamed variables
-  ncks -O "$INCph" tmp_incph.nc
-  ncrename -v ref_f3d,ref_f3d_inc tmp_incph.nc
-
-  # Append increment vars into OUT
-  ncks -A tmp_incph.nc tmp_bkgph.nc
-
-  # Perform addition in place
-  ncap2 -O \
-    -s "ref_f3d=ref_f3d+ref_f3d_inc;" \
-    tmp_bkgph.nc "$OUTph"
-
-  # Remove increment variables
-  ncks -O -x -v ref_f3d_inc "$OUTph" "$OUTph"
-
-  # Cleanup
-  rm -f tmp_incph.nc tmp_bkgph.nc
-
-fi
-
-
-
-#####################################################################
-# 7. Copy results to INPUT
-#####################################################################
-cp "$OUT"                           ${bkpath}/fv_core.res.tile1.nc
-cp "$OUTtr"                         ${bkpath}/fv_tracer.res.tile1.nc
-if [[ ${anav_type} == "radardbz" || ${anav_type} == "conv_dbz" ]]; then
-  cp "$OUTph"                       ${bkpath}/phy_data.nc
-fi
-#cp analysis_jedi.fv_core.res.nc     ${bkpath}/fv_core.res.tile1.nc
-#cp analysis_jedi.fv_tracer.res.nc   ${bkpath}/fv_tracer.res.tile1.nc
-#cp analysis_jedi.fv_srf_wnd.res.nc  ${bkpath}/fv_srf_wnd.res.tile1.nc
-#cp analysis_jedi.sfc_data.nc        ${bkpath}/sfc_data.nc
-#cp analysis_jedi.phy_data.nc        ${bkpath}/phy_data.nc
-#cp analysis_jedi.coupler.res        ${bkpath}/coupler.res
 
 # Save the Jdiag files for diagnostic tools
 cp jdiag* ${COMOUT}

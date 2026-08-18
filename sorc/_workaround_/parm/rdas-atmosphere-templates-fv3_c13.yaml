@@ -11,8 +11,8 @@ app_path_observation_chronicle: rdas/observation_chronicle/atmosphere
 
 # Places where we deviate from the generic file name of a yaml
 # ------------------------------------------------------------
-final_increment_file: atmosphere_final_increment
-#output_file: atmosphere_output
+#final_increment_file: atmosphere_final_increment
+output_file: atmosphere_output
 output_ensemble_increments_file: atmosphere_output_ensemble_increments_gaussian
 model_file: atmosphere_model_pseudo
 initial_condition_file: atmosphere_background
@@ -34,6 +34,7 @@ gradient_norm_reduction: 1e-10
 #write_increment_outer_loop_2: true
 distribution: RoundRobin
 empty_obs_space_action: create output
+write_into_existing_files: true
 
 analysis_variables:
 - eastward_wind
@@ -41,7 +42,6 @@ analysis_variables:
 - air_temperature
 - water_vapor_mixing_ratio_wrt_moist_air
 - ozone_mass_mixing_ratio
-#- air_pressure_thickness
 - air_pressure_at_surface
 
 control_variables:
@@ -52,13 +52,21 @@ control_variables:
 - mole_fraction_of_ozone_in_air
 - air_pressure_at_surface
 
+fields_to_write:
+- eastward_wind
+- northward_wind
+- air_temperature
+- water_vapor_mixing_ratio_wrt_moist_air
+- ozone_mass_mixing_ratio
+- air_pressure_thickness
+
 state_variables_to_inverse:
 - eastward_wind
 - northward_wind
 - air_temperature
 - water_vapor_mixing_ratio_wrt_moist_air
 - ozone_mass_mixing_ratio
-- geopotential_height_times_gravity_at_surface
+- geopotential_at_surface
 - air_pressure_thickness
 - air_pressure_at_surface
 
@@ -71,11 +79,11 @@ do_testing: false
 fv3lam_nml: input_lam_C775_NP14X14.nml
 atmosphere_layout_x: 14
 atmosphere_layout_y: 14
-atmosphere_npx_ges: 420 #not sure if correct
-atmosphere_npy_ges: 252 #not sure if correct
+atmosphere_npx_ges: 420
+atmosphere_npy_ges: 252
 atmosphere_npz_ges: 65
-atmosphere_npx_anl: 420 #not sure if correct
-atmosphere_npy_anl: 252 #not sure if correct
+atmosphere_npx_anl: 420
+atmosphere_npy_anl: 252
 atmosphere_npz_anl: 65
 atmosphere_ntiles: 1
 atmosphere_io_layout_x: 1
@@ -103,7 +111,7 @@ state_variables:
 - cloud_liquid_ice
 - cloud_liquid_water
 - ozone_mass_mixing_ratio
-- geopotential_height_times_gravity_at_surface
+- geopotential_at_surface
 - f10m
 - slmsk
 - sheleg
@@ -135,7 +143,7 @@ water_vapor_mixing_ratio_wrt_moist_air: sphum
 cloud_liquid_ice: ice_wat
 cloud_liquid_water: liq_wat
 ozone_mass_mixing_ratio: o3mr
-geopotential_height_times_gravity_at_surface: phis
+geopotential_at_surface: phis
 skin_temperature_at_surface: tsfc
 tslb: tslb
 smois: smois
