@@ -19,6 +19,7 @@ initial_condition_file: atmosphere_background
 #background_error_file: atmosphere_background_error_hybrid3denvar_mgbf
 background_error_file: atmosphere_background_error_3dvar_gsibec
 #background_error_file: atmosphere_background_error_3dvar_bumpID
+vader_custom_cookbook_file: atmosphere_vader_custom_cookbook
 
 # Global analysis things
 # ----------------------
