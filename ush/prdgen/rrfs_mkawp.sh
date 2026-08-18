@@ -27,13 +27,20 @@ then
   # Processing AWIPS grid (RRFS North America grid - 3 km or 13 km)
   export INPUTfile=${COMOUT}/rrfs.t${cyc}z.${inputfile}.${gridspacing}.f${fhr}.na.grib2
 
-  # Only grab records that need WMO headers for AWIPS
-  $WGRIB2 ${INPUTfile} | grep -F -f ${PARMrrfs}/wmo/rrfsparams_${gridspacing} | $WGRIB2 -i ${INPUTfile} -new_grid_winds grid -set_grib_type same -grib rrfs.t${cyc}z.${inputfile}.${gridspacing}.f${fhr}.na.grib2
-
-
   # Add an interpolation step here?
-  # NA 13km - nps:248:60 -152:1084:13000 6:658:13000
-  # NA 3km - nps:248:60 -152:4700:3000 6:2850:3000
+  if [ $gridspacing == "3km" ]; then
+    griddef="nps:248:60 -152:4750:3000 4:2950:3000"
+  elseif [ $gridspacing == "13km" ] ; then
+    griddef="nps:248:60 -152:1096:13000 4:681:13000"
+  else
+    err_exit "FATAL ERROR: seeing an improper griddef definition in rrfs_mkawp.sh: $griddef"
+  fi
+
+  # Only grab records that need WMO headers for AWIPS
+  $WGRIB2 ${INPUTfile} | grep -F -f ${PARMrrfs}/wmo/rrfsparams_${gridspacing} | $WGRIB2 -i ${INPUTfile} -new_grid_winds grid -new_grid ${griddef} \
+  -new_grid_interpolation neighbor \
+  -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
+  -set_grib_type same -grib rrfs.t${cyc}z.${inputfile}.${gridspacing}.f${fhr}.na.grib2
 
   # Run tocgrib2
 
