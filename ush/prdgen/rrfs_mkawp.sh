@@ -29,7 +29,7 @@ then
   # Processing AWIPS grid (RRFS North America grid - 3 km or 13 km)
   export INPUTfile=${COMOUT}/rrfs.t${cyc}z.${inputfile}.${gridspacing}.f${fhr}.na.grib2
 
-  # Add an interpolation step here?
+  # Add an interpolation step here
   if [ $gridspacing == "3km" ]; then
     griddef="nps:248:60 -151.5:4680:3000 6.5:2830:3000"
   elif [ $gridspacing == "13km" ] ; then
