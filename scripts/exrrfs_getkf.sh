@@ -30,10 +30,13 @@ mkdir -p obs ens jdiag
 #
 # copy observations files
 #
-if [[ "${GETKF_TYPE}" == "observer" ]]; then
+if [[ ${GETKF_TYPE} == observer*  ]]; then
   source "${USHrrfs}/copy_obs.sh" "getkf"
 else
-  ln -snf "${UMBRELLA_GETKF_OBSERVER_DATA}"/jdiag* jdiag/
+  if [[ -d "${UMBRELLA_GETKF_OBSERVER_DATA}" ]]; then
+    ln -snf "${UMBRELLA_GETKF_OBSERVER_DATA}"/jdiag* jdiag/.
+  elif [[ -d "${UMBRELLA_GETKF_OBSERVER_SOLVER_DATA}" ]]; then
+    ln -snf "${UMBRELLA_GETKF_OBSERVER_SOLVER_DATA}"/jdiag* jdiag/.
 fi
 #
 # determine whether to begin new cycles and link correct ensembles
@@ -65,8 +68,8 @@ physics_suite=${PHYSICS_SUITE:-'mesoscale_reference'}
 lsm_scheme=${LSM_SCHEME:-'sf_ruc'}
 nsoillevels=${NSOIL_LEVELS:-9}
 jedi_da=true #true
-pio_num_iotasks=${NODES}
-pio_stride=${PPN}
+pio_stride=${PIO_STRIDE:-$PPN}
+pio_num_iotasks=$(( NODES * PPN / pio_stride ))
 
 # We set dt, substeps, radt values to avoid errors in reading namelist.atmosphere
 # but they will NOT be used since no model integration in DA steps
@@ -130,10 +133,11 @@ if [[ ${START_TYPE} == "warm" ]] || [[ ${START_TYPE} == "cold" && ${COLDSTART_CY
   fi
 
   # move jdiag* files to the umbrella directory if observer
-  if [[ "${GETKF_TYPE}" == "observer" || "${GETKF_TYPE}" == "post" ]]; then
+  if [[ ${GETKF_TYPE} == observer* || "${GETKF_TYPE}" == "post" ]]; then
     cp "${DATA}"/jdiag* "${COMOUT}/getkf_${GETKF_TYPE}/${WGF}"
     mv jdiag* "${UMBRELLA_GETKF_DATA}"/.
-  else # move post mean to umbrella if solver
+  # move post mean to umbrella if solver
+  elif [[ "$GETKF_TYPE" =~ ^(observer_solver|solver)$ ]]; then
     mv "${DATA}"/data/ens/mem000.nc "${UMBRELLA_GETKF_DATA}"/post_mean.nc
   fi
 
