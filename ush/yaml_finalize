@@ -166,10 +166,6 @@ if ytype == "getkf" and GETKF_TYPE == "observer_solver":
     block = hy.text_to_yblock(observer_solver_driver_str)
     hy.modify(data, "driver", block)
 
-# switch to LETKF for GETKF_POST
-if ytype == "getkf" and GETKF_TYPE == "post":
-    hy.modify(data, "local ensemble DA", {"solver": "Deterministic LETKF"})
-
 # ------------------------------------------------------------------------------------
 # read convinfo and/or satinfo if use_conv_sat_info
 if use_conv_sat_info:
