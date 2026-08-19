@@ -1,0 +1,88 @@
+      family gefs
+        family v12.3
+          family members
+            family d0_16
+              task jgefs_pgrb2abp5_f192_done
+            endfamily
+          endfamily
+        endfamily
+      endfamily
+      family gfs
+        family v16.3
+          family gfs
+            family atmos
+              family post
+                task jgfs_atmos_post_f003
+                task jgfs_atmos_post_f102
+              endfamily
+            endfamily
+          endfamily
+          family enkfgdas
+            family post
+              task jenkfgdas_post_f007
+            endfamily
+          endfamily
+        endfamily
+      endfamily
+      family nsst
+        family v1.2
+          task jnsst
+        endfamily
+      endfamily
+      family obsproc
+        family v1.2
+          family rrfs
+            family 12z
+              family dump
+                task jobsproc_rrfs_dump
+                task jobsproc_rrfs_dump_erly
+              endfamily
+              family prep
+                task jobsproc_rrfs_prep
+                task jobsproc_rrfs_prep_erly
+              endfamily
+            endfamily
+            family 13z
+              family dump
+                task jobsproc_rrfs_dump
+              endfamily
+              family prep
+                task jobsproc_rrfs_prep
+              endfamily
+            endfamily
+            family 14z
+              family dump
+                task jobsproc_rrfs_dump
+              endfamily
+              family prep
+                task jobsproc_rrfs_prep
+              endfamily
+            endfamily
+            family 15z
+              family dump
+                task jobsproc_rrfs_dump
+              endfamily
+              family prep
+                task jobsproc_rrfs_prep
+              endfamily
+            endfamily
+            family 16z
+              family dump
+                task jobsproc_rrfs_dump
+              endfamily
+              family prep
+                task jobsproc_rrfs_prep
+              endfamily
+            endfamily
+            family 17z
+              family dump
+                task jobsproc_rrfs_dump
+              endfamily
+              family prep
+                task jobsproc_rrfs_prep
+              endfamily
+            endfamily
+          endfamily
+        endfamily
+      endfamily
+
