@@ -93,9 +93,10 @@ if os.path.exists(f"{HOMErrfs}/workflow/config.override"):
 if os.getenv("DO_JEDI", 'false').upper() == "TRUE":
     # copy jedivar/getkf yamls to exp_configdir
     if os.getenv('DO_ENSEMBLE', 'FALSE').upper() == "TRUE":
-        smart_superyaml(HOMErrfs, 'getkf', mesh)
         if os.getenv('GETKF_ONESTEP', 'FALSE').upper() == "TRUE":
-            smart_superyaml(HOMErrfs, 'getkf', mesh, getkf_type='observer_solver')
+            smart_superyaml(HOMErrfs, 'getkf', mesh, getkf_onestep=True)
+        else:
+            smart_superyaml(HOMErrfs, 'getkf', mesh)
 
         shutil.copy(f'{HOMErrfs}/parm/getkf.yaml', f'{exp_configdir}/getkf.yaml')
         ens_str = "_ens"
