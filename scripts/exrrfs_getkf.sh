@@ -37,6 +37,7 @@ else
     ln -snf "${UMBRELLA_GETKF_OBSERVER_DATA}"/jdiag* jdiag/.
   elif [[ -d "${UMBRELLA_GETKF_OBSERVER_SOLVER_DATA}" ]]; then
     ln -snf "${UMBRELLA_GETKF_OBSERVER_SOLVER_DATA}"/jdiag* jdiag/.
+  fi
 fi
 #
 # determine whether to begin new cycles and link correct ensembles
