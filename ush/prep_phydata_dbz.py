@@ -9,10 +9,14 @@ import netCDF4 as nc
 import numpy as np
 import os, sys
 
-# Copy original file
-file_phydata = sys.argv[1]
-file_prep = f'{file_phydata}_prepdbz'
-os.system(f'cp {file_phydata} {file_prep}')
+file_arg = sys.argv[1]
+if file_arg.endswith('_prepdbz'):
+    # Caller already produced this file directly (e.g. via `ncks -v ref_f3d`)
+    # - operate on it in place instead of copying the whole phy_data.nc again.
+    file_prep = file_arg
+else:
+    file_prep = f'{file_arg}_prepdbz'
+    os.system(f'cp {file_arg} {file_prep}')
 
 # Read data
 nc_file      = nc.Dataset(file_prep, 'r+')

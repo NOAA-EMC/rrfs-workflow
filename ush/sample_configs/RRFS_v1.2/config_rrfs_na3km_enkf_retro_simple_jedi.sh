@@ -6,16 +6,15 @@ version="v1.2.0"
 ACCOUNT="RRFS-DEV"
 
 # Directory settings (user-dependent)
-EXPT_BASEDIR="/lfs/h2/emc/da/noscrub/$USER/rrfs-workflow_enkf/rrfs-workflow/expt_dirs/May2024_retro_enkf/$version"
-EXPT_SUBDIR="rrfs_conus_13km.enkf"
+EXPT_BASEDIR="/lfs/h2/emc/da/noscrub/$USER/rrfs-workflow/expt_dirs/May2024_retro_enkf/$version"
+EXPT_SUBDIR="rrfs_na_3km.enkf"
 STMP="/lfs/h2/emc/stmp/$USER/May2024_retro/$version/$EXPT_SUBDIR"
 PTMP="/lfs/h2/emc/ptmp/$USER/May2024_retro/$version/$EXPT_SUBDIR"
 NWGES="/lfs/h2/emc/ptmp/$USER/May2024_retro/$version/$EXPT_SUBDIR"
 ARCHIVEDIR="/NCEPDEV/emc-meso/5year/Samuel.Degelia/RRFSv1/May2024_retro/$version/$EXPT_SUBDIR/"
-#DO_ARCHIVE_RETRO="TRUE"
 DO_ARCHIVE_RETRO="FALSE"
 
-PREDEF_GRID_NAME=RRFS_CONUS_13km
+PREDEF_GRID_NAME=RRFS_NA_3km
 
 . set_rrfs_config_general.sh
 . set_rrfs_config_singlescaleloc.sh
@@ -30,11 +29,14 @@ QUEUE_PRDGEN="dev"
 QUEUE_ANALYSIS="dev"
 QUEUE_GRAPHICS="dev"
 
+NNODES_RUN_ENKF_JEDI=60
+PPN_RUN_ENKF_JEDI=32
+
 # JEDI and GSI EnKF options
 DO_IODA_BUFR="TRUE"
 DO_JEDIVAR="FALSE"
 DA_SYSTEM="JEDI"
-DO_PARALLEL_DA="TRUE"
+DO_PARALLEL_DA="FALSE"
 DO_DACOLD="FALSE"
 DO_DACYCLE="FALSE"
 DO_ENSEMBLE="TRUE"
@@ -44,21 +46,21 @@ if [[ ${DO_ENSEMBLE}  == "TRUE" ]]; then
    DO_ENKFUPDATE="TRUE"
    DO_RECENTER="FALSE"
    DO_ENS_GRAPHICS="FALSE"
-   DO_ENKF_RADAR_REF="FALSE"
+   DO_ENKF_RADAR_REF="TRUE"
    DO_ENSPOST="FALSE"
    DO_ENSINIT="TRUE"
 fi
 NUM_ENS_MEMBERS=30
-JCB_CONFIG_ENKF_OBSERVER="rdas-atmosphere-templates-fv3_c13_getkf_observer.yaml"
-JCB_CONFIG_ENKF_SOLVER="rdas-atmosphere-templates-fv3_c13_getkf_solver.yaml"
+JCB_CONFIG_ENKF="rdas-atmosphere-templates-fv3_c3km_getkf.yaml"
 
 # Radar DA options
-DO_IODA_MRMS="FALSE"
+DO_IODA_MRMS="TRUE"
 DO_ENVAR_RADAR_REF="FALSE"
 DO_ENVAR_RADAR_REF_ONCE="TRUE"
 RADARREFL_TIMELEVEL=(0)
 FH_DFI_RADAR="0.0,0.25,0.5"
 diag_radardbz=.true.
+RADAR_REF_THINNING=2
 
 # Other options
 grid_ratio_fv3=1.0 # default: 2.0
@@ -176,7 +178,7 @@ EXTRN_MDL_SAVETYPE="GSL"
 envir="test"
 
 NET="rrfs"
-TAG="c13"
+TAG="na3km"
 
 NCL_REGION="conus"
 MODEL="rrfs"
@@ -188,7 +190,15 @@ RUN="rrfs"
 if [[ ${regional_ensemble_option} == "5" ]]; then
 #-------------------------------------------------
 # RRFSE directory contains ensemble restart files for GSI hybrid.
-RRFSE_NWGES="/lfs/h3/emc/lam/noscrub/hui.liu/runs_co13km/rrfs.v0.8.6/nwges_enkf"
-NUM_ENS_MEMBERS=30
+RRFSE_NWGES="/lfs/h2/emc/ptmp/$USER/May2024_retro/$version/$EXPT_SUBDIR"
 CYCL_HRS_PRODSTART_ENS=( "07" "19" )
 fi
+
+# clean options:
+CYCLE_THROTTLE=12
+CLEAN_CYCLEDEF="00 00-23 ${CYCLEDAY} ${CYCLEMONTH} ${STARTYEAR} *"
+CLEAN_OLDPROD_HRS=999
+CLEAN_OLDLOG_HRS=999
+CLEAN_NWGES_HRS=999
+CLEAN_OLDRUN_HRS=25
+CLEAN_OLDFCST_HRS=25

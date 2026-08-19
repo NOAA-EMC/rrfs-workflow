@@ -329,6 +329,10 @@ if [ "${EXTRN}" = true ]; then
     printf "... removing RDASApp ...\n"
     rm -rf "${SORC_DIR}/RDASApp"
   fi
+  if [ -d "${HOME_DIR}/exec/bin" ]; then
+    printf "... removing stale exec/bin (RDASApp fails to build if old binaries are left behind) ...\n"
+    rm -rf "${HOME_DIR}/exec/bin"
+  fi
 
   # run check-out
   python --version 1>/dev/null 2>/dev/null
@@ -353,6 +357,11 @@ if [[ $BUILD_WORKAROUND = true ]]; then
 
   # Workaround for qmin=0 in GSI
   cp _workaround_/gsi/constants.f90 gsi/src/gsi/constants.f90
+
+  # Workaround for disabling shared memory window for readobs in EnKF
+  cp _workaround_/enkf/mpi_readobs.f90 gsi/src/enkf/mpi_readobs.f90
+  cp _workaround_/enkf/params.f90 gsi/src/enkf/params.f90
+  cp _workaround_/scripts/exrrfs_analysis_enkf.sh ../scripts/exrrfs_analysis_enkf.sh
 
   # Workaround for options in GSI
   cp _workaround_/fix/gsi/gsiparm.anl.sh ../fix/gsi/gsiparm.anl.sh

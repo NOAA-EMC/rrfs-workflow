@@ -167,11 +167,11 @@ export OMP_STACKSIZE=${OMP_STACKSIZE:-1024m}
 #
 #-----------------------------------------------------------------------
 #
-# Post-process the JEDI increments for EnKF
-#    1) Convert wind increments from D-grid to A-grid for EnKF
-#    2) Apply increments to the background fields
-#    3) Copy DA results into INPUT directory
-# Note: these steps are done in the main analysis script for JEDI-Var
+# Post-process the JEDI GETKF analysis for the ensemble member
+#    1) Convert the analyzed A-grid wind (ua_anl/va_anl, written in place by
+#       JEDI) to D-grid u/v and add it to the background already in the file
+#    2) Copy DA results into INPUT directory
+# Note: this step is done in the main analysis script for JEDI-Var
 #       But for EnKF we do it here so that it can be done in parallel
 #
 #-----------------------------------------------------------------------
@@ -193,40 +193,46 @@ if [[ "${DA_SYSTEM}" = "JEDI" || "${DO_PARALLEL_DA}" = "TRUE" ]]; then
 
   if [[ 10#${ensmem_indx} -ge 1 ]] && [[ "${BKTYPE}" -eq 0 || "${DO_DACOLD}" = "TRUE" ]]; then
 
-    # Convert A-grid wind increments to D-grid
     cd ${run_dir}/${bkdir}
     ln -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  fv3_grid_spec
-    export pgm="rdas_ua2u.x"
+
+    # JEDI aliases the analyzed A-grid wind to ua_anl/va_anl and leaves every
+    # other analyzed variable in place under its normal name; the D-grid u/v
+    # wind (never touched by JEDI) still needs to be updated to match.
+    # rdas_ua2u.x's --in_anl mode does that in place: computes the A-grid
+    # wind increment (ua_anl-ua, va_anl-va), converts it to a D-grid
+    # increment, adds it to the background u/v already in the file, and
+    # removes ua_anl/va_anl (--remove_anl_winds).
+    gridfile="fv3_grid_spec"
+    anlfile="fv_core.res.tile1.nc"
+
+    if [ ! -f "${anlfile}" ]; then
+      echo "ERROR: analysis file not found: ${anlfile}"
+      exit 1
+    fi
+    if [ ! -f "${gridfile}" ]; then
+      echo "ERROR: grid spec file not found: ${gridfile}"
+      exit 1
+    fi
+
+    export LD_LIBRARY_PATH="${RDASAPP_DIR}/build/lib64:${LD_LIBRARY_PATH}"
+    pgm="rdas_ua2u.x"
     ua2u_exec="${EXECdir}/bin/${pgm}"
-    cp "${ua2u_exec}" "${run_dir}/${bkdir}/${pgm}"
-    mv inc_jedi.fv_core.res.nc agrid_inc_jedi.fv_core.res.nc
-    LD_LIBRARY_PATH="/apps/ops/test/spack-stack-nco-1.9/oneapi/2024.2.1/hdf5-1.14.3-umtw5lv/lib:${LD_LIBRARY_PATH}" \
-      ${APRUN_UA} ./${pgm} ua_update_u --in_grid=fv3_grid_spec --in_file=agrid_inc_jedi.fv_core.res.nc --out_file=inc_jedi.fv_core.res.nc >>"$pgmout" 2>errfile
+    cp "${ua2u_exec}" "./${pgm}"
+
+    ${APRUN_UA} ./${pgm} ua_update_u \
+      --in_grid="${gridfile}" \
+      --in_anl="${anlfile}" \
+      --remove_anl_winds \
+      >>"${pgmout}" 2>errfile
     export err=$?; err_chk
     mv errfile errfile_ua2u
 
-    # Verify that the converter produced output
-    if [ ! -s inc_jedi.fv_core.res.nc ]; then
-      echo "ERROR: inc_jedi.fv_core.res.nc missing or empty after rdas_ua2u.x"
+    if [ ! -s "${anlfile}" ]; then
+      echo "ERROR: ${anlfile} missing or empty after rdas_ua2u.x"
       exit 6
     fi
 
-    # Now apply the increments to the background file with NCO tools
-    dynfile=fv_core.res.tile1.nc
-    trafile=fv_tracer.res.tile1.nc
-    phyfile=phy_data.nc
-    set +x
-    if ( ! time ( module purge ; module load intel udunits szip hdf5 netcdf gsl nco ; module list ; set -x ; ${USHdir}/apply_jedi_incs.sh ${DO_ENKF_RADAR_REF} ${dynfile} ${trafile} ${phyfile}) ); then
-      echo "Failed applying JEDI increments"
-      exit 6
-    else
-      echo "Successfully applied JEDI increments"
-      cp fv_core_analysis.res.tile1.nc ${dynfile}
-      cp fv_tracer_analysis.res.tile1.nc ${trafile}
-      if [ "${DO_ENKF_RADAR_REF}" = "TRUE" ]; then
-        cp phy_data_analysis.nc ${phyfile}
-      fi
-    fi
     cd ${run_dir}
 
     # Copy DA results into INPUT

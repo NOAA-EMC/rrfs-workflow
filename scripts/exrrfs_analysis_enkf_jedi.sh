@@ -177,7 +177,7 @@ for imem in  $(seq 1 $nens); do
   ln -snf ${bkpath}/fv_tracer.res.tile1.nc     data/inputs/${memcharv0}/fv_tracer.res.tile1.nc
   ln -snf ${bkpath}/sfc_data.nc                data/inputs/${memcharv0}/sfc_data.nc
   if [[ "${DO_ENKF_RADAR_REF}" == "TRUE" ]]; then
-    ln -snf ${bkpath}/phy_data.nc_prepdbz      data/inputs/${memcharv0}/phy_data.nc
+    ln -snf ${bkpath}/phy_data.nc_prepdbz      data/inputs/${memcharv0}/phy_data.nc_prepdbz
   else
     ln -snf ${bkpath}/phy_data.nc              data/inputs/${memcharv0}/phy_data.nc
   fi
@@ -185,7 +185,6 @@ for imem in  $(seq 1 $nens); do
   ln -snf ${bkpath}/coupler.res                data/inputs/${memcharv0}/coupler.res
 
 done
-
 
 #
 #-----------------------------------------------------------------------
@@ -202,32 +201,49 @@ WXFLOWLIB=${RDASAPP_DIR}/sorc/wxflow/src
 JCBLIB=${RDASAPP_DIR}/sorc/jcb/src
 export PYTHONPATH="${JCBLIB}:${WXFLOWLIB}:${PYIODALIB}:${PYTHONPATH}"
 
-cp ${PARMdir}/${JCB_CONFIG_ENKF_OBSERVER} .
-cp ${PARMdir}/${JCB_CONFIG_ENKF_SOLVER} .
+cp ${PARMdir}/${JCB_CONFIG_ENKF} .
 cp ${USHdir}/run_jcb.py .
+cp ${FIX_GSI}/gsd_sfcobs_uselist.txt .
+cp ${FIX_GSI}/gsd_sfcobs_provider.txt .
 
 #sed - rdas-atmosphere-templates.yaml
 # set other placeholders
 WIN_ISO="${YYYY}-${MM}-${DD}T${HH}:00:00Z"
 WIN_PREFIX="${YYYY}${MM}${DD}.${HH}0000."
 SUFFIX="${CDATE}"
-jedi_yaml_observer="jedienkf_observer.yaml"
-jedi_yaml_solver="jedienkf_solver.yaml"
+jedi_yaml="jedienkf.yaml"
 
 # do replacements
 sed -i \
   -e "s|@ATMOSPHERE_BACKGROUND_TIME_ISO@|'${WIN_ISO}'|" \
   -e "s|@ATMOSPHERE_BACKGROUND_TIME_PREFIX@|'${WIN_PREFIX}'|" \
   -e "s|@SUFFIX@|${SUFFIX}|g" \
-  ${JCB_CONFIG_ENKF_OBSERVER}
-sed -i \
-  -e "s|@ATMOSPHERE_BACKGROUND_TIME_ISO@|'${WIN_ISO}'|" \
-  -e "s|@ATMOSPHERE_BACKGROUND_TIME_PREFIX@|'${WIN_PREFIX}'|" \
-  -e "s|@SUFFIX@|${SUFFIX}|g" \
-  ${JCB_CONFIG_ENKF_SOLVER}
+  ${JCB_CONFIG_ENKF}
 
-python run_jcb.py "${YYYYMMDDHH}" "${JCB_CONFIG_ENKF_OBSERVER}" "${jedi_yaml_observer}"
-python run_jcb.py "${YYYYMMDDHH}" "${JCB_CONFIG_ENKF_SOLVER}" "${jedi_yaml_solver}"
+python run_jcb.py "${YYYYMMDDHH}" "${JCB_CONFIG_ENKF}" "${jedi_yaml}"
+
+#
+#-----------------------------------------------------------------------
+#
+# Perform some YAML post processing that JCB cannot handle yet. These sed
+# patches should be removed once JCB picks up the upstream OOPS/JEDI
+# functionality they work around (currently only available via a fork of
+# OOPS built into RDASApp).
+#
+#-----------------------------------------------------------------------
+#
+
+# Since JCB does not support OSDF yet, do a sed replacement to turn these on
+sed -i 's/^ *distribution:$/      use data frame container: true\
+      redistribution:/' "${jedi_yaml}"
+
+# JCB does not set linear observer so we need to change that
+sed -i 's/use linear observer: false/use linear observer: true/' "${jedi_yaml}"
+sed -i 's/do test prints: true/do test prints: false/' "${jedi_yaml}"
+
+# Turn off all jdiag (obsdataout) outputs -- writing these out is costly and
+# not currently used downstream. Revisit once a separate hofx task exists.
+sed -i '/^[[:space:]]*obsdataout:/,+6 s/^/#/' "${jedi_yaml}"
 
 #
 #-----------------------------------------------------------------------
@@ -272,36 +288,9 @@ fi
 
 #
 #-----------------------------------------------------------------------
-# Restripe the output directory for faster analysis writing
-#-----------------------------------------------------------------------
 #
-
-if [ "${PREDEF_GRID_NAME}" == "RRFS_NA_3km" ]; then
-  stripesize=30
-else
-  stripesize=8
-fi
-
-for imem in  $(seq 1 $nens); do
-  memcharv0="mem"$(printf %03i $imem)
-  mkdir ${memcharv0}
-  cd "${memcharv0}"
-  for f in inc_jedi.fv_core.res.nc \
-           inc_jedi.fv_srf_wnd.res.nc \
-           inc_jedi.fv_tracer.res.nc \
-           inc_jedi.phy_data.nc \
-           inc_jedi.sfc_data.nc
-  do
-    rm -f "$f"
-    lfs setstripe --stripe-count ${stripesize} --stripe-size 1048576 --pool disk "$f"
-  done
-  cd ..
-done
-
-#
-#-----------------------------------------------------------------------
-#
-# Run JEDI-based EnKF for the observer step
+# Run JEDI-based GETKF (single-shot, writes the full ensemble analysis
+# directly in place)
 #
 #-----------------------------------------------------------------------
 #
@@ -314,66 +303,21 @@ cp "${jedi_exec}" "${enkfworkdir}/${pgm}"
 
 . prep_step
 
-${APRUN} ./$pgm jedienkf_observer.yaml >>$pgmout 2>errfile
+${APRUN} ./$pgm ${jedi_yaml} >>$pgmout 2>errfile
 export err=$?; err_chk
-cp $pgmout ${COMOUT}/rrfs.t${HH}z.jediout_observer.tm00
-cp ${JCB_CONFIG_ENKF_OBSERVER} ${COMOUT}
-cp jedienkf_observer.yaml ${COMOUT}/jedienkf_observer.yaml
-mv errfile errfile_jedi_observer
-
-#
-#-----------------------------------------------------------------------
-#
-# Run JEDI-based EnKF for the solver step
-#
-#-----------------------------------------------------------------------
-#
-#export OOPS_TRACE=1
-#export OOPS_DEBUG=1
-export OMP_NUM_THREADS=1
-export pgm="fv3jedi_letkf.x"
-jedi_exec="${EXECdir}/bin/${pgm}"
-cp "${jedi_exec}" "${enkfworkdir}/${pgm}"
-
-. prep_step
-
-${APRUN} ./$pgm jedienkf_solver.yaml >>$pgmout 2>errfile
-export err=$?; err_chk
-cp $pgmout ${COMOUT}/rrfs.t${HH}z.jediout_solver.tm00
-cp ${JCB_CONFIG_ENKF_SOLVER} ${COMOUT}
-cp jedienkf_solver.yaml ${COMOUT}/jedienkf_solver.yaml
-mv errfile errfile_jedi_solver
+cp $pgmout ${COMOUT}/rrfs.t${HH}z.jediout.tm00
+cp ${JCB_CONFIG_ENKF} ${COMOUT}
+cp ${jedi_yaml} ${COMOUT}/${jedi_yaml}
+mv errfile errfile_jedi_enkf
 
 # Save the Jdiag files for diagnostic tools
-for diag in jdiag*.nc; do
-  base=${diag%.nc}
-  cp "$diag" "${COMOUT}/${base}_enkf.nc"
-done
-
-#
-#-----------------------------------------------------------------------
-#
-# Move increments to INPUT
-#
-#-----------------------------------------------------------------------
-#
-
-for imem in  $(seq 1 $nens); do
-  memchar="mem"$(printf %04i $imem)
-  memcharv0="mem"$(printf %03i $imem)
-  slash_ensmem_subdir=$memchar
-  if [ "${CYCLE_TYPE}" = "spinup" ]; then
-    bkpath=${cycle_dir}/${slash_ensmem_subdir}/fcst_fv3lam_spinup/INPUT
-  else
-    bkpath=${cycle_dir}/${slash_ensmem_subdir}/fcst_fv3lam/INPUT
-  fi
-  if [ "${DO_PARALLEL_DA}" = "TRUE" ]; then
-    bkpath=${bkpath}.jedi
-  else
-    bkpath=${bkpath}
-  fi
-  mv ${memcharv0}/* ${bkpath}
-done
+# Disabled for now since obsdataout is commented out of the yaml above to
+# save runtime -- no jdiag files are produced. Revisit once a separate hofx
+# task exists to generate these outside of the main GETKF task.
+#for diag in jdiag*.nc; do
+#  base=${diag%.nc}
+#  cp "$diag" "${COMOUT}/${base}_enkf.nc"
+#done
 
 print_info_msg "
 ========================================================================

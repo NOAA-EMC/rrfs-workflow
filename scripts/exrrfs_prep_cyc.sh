@@ -1275,8 +1275,11 @@ if [[ "${DA_SYSTEM}" = "JEDI" || "${DO_PARALLEL_DA}" = "TRUE" ]]; then
   if [[ "${DO_ENVAR_RADAR_REF}" = "TRUE" || "${DO_ENKF_RADAR_REF}" == "TRUE" ]]; then
     if [[ ${BKTYPE} == 0 || ${BKTYPE} == 3 ]]; then
       cd ${bkdir}
+      # JEDI only ever reads ref_f3d out of phy_data.nc, so extract just that
+      # variable instead of copying the whole (much larger) file.
+      ncks -O -v ref_f3d phy_data.nc phy_data.nc_prepdbz
       cp ${USHdir}/prep_phydata_dbz.py .
-      python prep_phydata_dbz.py phy_data.nc
+      python prep_phydata_dbz.py phy_data.nc_prepdbz
     fi
   fi
 
