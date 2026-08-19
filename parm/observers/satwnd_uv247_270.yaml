@@ -339,6 +339,28 @@
            action:
              name: reject
 
+#         # AMV expected error norm check
+#         - filter: Perform Action
+#           apply at iterations: 0,1
+#           identifier:
+#             name: AMVErrorNormCheck
+#             logging: false
+#             diagnostic flag new: false
+#           filter variables:
+#           - name: windEastward
+#           - name: windNorthward
+#           where:
+#           - variable: ObsFunction/Velocity
+#             minvalue: 0.1
+#           - variable: MetaData/exp_err_norm
+#             minvalue: 0.9
+#           - variable: ObsType/windEastward
+#             is_in: 247
+#           - variable: MetaData/satelliteIdentifier
+#             is_in: 270
+#           action:
+#             name: reject
+
          # Halve the ob error (based on read_satwnd.f90)
          - filter: Perform Action
            apply at iterations: 0,1
