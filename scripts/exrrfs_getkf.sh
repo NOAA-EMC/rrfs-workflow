@@ -137,8 +137,9 @@ if [[ ${START_TYPE} == "warm" ]] || [[ ${START_TYPE} == "cold" && ${COLDSTART_CY
   if [[ ${GETKF_TYPE} == observer* || "${GETKF_TYPE}" == "post" ]]; then
     cp "${DATA}"/jdiag* "${COMOUT}/getkf_${GETKF_TYPE}/${WGF}"
     mv jdiag* "${UMBRELLA_GETKF_DATA}"/.
+  fi
   # move post mean to umbrella if solver
-  elif [[ "$GETKF_TYPE" =~ ^(observer_solver|solver)$ ]]; then
+  if [[ "$GETKF_TYPE" =~ ^(observer_solver|solver)$ ]]; then
     mv "${DATA}"/data/ens/mem000.nc "${UMBRELLA_GETKF_DATA}"/post_mean.nc
   fi
 
