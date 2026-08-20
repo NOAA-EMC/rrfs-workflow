@@ -28,3 +28,7 @@ tests/yaml
 workflow/OPSROOT
 modulefiles/rrfs/hostgeneric.*.lua
 workflow/tools/downloads/
+parm/observers/main.yaml
+parm/jedivar.yaml
+parm/getkf.yaml
+parm/hofx.yaml

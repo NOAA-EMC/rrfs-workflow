@@ -43,6 +43,9 @@ EXEC4="${HOMErrfs}/sorc/RDASApp/build/bin/bufr2netcdf.x"
 EXEC5="${HOMErrfs}/sorc/RDASApp/build/bin/mpasjedi_hofx3d.x"
 cd "${HOMErrfs}/sorc/RDASApp" || exit 1
 
+# Temporary workaround to revert a change in saber PR 1254
+cp "${HOMErrfs}/sorc/_workaround_/saber/gsi_covariance_mod.f90" "${HOMErrfs}/sorc/RDASApp/sorc/saber/src/saber/gsi/covariance/gsi_covariance_mod.f90"
+
 rm -rf build/
 ./build.sh -m MPAS -t NO -w YES -b NO
 

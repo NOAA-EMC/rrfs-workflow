@@ -137,29 +137,7 @@ cp "rap.t${cyc}z.abi_g16.tm00.nc" "ioda_abi_g16.nc"
 cp "rap.t${cyc}z.abi_g18.tm00.nc" "ioda_abi_g18.nc"
 
 # run offline IODA tools
-${cpreq} "${USHrrfs}"/offline_domain_check.py .
-${cpreq} "${USHrrfs}"/offline_domain_check_satrad.py .
-${cpreq} "${USHrrfs}"/offline_ioda_tweak.py .
 ${cpreq} "${USHrrfs}"/offline_vad_thinning.py .
-
-for ioda_file in ioda*nc; do
-  grid_file="${FIXrrfs}/${MESH_NAME}/${MESH_NAME}.static.nc"
-  if [[ "${ioda_file}" == *abi* && "${ioda_file}" != *satwnd* ]]; then
-    echo " ${ioda_file} ioda file detected: running offline_domain_check_satrad.py"
-    ./offline_domain_check_satrad.py -o "${ioda_file}" -g "${grid_file}" -s 0.005
-    base_name=$(basename "${ioda_file}" .nc)
-    mv  "${base_name}_dc.nc" "${base_name}.nc"
-  elif [[ "${ioda_file}" == *atms* || "${ioda_file}" == *cris* || "${ioda_file}" == *iasi* ]]; then
-    echo " ${ioda_file} ioda file detected: temporarily skipping offline domain check"
-  else
-    ./offline_domain_check.py -o "${ioda_file}" -g "${grid_file}" -s 0.005
-    base_name=$(basename "${ioda_file}" .nc)
-    mv  "${base_name}_dc.nc" "${base_name}.nc"
-    ./offline_ioda_tweak.py -o "${ioda_file}"
-    base_name=$(basename "${ioda_file}" .nc)
-    mv  "${base_name}_llp.nc" "${base_name}.nc"
-  fi
-done
 
 # Run vadwnd superobbing and thinning offline tool.
 ./offline_vad_thinning.py -i ioda_vadwnd.nc -o ioda_vadwnd_thinned.nc
