@@ -19,24 +19,25 @@ export USE_MERRA2=false  # false: default GOCART aerosol climatology; true: MERR
 #
 export DO_IODA=true
 export DO_JEDI=true
-#export SNUDGETYPES="GGG" # G=gsd_update_soiltq from GSI; P=2022 J Hydro paper; chars=SoilT,SnowT,SoilQ
-export DO_NONVAR_CLOUD_ANA=false
-export COLDSTART_CYCS_DO_DA=false
+export SNUDGETYPES="GGG" # G=gsd_update_soiltq from GSI; P=2022 J Hydro paper; chars=SoilT,SnowT,SoilQ
+export DO_NONVAR_CLOUD_ANA=true
+export COLDSTART_CYCS_DO_DA=true
 export DO_CHEMISTRY=false
 export DO_CLEAN=true
 export DO_BLENDING=false
 export BLENDING_CYCS="00 12"    # cycle to blend large and small scale .e.g. GFS/MPAS forecast
-export HYB_WGT_ENS=0.0
-export HYB_WGT_STATIC=1.0
+export HYB_WGT_ENS=0.5
+export HYB_WGT_STATIC=0.5
 export HYB_ENS_TYPE=1      # 1.rrfs; 2.interpolated GEFS/GDAS; 0.TBD on the fly (rrfs->GDAS->3DVAR)
 export HYB_ENS_PATH=""     # if empty, the workflow will try to find ensembles automatically
-export DO_RADAR_REF=false  # does not work for 3DVar, only EnVar or GETKF
+export DO_RADAR_REF=true  # does not work for 3DVar, only EnVar or GETKF
 export RADARREFL_TIMELEVEL="00"  # 00 15 30 45 min
 export SAT_USELIST=""  # check config.base on how to set up this variable
 export ENS_SIZE=30
 export ENS_BEC_LOOK_BACK_HRS=1  # define the hours going back for ensemble forecast files for the ensemble BEC
 export DO_HOFX=false
 export HOFX_FHRS="000 001 012"
+export DO_SPPT=false
 
 export STATIC_BEC_MODEL="GSIBEC" # the static bec model, GSIBEC and BUMPBEC
 export GSIBEC_X=40 #GSIBEC_X * GSIBEC_Y should match the number of MPI tasks
@@ -51,16 +52,16 @@ export HISTORY_INTERVAL=1
 export MPASOUT_TIMELEVELS="0 1"
 export POST_GROUP_TOT_NUM=2 # num of groups, the final group absorbs leftovers, the first group contains the extra f000h file
 
-export IC_OFFSET=6
+export IC_OFFSET=3
 export LBC_OFFSET=6
 export LBC_LENGTH=18
 export LBC_INTERVAL=1
 export LBC_UNGRIB_GROUP_TOTAL_NUM=2
 export LBC_GROUP_TOTAL_NUM=2
 
-export RETRO_PERIOD="2024052700-2024052800"
+export RETRO_PERIOD="2024050700-2024050800"
 export LBC_CYCS="00 12"  # evenly divide 24 hours, e.g., "00 12", "00 06 12 18", etc
-export COLDSTART_CYCS="00 12"   # cycles to cold start from external models
+export COLDSTART_CYCS="03 15"   # cycles to cold start from external models
 #export DO_SPINUP=true
 #export PRODSWITCH_CYCS="06 18"  # cycles to PROD switch to the spun-up ICs
 #
