@@ -69,7 +69,7 @@ physics_suite=${PHYSICS_SUITE:-'mesoscale_reference'}
 lsm_scheme=${LSM_SCHEME:-'sf_ruc'}
 nsoillevels=${NSOIL_LEVELS:-9}
 jedi_da=true #true
-pio_stride=${PIO_STRIDE:-$PPN}
+pio_stride=${PIO_STRIDE:-${PPN}}
 pio_num_iotasks=$(( NODES * PPN / pio_stride ))
 
 # We set dt, substeps, radt values to avoid errors in reading namelist.atmosphere
