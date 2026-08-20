@@ -97,14 +97,14 @@
        - filter: Polygon Check
          identifier:
            name: PolygonCheck
-           logging: false
+           logging: true
          <<: *polygonConfig
 
        - filter: Create Diagnostic Flags
          apply at iterations: 0,1
          identifier:
            name: CreateDiagnosticFlags
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -143,7 +143,7 @@
          apply at iterations: 0,1
          identifier:
            name: VarAssign
-           logging: false
+           logging: true
            diagnostic flag new: false
          assignments:
          - name: MetaData/sensorCentralWavenumber
@@ -252,7 +252,7 @@
          apply at iterations: 0,1
          identifier:
            name: BrightnessTempTransform
-           logging: false
+           logging: true
            diagnostic flag new: false
          Transform: SatBrightnessTempFromRad
          transform from:
@@ -273,7 +273,7 @@
          apply at iterations: 0,1
          identifier:
            name: ObsErrorInit
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -290,7 +290,7 @@
          apply at iterations: 0,1
          identifier:
            name: VarAssign
-           logging: false
+           logging: true
            diagnostic flag new: false
          assignments:
          - name: DerivedMetaData/cloudFree
@@ -308,7 +308,7 @@
        #- filter: Domain Check
        #  identifier:
        #    name: ScanEdgeRemoval
-       #    logging: false
+       #    logging: true
        #    diagnostic flag new: false
        #  filter variables:
        #  - name: brightnessTemperature
@@ -331,7 +331,7 @@
          apply at iterations: 0,1
          identifier:
            name: ScanEdgeRemoval
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -348,7 +348,7 @@
          apply at iterations: 0,1
          identifier:
            name: Thinning
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -375,7 +375,7 @@
          apply at iterations: 0,1
          identifier:
            name: RegionalDomainCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -398,7 +398,7 @@
          apply at iterations: 0,1
          identifier:
            name: ZenithAngleCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -424,7 +424,7 @@
          apply at iterations: 0,1
          identifier:
            name: ZenithAngleCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -445,7 +445,7 @@
          apply at iterations: 0,1
          identifier:
            name: TopographyCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -467,7 +467,7 @@
          apply at iterations: 0,1
          identifier:
            name: TransmitTopCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -493,7 +493,7 @@
          apply at iterations: 0,1
          identifier:
            name: CloudDetect
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -521,7 +521,7 @@
          apply at iterations: 0,1
          identifier:
            name: WindowChannelExtremeResidual
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -550,7 +550,7 @@
          apply at iterations: 0,1
          identifier:
            name: NearSSTRetCheckIR
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -578,7 +578,7 @@
          apply at iterations: 0,1
          identifier:
            name: SurfJacobianCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -602,7 +602,7 @@
          apply at iterations: 0,1
          identifier:
            name: GrossErrorCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -636,7 +636,7 @@
          apply at iterations: 0,1
          identifier:
            name: UseflagCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature

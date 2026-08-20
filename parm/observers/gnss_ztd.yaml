@@ -51,14 +51,14 @@
          - filter: Polygon Check
            identifier:
              name: PolygonCheck
-             logging: false
+             logging: true
            <<: *polygonConfig
 
          - filter: Bounds Check
            apply at iterations: 0,1
            identifier:
              name: QcMarkerCheck
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: zenithTotalDelay
@@ -71,7 +71,7 @@
            apply at iterations: 0,1
            identifier:
              name: ObsErrorInit
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: zenithTotalDelay
@@ -84,7 +84,7 @@
            apply at iterations: 0,1
            identifier:
              name: TerrainHeightCheck
-             logging: false
+             logging: true
              diagnostic flag new: false
            reference: MetaData/stationElevation
            value: GeoVaLs/height_above_mean_sea_level_at_surface
@@ -95,7 +95,7 @@
            apply at iterations: 0,1
            identifier:
              name: GrossErrorCheck
-             logging: false
+             logging: true
              diagnostic flag new: false
            threshold: 6
 
