@@ -20,17 +20,17 @@
              allow overwrite: true
          io pool:
            max pool size: 1
-         observed variables: [specificHumidity]
-         simulated variables: [specificHumidity]
+         observed variables: [specificHumidityAt2M]
+         simulated variables: [specificHumidityAt2M]
 
        obs operator:
-         name: SfcCorrected
-         correction scheme to use: GSL
-         variables:
-         - name: specificHumidity
+         name: Identity
 
        linear obs operator:
          name: Identity
+         variable maps:
+         - name: specificHumidityAt2M
+           alias: water_vapor_mixing_ratio_wrt_moist_air
 
        obs error:
          covariance model: diagonal
@@ -41,7 +41,7 @@
 
        obs filters:
          # ------------------
-         # specificHumidity (187)
+         # specificHumidityAt2M (187)
          # ------------------
          # Reset the QCflags at the beginning of a new outer loop
          - filter: AcceptList
@@ -56,44 +56,6 @@
              logging: false
            <<: *polygonConfig
 
-         # Remove all invalid obs from this observer
-         - filter: Perform Action
-           identifier:
-             name: ObsInvalidCheck
-             logging: false
-           where:
-           - variable: ObsValue/specificHumidity
-             value: is_not_valid
-           action:
-             name: reduce obs space
-
-         # Remove obs of other obsTypes
-         - filter: Perform Action
-           identifier:
-             name: ObsTypeCheck
-             logging: false
-           where:
-           - variable: ObsType/specificHumidity
-             is_not_in: 187
-           action:
-             name: reduce obs space
-
-         # Remove all obs with QualityMarker > 3
-         - filter: RejectList
-           identifier:
-             name: QcMarkerCheck
-             logging: false
-             diagnostic flag new: false
-           filter variables:
-           - name: specificHumidity
-           where:
-           - variable: QualityMarker/specificHumidity
-             is_in: 4-15
-             value: is_not_valid
-           where operator: or
-           action:
-             name: reduce obs space
-
          # Time window filter
          - filter: Domain Check
            identifier:
@@ -107,18 +69,59 @@
            action:
              name: reduce obs space
 
-         # Duplicate Check
-         - filter: Temporal Thinning
+         # Remove all invalid obs from this observer
+         - filter: Perform Action
            identifier:
-             name: DumplicateThinning
+             name: ObsInvalidCheck
+             logging: false
+           where:
+           - variable: ObsValue/specificHumidityAt2M
+             value: is_not_valid
+           action:
+             name: reduce obs space
+
+         # Remove obs of other obsTypes
+         - filter: Perform Action
+           identifier:
+             name: ObsTypeCheck
+             logging: false
+           where:
+           - variable: ObsType/specificHumidityAt2M
+             is_not_in: 187
+           action:
+             name: reduce obs space
+
+         # Remove all obs with QualityMarker > 3
+         - filter: RejectList
+           identifier:
+             name: QcMarkerCheck
+             logging: false
+             diagnostic flag new: false
+           filter variables:
+           - name: specificHumidityAt2M
+           where:
+           - variable: QualityMarker/specificHumidityAt2M
+             is_in: 4-15
+             value: is_not_valid
+           where operator: or
+           action:
+             name: reduce obs space
+
+         # Duplicate Check
+         - filter: DuplicateThinning
+           identifier:
+             name: DuplicateThinning
              logging: false
            filter variables:
-           - name: specificHumidity
+           - name: specificHumidityAt2M
+           analysis_time: "@ANALYSIS_DATE@"
+           analysis_time_tolerance: PT0M
            min_spacing: PT90M
-           tolerance: PT0H
-           seed_time: "@ANALYSIS_DATE@"
-           category_variable:
-             name: MetaData/stationIdentification
+           equidistant_time_selection: after
+           variable names:
+           - MetaData/stationIdentification
+           tolerance:
+           - 1.0e+6
            action:
              name: reduce obs space
 
@@ -130,7 +133,7 @@
              logging: false
              diagnostic flag new: false
            filter variables:
-           - name: specificHumidity
+           - name: specificHumidityAt2M
            test variables:
            - name:  GeoVaLs/observable_domain_mask
            minvalue: 0.0
@@ -144,9 +147,9 @@
              logging: false
              diagnostic flag new: false
            filter variables:
-           - name: specificHumidity
+           - name: specificHumidityAt2M
            where:
-           - variable: ObsType/specificHumidity
+           - variable: ObsType/specificHumidityAt2M
              is_in: 187
            action:
              name: assign error
@@ -160,60 +163,58 @@
 
 #         # Error inflation based on pressure check (setupq.f90)
 #         - filter: Perform Action
+#           apply at iterations: 0,1
 #           identifier:
 #             name: ObsErrorFactorPressureCheck
 #             logging: false
 #             diagnostic flag new: false
 #           filter variables:
-#           - name: specificHumidity
+#           - name: specificHumidityAt2M
 #           where:
-#           - variable: ObsType/specificHumidity
+#           - variable: ObsType/specificHumidityAt2M
 #             is_in: 187
 #           action:
 #             name: inflate error
 #             inflation variable:
 #               name: ObsFunction/ObsErrorFactorPressureCheck
 #               options:
-#                 variable: specificHumidity
+#                 variable: specificHumidityAt2M
 #                 inflation factor: 8.0
-#                 # The new feature "surface observation error ramp"
-#                 # needs to be added to UFO to align with the ramp
-#                 # options for temperature and humidity in GSI.
-#                 #surface observation error ramp: true
 
 #         # Error inflation based on errormod (qcmod.f90)
 #         - filter: Perform Action
+#           apply at iterations: 0,1
 #           identifier:
-#             name: ObsErrorFactorPressureCheck
+#             name: ObsErrorFactorConventional
 #             logging: false
 #             diagnostic flag new: false
 #           filter variables:
-#           - name: specificHumidity
+#           - name: specificHumidityAt2M
 #           where:
-#           - variable: ObsType/specificHumidity
+#           - variable: ObsType/specificHumidityAt2M
 #             is_in: 187
 #           action:
 #             name: inflate error
 #             inflation variable:
 #               name: ObsFunction/ObsErrorFactorConventional
 #               options:
-#                 inflate variables: [specificHumidity]
+#                 inflate variables: [specificHumidityAt2M]
 #                 pressure: MetaData/pressure
 
          # Error inflation when QualityMarker == 3 (read_prepbufr.f90)
          - filter: Perform Action
            apply at iterations: 0,1
            identifier:
-             name: ObsErrorFactorPressureCheck
+             name: ObsErrorFactorQm3_
              logging: false
              diagnostic flag new: false
            filter variables:
-           - name: specificHumidity
+           - name: specificHumidityAt2M
            action:
              name: inflate error
              inflation factor: 1.2
            where:
-           - variable: QualityMarker/specificHumidity
+           - variable: QualityMarker/specificHumidityAt2M
              is_in: 3
 
          # Error inflation when observation pressure < 100 hPa (read_prepbufr.f90)
@@ -224,7 +225,7 @@
              logging: false
              diagnostic flag new: false
            filter variables:
-           - name: specificHumidity
+           - name: specificHumidityAt2M
            action:
              name: inflate error
              inflation factor: 1.2
@@ -240,9 +241,9 @@
              logging: false
              diagnostic flag new: false
            filter variables:
-           - name: specificHumidity
+           - name: specificHumidityAt2M
            test variables:
-           - name:  ObsErrorData/specificHumidity
+           - name:  ObsErrorData/specificHumidityAt2M
            minvalue: 0.0
            maxvalue: 1000
            action:
@@ -256,7 +257,7 @@
              logging: false
              diagnostic flag new: false
            filter variables:
-           - name: specificHumidity
+           - name: specificHumidityAt2M
            minvalue: 0.0
            maxvalue: 1.0
            action:
@@ -270,13 +271,13 @@
              logging: false
              diagnostic flag new: false
            assignments:
-           - name: TempObsErrorData/specificHumidity
+           - name: TempObsErrorData/specificHumidityAt2M
              type: float
              function:
                name: ObsFunction/Arithmetic
                options:
                  variables:
-                 - name: ObsErrorData/specificHumidity
+                 - name: ObsErrorData/specificHumidityAt2M
            defer to post: true
 
          # Set ObsError set "error parameter" if < "max value"
@@ -287,16 +288,16 @@
              logging: false
              diagnostic flag new: false
            filter variables:
-           - name: specificHumidity
+           - name: specificHumidityAt2M
            action:
              name: assign error
              error parameter: 5.0
            where:
            - variable:
-               name: ObsErrorData/specificHumidity
+               name: ObsErrorData/specificHumidityAt2M
              maxvalue: 5.0
            - variable:
-               name: ObsErrorData/specificHumidity
+               name: ObsErrorData/specificHumidityAt2M
              value: is_valid
            defer to post: true
 
@@ -308,16 +309,16 @@
              logging: false
              diagnostic flag new: false
            filter variables:
-           - name: specificHumidity
+           - name: specificHumidityAt2M
            action:
              name: assign error
              error parameter: 50.0
            where:
            - variable:
-               name: ObsErrorData/specificHumidity
+               name: ObsErrorData/specificHumidityAt2M
              minvalue: 50.0
            - variable:
-               name: ObsErrorData/specificHumidity
+               name: ObsErrorData/specificHumidityAt2M
              value: is_valid
            defer to post: true
 
@@ -329,13 +330,13 @@
              logging: false
              diagnostic flag new: false
            filter variables:
-           - name: specificHumidity
+           - name: specificHumidityAt2M
            threshold: 7.0
            action:
              name: reject
            where:
-           - variable: ObsType/specificHumidity
-           - variable: QualityMarker/specificHumidity
+           - variable: ObsType/specificHumidityAt2M
+           - variable: QualityMarker/specificHumidityAt2M
              is_not_in: 3
            defer to post: true
 
@@ -347,13 +348,13 @@
              logging: false
              diagnostic flag new: false
            filter variables:
-           - name: specificHumidity
+           - name: specificHumidityAt2M
            threshold: 4.9
            action:
              name: reject
            where:
-           - variable: ObsType/specificHumidity
-           - variable: QualityMarker/specificHumidity
+           - variable: ObsType/specificHumidityAt2M
+           - variable: QualityMarker/specificHumidityAt2M
              is_in: 3
            defer to post: true
 
@@ -365,13 +366,13 @@
              logging: false
              diagnostic flag new: false
            filter variables:
-           - name: specificHumidity
+           - name: specificHumidityAt2M
            action:
              name: assign error
-             error function: TempObsErrorData/specificHumidity
+             error function: TempObsErrorData/specificHumidityAt2M
            where:
            - variable:
-               name: TempObsErrorData/specificHumidity
+               name: TempObsErrorData/specificHumidityAt2M
              value: is_valid
            defer to post: true
 

@@ -22,36 +22,44 @@ export ZETA_LEVELS="L60.txt"
 #
 export USE_MERRA2=false  # false: default GOCART aerosol climatology; true: MERRA2 aerosol climatology
 #
-export DO_IODA=false
-export DO_JEDI=false
-export DO_NONVAR_CLOUD_ANA=false
-export COLDSTART_CYCS_DO_DA=false
-export DO_RECENTER=false
-export DO_RADAR_REF=false
-export SAVE_GETKF_ANL=false
+export DO_IODA=true
+export DO_JEDI=true
+export GETKF_ONESTEP=true
+export DO_NONVAR_CLOUD_ANA=true
+export COLDSTART_CYCS_DO_DA=true
+export DO_RECENTER=true
+export DO_RADAR_REF=true
+#export DO_GETKF_POST=true
+#export SAVE_GETKF_ANL=true
 export DO_CLEAN=true
 export RADARREFL_TIMELEVEL="00"  # 00 15 30 45 min
 export SAT_USELIST=""  # check config.base on how to set up this variable
+export DO_SPPT=false
 
 export DO_CYC=true
-export CYC_INTERVAL=6
-for i in {0..23};    do arr[$i]="03"; done # 3hr fcst
-for i in {0..23..6}; do arr[$i]="03"; done # 3hr fcst every 6hrs
+export CYC_INTERVAL=1
+for i in {0..23};    do arr[$i]="01"; done # 3hr fcst
+for i in {0..23..6}; do arr[$i]="01"; done # 3hr fcst every 6hrs
 export FCST_LEN_HRS_CYCLES="${arr[*]}"
 export HISTORY_INTERVAL=1
 export MPASOUT_TIMELEVELS="0 1"
 export POST_GROUP_TOT_NUM=2 # num of groups, the final group absorbs leftovers, the first group contains the extra f000h file
+export DO_POST=false
 
-export IC_OFFSET=30
-export LBC_OFFSET=6
+export IC_OFFSET=39
+export LBC_OFFSET=39
 export LBC_LENGTH=15
-export LBC_INTERVAL=3
-export LBC_UNGRIB_GROUP_TOTAL_NUM=2
+export LBC_INTERVAL=1
+export LBC_UNGRIB_GROUP_TOTAL_NUM=1
 export LBC_GROUP_TOTAL_NUM=2
+export PREP_LBC_LOOK_BACK_HRS=11
 
-export RETRO_PERIOD="2024052700-2024052712"
-export LBC_CYCS="00 06 12 18"
-export COLDSTART_CYCS="00 06 12 18"   # cycles to cold start from external models
+export RETRO_PERIOD="2024050700-2024050800"
+export LBC_CYCS="03 15"
+export COLDSTART_CYCS="03 15"   # cycles to cold start from external models
+export RECENTER_CYCS="${COLDSTART_CYCS}"
+export DET_RECENTERCYCS_DO_DA=true #true # whether or not do detministic DA at RECENTER_CYCS
+export DET_NONVAR_CLOUD_ANA=false #true # whether or not do detministic NONVAR_CLOUD_ANA at RECENTER_CYCS
 #
 #export DO_PYDAMONITOR=true
 #export DO_GRAPHICS=true
@@ -71,6 +79,7 @@ export NODES_UPP="<nodes>4:ppn=20</nodes>"
 export NODES_GETKF="<nodes>80:ppn=10</nodes>"
 export NODES_RECENTER="<nodes>2:ppn=16</nodes>"
 export NODES_IODA_MRMS_REFL="<nodes>1:ppn=40</nodes>"
+export PIO_STRIDE=10
 #
 export WALLTIME_FCST="2:00:00"
 export WALLTIME_MPASSIT="2:00:00"

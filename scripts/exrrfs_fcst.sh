@@ -52,6 +52,7 @@ physics_suite=${PHYSICS_SUITE:-'mesoscale_reference'}
 lsm_scheme=${LSM_SCHEME:-'sf_ruc'}
 nsoillevels=${NSOIL_LEVELS:-9}
 jedi_da=true #true
+do_sppt=${DO_SPPT:-'false'}
 
 pio_num_iotasks=${NODES}
 pio_stride=${PPN}

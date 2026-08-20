@@ -112,6 +112,8 @@ cost function:
             local interpolator type: oops unstructured grid interpolator
           inverse interpolator:
             local interpolator type: oops unstructured grid interpolator
+            regional check enabled: false
+            regional nn fill distance in km: 500
           state variables to inverse:  # Make sure to also re-order the state passed to GSI-B constructor
           - eastward_wind
           - northward_wind

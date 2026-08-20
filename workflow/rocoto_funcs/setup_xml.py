@@ -161,8 +161,12 @@ def setup_xml(HOMErrfs, expdir):
             if os.getenv("DO_RECENTER", "FALSE").upper() == "TRUE":
                 recenter(xmlFile, expdir)
             if os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
-                getkf(xmlFile, expdir, 'OBSERVER')
-                getkf(xmlFile, expdir, 'SOLVER')
+                if os.getenv("GETKF_ONESTEP", "FALSE").upper() == "TRUE":
+                    getkf(xmlFile, expdir, 'OBSERVER_SOLVER')
+                else:
+                    getkf(xmlFile, expdir, 'OBSERVER')
+                    getkf(xmlFile, expdir, 'SOLVER')
+
                 if os.getenv("DO_GETKF_POST", "TRUE").upper() == "TRUE":
                     getkf(xmlFile, expdir, 'POST')
             if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
