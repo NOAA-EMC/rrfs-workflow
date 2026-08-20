@@ -61,23 +61,26 @@ with open(f'{expdir}/{NET}.xml') as infile:
             SAT_USELIST = get_value(line)
 
 # prepare a summary
-if float(HYB_WGT_ENS) == 0.0 and float(HYB_WGT_STATIC) == 1.0:
-    summary = f"Pure 3DVAR, using {STATIC_BEC_MODEL}"
+if getkf:
+    summary = "GETKF observer"
 else:
-    if float(HYB_WGT_ENS) == 1.0 and float(HYB_WGT_STATIC) == 0.0:
-        summary = "Pure 3DEnVAR"
+    if float(HYB_WGT_ENS) == 0.0 and float(HYB_WGT_STATIC) == 1.0:
+        summary = f"Pure 3DVAR, using {STATIC_BEC_MODEL}"
     else:
-        summary = "Hybrid 3DEnVAR"
-    #
-    if int(HYB_ENS_TYPE) == 1:
-        summary += ", using RRFS ensembles"
-    elif int(HYB_ENS_TYPE) == 2:
-        summary += ", using GEFS/GDAS ensembles"
-    else:
-        summary += ", ensemble type is determined at runtime"
+        if float(HYB_WGT_ENS) == 1.0 and float(HYB_WGT_STATIC) == 0.0:
+            summary = "Pure 3DEnVAR"
+        else:
+            summary = "Hybrid 3DEnVAR"
+        #
+        if int(HYB_ENS_TYPE) == 1:
+            summary += ", using RRFS ensembles"
+        elif int(HYB_ENS_TYPE) == 2:
+            summary += ", using GEFS/GDAS ensembles"
+        else:
+            summary += ", ensemble type is determined at runtime"
 
-    if (int(HYB_ENS_TYPE) == 1 or int(HYB_ENS_TYPE) == 2) and (HYB_ENS_PATH != ""):
-        summary += f"\nEnsembles come from: {HYB_ENS_PATH}"
+        if (int(HYB_ENS_TYPE) == 1 or int(HYB_ENS_TYPE) == 2) and (HYB_ENS_PATH != ""):
+            summary += f"\nEnsembles come from: {HYB_ENS_PATH}"
 # ~~~~~~~~
 if COLDSTART_CYCS_DO_DA.upper() == "FALSE":
     summary += "\nNO data assimiation at the cold start cycles"
@@ -169,7 +172,7 @@ elif not dcSatInfo:
 # generate the yaml file on the fly
 #
 if getkf:
-    yfile = f"{expdir}/config/getkf_observer.yaml"
+    yfile = f"{expdir}/config/getkf.yaml"
 else:
     yfile = f"{expdir}/config/jedivar.yaml"
 # determine the output file
