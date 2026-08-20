@@ -104,7 +104,10 @@ fi
 #
 run_blending=${COMOUT}/run_blending
 run_ensinit=${COMOUT}/run_ensinit
-if [[ ${CYCLE_SUBTYPE} == "ensinit" && -e $run_blending && ! -e $run_ensinit ]]; then
+if [ $WGF = "enkf" ]; then
+  run_ensinit_ct=$(find ${COMOUT}/.. -name "run_ensinit"|wc -l)
+fi
+if [[ ${CYCLE_SUBTYPE} == "ensinit" && ${run_ensinit_ct} -eq 0 ]]; then
    echo "Skip ensinit forecast because this cycle is warm started and blending job has completed."
    exit 0
 fi
