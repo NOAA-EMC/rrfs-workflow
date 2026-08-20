@@ -66,19 +66,19 @@ observations:
           heightOfObservationQualityMark:
             query: "*/Z___INFO/Z__EVENT{1}/ZQM"
 
-          specificHumidity:
+          specificHumidityAt2M:
             query: "*/Q___INFO/Q__EVENT{1}/QOB"
             type: float
             transforms:
               - scale: 0.000001
           # Assign fake Q errors
-          specificHumidityError:
+          specificHumidityAt2MError:
             query: "*/Q___INFO/Q__EVENT{1}/QOB"
             type: float
             transforms:
               - scale: 0.0
               - offset: 999
-          specificHumidityQualityMarker:
+          specificHumidityAt2MQualityMarker:
             query: "*/Q___INFO/Q__EVENT{1}/QQM"
           relativeHumidityError:
             query: "*/Q___INFO/Q__BACKG/QOE"
@@ -94,15 +94,15 @@ observations:
             transforms:
               - offset: 273.15
 
-          airTemperature:
+          airTemperatureAt2M:
             query: "*/T___INFO/T__EVENT{1}/TOB"
             transforms:
               - offset: 273.15
-          airTemperatureQualityMarker:
+          airTemperatureAt2MQualityMarker:
             query: "*/T___INFO/T__EVENT{1}/TQM"
-          airTemperatureError:
+          airTemperatureAt2MError:
             query: "*/T___INFO/T__BACKG/TOE"
-          airTemperatureTunedError:
+          airTemperatureAt2MTunedError:
             query: "*/T___INFO/T__POSTP/TOETU"
 
           windEastward:
@@ -256,16 +256,16 @@ observations:
           units: "Pa"
 
         # ObsType
-        - name: "ObsType/specificHumidity"
+        - name: "ObsType/specificHumidityAt2M"
           coordinates: "longitude latitude"
           source: variables/prepbufrReportType
-          longName: "specificHumidity Report Type"
+          longName: "Specific Humidity at 2m Report Type"
           units: ""
 
-        - name: "ObsType/airTemperature"
+        - name: "ObsType/airTemperatureAt2M"
           coordinates: "longitude latitude"
           source: variables/prepbufrReportType
-          longName: "airTemperature report Type"
+          longName: "Temperature at 2m report Type"
           units: ""
 
         - name: "ObsType/windEastward"
@@ -287,16 +287,16 @@ observations:
           units: ""
 
         # ObsValue
-        - name: "ObsValue/specificHumidity"
+        - name: "ObsValue/specificHumidityAt2M"
           coordinates: "longitude latitude"
-          source: variables/specificHumidity
-          longName: "Specific Humidity"
+          source: variables/specificHumidityAt2M
+          longName: "Specific Humidity at 2m"
           units: "Kilogram Kilogram-1"
 
-        - name: "ObsValue/airTemperature"
+        - name: "ObsValue/airTemperatureAt2M"
           coordinates: "longitude latitude"
-          source: variables/airTemperature
-          longName: "Temperature"
+          source: variables/airTemperatureAt2M
+          longName: "Temperature at 2m"
           units: "K"
 
         - name: "ObsValue/dewpointTemperature"
@@ -396,15 +396,15 @@ observations:
           source: variables/heightOfObservationQualityMark
           longName: "Height Quality Marker"
 
-        - name: "QualityMarker/specificHumidity"
+        - name: "QualityMarker/specificHumidityAt2M"
           coordinates: "longitude latitude"
-          source: variables/specificHumidityQualityMarker
-          longName: "Specific Humidity Quality Marker"
+          source: variables/specificHumidityAt2MQualityMarker
+          longName: "Specific Humidity at 2m Quality Marker"
 
-        - name: "QualityMarker/airTemperature"
+        - name: "QualityMarker/airTemperatureAt2M"
           coordinates: "longitude latitude"
-          source: variables/airTemperatureQualityMarker
-          longName: "Temperature Quality Marker"
+          source: variables/airTemperatureAt2MQualityMarker
+          longName: "Temperature at 2m Quality Marker"
 
         - name: "QualityMarker/windEastward"
           coordinates: "longitude latitude"
@@ -433,10 +433,10 @@ observations:
           longName: "Pressure Observation Error"
           units: "Pa"
 
-        - name: "ObsError/specificHumidity"
+        - name: "ObsError/specificHumidityAt2M"
           coordinates: "longitude latitude"
-          source: variables/specificHumidityError
-          longName: "Specific Humidity Error"
+          source: variables/specificHumidityAt2MError
+          longName: "Specific Humidity at 2m Error"
           units: "kg kg-1"
 
         - name: "ObsError/relativeHumidity"
@@ -445,10 +445,10 @@ observations:
           longName: "Relative Humidity Error"
           units: "1"
 
-        - name: "ObsError/airTemperature"
+        - name: "ObsError/airTemperatureAt2M"
           coordinates: "longitude latitude"
-          source: variables/airTemperatureError
-          longName: "Temperature Error"
+          source: variables/airTemperatureAt2MError
+          longName: "Temperature at 2m Error"
           units: "K"
 
         - name: "ObsError/windEastward"
@@ -482,10 +482,10 @@ observations:
 #          longName: "Analysis-Tuned Relative Humidity Error"
 #          units: "1"
 #
-#        - name: "TunedObsError/airTemperature"
+#        - name: "TunedObsError/airTemperatureAt2M"
 #          coordinates: "longitude latitude"
-#          source: variables/airTemperatureTunedError
-#          longName: "Analysis-Tuned Temperature Error"
+#          source: variables/airTemperatureAt2MTunedError
+#          longName: "Analysis-Tuned Temperature at 2m Error"
 #          units: "K"
 #
 #        - name: "TunedObsError/windEastward"
