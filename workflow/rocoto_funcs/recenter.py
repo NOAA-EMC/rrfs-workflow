@@ -10,7 +10,7 @@ def recenter(xmlFile, expdir):
     cycledefs = 'recenter'
     recenter_cycs = os.getenv('RECENTER_CYCS', '99')
     det_recentercycs_do_da = os.getenv('DET_RECENTERCYCS_DO_DA', 'false')
-    do_nonvar_cldana = os.getenv('DO_NONVAR_CLOUD_ANA', 'false')
+    det_nonvar_cldana = os.getenv('DET_NONVAR_CLOUD_ANA', 'false')
     # Task-specific EnVars beyond the task_common_vars
     dcTaskEnv = {
         'ENS_SIZE': os.getenv("ENS_SIZE", '5'),
@@ -26,7 +26,7 @@ def recenter(xmlFile, expdir):
         timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
 
     if det_recentercycs_do_da.upper() == "TRUE":
-        if do_nonvar_cldana.upper() == "TRUE":
+        if det_nonvar_cldana.upper() == "TRUE":
             datadep = f'<datadep age="00:01:00"><cyclestr>&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/nonvar_cldana/det/nonvar_cldana.done</cyclestr></datadep>'
         else:
             datadep = f'<datadep age="00:01:00"><cyclestr>&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/jedivar/det/jedivar.done</cyclestr></datadep>'
