@@ -16,6 +16,7 @@ import sys
 
 IDS_PER_LINE = 15  # IDs per line in flow-style YAML
 
+
 def parse_rejectlist(filepath):
     """Parse the aircraft reject list, return lists of IDs per variable."""
     temp_ids = []
