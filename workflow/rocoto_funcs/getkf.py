@@ -41,7 +41,7 @@ def getkf(xmlFile, expdir, taskType):
     elif taskType.upper() == "SOLVER":
         task_id = "getkf_solver"
     elif taskType.upper() == "OBSERVER_SOLVER":
-        task_id = "getkf_observer_solver"
+        task_id = "getkf"
     elif taskType.upper() == "POST":
         task_id = "getkf_post"
     if analysis_variables != '0':
@@ -105,7 +105,7 @@ def getkf(xmlFile, expdir, taskType):
   <and>{timedep}
    <or>
     <taskdep task="getkf_solver"/>
-    <taskdep task="getkf_observer_solver"/>
+    <taskdep task="getkf"/>
    </or>
   </and>
   </dependency>'''
