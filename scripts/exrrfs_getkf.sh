@@ -30,14 +30,10 @@ mkdir -p obs ens jdiag
 #
 # copy observations files
 #
-if [[ ${GETKF_TYPE} == observer*  ]]; then
+if [[ ${GETKF_TYPE} == observer*  ]]; then  # observer or observer_solver
   source "${USHrrfs}/copy_obs.sh" "getkf"
-else
-  if [[ -d "${UMBRELLA_GETKF_OBSERVER_DATA}" ]]; then
-    ln -snf "${UMBRELLA_GETKF_OBSERVER_DATA}"/jdiag* jdiag/.
-  elif [[ -d "${UMBRELLA_GETKF_OBSERVER_SOLVER_DATA}" ]]; then
-    ln -snf "${UMBRELLA_GETKF_OBSERVER_SOLVER_DATA}"/jdiag* jdiag/.
-  fi
+else  # solver or post
+  ln -snf "${UMBRELLA_GETKF_OBSERVER_DATA}"/jdiag* jdiag/.
 fi
 #
 # determine whether to begin new cycles and link correct ensembles

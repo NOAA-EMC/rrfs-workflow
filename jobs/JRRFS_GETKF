@@ -19,8 +19,14 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 #
 export UMBRELLA_PREP_IC_DATA=${UMBRELLA_PREP_IC_DATA:-${DATAROOT}/${RUN}_prep_ic_${cyc}_${rrfs_ver}/${WGF}}
 export UMBRELLA_GETKF_DATA=${UMBRELLA_GETKF_DATA:-${DATAROOT}/${RUN}_getkf_${GETKF_TYPE}_${cyc}_${rrfs_ver}/${WGF}}
-export UMBRELLA_GETKF_OBSERVER_DATA=${UMBRELLA_GETKF_OBSERVER_DATA:-${DATAROOT}/${RUN}_getkf_observer_${cyc}_${rrfs_ver}/${WGF}}
-export UMBRELLA_GETKF_OBSERVER_SOLVER_DATA=${UMBRELLA_GETKF_OBSERVER_SOLVER_DATA:-${DATAROOT}/${RUN}_getkf_observer_solver_${cyc}_${rrfs_ver}/${WGF}}
+if [[ "${GETKF_ONESTEP^^}" == "TRUE" ]]; then
+  if [[ "${GETKF_TYPE}" == "observer_solver" ]]; then
+    export UMBRELLA_GETKF_DATA=${UMBRELLA_GETKF_DATA:-${DATAROOT}/${RUN}_getkf_${cyc}_${rrfs_ver}/${WGF}}
+  fi
+  export UMBRELLA_GETKF_OBSERVER_DATA=${UMBRELLA_GETKF_OBSERVER_DATA:-${DATAROOT}/${RUN}_getkf_${cyc}_${rrfs_ver}/${WGF}}
+else  # two step getkf, observer and solver run separately
+  export UMBRELLA_GETKF_OBSERVER_DATA=${UMBRELLA_GETKF_OBSERVER_DATA:-${DATAROOT}/${RUN}_getkf_observer_${cyc}_${rrfs_ver}/${WGF}}
+fi
 export pid=${pid:-$$}
 export jobid=${jobid:-getkf_${GETKF_TYPE}_${cyc}}
 export DATA=${DATA:-${UMBRELLA_GETKF_DATA}/${jobid}}
