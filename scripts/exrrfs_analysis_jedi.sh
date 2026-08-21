@@ -376,6 +376,12 @@ sed -i \
   ${jcb_config}
 
 python run_jcb.py "${YYYYMMDDHH}" "${jcb_config}" "${jedi_yaml}"
+
+if [[ ! -s "${jedi_yaml}" ]]; then
+  echo "ERROR: ${jedi_yaml} was not created or is empty"
+  exit 1
+fi
+
 #
 #-----------------------------------------------------------------------
 #
@@ -619,29 +625,6 @@ fi
 #        development testing. We also may add this as a configurable
 #        option in the future if there is such a need.
 #ncap2 -O -s 'qmin=1.0e-7f; where(sphum < qmin) sphum = qmin;' fv3_tracer fv3_tracer
-
-#
-#-----------------------------------------------------------------------
-# Restripe the output directory for faster analysis writing
-#-----------------------------------------------------------------------
-#
-
-if [ "${PREDEF_GRID_NAME}" == "RRFS_NA_3km" ]; then
-  stripesize=30
-else
-  stripesize=8
-fi
-
-for f in inc_jedi.fv_core.res.nc \
-         inc_jedi.fv_srf_wnd.res.nc \
-         inc_jedi.fv_tracer.res.nc \
-         inc_jedi.phy_data.nc \
-         inc_jedi.sfc_data.nc
-do
-  rm -f "$f"
-  lfs setstripe --stripe-count ${stripesize} --stripe-size 1048576 --pool disk "$f"
-done
-
 #
 #-----------------------------------------------------------------------
 # Final adpupa preprocessing.
@@ -722,8 +705,6 @@ export LD_LIBRARY_PATH="/apps/ops/test/spack-stack-nco-1.9/oneapi/2024.2.1/hdf5-
 export pgm="rdas_ua2u.x"
 ua2u_exec="${EXECdir}/bin/${pgm}"
 cp "${ua2u_exec}" "${analworkdir}/${pgm}"
-
-mv inc_jedi.fv_core.res.nc agrid_inc_jedi.fv_core.res.nc
 
 ${APRUN_UA} ./${pgm} ua_update_u --in_grid=fv3_grid_spec --in_anl=fv3_dynvars --remove_anl_winds >>$pgmout 2>errfile
 export err=$?; err_chk
