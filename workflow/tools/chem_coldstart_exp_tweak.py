@@ -24,7 +24,7 @@ if nargs < 1:
 #
 exp_file = args[1]
 changesets = {
-    'export DO_CHEMISTRY=false': 'export DO_CHEMISTRY=true\nexport RETRO_CYCLETHROTTLE=1',
+    'export DO_CHEMISTRY=false': 'export DO_CHEMISTRY=true\nexport CYCLETHROTTLE=1',
     'export DO_IODA=true': 'export DO_IODA=false',
     'export DO_JEDI=true': 'export DO_JEDI=false',
     'export DO_CYC=true': 'export DO_CYC=false',
@@ -34,7 +34,7 @@ changesets = {
     'export LBC_CYCS="00 12"': 'export LBC_CYCS="00"',
     'export COLDSTART_CYCS="00 12"': 'export COLDSTART_CYCS="00"',
     'export COLDSTART_CYCS="03 15"': 'export COLDSTART_CYCS="00"',
-    'export LBC_LENGTH=18': 'export LBC_LENGTH=24', 
+    'export LBC_LENGTH=18': 'export LBC_LENGTH=24',
 }
 modify(exp_file, changesets)
 
