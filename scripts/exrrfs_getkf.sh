@@ -116,8 +116,8 @@ if [[ ${START_TYPE} == "warm" ]] || [[ ${START_TYPE} == "cold" && ${COLDSTART_CY
   export err=$?
   err_chk
   #
-  cp "${DATA}"/getkf*.yaml "${COMOUT}/getkf_${GETKF_TYPE}/${WGF}"
-  cp "${DATA}"/log.* "${COMOUT}/getkf_${GETKF_TYPE}/${WGF}"
+  cp "${DATA}"/getkf*.yaml "${COMOUT}/getkf${TYPESTR}/${WGF}"
+  cp "${DATA}"/log.* "${COMOUT}/getkf${TYPESTR}/${WGF}"
 
   # rename ombg to oman for posterior observer jdiag files
   if [[ "${GETKF_TYPE}" == "post" ]]; then
@@ -131,7 +131,7 @@ if [[ ${START_TYPE} == "warm" ]] || [[ ${START_TYPE} == "cold" && ${COLDSTART_CY
 
   # move jdiag* files to the umbrella directory if observer
   if [[ ${GETKF_TYPE} == observer* || "${GETKF_TYPE}" == "post" ]]; then
-    cp "${DATA}"/jdiag* "${COMOUT}/getkf_${GETKF_TYPE}/${WGF}"
+    cp "${DATA}"/jdiag* "${COMOUT}/getkf${TYPESTR}/${WGF}"
     mv jdiag* "${UMBRELLA_GETKF_DATA}"/.
   fi
   # move post mean to umbrella if solver
@@ -142,7 +142,7 @@ if [[ ${START_TYPE} == "warm" ]] || [[ ${START_TYPE} == "cold" && ${COLDSTART_CY
   # Save analysis files if requested
   if [[ "${GETKF_TYPE}" == "post" && "${SAVE_GETKF_ANL^^}" == "TRUE" ]]; then
     for mem in $(seq -w 001 "${ENS_SIZE}"); do
-      cp -rL "${DATA}"/data/ens/mem"${mem}".nc "${COMOUT}"/getkf_"${GETKF_TYPE}"/"${WGF}"/mem"${mem}".nc
+      cp -rL "${DATA}/data/ens/mem${mem}.nc"  "${COMOUT}/getkf_${GETKF_TYPE}/${WGF}/mem${mem}.nc"
     done
   fi
 

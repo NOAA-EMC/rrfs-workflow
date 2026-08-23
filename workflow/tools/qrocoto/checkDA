@@ -28,7 +28,7 @@ if nargs < 1:
 expdir = args[1]
 
 # check exp.setup
-getkf = False
+getkf = 0  # no getkf
 if os.path.exists(f'{expdir}/rrfs.xml'):
     NET = "rrfs"
 elif os.path.exists(f'{expdir}/rtma.xml'):
@@ -53,16 +53,20 @@ with open(f'{expdir}/{NET}.xml') as infile:
             CYC_INTERVAL = get_value(line)
         elif "FCST_LEN_HRS_CYCLES" in line:
             FCST_LEN_HRS_CYCLES = get_value(line)
-        elif "getkf_observer" in line:
-            getkf = True
+        elif '<task name="getkf"' in line:
+            getkf = 1  # one step getkf
+        elif '<task name="getkf_observer"' in line:
+            getkf = 2  # two steps getkf
         elif "STATIC_BEC_MODEL" in line:
             STATIC_BEC_MODEL = get_value(line)
         elif "SAT_USELIST" in line:
             SAT_USELIST = get_value(line)
 
 # prepare a summary
-if getkf:
-    summary = "GETKF observer"
+if getkf == 1:
+    summary = "GETKF"
+elif getkf == 1:
+    summary = "GETKF (observer and solver in two steps)"
 else:
     if float(HYB_WGT_ENS) == 0.0 and float(HYB_WGT_STATIC) == 1.0:
         summary = f"Pure 3DVAR, using {STATIC_BEC_MODEL}"
