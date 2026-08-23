@@ -5,7 +5,7 @@
 export NET=rrfs                    # rrfs, rtma, 
 export MESH_NAME=conus3km         # conus12km, conus3km, na12km, etc
 export WGF="det"   # working group function = "det", "enkf", "ens", "firewx"
-export EXP_NAME=hrly_3km
+export EXP_NAME=conus3km
 export VERSION=$(cat ./VERSION)
 export TAG=d3km
 export OPSROOT=/scratch3/BMC/wrfruc/gge/OPSROOT/${EXP_NAME}
@@ -49,7 +49,8 @@ for i in {0..23};    do arr[$i]="03"; done # 3hr fcst
 for i in {0..23..12}; do arr[$i]="12"; done # 12hr fcst every 12hrs
 export FCST_LEN_HRS_CYCLES="${arr[*]}"
 export HISTORY_INTERVAL=1
-export MPASOUT_TIMELEVELS="0 1"
+export DIAG_INTERVAL=1
+#export MPASOUT_TIMELEVELS="0 1"
 export POST_GROUP_TOT_NUM=2 # num of groups, the final group absorbs leftovers, the first group contains the extra f000h file
 
 export IC_OFFSET=3
@@ -62,8 +63,8 @@ export LBC_GROUP_TOTAL_NUM=2
 export RETRO_PERIOD="2024050700-2024050800"
 export LBC_CYCS="00 12"  # evenly divide 24 hours, e.g., "00 12", "00 06 12 18", etc
 export COLDSTART_CYCS="03 15"   # cycles to cold start from external models
-#export DO_SPINUP=true
-#export PRODSWITCH_CYCS="06 18"  # cycles to PROD switch to the spun-up ICs
+export DO_SPINUP=true
+export PRODSWITCH_CYCS="09 21"  # cycles to PROD switch to the spun-up ICs
 #
 # set as follows to start spinup at 03/15z
 #export DO_SPINUP=true
