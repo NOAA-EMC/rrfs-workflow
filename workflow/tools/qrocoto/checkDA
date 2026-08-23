@@ -65,7 +65,7 @@ with open(f'{expdir}/{NET}.xml') as infile:
 # prepare a summary
 if getkf == 1:
     summary = "GETKF"
-elif getkf == 1:
+elif getkf == 2:
     summary = "GETKF (observer and solver in two steps)"
 else:
     if float(HYB_WGT_ENS) == 0.0 and float(HYB_WGT_STATIC) == 1.0:
