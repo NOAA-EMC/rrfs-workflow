@@ -48,6 +48,16 @@ then
   -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
   -new_grid ${gridspecs} rrfs.t${cyc}z.${inputfile}.${gridspacing}.f${fhr}.na.grib2
 
+  if [ $gridspacing == "3km" ]; then
+     cpreq rrfs.t${cyc}z.${inputfile}.${gridspacing}.f${fhr}.na.grib2 ${COMOUT}/rrfs.t${cyc}z.${inputfile}_awipsubset.${gridspacing}.f${fhr}.na.grib2
+     wgrib2 -s ${COMOUT}/rrfs.t${cyc}z.${inputfile}_awipsubset.${gridspacing}.f${fhr}.na.grib2 > \
+               ${COMOUT}/rrfs.t${cyc}z.${inputfile}_awipsubset.${gridspacing}.f${fhr}.na.grib2.idx
+     if [ $SENDDBN = YES ]
+     then
+      $DBNROOT/bin/dbn_alert MODEL RRFS_DET_AWIPSUBSET_2DFLD_NA ${job} ${COMOUT}/rrfs.t${cyc}z.${inputfile}_awipsubset.${gridspacing}.f${fhr}.na.grib2
+      $DBNROOT/bin/dbn_alert MODEL RRFS_DET_AWIPSUBSET_2DFLD_NA_IDX ${job} ${COMOUT}/rrfs.t${cyc}z.${inputfile}_awipsubset.${gridspacing}.f${fhr}.na.grib2.idx
+  fi
+
   # Run tocgrib2
 
   export pgm="tocgrib2"
