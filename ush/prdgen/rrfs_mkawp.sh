@@ -52,8 +52,7 @@ then
      cpreq rrfs.t${cyc}z.${inputfile}.${gridspacing}.f${fhr}.na.grib2 ${COMOUT}/rrfs.t${cyc}z.${inputfile}_awipsubset.${gridspacing}.f${fhr}.na.grib2
      wgrib2 ${COMOUT}/rrfs.t${cyc}z.${inputfile}_awipsubset.${gridspacing}.f${fhr}.na.grib2 -s > \
                ${COMOUT}/rrfs.t${cyc}z.${inputfile}_awipsubset.${gridspacing}.f${fhr}.na.grib2.idx
-     if [ $SENDDBN = YES ]
-     then
+     if [ $SENDDBN = YES ]; then
       $DBNROOT/bin/dbn_alert MODEL RRFS_DET_AWIPSUBSET_2DFLD_NA ${job} ${COMOUT}/rrfs.t${cyc}z.${inputfile}_awipsubset.${gridspacing}.f${fhr}.na.grib2
       $DBNROOT/bin/dbn_alert MODEL RRFS_DET_AWIPSUBSET_2DFLD_NA_IDX ${job} ${COMOUT}/rrfs.t${cyc}z.${inputfile}_awipsubset.${gridspacing}.f${fhr}.na.grib2.idx
      fi
@@ -71,8 +70,7 @@ then
 
   cpreq -p grib2.rrfs.t${cyc}z.${gridspacing}.f${fhr}.na ${COMOUT}/wmo
 
- if [ $SENDDBN_NTC = YES ]
- then
+ if [ $SENDDBN_NTC = YES ]; then
    $DBNROOT/bin/dbn_alert NTC_LOW $NET $job ${COMOUT}/wmo/grib2.rrfs.t${cyc}z.${gridspacing}.f${fhr}.na
  fi
 
