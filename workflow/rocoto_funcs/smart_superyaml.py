@@ -5,7 +5,7 @@ import hifiyaml as hy
 import yamltools4jedi as yj
 
 
-def smart_superyaml(HOMErrfs, ytype, mesh):
+def smart_superyaml(HOMErrfs, ytype, mesh, getkf_onestep=False):
     # make sure no "main.yaml" under parm/observers before further actions
     fmain = f'{HOMErrfs}/parm/observers/main.yaml'
     if os.path.islink(fmain):
@@ -38,6 +38,21 @@ def smart_superyaml(HOMErrfs, ytype, mesh):
             if errmsg is None:
                 absolute_pos = observer["pos1"] + pos
                 data[absolute_pos] = data[absolute_pos].replace("max pool size: 1", "max pool size: 80")
+            # GETKF observer_solver: change observer distribution
+            if getkf_onestep:
+                for i, line in enumerate(tmp):
+                    if line.strip() == "distribution:":
+                        if i + 1 < len(tmp) and 'name: "RoundRobin"' in tmp[i + 1]:
+                            indent = line[:len(line) - len(line.lstrip())]
+
+                            absolute_pos = observer["pos1"] + i
+
+                            data[absolute_pos:absolute_pos + 2] = [
+                                f"{indent}use data frame container: true",
+                                f"{indent}redistribution:",
+                                f"{indent}  name: Halo",
+                            ]
+
     #
     # insert correct domain-specific polygon configuration
     fpolygon = f'{HOMErrfs}/fix/{mesh}/{mesh}.polygon.yaml'

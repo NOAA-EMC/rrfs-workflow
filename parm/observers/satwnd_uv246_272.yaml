@@ -56,6 +56,19 @@
              logging: false
            <<: *polygonConfig
 
+         # Time window filter
+         - filter: Domain Check
+           identifier:
+             name: TimeWindowCheck
+             logging: false
+           where:
+             - variable:
+                 name: MetaData/timeOffset # units: s
+               minvalue: -5400
+               maxvalue:  5400
+           action:
+             name: reduce obs space
+
          # Remove all invalid obs from this observer
          - filter: Perform Action
            identifier:
@@ -84,42 +97,37 @@
            action:
              name: reduce obs space
 
-         # Time window filter
-         - filter: Bounds Check
-           apply at iterations: 0,1
+         # Remove obs from other instruments
+         - filter: Perform Action
            identifier:
-             name: TimeWindowCheck
+             name: ObsInstrumentCheck
              logging: false
-           filter variables:
-           - name: windEastward
-           - name: windNorthward
-           test variables:
-           - name: MetaData/timeOffset
-           minvalue: -5400
-           maxvalue: 5400
            where:
-           - variable: ObsType/windEastward
-             is_in: 246
            - variable: MetaData/satelliteIdentifier
-             is_in: 272
+             is_not_in: 272
            action:
              name: reduce obs space
 
          # Duplicate Check
-#         - filter: Temporal Thinning
+#         - filter: DuplicateThinning
+#           identifier:
+#             name: DuplicateThinning
+#             logging: false
 #           filter variables:
 #           - name: windEastward
 #           - name: windNorthward
+#           analysis_time: "@ANALYSIS_DATE@"
+#           analysis_time_tolerance: PT0M
 #           min_spacing: PT90M
-#           tolerance: PT0H
-#           seed_time: "@ANALYSIS_DATE@"
-#           category_variable:
-#             name: MetaData/longitude_latitude_pressure
-#           where:
-#           - variable: ObsType/windEastward
-#             is_in: 246
-#           - variable: MetaData/satelliteIdentifier
-#             is_in: 272
+#           equidistant_time_selection: after
+#           variable names:
+#           - MetaData/longitude
+#           - MetaData/latitude
+#           - MetaData/pressure
+#           tolerance:
+#           - 1.0e-6
+#           - 1.0e-6
+#           - 1.0e-6
 #           action:
 #             name: reduce obs space
 
@@ -356,27 +364,27 @@
            action:
              name: reject
 
-         # AMV expected error norm check
-         - filter: Perform Action
-           apply at iterations: 0,1
-           identifier:
-             name: AMVErrorNormCheck
-             logging: false
-             diagnostic flag new: false
-           filter variables:
-           - name: windEastward
-           - name: windNorthward
-           where:
-           - variable: ObsFunction/Velocity
-             minvalue: 0.1
-           - variable: MetaData/exp_err_norm
-             minvalue: 0.9
-           - variable: ObsType/windEastward
-             is_in: 246
-           - variable: MetaData/satelliteIdentifier
-             is_in: 272
-           action:
-             name: reject
+#         # AMV expected error norm check
+#         - filter: Perform Action
+#           apply at iterations: 0,1
+#           identifier:
+#             name: AMVErrorNormCheck
+#             logging: false
+#             diagnostic flag new: false
+#           filter variables:
+#           - name: windEastward
+#           - name: windNorthward
+#           where:
+#           - variable: ObsFunction/Velocity
+#             minvalue: 0.1
+#           - variable: MetaData/exp_err_norm
+#             minvalue: 0.9
+#           - variable: ObsType/windEastward
+#             is_in: 246
+#           - variable: MetaData/satelliteIdentifier
+#             is_in: 272
+#           action:
+#             name: reject
 
          # Halve the ob error (based on read_satwnd.f90)
          - filter: Perform Action

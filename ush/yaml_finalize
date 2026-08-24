@@ -147,6 +147,26 @@ if ytype == "getkf" and GETKF_TYPE == "solver":
     hy.modify(data, "driver", block)
 
 # ------------------------------------------------------------------------------------
+# tweaks getkf.yaml from the observer mode to the observer_solver mode
+observer_solver_driver_str = '''
+driver:
+    update obs config with geometry info: true
+    do test prints: false
+    read HX from disk: false
+    run as observer only: false
+    save posterior mean: true
+    save posterior ensemble: true
+    save prior mean: true
+    save prior variance: false
+    save posterior variance: false
+    do posterior observer: false
+    use control member: false
+'''
+if ytype == "getkf" and GETKF_TYPE == "observer_solver":
+    block = hy.text_to_yblock(observer_solver_driver_str)
+    hy.modify(data, "driver", block)
+
+# ------------------------------------------------------------------------------------
 # read convinfo and/or satinfo if use_conv_sat_info
 if use_conv_sat_info:
     dcConvInfo = yj.load_convinfo()

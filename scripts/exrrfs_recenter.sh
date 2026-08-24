@@ -48,8 +48,8 @@ if [[ -s "${controlfile_init}" ]] ; then
 elif [[ -s "${controlfile_mpasout}" ]] ; then
   controlfile="${controlfile_mpasout}"
 else
-  echo "Cannot find control background: ${controlfile_init} or ${controlfile_mpasout}"
-  err_exit
+  echo "! Warning: Cannot find control background: ${controlfile_init} or ${controlfile_mpasout}"
+  exit 0
 fi
 
 ln -sf "${controlfile}"  ./mpasout_control.nc

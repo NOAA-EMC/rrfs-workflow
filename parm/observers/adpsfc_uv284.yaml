@@ -64,6 +64,19 @@
              logging: false
            <<: *polygonConfig
 
+         # Time window filter
+         - filter: Domain Check
+           identifier:
+             name: TimeWindowCheck
+             logging: false
+           where:
+             - variable:
+                 name: MetaData/timeOffset # units: s
+               minvalue: -5400
+               maxvalue:  5400
+           action:
+             name: reduce obs space
+
          - filter: Perform Action
            where:
            - variable: ObsValue/windEastward
@@ -105,31 +118,24 @@
            action:
              name: reduce obs space
 
-         # Time window filter
-         - filter: Domain Check
+         # Duplicate Check
+         - filter: DuplicateThinning
            identifier:
-             name: TimeWindowCheck
+             name: DuplicateThinning
              logging: false
-           where:
-             - variable:
-                 name: MetaData/timeOffset # units: s
-               minvalue: -5400
-               maxvalue:  5400
+           filter variables:
+           - name: windEastward
+           - name: windNorthward
+           analysis_time: "@ANALYSIS_DATE@"
+           analysis_time_tolerance: PT0M
+           min_spacing: PT90M
+           equidistant_time_selection: after
+           variable names:
+           - MetaData/stationIdentification
+           tolerance:
+           - 1.0e+6
            action:
              name: reduce obs space
-
-         # Duplicate Check
-#         - filter: Temporal Thinning
-#           filter variables:
-#           - name: windEastward
-#           - name: windNorthward
-#           min_spacing: PT90M
-#           tolerance: PT0H
-#           seed_time: "@ANALYSIS_DATE@"
-#           category_variable:
-#             name: MetaData/longitude_latitude_pressure
-#           action:
-#             name: reduce obs space
 
          # Online domain check
          - filter: Bounds Check
