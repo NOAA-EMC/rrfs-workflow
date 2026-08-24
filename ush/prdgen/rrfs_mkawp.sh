@@ -50,7 +50,7 @@ then
 
   if [ $gridspacing == "3km" ]; then
      cpreq rrfs.t${cyc}z.${inputfile}.${gridspacing}.f${fhr}.na.grib2 ${COMOUT}/rrfs.t${cyc}z.${inputfile}_awipsubset.${gridspacing}.f${fhr}.na.grib2
-     wgrib2 -s ${COMOUT}/rrfs.t${cyc}z.${inputfile}_awipsubset.${gridspacing}.f${fhr}.na.grib2 > \
+     wgrib2 ${COMOUT}/rrfs.t${cyc}z.${inputfile}_awipsubset.${gridspacing}.f${fhr}.na.grib2 -s > \
                ${COMOUT}/rrfs.t${cyc}z.${inputfile}_awipsubset.${gridspacing}.f${fhr}.na.grib2.idx
      if [ $SENDDBN = YES ]
      then
