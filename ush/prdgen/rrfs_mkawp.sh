@@ -62,9 +62,6 @@ then
 
  if [ $SENDDBN_NTC = YES ]; then
    $DBNROOT/bin/dbn_alert NTC_LOW $NET $job ${COMOUT}/wmo/grib2.rrfs.t${cyc}z.${gridspacing}.f${fhr}.na
-   if [ $gridspacing == "3km" ]; then
-     $DBNROOT/bin/dbn_alert MODEL RRFS_DET_2DFLD_NA3 $NET $job $INPUTfile
-   fi
  fi
 
 else

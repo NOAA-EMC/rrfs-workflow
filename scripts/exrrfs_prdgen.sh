@@ -224,6 +224,11 @@ if [ -s ${COMOUT}/${fld2d} ]; then
           ${COMOUT}/${fld2d}
       $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_2DFLD_NA_IDX $job \
           ${COMOUT}/${fld2d}.idx
+    elif [[ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]]; then
+      $DBNROOT/bin/dbn_alert MODEL RRFS_DET_2DFLD_NA3 $job \
+          ${COMOUT}/${fld2d}
+      $DBNROOT/bin/dbn_alert MODEL RRFS_DET_2DFLD_NA3_IDX $job \
+          ${COMOUT}/${fld2d}.idx
     fi
   fi
 fi
