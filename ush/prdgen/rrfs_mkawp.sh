@@ -56,6 +56,7 @@ then
      then
       $DBNROOT/bin/dbn_alert MODEL RRFS_DET_AWIPSUBSET_2DFLD_NA ${job} ${COMOUT}/rrfs.t${cyc}z.${inputfile}_awipsubset.${gridspacing}.f${fhr}.na.grib2
       $DBNROOT/bin/dbn_alert MODEL RRFS_DET_AWIPSUBSET_2DFLD_NA_IDX ${job} ${COMOUT}/rrfs.t${cyc}z.${inputfile}_awipsubset.${gridspacing}.f${fhr}.na.grib2.idx
+     fi
   fi
 
   # Run tocgrib2
