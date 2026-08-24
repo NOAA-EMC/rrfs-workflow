@@ -64,7 +64,6 @@
            output file: data/satbias_out/tms_s02.satbias_cov.nc
 
        obs pre filters:
-       # Create Diagnostic Flags
        # Reset the QCflags at the beginning of a new outer loop
        - filter: AcceptList
          apply at iterations: 1
@@ -78,40 +77,10 @@
            logging: false
          <<: *polygonConfig
 
-       # Name Diagnostic Flags
-       - filter: Create Diagnostic Flags
-         apply at iterations: 0,1
-         identifier:
-           name: CreateDiagnosticFlags
-           logging: false
-           diagnostic flag new: false
-         filter variables:
-           - name: brightnessTemperature
-             channels: 1-12
-           flags:
-           - name: Thinning
-             initial value: false
-             force reinitialization: false
-           - name: GrossCheck
-             initial value: false
-             force reinitialization: false
-           - name: UseflagCheck
-             initial value: false
-             force reinitialization: false
-           - name: PreQC
-             initial value: false
-             force reinitialization: false
-           - name: LandtypeCheck
-             initial value: false
-             force reinitialization: false
-           - name: ObsModelCloudSignalCheck
-             initial value: false
-             force reinitialization: false
-
        # Thinning
        - filter: Gaussian Thinning
          identifier:
-           name: Thinning
+           name: GaussianThinning
            logging: false
            diagnostic flag new: false
          filter variables:
@@ -122,13 +91,11 @@
          distance_norm: geodesic
          actions:
          - name: set
-           flag: Thinning
+           flag: GaussianThinning
          - name: reduce obs space
 
-       obs post filters:
        # Use PreQC filter to remove bad data
        - filter: Bounds Check
-         apply at iterations: 0,1
          identifier:
            name: PreQC
            logging: false
@@ -145,8 +112,9 @@
          - name: set
            flag: PreQC
            ignore: rejected observations
-         - name: reject
+         - name: reduce obs space
 
+       obs post filters:
        # Symmetric Cloud Impact (SCI)
        - filter: Variable Assignment
          apply at iterations: 0,1
@@ -189,11 +157,12 @@
            name: ClearSkyErrorAssign
            logging: false
            diagnostic flag new: false
-         assignments:
-         - name: DerivedMetaData/ClearSkyObsError
-           type: float
+         filter variables:
+         - name: brightnessTemperature
            channels: 1-12
-           function:
+         action:
+           name: assign error
+           error function:
              name: ObsFunction/ObsErrorModelRamp
              channels: 1-12
              options:
@@ -205,6 +174,7 @@
                err0: [2.5, 1.9, 1.25, 0.8, 0.8, 0.8, 0.9, 0.9, 2.0, 1.5, 1.5, 1.5]
                x1: [10.0, 10.0, 5.0, 4.0, 5.0, 1.5, 2.0, 2.0, 5.0, 5.0, 4.0, 10.0]
                err1: [2.5, 1.9, 1.25, 0.8, 0.8, 0.8, 0.9, 0.9, 2.0, 1.5, 1.5, 1.5]
+
        - filter: Perform Action
          apply at iterations: 0,1
          identifier:
@@ -227,11 +197,12 @@
            name: AllSkyErrorAssign
            logging: false
            diagnostic flag new: false
-         assignments:
-         - name: DerivedMetaData/InitialAllSkyObsError
-           type: float
+         filter variables:
+         - name: brightnessTemperature
            channels: 1-12
-           function:
+         action:
+           name: assign error
+           error function:
              name: ObsFunction/ObsErrorModelRamp
              channels: 1-12
              options:
@@ -245,20 +216,6 @@
                err1: [15.0, 20.0, 9.0, 7.0, 10.0, 2.0, 1.0, 1.0, 12.0, 10.0, 8.0, 22.0]
                x2: [25.0, 20.0, 10.0, 9.0, 20.0, 6.0, 3.0, 3.0, 25.0, 10.0, 10.0, 20.0]
                err2: [23.0, 30.0, 19.0, 18.0, 40.0, 13.0, 2.5, 2.5, 53.0, 20.0, 20.0, 30.0]
-       - filter: Perform Action
-         apply at iterations: 0,1
-         identifier:
-           name: AllSkyErrorAssign
-           logging: false
-           diagnostic flag new: false
-         filter variables:
-         - name: brightnessTemperature
-           channels: 1-12
-         action:
-           name: assign error
-           error function:
-             name: DerivedMetaData/InitialAllSkyObsError
-             channels: 1-12
 
        # Clear-sky Tb (set default value for all channels)
        - filter: Variable Assignment
@@ -278,318 +235,6 @@
                variables:
                - name: HofX/brightnessTemperature
                  channels: 1-12
-               coefs:
-               - 1.0
-
-       # Ch 1 Clear-sky Tb check (overwrites default value for each ch after doing CRTM check)
-       - filter: Variable Assignment
-         apply at iterations: 0,1
-         identifier:
-           name: ClearSkyTbCheckCh1
-           logging: false
-           diagnostic flag new: false
-         where:
-         - variable:
-             name: ObsDiag/brightness_temperature_assuming_clear_sky
-             channels: 1
-           minvalue: 1e-12
-         assignments:
-         - name: DerivedMetaData/ClearSkyTb
-           type: float
-           channels: 1
-           function:
-             name: ObsFunction/Arithmetic
-             channels: 1
-             options:
-               variables:
-               - name: ObsDiag/brightness_temperature_assuming_clear_sky
-                 channels: 1
-               coefs:
-               - 1.0
-
-       # Ch 2 Clear-sky Tb check
-       - filter: Variable Assignment
-         apply at iterations: 0,1
-         identifier:
-           name: ClearSkyTbCheckCh2
-           logging: false
-           diagnostic flag new: false
-         where:
-         - variable:
-             name: ObsDiag/brightness_temperature_assuming_clear_sky
-             channels: 2
-           minvalue: 1e-12
-         assignments:
-         - name: DerivedMetaData/ClearSkyTb
-           type: float
-           channels: 2
-           function:
-             name: ObsFunction/Arithmetic
-             channels: 2
-             options:
-               variables:
-               - name: ObsDiag/brightness_temperature_assuming_clear_sky
-                 channels: 2
-               coefs:
-               - 1.0
-
-       # Ch 3 Clear-sky Tb check
-       - filter: Variable Assignment
-         apply at iterations: 0,1
-         identifier:
-           name: ClearSkyTbCheckCh3
-           logging: false
-           diagnostic flag new: false
-         where:
-         - variable:
-             name: ObsDiag/brightness_temperature_assuming_clear_sky
-             channels: 3
-           minvalue: 1e-12
-         assignments:
-         - name: DerivedMetaData/ClearSkyTb
-           type: float
-           channels: 3
-           function:
-             name: ObsFunction/Arithmetic
-             channels: 3
-             options:
-               variables:
-               - name: ObsDiag/brightness_temperature_assuming_clear_sky
-                 channels: 3
-               coefs:
-               - 1.0
-
-       # Ch 4 Clear-sky Tb check
-       - filter: Variable Assignment
-         apply at iterations: 0,1
-         identifier:
-           name: ClearSkyTbCheckCh4
-           logging: false
-           diagnostic flag new: false
-         where:
-         - variable:
-             name: ObsDiag/brightness_temperature_assuming_clear_sky
-             channels: 4
-           minvalue: 1e-12
-         assignments:
-         - name: DerivedMetaData/ClearSkyTb
-           type: float
-           channels: 4
-           function:
-             name: ObsFunction/Arithmetic
-             channels: 4
-             options:
-               variables:
-               - name: ObsDiag/brightness_temperature_assuming_clear_sky
-                 channels: 4
-               coefs:
-               - 1.0
-
-       # Ch 5 Clear-sky Tb check
-       - filter: Variable Assignment
-         apply at iterations: 0,1
-         identifier:
-           name: ClearSkyTbCheckCh5
-           logging: false
-           diagnostic flag new: false
-         where:
-         - variable:
-             name: ObsDiag/brightness_temperature_assuming_clear_sky
-             channels: 5
-           minvalue: 1e-12
-         assignments:
-         - name: DerivedMetaData/ClearSkyTb
-           type: float
-           channels: 5
-           function:
-             name: ObsFunction/Arithmetic
-             channels: 5
-             options:
-               variables:
-               - name: ObsDiag/brightness_temperature_assuming_clear_sky
-                 channels: 5
-               coefs:
-               - 1.0
-
-       # Ch 6 Clear-sky Tb check
-       - filter: Variable Assignment
-         apply at iterations: 0,1
-         identifier:
-           name: ClearSkyTbCheckCh6
-           logging: false
-           diagnostic flag new: false
-         where:
-         - variable:
-             name: ObsDiag/brightness_temperature_assuming_clear_sky
-             channels: 6
-           minvalue: 1e-12
-         assignments:
-         - name: DerivedMetaData/ClearSkyTb
-           type: float
-           channels: 6
-           function:
-             name: ObsFunction/Arithmetic
-             channels: 6
-             options:
-               variables:
-               - name: ObsDiag/brightness_temperature_assuming_clear_sky
-                 channels: 6
-               coefs:
-               - 1.0
-
-       # Ch 7 Clear-sky Tb check
-       - filter: Variable Assignment
-         apply at iterations: 0,1
-         identifier:
-           name: ClearSkyTbCheckCh7
-           logging: false
-           diagnostic flag new: false
-         where:
-         - variable:
-             name: ObsDiag/brightness_temperature_assuming_clear_sky
-             channels: 7
-           minvalue: 1e-12
-         assignments:
-         - name: DerivedMetaData/ClearSkyTb
-           type: float
-           channels: 7
-           function:
-             name: ObsFunction/Arithmetic
-             channels: 7
-             options:
-               variables:
-               - name: ObsDiag/brightness_temperature_assuming_clear_sky
-                 channels: 7
-               coefs:
-               - 1.0
-
-       # Ch 8 Clear-sky Tb check
-       - filter: Variable Assignment
-         apply at iterations: 0,1
-         identifier:
-           name: ClearSkyTbCheckCh8
-           logging: false
-           diagnostic flag new: false
-         where:
-         - variable:
-             name: ObsDiag/brightness_temperature_assuming_clear_sky
-             channels: 8
-           minvalue: 1e-12
-         assignments:
-         - name: DerivedMetaData/ClearSkyTb
-           type: float
-           channels: 8
-           function:
-             name: ObsFunction/Arithmetic
-             channels: 8
-             options:
-               variables:
-               - name: ObsDiag/brightness_temperature_assuming_clear_sky
-                 channels: 8
-               coefs:
-               - 1.0
-
-       # Ch 9 Clear-sky Tb check
-       - filter: Variable Assignment
-         apply at iterations: 0,1
-         identifier:
-           name: ClearSkyTbCheckCh9
-           logging: false
-           diagnostic flag new: false
-         where:
-         - variable:
-             name: ObsDiag/brightness_temperature_assuming_clear_sky
-             channels: 9
-           minvalue: 1e-12
-         assignments:
-         - name: DerivedMetaData/ClearSkyTb
-           type: float
-           channels: 9
-           function:
-             name: ObsFunction/Arithmetic
-             channels: 9
-             options:
-                 variables:
-                 - name: ObsDiag/brightness_temperature_assuming_clear_sky
-                   channels: 9
-                 coefs:
-                 - 1.0
-
-       # Ch 10 Clear-sky Tb check
-       - filter: Variable Assignment
-         apply at iterations: 0,1
-         identifier:
-           name: ClearSkyTbCheckCh10
-           logging: false
-           diagnostic flag new: false
-         where:
-         - variable:
-             name: ObsDiag/brightness_temperature_assuming_clear_sky
-             channels: 10
-           minvalue: 1e-12
-         assignments:
-         - name: DerivedMetaData/ClearSkyTb
-           type: float
-           channels: 10
-           function:
-             name: ObsFunction/Arithmetic
-             channels: 10
-             options:
-               variables:
-               - name: ObsDiag/brightness_temperature_assuming_clear_sky
-                 channels: 10
-               coefs:
-               - 1.0
-
-       # Ch 11 Clear-sky Tb check
-       - filter: Variable Assignment
-         apply at iterations: 0,1
-         identifier:
-           name: ClearSkyTbCheckCh11
-           logging: false
-           diagnostic flag new: false
-         where:
-         - variable:
-             name: ObsDiag/brightness_temperature_assuming_clear_sky
-             channels: 11
-           minvalue: 1e-12
-         assignments:
-         - name: DerivedMetaData/ClearSkyTb
-           type: float
-           channels: 11
-           function:
-             name: ObsFunction/Arithmetic
-             channels: 11
-             options:
-               variables:
-               - name: ObsDiag/brightness_temperature_assuming_clear_sky
-                 channels: 11
-               coefs:
-               - 1.0
-
-       # Ch 12 Clear-sky Tb check
-       - filter: Variable Assignment
-         apply at iterations: 0,1
-         identifier:
-           name: ClearSkyTbCheckCh12
-           logging: false
-           diagnostic flag new: false
-         where:
-         - variable:
-             name: ObsDiag/brightness_temperature_assuming_clear_sky
-             channels: 12
-           minvalue: 1e-12
-         assignments:
-         - name: DerivedMetaData/ClearSkyTb
-           type: float
-           channels: 12
-           function:
-             name: ObsFunction/Arithmetic
-             channels: 12
-             options:
-               variables:
-               - name: ObsDiag/brightness_temperature_assuming_clear_sky
-                 channels: 12
                coefs:
                - 1.0
 
@@ -825,16 +470,16 @@
            ignore: rejected observations
          - name: reject
 
-       # Reject based on Q2O (Ch 1)
+       # Reject based on Q2
        - filter: RejectList
          apply at iterations: 0,1
          identifier:
-           name: Q2OCh1
+           name: ObsModelCloudSignalCheck
            logging: false
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
-           channels: 1
+           channels: 1-12
          where operator: and
          where:
          - variable:
@@ -851,16 +496,16 @@
            ignore: rejected observations
          - name: reject
 
-       # Reject based on Q4M (Ch 1)
+       # Reject based on Q4
        - filter: RejectList
          apply at iterations: 0,1
          identifier:
-           name: Q4MCh1
+           name: ObsModelCloudSignalCheck
            logging: false
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
-           channels: 1
+           channels: 1-12
          where operator: and
          where:
          - variable:
@@ -870,578 +515,6 @@
          - variable:
              name: DerivedMetaData/Q4OCILeftLimit
              channels: 1
-           minvalue: 0.0
-         actions:
-         - name: set
-           flag: ObsModelCloudSignalCheck
-           ignore: rejected observations
-         - name: reject
-
-       # Reject based on Q2O (Ch 2)
-       - filter: RejectList
-         apply at iterations: 0,1
-         identifier:
-           name: Q2OCh2
-           logging: false
-           diagnostic flag new: false
-         filter variables:
-         - name: brightnessTemperature
-           channels: 2
-         where operator: and
-         where:
-         - variable:
-             name: DerivedMetaData/Q2OCIRightLimit
-             channels: 2
-           maxvalue: 0.0
-         - variable:
-             name: DerivedMetaData/Q2MCIBottomLimit
-             channels: 2
-           minvalue: 0.0
-         actions:
-         - name: set
-           flag: ObsModelCloudSignalCheck
-           ignore: rejected observations
-         - name: reject
-
-       # Reject based on Q4M (Ch 2)
-       - filter: RejectList
-         apply at iterations: 0,1
-         identifier:
-           name: Q4MCh2
-           logging: false
-           diagnostic flag new: false
-         filter variables:
-         - name: brightnessTemperature
-           channels: 2
-         where operator: and
-         where:
-         - variable:
-             name: DerivedMetaData/Q4MCITopLimit
-             channels: 2
-           maxvalue: 0.0
-         - variable:
-             name: DerivedMetaData/Q4OCILeftLimit
-             channels: 2
-           minvalue: 0.0
-         actions:
-         - name: set
-           flag: ObsModelCloudSignalCheck
-           ignore: rejected observations
-         - name: reject
-
-       # Reject based on Q2O (Ch 3)
-       - filter: RejectList
-         apply at iterations: 0,1
-         identifier:
-           name: Q2OCh3
-           logging: false
-           diagnostic flag new: false
-         filter variables:
-         - name: brightnessTemperature
-           channels: 3
-         where operator: and
-         where:
-         - variable:
-             name: DerivedMetaData/Q2OCIRightLimit
-             channels: 3
-           maxvalue: 0.0
-         - variable:
-             name: DerivedMetaData/Q2MCIBottomLimit
-             channels: 3
-           minvalue: 0.0
-         actions:
-         - name: set
-           flag: ObsModelCloudSignalCheck
-           ignore: rejected observations
-         - name: reject
-
-       # Reject based on Q4M (Ch 3)
-       - filter: RejectList
-         apply at iterations: 0,1
-         identifier:
-           name: Q4MCh3
-           logging: false
-           diagnostic flag new: false
-         filter variables:
-         - name: brightnessTemperature
-           channels: 3
-         where operator: and
-         where:
-         - variable:
-             name: DerivedMetaData/Q4MCITopLimit
-             channels: 3
-           maxvalue: 0.0
-         - variable:
-             name: DerivedMetaData/Q4OCILeftLimit
-             channels: 3
-           minvalue: 0.0
-         actions:
-         - name: set
-           flag: ObsModelCloudSignalCheck
-           ignore: rejected observations
-         - name: reject
-
-       # Reject based on Q2O (Ch 4)
-       - filter: RejectList
-         apply at iterations: 0,1
-         identifier:
-           name: Q2OCh4
-           logging: false
-           diagnostic flag new: false
-         filter variables:
-         - name: brightnessTemperature
-           channels: 4
-         where operator: and
-         where:
-         - variable:
-             name: DerivedMetaData/Q2OCIRightLimit
-             channels: 4
-           maxvalue: 0.0
-         - variable:
-             name: DerivedMetaData/Q2MCIBottomLimit
-             channels: 4
-           minvalue: 0.0
-         actions:
-         - name: set
-           flag: ObsModelCloudSignalCheck
-           ignore: rejected observations
-         - name: reject
-
-       # Reject based on Q4M (Ch 4)
-       - filter: RejectList
-         apply at iterations: 0,1
-         identifier:
-           name: Q4MCh4
-           logging: false
-           diagnostic flag new: false
-         filter variables:
-         - name: brightnessTemperature
-           channels: 4
-         where operator: and
-         where:
-         - variable:
-             name: DerivedMetaData/Q4MCITopLimit
-             channels: 4
-           maxvalue: 0.0
-         - variable:
-             name: DerivedMetaData/Q4OCILeftLimit
-             channels: 4
-           minvalue: 0.0
-         actions:
-         - name: set
-           flag: ObsModelCloudSignalCheck
-           ignore: rejected observations
-         - name: reject
-
-       # Reject based on Q2O (Ch 5)
-       - filter: RejectList
-         apply at iterations: 0,1
-         identifier:
-           name: Q2OCh5
-           logging: false
-           diagnostic flag new: false
-         filter variables:
-         - name: brightnessTemperature
-           channels: 5
-         where operator: and
-         where:
-         - variable:
-             name: DerivedMetaData/Q2OCIRightLimit
-             channels: 5
-           maxvalue: 0.0
-         - variable:
-             name: DerivedMetaData/Q2MCIBottomLimit
-             channels: 5
-           minvalue: 0.0
-         actions:
-         - name: set
-           flag: ObsModelCloudSignalCheck
-           ignore: rejected observations
-         - name: reject
-
-       # Reject based on Q4M (Ch 5)
-       - filter: RejectList
-         apply at iterations: 0,1
-         identifier:
-           name: Q4MCh5
-           logging: false
-           diagnostic flag new: false
-         filter variables:
-         - name: brightnessTemperature
-           channels: 5
-         where operator: and
-         where:
-         - variable:
-             name: DerivedMetaData/Q4MCITopLimit
-             channels: 5
-           maxvalue: 0.0
-         - variable:
-             name: DerivedMetaData/Q4OCILeftLimit
-             channels: 5
-           minvalue: 0.0
-         actions:
-         - name: set
-           flag: ObsModelCloudSignalCheck
-           ignore: rejected observations
-         - name: reject
-
-       # Reject based on Q2O (Ch 6)
-       - filter: RejectList
-         apply at iterations: 0,1
-         identifier:
-           name: Q2OCh6
-           logging: false
-           diagnostic flag new: false
-         filter variables:
-         - name: brightnessTemperature
-           channels: 6
-         where operator: and
-         where:
-         - variable:
-             name: DerivedMetaData/Q2OCIRightLimit
-             channels: 6
-           maxvalue: 0.0
-         - variable:
-             name: DerivedMetaData/Q2MCIBottomLimit
-             channels: 6
-           minvalue: 0.0
-         actions:
-         - name: set
-           flag: ObsModelCloudSignalCheck
-           ignore: rejected observations
-         - name: reject
-
-       # Reject based on Q4M (Ch 6)
-       - filter: RejectList
-         apply at iterations: 0,1
-         identifier:
-           name: Q4MCh6
-           logging: false
-           diagnostic flag new: false
-         filter variables:
-         - name: brightnessTemperature
-           channels: 6
-         where operator: and
-         where:
-         - variable:
-             name: DerivedMetaData/Q4MCITopLimit
-             channels: 6
-           maxvalue: 0.0
-         - variable:
-             name: DerivedMetaData/Q4OCILeftLimit
-             channels: 6
-           minvalue: 0.0
-         actions:
-         - name: set
-           flag: ObsModelCloudSignalCheck
-           ignore: rejected observations
-         - name: reject
-
-       # Reject based on Q2O (Ch 7)
-       - filter: RejectList
-         apply at iterations: 0,1
-         identifier:
-           name: Q2OCh7
-           logging: false
-           diagnostic flag new: false
-         filter variables:
-         - name: brightnessTemperature
-           channels: 7
-         where operator: and
-         where:
-         - variable:
-             name: DerivedMetaData/Q2OCIRightLimit
-             channels: 7
-           maxvalue: 0.0
-         - variable:
-             name: DerivedMetaData/Q2MCIBottomLimit
-             channels: 7
-           minvalue: 0.0
-         actions:
-         - name: set
-           flag: ObsModelCloudSignalCheck
-           ignore: rejected observations
-         - name: reject
-
-       # Reject based on Q4M (Ch 7)
-       - filter: RejectList
-         apply at iterations: 0,1
-         identifier:
-           name: Q4MCh7
-           logging: false
-           diagnostic flag new: false
-         filter variables:
-         - name: brightnessTemperature
-           channels: 7
-         where operator: and
-         where:
-         - variable:
-             name: DerivedMetaData/Q4MCITopLimit
-             channels: 7
-           maxvalue: 0.0
-         - variable:
-             name: DerivedMetaData/Q4OCILeftLimit
-             channels: 7
-           minvalue: 0.0
-         actions:
-         - name: set
-           flag: ObsModelCloudSignalCheck
-           ignore: rejected observations
-         - name: reject
-
-       # Reject based on Q2O (Ch 8)
-       - filter: RejectList
-         apply at iterations: 0,1
-         identifier:
-           name: Q2OCh8
-           logging: false
-           diagnostic flag new: false
-         filter variables:
-         - name: brightnessTemperature
-           channels: 8
-         where operator: and
-         where:
-         - variable:
-             name: DerivedMetaData/Q2OCIRightLimit
-             channels: 8
-           maxvalue: 0.0
-         - variable:
-             name: DerivedMetaData/Q2MCIBottomLimit
-             channels: 8
-           minvalue: 0.0
-         actions:
-         - name: set
-           flag: ObsModelCloudSignalCheck
-           ignore: rejected observations
-         - name: reject
-
-       # Reject based on Q4M (Ch 8)
-       - filter: RejectList
-         apply at iterations: 0,1
-         identifier:
-           name: Q4MCh8
-           logging: false
-           diagnostic flag new: false
-         filter variables:
-         - name: brightnessTemperature
-           channels: 8
-         where operator: and
-         where:
-         - variable:
-             name: DerivedMetaData/Q4MCITopLimit
-             channels: 8
-           maxvalue: 0.0
-         - variable:
-             name: DerivedMetaData/Q4OCILeftLimit
-             channels: 8
-           minvalue: 0.0
-         actions:
-         - name: set
-           flag: ObsModelCloudSignalCheck
-           ignore: rejected observations
-         - name: reject
-
-       # Reject based on Q2O (Ch 9)
-       - filter: RejectList
-         apply at iterations: 0,1
-         identifier:
-           name: Q2OCh9
-           logging: false
-           diagnostic flag new: false
-         filter variables:
-         - name: brightnessTemperature
-           channels: 9
-         where operator: and
-         where:
-         - variable:
-             name: DerivedMetaData/Q2OCIRightLimit
-             channels: 9
-           maxvalue: 0.0
-         - variable:
-             name: DerivedMetaData/Q2MCIBottomLimit
-             channels: 9
-           minvalue: 0.0
-         actions:
-         - name: set
-           flag: ObsModelCloudSignalCheck
-           ignore: rejected observations
-         - name: reject
-
-       # Reject based on Q4M (Ch 9)
-       - filter: RejectList
-         apply at iterations: 0,1
-         identifier:
-           name: Q4MCh9
-           logging: false
-           diagnostic flag new: false
-         filter variables:
-         - name: brightnessTemperature
-           channels: 9
-         where operator: and
-         where:
-         - variable:
-             name: DerivedMetaData/Q4MCITopLimit
-             channels: 9
-           maxvalue: 0.0
-         - variable:
-             name: DerivedMetaData/Q4OCILeftLimit
-             channels: 9
-           minvalue: 0.0
-         actions:
-         - name: set
-           flag: ObsModelCloudSignalCheck
-           ignore: rejected observations
-         - name: reject
-
-       # Reject based on Q2O (Ch 10)
-       - filter: RejectList
-         apply at iterations: 0,1
-         identifier:
-           name: Q2OCh10
-           logging: false
-           diagnostic flag new: false
-         filter variables:
-         - name: brightnessTemperature
-           channels: 10
-         where operator: and
-         where:
-         - variable:
-             name: DerivedMetaData/Q2OCIRightLimit
-             channels: 10
-           maxvalue: 0.0
-         - variable:
-             name: DerivedMetaData/Q2MCIBottomLimit
-             channels: 10
-           minvalue: 0.0
-         actions:
-         - name: set
-           flag: ObsModelCloudSignalCheck
-           ignore: rejected observations
-         - name: reject
-
-       # Reject based on Q4M (Ch 10)
-       - filter: RejectList
-         apply at iterations: 0,1
-         identifier:
-           name: Q4MCh10
-           logging: false
-           diagnostic flag new: false
-         filter variables:
-         - name: brightnessTemperature
-           channels: 10
-         where operator: and
-         where:
-         - variable:
-             name: DerivedMetaData/Q4MCITopLimit
-             channels: 10
-           maxvalue: 0.0
-         - variable:
-             name: DerivedMetaData/Q4OCILeftLimit
-             channels: 10
-           minvalue: 0.0
-         actions:
-         - name: set
-           flag: ObsModelCloudSignalCheck
-           ignore: rejected observations
-         - name: reject
-
-       # Reject based on Q2O (Ch 11)
-       - filter: RejectList
-         apply at iterations: 0,1
-         identifier:
-           name: Q2OCh11
-           logging: false
-           diagnostic flag new: false
-         filter variables:
-         - name: brightnessTemperature
-           channels: 11
-         where operator: and
-         where:
-         - variable:
-             name: DerivedMetaData/Q2OCIRightLimit
-             channels: 11
-           maxvalue: 0.0
-         - variable:
-             name: DerivedMetaData/Q2MCIBottomLimit
-             channels: 11
-           minvalue: 0.0
-         actions:
-         - name: set
-           flag: ObsModelCloudSignalCheck
-           ignore: rejected observations
-         - name: reject
-
-       # Reject based on Q4M (Ch 11)
-       - filter: RejectList
-         apply at iterations: 0,1
-         identifier:
-           name: Q4MCh11
-           logging: false
-           diagnostic flag new: false
-         filter variables:
-         - name: brightnessTemperature
-           channels: 11
-         where operator: and
-         where:
-         - variable:
-             name: DerivedMetaData/Q4MCITopLimit
-             channels: 11
-           maxvalue: 0.0
-         - variable:
-             name: DerivedMetaData/Q4OCILeftLimit
-             channels: 11
-           minvalue: 0.0
-         actions:
-         - name: set
-           flag: ObsModelCloudSignalCheck
-           ignore: rejected observations
-         - name: reject
-
-       # Reject based on Q2O (Ch 12)
-       - filter: RejectList
-         apply at iterations: 0,1
-         identifier:
-           name: Q2OCh12
-           logging: false
-           diagnostic flag new: false
-         filter variables:
-         - name: brightnessTemperature
-           channels: 12
-         where operator: and
-         where:
-         - variable:
-             name: DerivedMetaData/Q2OCIRightLimit
-             channels: 12
-           maxvalue: 0.0
-         - variable:
-             name: DerivedMetaData/Q2MCIBottomLimit
-             channels: 12
-           minvalue: 0.0
-         actions:
-         - name: set
-           flag: ObsModelCloudSignalCheck
-           ignore: rejected observations
-         - name: reject
-
-       # Reject based on Q4M (Ch 12)
-       - filter: RejectList
-         apply at iterations: 0,1
-         identifier:
-           name: Q4MCh12
-           logging: false
-           diagnostic flag new: false
-         filter variables:
-         - name: brightnessTemperature
-           channels: 12
-         where operator: and
-         where:
-         - variable:
-             name: DerivedMetaData/Q4MCITopLimit
-             channels: 12
-           maxvalue: 0.0
-         - variable:
-             name: DerivedMetaData/Q4OCILeftLimit
-             channels: 12
            minvalue: 0.0
          actions:
          - name: set
@@ -1453,7 +526,7 @@
        - filter: Background Check
          apply at iterations: 0,1
          identifier:
-           name: GrossCheck
+           name: GrossCheckCh1
            logging: false
            diagnostic flag new: false
          filter variables:
@@ -1470,7 +543,7 @@
        - filter: Background Check
          apply at iterations: 0,1
          identifier:
-           name: GrossCheck
+           name: GrossCheckCh2_9_12
            logging: false
            diagnostic flag new: false
          filter variables:
@@ -1487,7 +560,7 @@
        - filter: Background Check
          apply at iterations: 0,1
          identifier:
-           name: GrossCheck
+           name: GrossCheckCh_3
            logging: false
            diagnostic flag new: false
          filter variables:
@@ -1504,7 +577,7 @@
        - filter: Background Check
          apply at iterations: 0,1
          identifier:
-           name: GrossCheck
+           name: GrossCheckCh_4_5_6_10_11
            logging: false
            diagnostic flag new: false
          filter variables:
@@ -1521,7 +594,7 @@
        - filter: Background Check
          apply at iterations: 0,1
          identifier:
-           name: GrossCheck
+           name: GrossCheckAll
            logging: false
            diagnostic flag new: false
          filter variables:
