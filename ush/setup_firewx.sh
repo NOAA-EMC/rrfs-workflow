@@ -39,11 +39,14 @@ function setfirewx {
 envir=${envir:-prod}
 
 # in ush
-currentDir=`pwd`
-HOMErrfs=$currentDir/..
+BASEdir="$(dirname "$(realpath "$0")")"
+HOMErrfs="$BASEdir/.."
 
 . ${HOMErrfs}/versions/run.ver
-COMOUT=/lfs/h1/ops/${envir}/com/rrfs/${rrfs_ver}/firewx_input
+module load intel/${intel_ver}
+module load ve/rrfs/${rrfs_pythonve_ver}
+
+COMOUT=/lfs/h1/ops/${envir}/com/rrfs/${rrfs_ver_2d}/firewx_input
 if [ ! -e ${COMOUT} ]; then
   mkdir -p ${COMOUT}
 fi
