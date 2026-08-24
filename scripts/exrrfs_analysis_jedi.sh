@@ -101,31 +101,27 @@ case $MACHINE in
     ppn=${PPN_HYBRID_RADAR_REF_JEDI}
   fi
   APRUN="mpirun -n ${ncores} -ppn ${ppn} --cpu-bind core --depth 1"
-  if [ ${ncores} -gt 480 ]; then
-    APRUN_UA="mpirun -n 480 -ppn ${ppn} --cpu-bind core --depth 1"
-  else
-    APRUN_UA="mpirun -n ${ncores} -ppn ${ppn} --cpu-bind core --depth 1"
-  fi
+  APRUN_UA="mpirun -n 1 -ppn 1 --cpu-bind core --depth 1"
   ;;
 #
 "HERA")
   APRUN="srun"
-  APRUN_UA="srun"
+  APRUN_UA="srun -n 1"
   ;;
   #
 "GAEA")
   APRUN="srun"
-  APRUN_UA="srun"
+  APRUN_UA="srun -n 1"
   ;;
 #
 "JET")
   APRUN="srun"
-  APRUN_UA="srun"
+  APRUN_UA="srun -n 1"
   ;;
 #
 "ORION")
   APRUN="srun"
-  APRUN_UA="srun"
+  APRUN_UA="srun -n 1"
   ;;
 #
 esac
@@ -719,6 +715,8 @@ mv errfile errfile_jedi
 # 2. Convert A-grid wind increments to D-grid wind increments
 #####################################################################
 export LD_LIBRARY_PATH="/apps/ops/test/spack-stack-nco-1.9/oneapi/2024.2.1/hdf5-1.14.3-umtw5lv/lib:${LD_LIBRARY_PATH}"
+# Disable HDF5's advisory file locking similar to avoid intermittent failures
+export HDF5_USE_FILE_LOCKING=FALSE
 export pgm="rdas_ua2u.x"
 ua2u_exec="${EXECdir}/bin/${pgm}"
 cp "${ua2u_exec}" "${analworkdir}/${pgm}"

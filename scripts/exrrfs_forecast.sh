@@ -112,31 +112,27 @@ case $MACHINE in
     export MPICH_OFI_VERBOSE=1
     export MPICH_OFI_NIC_VERBOSE=1
     APRUN="mpiexec -n ${PE_MEMBER01} -ppn ${PPN_RUN_FCST} --cpu-bind core --depth ${OMP_NUM_THREADS}"
-    if [ ${PE_MEMBER01} -gt 480 ]; then
-      APRUN_UA="mpiexec -n 480 -ppn ${PPN_RUN_FCST} --cpu-bind core --depth 1"
-    else
-      APRUN_UA="mpiexec -n ${PE_MEMBER01} -ppn ${PPN_RUN_FCST} --cpu-bind core --depth 1"
-    fi
+    APRUN_UA="mpiexec -n 1 -ppn 1 --cpu-bind core --depth 1"
     ;;
 
   "HERA")
     APRUN="srun --export=ALL --mem=0"
-    APRUN_UA="srun"
+    APRUN_UA="srun -n 1"
     ;;
 
   "GAEA")
     APRUN="srun --export=ALL --mem=0"
-    APRUN_UA="srun"
+    APRUN_UA="srun -n 1"
     ;;
 
   "ORION")
     APRUN="srun --export=ALL --mem=0"
-    APRUN_UA="srun"
+    APRUN_UA="srun -n 1"
     ;;
 
   "HERCULES")
     APRUN="srun --export=ALL"
-    APRUN_UA="srun"
+    APRUN_UA="srun -n 1"
     ;;
 
   "JET")
@@ -146,7 +142,7 @@ case $MACHINE in
     else
       OMP_NUM_THREADS=2
     fi
-    APRUN_UA="srun"
+    APRUN_UA="srun -n 1"
     ;;
 
   *)
@@ -216,6 +212,8 @@ if [[ "${DA_SYSTEM}" = "JEDI" || "${DO_PARALLEL_DA}" = "TRUE" ]]; then
     fi
 
     export LD_LIBRARY_PATH="${RDASAPP_DIR}/build/lib64:${LD_LIBRARY_PATH}"
+    # Disable HDF5's advisory file locking similar to avoid intermittent failures
+    export HDF5_USE_FILE_LOCKING=FALSE
     pgm="rdas_ua2u.x"
     ua2u_exec="${EXECdir}/bin/${pgm}"
     cp "${ua2u_exec}" "./${pgm}"
