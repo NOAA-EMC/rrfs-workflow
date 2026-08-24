@@ -60,7 +60,7 @@ export LBC_CYCS="09 21"
 export COLDSTART_CYCS="09 21"   # cycles to cold start from external models
 export RECENTER_CYCS="${COLDSTART_CYCS}"
 export DET_RECENTERCYCS_DO_DA=true #true # whether or not do detministic DA at RECENTER_CYCS
-export DET_NONVAR_CLOUD_ANA=true #true # whether or not do detministic NONVAR_CLOUD_ANA at RECENTER_CYCS
+export DET_RECENTERCYCS_CLDANA=true #true # whether or not do detministic NONVAR_CLOUD_ANA at RECENTER_CYCS
 #
 export DO_PYDAMONITOR=true
 #export DO_GRAPHICS=true
