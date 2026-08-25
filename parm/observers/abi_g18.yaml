@@ -99,14 +99,14 @@
        - filter: Polygon Check
          identifier:
            name: PolygonCheck
-           logging: false
+           logging: true
          <<: *polygonConfig
 
        - filter: Create Diagnostic Flags
          apply at iterations: 0,1
          identifier:
            name: CreateDiagnosticFlags
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -161,7 +161,7 @@
        - filter: Bounds Check
          identifier:
            name: ZenithAngleCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -183,7 +183,7 @@
          apply at iterations: 0,1
          identifier:
            name: CloudFractionCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -208,7 +208,7 @@
          apply at iterations: 0,1
          identifier:
            name: ClearSkyStdCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -232,7 +232,7 @@
        - filter: Bounds Check
          identifier:
            name: BTrangeCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -253,7 +253,7 @@
          apply at iterations: 0,1
          identifier:
            name: ClearSkyStdCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          assignments:
          - name: DerivedMetaData/thinning_priority
@@ -276,7 +276,7 @@
          apply at iterations: 0,1
          identifier:
            name: Thinning
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -314,7 +314,7 @@
          apply at iterations: 0,1
          identifier:
            name: ObsErrorInit
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -335,7 +335,7 @@
          apply at iterations: 0,1
          identifier:
            name: SurfaceFlag
-           logging: false
+           logging: true
            diagnostic flag new: false
          assignments:
          - name: DerivedMetaData/surfaceFlag
@@ -374,7 +374,7 @@
          apply at iterations: 0,1
          identifier:
            name: VarAssign
-           logging: false
+           logging: true
            diagnostic flag new: false
          assignments:
          - name: DerivedMetaData/surfaceParam
@@ -417,7 +417,7 @@
          apply at iterations: 0,1
          identifier:
            name: RegionalDomainCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -440,7 +440,7 @@
          apply at iterations: 0,1
          identifier:
            name: HofXValidCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -463,7 +463,7 @@
          apply at iterations: 0,1
          identifier:
            name: SurfaceCheckLand
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -480,7 +480,7 @@
          apply at iterations: 0,1
          identifier:
            name: SurfaceCheckSnow
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -497,7 +497,7 @@
          apply at iterations: 0,1
          identifier:
            name: SurfaceCheckIce
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -514,7 +514,7 @@
          apply at iterations: 0,1
          identifier:
            name: SurfaceCheckMixed
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -545,7 +545,7 @@
          apply at iterations: 0,1
          identifier:
            name: TransmitTopCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -565,7 +565,7 @@
          apply at iterations: 0,1
          identifier:
            name: CloudDetect
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -594,7 +594,7 @@
          apply at iterations: 0,1
          identifier:
            name: ClearSkyStdCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -618,7 +618,7 @@
          apply at iterations: 0,1
          identifier:
            name: ObsErrorInflationStd1
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -638,7 +638,7 @@
          apply at iterations: 0,1
          identifier:
            name: ObsErrorInflationStd2
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -659,7 +659,7 @@
          apply at iterations: 0,1
          identifier:
            name: ObsErrorInflationStd3
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -680,7 +680,7 @@
          apply at iterations: 0,1
          identifier:
            name: ObsErrorInflationStd4
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -705,7 +705,7 @@
          apply at iterations: 0,1
          identifier:
            name: NearSSTRetCheckIR
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -735,7 +735,7 @@
          apply at iterations: 0,1
          identifier:
            name: SurfJacobianCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -760,7 +760,7 @@
          apply at iterations: 0,1
          identifier:
            name: CloudFractionCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -783,7 +783,7 @@
          apply at iterations: 0,1
          identifier:
            name: SplitWindowCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          assignments:
          - name: DerivedMetaData/OmFNBC
@@ -815,7 +815,7 @@
          apply at iterations: 0,1
          identifier:
            name: SplitWindowCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -837,7 +837,7 @@
          apply at iterations: 0,1
          identifier:
            name: GrossErrorCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -873,7 +873,7 @@
          apply at iterations: 0,1
          identifier:
            name: UseflagCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
