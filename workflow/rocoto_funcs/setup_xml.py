@@ -6,6 +6,7 @@ from rocoto_funcs.base import header_begin, header_entities, header_end, \
     wflow_begin, wflow_log, wflow_cycledefs, wflow_end
 from rocoto_funcs.smart_cycledefs import smart_cycledefs
 from rocoto_funcs.smart_post_groups import smart_post_groups
+from rocoto_funcs.smart_save4next_groups import smart_save4next_groups
 from rocoto_funcs.ungrib_ic import ungrib_ic
 from rocoto_funcs.ungrib_lbc import ungrib_lbc
 from rocoto_funcs.ic import ic
@@ -102,6 +103,7 @@ def setup_xml(HOMErrfs, expdir):
                 if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
                     nonvar_cldana(xmlFile, expdir, spinup_mode=-1)
                 fcst(xmlFile, expdir)
+                listSave4NextGrpInfo = smart_save4next_groups(dcCycledef)
                 save_for_next(xmlFile, expdir)
             elif os.getenv("DO_FCST", "TRUE").upper() == "TRUE":
                 prep_ic(xmlFile, expdir)
@@ -119,6 +121,7 @@ def setup_xml(HOMErrfs, expdir):
                     pyDAmonitor(xmlFile, expdir)
                 fcst(xmlFile, expdir)
                 if os.getenv('DO_CYC', 'FALSE').upper() == "TRUE" and os.getenv('DO_RTMA', 'FALSE').upper() == 'FALSE':
+                    listSave4NextGrpInfo = smart_save4next_groups(dcCycledef)
                     save_for_next(xmlFile, expdir)
             #
             if os.getenv("DO_POST", "TRUE").upper() == "TRUE":
@@ -177,6 +180,7 @@ def setup_xml(HOMErrfs, expdir):
             for dcEnsGrpInfo in listEnsGrpInfo["group_list"]:
                 fcst(xmlFile, expdir, do_ensemble=True, dcEnsGrpInfo=dcEnsGrpInfo)
             if os.getenv('DO_CYC', 'FALSE').upper() == "TRUE":
+                listSave4NextGrpInfo = smart_save4next_groups(dcCycledef)
                 save_for_next(xmlFile, expdir, do_ensemble=True)
             if os.getenv("DO_POST", "TRUE").upper() == "TRUE":
                 for index, dcGrpInfo in enumerate(listPostGrpInfo):
