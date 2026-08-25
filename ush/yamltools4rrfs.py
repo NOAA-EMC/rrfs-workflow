@@ -163,9 +163,8 @@ def getkf_observer_tweak(data, getkf_type):
     spaces = hy.strip_indentations(data[pos])[1]
     data[pos] = f"{spaces}obsfile: data/jdiag/{diagfile}"
 
+
 # get all filters given a line range(pos1, pos2)
-
-
 def get_all_filters(data, pos1, pos2):
     filters = []
     cur = pos1
