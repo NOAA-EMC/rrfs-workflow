@@ -39,14 +39,14 @@
        - filter: Polygon Check
          identifier:
            name: PolygonCheck
-           logging: false
+           logging: true
          <<: *polygonConfig
 
        - filter: Background Check
          apply at iterations: 0,1
          identifier:
            name: GrossErrorCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: equivalentReflectivityFactor

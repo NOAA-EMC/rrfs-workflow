@@ -55,14 +55,14 @@
          - filter: Polygon Check
            identifier:
              name: PolygonCheck
-             logging: false
+             logging: true
            <<: *polygonConfig
 
          # Time window filter
          - filter: Domain Check
            identifier:
              name: TimeWindowCheck
-             logging: false
+             logging: true
            where:
              - variable:
                  name: MetaData/timeOffset # units: s
@@ -75,7 +75,7 @@
          - filter: Perform Action
            identifier:
              name: ObsInvalidCheck
-             logging: false
+             logging: true
            where:
            - variable: ObsValue/stationPressure
              value: is_not_valid
@@ -86,7 +86,7 @@
          - filter: Perform Action
            identifier:
              name: ObsTypeCheck
-             logging: false
+             logging: true
            where:
            - variable: ObsType/stationPressure
              is_not_in: 180
@@ -97,7 +97,7 @@
          - filter: RejectList
            identifier:
              name: QcMarkerCheck
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: stationPressure
@@ -113,7 +113,7 @@
 #         - filter: DuplicateThinning
 #           identifier:
 #             name: DuplicateThinning
-#             logging: false
+#             logging: true
 #           filter variables:
 #           - name: stationPressure
 #           analysis_time: "@ANALYSIS_DATE@"
@@ -132,7 +132,7 @@
            apply at iterations: 0,1
            identifier:
              name: DerivedAirTemperatureAt2M
-             logging: false
+             logging: true
            assignments:
            - name: DerivedObsValue/airTemperatureAt2M
              type: float
@@ -144,7 +144,7 @@
            apply at iterations: 0,1
            identifier:
              name: RegionalDomainCheck
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: stationPressure
@@ -158,7 +158,7 @@
            apply at iterations: 0,1
            identifier:
              name: ObsErrorInit
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: stationPressure
@@ -180,7 +180,7 @@
            apply at iterations: 0,1
            identifier:
              name: ObsErrorReduceBuoy
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: stationPressure
@@ -193,7 +193,7 @@
            apply at iterations: 0,1
            identifier:
              name: ObsErrorFactorSfcPressure
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: stationPressure
@@ -213,7 +213,7 @@
 #         - filter: Perform Action
 #           identifier:
 #             name: ObsErrorFactorConventional
-#             logging: false
+#             logging: true
 #             diagnostic flag new: false
 #           filter variables:
 #           - name: stationPressure
@@ -233,7 +233,7 @@
            apply at iterations: 0,1
            identifier:
              name: ObsErrorFactorQm3_
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: stationPressure
@@ -249,7 +249,7 @@
            apply at iterations: 0,1
            identifier:
              name: ObsErrorFactorHighAltitude
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: stationPressure
@@ -265,7 +265,7 @@
            apply at iterations: 0,1
            identifier:
              name: ObsErrorBoundsCheck
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: stationPressure
@@ -281,7 +281,7 @@
            apply at iterations: 0,1
            identifier:
              name: ObsValueBoundsCheck
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: stationPressure
@@ -295,7 +295,7 @@
            apply at iterations: 0,1
            identifier:
              name: TempObsErrorData
-             logging: false
+             logging: true
              diagnostic flag new: false
            assignments:
            - name: TempObsErrorData/stationPressure
@@ -312,7 +312,7 @@
            apply at iterations: 0,1
            identifier:
              name: ObsErrorMinForGEC
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: stationPressure
@@ -333,7 +333,7 @@
            apply at iterations: 0,1
            identifier:
              name: ObsErrorMaxForGEC
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: stationPressure
@@ -354,7 +354,7 @@
            apply at iterations: 0,1
            identifier:
              name: GrossErrorCheck
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: stationPressure
@@ -372,7 +372,7 @@
            apply at iterations: 0,1
            identifier:
              name: GrossErrorCheckQm3_
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: stationPressure
@@ -390,7 +390,7 @@
            apply at iterations: 0,1
            identifier:
              name: ObsErrorCopyBack
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: stationPressure

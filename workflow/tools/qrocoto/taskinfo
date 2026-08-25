@@ -31,7 +31,7 @@ echo "${logroot}/${RUN}.${PDY}/${cyc}/${WGF}/rrfs.log"
 
 echo -e  "\n---com output:"
 comout="${COMROOT}/${NET}/${VERSION}/${RUN}.${PDY}/${cyc}/${task}/${WGF}"
-if [[ "${task}" == *pyDAmonitor* ]] || [[ "${task}" == *graphics* ]]; then
+if [[ "${task}" == *graphics* ]]; then
   comout=${comout%/*}
 fi
 echo "${comout}"
@@ -41,9 +41,6 @@ fi
 
 echo -e "\n---stmp output:"
 stmpout="${DATAROOT}/${PDY}/${RUN}_${task}_${cyc}_${VERSION}/${WGF}"
-if [[ "${task}" == *pyDAmonitor* ]]; then
-  stmpout=${stmpout%/*}
-fi
 echo "${stmpout}"
 if [[ ! -d "${stmpout}" ]]; then
   echo " !!! the above directory either NOT created, or has been purged !!!"

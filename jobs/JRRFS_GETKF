@@ -18,11 +18,21 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 #-----------------------------------------------------------------------
 #
 export UMBRELLA_PREP_IC_DATA=${UMBRELLA_PREP_IC_DATA:-${DATAROOT}/${RUN}_prep_ic_${cyc}_${rrfs_ver}/${WGF}}
-export UMBRELLA_GETKF_DATA=${UMBRELLA_GETKF_DATA:-${DATAROOT}/${RUN}_getkf_${GETKF_TYPE}_${cyc}_${rrfs_ver}/${WGF}}
-export UMBRELLA_GETKF_OBSERVER_DATA=${UMBRELLA_GETKF_OBSERVER_DATA:-${DATAROOT}/${RUN}_getkf_observer_${cyc}_${rrfs_ver}/${WGF}}
-export UMBRELLA_GETKF_OBSERVER_SOLVER_DATA=${UMBRELLA_GETKF_OBSERVER_SOLVER_DATA:-${DATAROOT}/${RUN}_getkf_observer_solver_${cyc}_${rrfs_ver}/${WGF}}
+if [[ "${GETKF_ONESTEP^^}" == "TRUE" ]]; then  # observer and solver run in one step, post runs seperately
+  observerstr=""
+  if [[ "${GETKF_TYPE}" == "observer_solver" ]]; then
+    export TYPESTR=""
+  else  # post
+    export TYPESTR="_${GETKF_TYPE}"
+  fi
+else  # observer, solver, post run separately
+  observerstr="_observer"
+  export TYPESTR="_${GETKF_TYPE}"
+fi
+export UMBRELLA_GETKF_DATA=${UMBRELLA_GETKF_DATA:-${DATAROOT}/${RUN}_getkf${TYPESTR}_${cyc}_${rrfs_ver}/${WGF}}
+export UMBRELLA_GETKF_OBSERVER_DATA=${UMBRELLA_GETKF_OBSERVER_DATA:-${DATAROOT}/${RUN}_getkf${observerstr}_${cyc}_${rrfs_ver}/${WGF}}
 export pid=${pid:-$$}
-export jobid=${jobid:-getkf_${GETKF_TYPE}_${cyc}}
+export jobid=${jobid:-getkf${TYPESTR}_${cyc}}
 export DATA=${DATA:-${UMBRELLA_GETKF_DATA}/${jobid}}
 
 if [[ -d "${DATA}" ]]; then # remove the ${DATA} directory if existed
@@ -37,7 +47,7 @@ mkdir -p "${DATA}"
 #export COMINgfs=${COMINgfs:-$(compath.py ${envir}/gfs/${gfs_ver})}
 export COMINrrfs=${COMINrrfs:-$(compath.py "${envir}/rrfs/${rrfs_ver}")}
 export COMOUT=${COMOUT:-$(compath.py -o "${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}")}
-mkdir -p "${COMOUT}/getkf_${GETKF_TYPE}/${WGF}"
+mkdir -p "${COMOUT}/getkf${TYPESTR}/${WGF}"
 #
 #----------------------------------------
 # Execute the script.
