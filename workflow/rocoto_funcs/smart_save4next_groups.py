@@ -8,8 +8,8 @@ def smart_save4next_groups(dcCycleDef):
     # determine "cycles_by_fcst_length"
     fcst_lengths = os.getenv('FCST_LEN_HRS_CYCLES', '')
     mpasout_timelevels = os.getenv('MPASOUT_TIMELEVELS', '')
-    #fcst_lengths = '72 01 03 12 01 03 12 01 03 12 01 03 72 01 03 12 01 03 12 01 03 12 01 03'  # debug
-    #mpasout_timelevels = '0 1 2 3 12 15 27'  # debug
+    # fcst_lengths = '72 01 03 12 01 03 12 01 03 12 01 03 72 01 03 12 01 03 12 01 03 12 01 03'  # debug
+    # mpasout_timelevels = '0 1 2 3 12 15 27'  # debug
 
     fcst_lengths = list(map(int, fcst_lengths.split()))  # collapses spaces into one separator and ignore leading/trailing spaces
     max_fcst_length = max(fcst_lengths)
@@ -52,7 +52,7 @@ def smart_save4next_groups(dcCycleDef):
             continue
         # ~~~~
         valid_hours = sorted(list(cycles_by_fcst_length_sorted.values())[index])
-        for i in range(index+1, num_cycle_groups):
+        for i in range(index + 1, num_cycle_groups):
             valid_hours.extend(sorted(list(cycles_by_fcst_length_sorted.values())[i]))
         valid_hours = sorted(valid_hours)
         valid_str = " ".join(f"{i}" for i in valid_hours)
