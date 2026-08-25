@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 import os
 import sys
-import math
 
 
 def smart_save4next_groups(dcCycleDef):
