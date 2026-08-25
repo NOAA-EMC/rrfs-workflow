@@ -54,6 +54,9 @@ def setup_xml(HOMErrfs, expdir):
     # create post groups smartly and update dcCycleDef accordingly
     if os.getenv("DO_POST", "TRUE").upper() == "TRUE":
         listPostGrpInfo = smart_post_groups(dcCycledef)
+    # define extra save4next cycledefs smartly
+    if os.getenv("DO_SPINUP", "FALSE").upper() == "TRUE" or os.getenv('DO_CYC', 'FALSE').upper() == "TRUE" and os.getenv('DO_RTMA', 'FALSE').upper() == 'FALSE':
+        listSave4NextGrpInfo = smart_save4next_groups(dcCycledef)
 
     fPath = f"{expdir}/{NET}.xml"
     with open(fPath, 'w') as xmlFile:
@@ -103,8 +106,8 @@ def setup_xml(HOMErrfs, expdir):
                 if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
                     nonvar_cldana(xmlFile, expdir, spinup_mode=-1)
                 fcst(xmlFile, expdir)
-                listSave4NextGrpInfo = smart_save4next_groups(dcCycledef)
-                save_for_next(xmlFile, expdir)
+                for dcGrpInfo in listSave4NextGrpInfo:
+                    save_for_next(xmlFile, expdir, dcGrpInfo)
             elif os.getenv("DO_FCST", "TRUE").upper() == "TRUE":
                 prep_ic(xmlFile, expdir)
                 if "global" not in MESH_NAME:
@@ -121,8 +124,8 @@ def setup_xml(HOMErrfs, expdir):
                     pyDAmonitor(xmlFile, expdir)
                 fcst(xmlFile, expdir)
                 if os.getenv('DO_CYC', 'FALSE').upper() == "TRUE" and os.getenv('DO_RTMA', 'FALSE').upper() == 'FALSE':
-                    listSave4NextGrpInfo = smart_save4next_groups(dcCycledef)
-                    save_for_next(xmlFile, expdir)
+                    for dcGrpInfo in listSave4NextGrpInfo:
+                        save_for_next(xmlFile, expdir, dcGrpInfo)
             #
             if os.getenv("DO_POST", "TRUE").upper() == "TRUE":
                 for index, dcGrpInfo in enumerate(listPostGrpInfo):
@@ -180,8 +183,8 @@ def setup_xml(HOMErrfs, expdir):
             for dcEnsGrpInfo in listEnsGrpInfo["group_list"]:
                 fcst(xmlFile, expdir, do_ensemble=True, dcEnsGrpInfo=dcEnsGrpInfo)
             if os.getenv('DO_CYC', 'FALSE').upper() == "TRUE":
-                listSave4NextGrpInfo = smart_save4next_groups(dcCycledef)
-                save_for_next(xmlFile, expdir, do_ensemble=True)
+                for dcGrpInfo in listSave4NextGrpInfo:
+                    save_for_next(xmlFile, expdir, dcGrpInfo, do_ensemble=True)
             if os.getenv("DO_POST", "TRUE").upper() == "TRUE":
                 for index, dcGrpInfo in enumerate(listPostGrpInfo):
                     mpassit(xmlFile, expdir, index, dcGrpInfo, do_ensemble=True)
