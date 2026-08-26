@@ -30,14 +30,10 @@ mkdir -p obs ens jdiag
 #
 # copy observations files
 #
-if [[ ${GETKF_TYPE} == observer*  ]]; then
+if [[ ${GETKF_TYPE} == observer*  ]]; then  # observer or observer_solver
   source "${USHrrfs}/copy_obs.sh" "getkf"
-else
-  if [[ -d "${UMBRELLA_GETKF_OBSERVER_DATA}" ]]; then
-    ln -snf "${UMBRELLA_GETKF_OBSERVER_DATA}"/jdiag* jdiag/.
-  elif [[ -d "${UMBRELLA_GETKF_OBSERVER_SOLVER_DATA}" ]]; then
-    ln -snf "${UMBRELLA_GETKF_OBSERVER_SOLVER_DATA}"/jdiag* jdiag/.
-  fi
+else  # solver or post
+  ln -snf "${UMBRELLA_GETKF_OBSERVER_DATA}"/jdiag* jdiag/.
 fi
 #
 # determine whether to begin new cycles and link correct ensembles
@@ -120,8 +116,8 @@ if [[ ${START_TYPE} == "warm" ]] || [[ ${START_TYPE} == "cold" && ${COLDSTART_CY
   export err=$?
   err_chk
   #
-  cp "${DATA}"/getkf*.yaml "${COMOUT}/getkf_${GETKF_TYPE}/${WGF}"
-  cp "${DATA}"/log.* "${COMOUT}/getkf_${GETKF_TYPE}/${WGF}"
+  cp "${DATA}"/getkf*.yaml "${COMOUT}/getkf${TYPESTR}/${WGF}"
+  cp "${DATA}"/log.* "${COMOUT}/getkf${TYPESTR}/${WGF}"
 
   # rename ombg to oman for posterior observer jdiag files
   if [[ "${GETKF_TYPE}" == "post" ]]; then
@@ -135,7 +131,7 @@ if [[ ${START_TYPE} == "warm" ]] || [[ ${START_TYPE} == "cold" && ${COLDSTART_CY
 
   # move jdiag* files to the umbrella directory if observer
   if [[ ${GETKF_TYPE} == observer* || "${GETKF_TYPE}" == "post" ]]; then
-    cp "${DATA}"/jdiag* "${COMOUT}/getkf_${GETKF_TYPE}/${WGF}"
+    cp "${DATA}"/jdiag* "${COMOUT}/getkf${TYPESTR}/${WGF}"
     mv jdiag* "${UMBRELLA_GETKF_DATA}"/.
   fi
   # move post mean to umbrella if solver
@@ -146,7 +142,7 @@ if [[ ${START_TYPE} == "warm" ]] || [[ ${START_TYPE} == "cold" && ${COLDSTART_CY
   # Save analysis files if requested
   if [[ "${GETKF_TYPE}" == "post" && "${SAVE_GETKF_ANL^^}" == "TRUE" ]]; then
     for mem in $(seq -w 001 "${ENS_SIZE}"); do
-      cp -rL "${DATA}"/data/ens/mem"${mem}".nc "${COMOUT}"/getkf_"${GETKF_TYPE}"/"${WGF}"/mem"${mem}".nc
+      cp -rL "${DATA}/data/ens/mem${mem}.nc"  "${COMOUT}/getkf_${GETKF_TYPE}/${WGF}/mem${mem}.nc"
     done
   fi
 
