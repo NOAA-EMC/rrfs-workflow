@@ -114,11 +114,10 @@ def fcst(xmlFile, expdir, do_ensemble=False, dcEnsGrpInfo=None, do_spinup=False)
     if os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
         do_da = True
         if os.getenv("DO_ENSEMBLE", "FALSE").upper() == "TRUE":
-            jedidep = f'''
-    <or>
-       <taskdep task="getkf_solver"/>
-       <taskdep task="getkf_observer_solver"/>
-    </or>'''
+            if os.getenv("GETKF_ONESTEP", "TRUE").upper() == "FALSE":
+                jedidep = f'\n    <taskdep task="getkf_solver"/>'
+            else:
+                jedidep = f'\n    <taskdep task="getkf"/>'
         elif do_spinup:
             jedidep = f'\n    <taskdep task="jedivar_spinup"/>'
         else:
