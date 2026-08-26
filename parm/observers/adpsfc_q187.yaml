@@ -53,14 +53,14 @@
          - filter: Polygon Check
            identifier:
              name: PolygonCheck
-             logging: false
+             logging: true
            <<: *polygonConfig
 
          # Time window filter
          - filter: Domain Check
            identifier:
              name: TimeWindowCheck
-             logging: false
+             logging: true
            where:
              - variable:
                  name: MetaData/timeOffset # units: s
@@ -73,7 +73,7 @@
          - filter: Perform Action
            identifier:
              name: ObsInvalidCheck
-             logging: false
+             logging: true
            where:
            - variable: ObsValue/specificHumidityAt2M
              value: is_not_valid
@@ -84,7 +84,7 @@
          - filter: Perform Action
            identifier:
              name: ObsTypeCheck
-             logging: false
+             logging: true
            where:
            - variable: ObsType/specificHumidityAt2M
              is_not_in: 187
@@ -95,7 +95,7 @@
          - filter: RejectList
            identifier:
              name: QcMarkerCheck
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: specificHumidityAt2M
@@ -111,7 +111,7 @@
          - filter: DuplicateThinning
            identifier:
              name: DuplicateThinning
-             logging: false
+             logging: true
            filter variables:
            - name: specificHumidityAt2M
            analysis_time: "@ANALYSIS_DATE@"
@@ -130,7 +130,7 @@
            apply at iterations: 0,1
            identifier:
              name: RegionalDomainCheck
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: specificHumidityAt2M
@@ -144,7 +144,7 @@
            apply at iterations: 0,1
            identifier:
              name: ObsErrorInit
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: specificHumidityAt2M
@@ -166,7 +166,7 @@
 #           apply at iterations: 0,1
 #           identifier:
 #             name: ObsErrorFactorPressureCheck
-#             logging: false
+#             logging: true
 #             diagnostic flag new: false
 #           filter variables:
 #           - name: specificHumidityAt2M
@@ -186,7 +186,7 @@
 #           apply at iterations: 0,1
 #           identifier:
 #             name: ObsErrorFactorConventional
-#             logging: false
+#             logging: true
 #             diagnostic flag new: false
 #           filter variables:
 #           - name: specificHumidityAt2M
@@ -206,7 +206,7 @@
            apply at iterations: 0,1
            identifier:
              name: ObsErrorFactorQm3_
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: specificHumidityAt2M
@@ -222,7 +222,7 @@
            apply at iterations: 0,1
            identifier:
              name: ObsErrorFactorHighAltitude
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: specificHumidityAt2M
@@ -238,7 +238,7 @@
            apply at iterations: 0,1
            identifier:
              name: ObsErrorBoundsCheck
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: specificHumidityAt2M
@@ -254,7 +254,7 @@
            apply at iterations: 0,1
            identifier:
              name: ObsValueBoundsCheck
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: specificHumidityAt2M
@@ -268,7 +268,7 @@
            apply at iterations: 0,1
            identifier:
              name: TempObsErrorData
-             logging: false
+             logging: true
              diagnostic flag new: false
            assignments:
            - name: TempObsErrorData/specificHumidityAt2M
@@ -285,7 +285,7 @@
            apply at iterations: 0,1
            identifier:
              name: ObsErrorMinForGEC
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: specificHumidityAt2M
@@ -306,7 +306,7 @@
            apply at iterations: 0,1
            identifier:
              name: ObsErrorMaxForGEC
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: specificHumidityAt2M
@@ -327,7 +327,7 @@
            apply at iterations: 0,1
            identifier:
              name: GrossErrorCheck
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: specificHumidityAt2M
@@ -345,7 +345,7 @@
            apply at iterations: 0,1
            identifier:
              name: GrossErrorCheckQm3_
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: specificHumidityAt2M
@@ -363,7 +363,7 @@
            apply at iterations: 0,1
            identifier:
              name: ObsErrorCopyBack
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: specificHumidityAt2M

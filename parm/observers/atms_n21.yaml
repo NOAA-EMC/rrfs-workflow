@@ -95,14 +95,14 @@
        - filter: Polygon Check
          identifier:
            name: PolygonCheck
-           logging: false
+           logging: true
          <<: *polygonConfig
 
        - filter: Create Diagnostic Flags
          apply at iterations: 0,1
          identifier:
            name: CreateDiagnosticFlags
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -140,7 +140,7 @@
          apply at iterations: 0,1
          identifier:
            name: CLWRetFromObs
-           logging: false
+           logging: true
            diagnostic flag new: false
          assignments:
          - name: CLWRetFromObs@DerivedMetaData
@@ -156,7 +156,7 @@
          apply at iterations: 0,1
          identifier:
            name: CLWRetFromObs
-           logging: false
+           logging: true
            diagnostic flag new: false
          assignments:
          - name: CLWRetFromBkg@DerivedMetaData
@@ -173,7 +173,7 @@
          apply at iterations: 0,1
          identifier:
            name: CLWRetSymmetric
-           logging: false
+           logging: true
            diagnostic flag new: false
          assignments:
          - name: CLWRetSymmetric@DerivedMetaData
@@ -184,7 +184,7 @@
          apply at iterations: 0,1
          identifier:
            name: VarAssign
-           logging: false
+           logging: true
            diagnostic flag new: false
          where:
          - variable:
@@ -212,7 +212,7 @@
          apply at iterations: 0,1
          identifier:
            name: SIRetFromObs
-           logging: false
+           logging: true
            diagnostic flag new: false
          assignments:
          - name: SIRetFromObs@DerivedMetaData
@@ -230,7 +230,7 @@
          apply at iterations: 0,1
          identifier:
            name: CLWRetFromObs
-           logging: false
+           logging: true
            diagnostic flag new: false
          assignments:
          - name: CLWMatchIndex@DerivedMetaData
@@ -256,7 +256,7 @@
          apply at iterations: 0,1
          identifier:
            name: InitialObsError
-           logging: false
+           logging: true
            diagnostic flag new: false
          assignments:
          - name: InitialObsError@DerivedMetaData
@@ -295,7 +295,7 @@
          apply at iterations: 0,1
          identifier:
            name: Innovation
-           logging: false
+           logging: true
            diagnostic flag new: false
          assignments:
          - name: Innovation@DerivedMetaData
@@ -317,7 +317,7 @@
          apply at iterations: 0,1
          identifier:
            name: HofXValidCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -337,7 +337,7 @@
          apply at iterations: 0,1
          identifier:
            name: RegionalDomainCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -353,7 +353,7 @@
          apply at iterations: 0,1
          identifier:
            name: ObsErrorInit
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -369,7 +369,7 @@
          apply at iterations: 0,1
          identifier:
            name: ScanEdgeRemoval
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -388,7 +388,7 @@
          apply at iterations: 0,1
          identifier:
            name: Thinning
-           logging: false
+           logging: true
            diagnostic flag new: false
          #horizontal_mesh: 145
          horizontal_mesh: 60
@@ -406,7 +406,7 @@
          apply at iterations: 0,1
          identifier:
            name: CLWRetCheckObs
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -424,7 +424,7 @@
          apply at iterations: 0,1
          identifier:
            name: CLWRetCheckBkg
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -442,7 +442,7 @@
          apply at iterations: 0,1
          identifier:
            name: WindowChannelExtremeResidual
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -463,7 +463,7 @@
          apply at iterations: 0,1
          identifier:
            name: HydrometeorCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          assignments:
          - name: DerivedMetaData/HydrometeorCheckATMS
@@ -485,7 +485,7 @@
          apply at iterations: 0,1
          identifier:
            name: HydrometeorCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -505,7 +505,7 @@
          apply at iterations: 0,1
          identifier:
            name: TopographyCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          assignments:
          - name: ObsErrorFactorTopo@DerivedMetaData
@@ -522,7 +522,7 @@
          apply at iterations: 0,1
          identifier:
            name: TopographyCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -538,7 +538,7 @@
          apply at iterations: 0,1
          identifier:
            name: ObsErrorFactorTransmitTop
-           logging: false
+           logging: true
            diagnostic flag new: false
          assignments:
          - name: ObsErrorFactorTransmitTop@DerivedMetaData
@@ -554,7 +554,7 @@
          apply at iterations: 0,1
          identifier:
            name: TransmitTopCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -570,7 +570,7 @@
          apply at iterations: 0,1
          identifier:
            name: SurfJacobianCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          assignments:
          - name: ObsErrorFactorSurfJacobian@DerivedMetaData
@@ -589,7 +589,7 @@
          apply at iterations: 0,1
          identifier:
            name: SurfJacobianCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -605,7 +605,7 @@
          apply at iterations: 0,1
          identifier:
            name: SituDependCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          assignments:
          - name: ObsErrorFactorSituDepend@DerivedMetaData
@@ -635,7 +635,7 @@
          apply at iterations: 0,1
          identifier:
            name: SituDependCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -652,7 +652,7 @@
          apply at iterations: 0,1
          identifier:
            name: GrossErrorCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          assignments:
          - name: ObsErrorFactorLat@DerivedMetaData
@@ -666,7 +666,7 @@
          apply at iterations: 0,1
          identifier:
            name: VarAssign
-           logging: false
+           logging: true
            diagnostic flag new: false
          assignments:
          - name: ObsErrorBound@DerivedMetaData
@@ -698,7 +698,7 @@
          apply at iterations: 0,1
          identifier:
            name: GrossErrorCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -717,7 +717,7 @@
          apply at iterations: 0,1
          identifier:
            name: InterChannelCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -742,7 +742,7 @@
          apply at iterations: 0,1
          identifier:
            name: UseflagCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
