@@ -53,14 +53,14 @@
          - filter: Polygon Check
            identifier:
              name: PolygonCheck
-             logging: false
+             logging: true
            <<: *polygonConfig
 
          # Time window filter
          - filter: Domain Check
            identifier:
              name: TimeWindowCheck
-             logging: false
+             logging: true
            where:
              - variable:
                  name: MetaData/timeOffset # units: s
@@ -73,7 +73,7 @@
          - filter: Perform Action
            identifier:
              name: ObsInvalidCheck
-             logging: false
+             logging: true
            where:
            - variable: ObsValue/windEastward
              value: is_not_valid
@@ -87,7 +87,7 @@
          - filter: Perform Action
            identifier:
              name: ObsTypeCheck
-             logging: false
+             logging: true
            where:
            - variable: ObsType/windEastward
              is_not_in: 246
@@ -101,7 +101,7 @@
          - filter: Perform Action
            identifier:
              name: ObsInstrumentCheck
-             logging: false
+             logging: true
            where:
            - variable: MetaData/satelliteIdentifier
              is_not_in: 272
@@ -112,7 +112,7 @@
 #         - filter: DuplicateThinning
 #           identifier:
 #             name: DuplicateThinning
-#             logging: false
+#             logging: true
 #           filter variables:
 #           - name: windEastward
 #           - name: windNorthward
@@ -136,7 +136,7 @@
            apply at iterations: 0,1
            identifier:
              name: RegionalDomainCheck
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: windEastward
@@ -151,7 +151,7 @@
            apply at iterations: 0,1
            identifier:
              name: ObsErrorInit
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: windEastward
@@ -176,7 +176,7 @@
            apply at iterations: 0,1
            identifier:
              name: ObsErrorFactorPressureCheckU
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: windEastward
@@ -198,7 +198,7 @@
            apply at iterations: 0,1
            identifier:
              name: ObsErrorFactorPressureCheckV
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: windNorthward
@@ -220,7 +220,7 @@
            apply at iterations: 0,1
            identifier:
              name: ObsValueBoundsCheck
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: windEastward
@@ -240,7 +240,7 @@
            apply at iterations: 0,1
            identifier:
              name: QIFNCheck
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: windEastward
@@ -262,7 +262,7 @@
            apply at iterations: 0,1
            identifier:
              name: SatZenithAngleCheck
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: windEastward
@@ -283,7 +283,7 @@
            apply at iterations: 0,1
            identifier:
              name: HighAltitudeCheck
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: windEastward
@@ -305,7 +305,7 @@
            apply at iterations: 0,1
            identifier:
              name: LandLowAltitudeCheck
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: windEastward
@@ -327,7 +327,7 @@
            apply at iterations: 0,1
            identifier:
              name: CoeffVarCheck
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: windEastward
@@ -349,7 +349,7 @@
            apply at iterations: 0,1
            identifier:
              name: LowWindSpeedCheck
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: windEastward
@@ -369,7 +369,7 @@
 #           apply at iterations: 0,1
 #           identifier:
 #             name: AMVErrorNormCheck
-#             logging: false
+#             logging: true
 #             diagnostic flag new: false
 #           filter variables:
 #           - name: windEastward
@@ -391,7 +391,7 @@
            apply at iterations: 0,1
            identifier:
              name: ObsErrorHalve
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: windEastward
@@ -410,7 +410,7 @@
            apply at iterations: 0,1
            identifier:
              name: TropopauseCheck
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: windEastward
@@ -431,7 +431,7 @@
            apply at iterations: 0,1
            identifier:
              name: NearSurfaceCheck
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: windEastward
@@ -452,7 +452,7 @@
            apply at iterations: 0,1
            identifier:
              name: GrossErrorCheckU
-             logging: false
+             logging: true
              diagnostic flag new: false
            apply at iterations: 0,1
            filter variables:
@@ -474,7 +474,7 @@
            apply at iterations: 0,1
            identifier:
              name: GrossErrorCheckV
-             logging: false
+             logging: true
              diagnostic flag new: false
            apply at iterations: 0,1
            filter variables:

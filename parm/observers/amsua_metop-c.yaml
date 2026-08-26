@@ -82,14 +82,14 @@
        - filter: Polygon Check
          identifier:
            name: PolygonCheck
-           logging: false
+           logging: true
          <<: *polygonConfig
 
        - filter: Create Diagnostic Flags
          apply at iterations: 0,1
          identifier:
            name: CreateDiagnosticFlags
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -104,7 +104,7 @@
          apply at iterations: 0,1
          identifier:
            name: Thinning
-           logging: false
+           logging: true
            diagnostic flag new: false
          #horizontal_mesh: 145
          horizontal_mesh: 60
@@ -121,7 +121,7 @@
          apply at iterations: 0,1
          identifier:
            name: RegionalDomainCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -136,7 +136,7 @@
          apply at iterations: 0,1
          identifier:
            name: HofXValidCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -154,7 +154,7 @@
          apply at iterations: 0,1
          identifier:
            name: ObsErrorInit
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -189,7 +189,7 @@
          apply at iterations: 0,1
          identifier:
            name: CLWRetCheckObs
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -208,7 +208,7 @@
          apply at iterations: 0,1
          identifier:
            name: CLWRetCheckBkg
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -227,7 +227,7 @@
          apply at iterations: 0,1
          identifier:
            name: HydrometeorCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -275,7 +275,7 @@
          apply at iterations: 0,1
          identifier:
            name: TopographyCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -293,7 +293,7 @@
          apply at iterations: 0,1
          identifier:
            name: TransmitTopCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -311,7 +311,7 @@
          apply at iterations: 0,1
          identifier:
            name: SurfJacobianCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -331,7 +331,7 @@
          apply at iterations: 0,1
          identifier:
            name: SituDependCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -416,7 +416,7 @@
          apply at iterations: 0,1
          identifier:
            name: GrossErrorCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -474,7 +474,7 @@
          apply at iterations: 0,1
          identifier:
            name: InterChannelCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
@@ -494,7 +494,7 @@
          apply at iterations: 0,1
          identifier:
            name: UseflagCheck
-           logging: false
+           logging: true
            diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature

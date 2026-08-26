@@ -7,6 +7,7 @@ prepend_path("MODULEPATH", "/apps/contrib/spack-stack/spack-stack-1.9.3/envs/ue-
 
 load("stack-oneapi/2024.2.1")
 load("stack-intel-oneapi-mpi/2021.13")
+load("intel-oneapi-mkl/2024.2.1")
 load("cmake/3.27.9")
 load("parallel-netcdf/1.12.3")
 load("parallelio/2.6.2")
@@ -15,9 +16,13 @@ load("libpng/1.6.37")
 
 if mode() == "load" then
   setenv("PNETCDF", os.getenv("parallel_netcdf_ROOT"))
+  setenv("NetCDF_C_ROOT", os.getenv("netcdf_c_ROOT"))
+  setenv("NetCDF_FORTRAN_ROOT", os.getenv("netcdf_fortran_ROOT"))
 end
 if mode() == "unload" then
   unsetenv("PNETCDF")
+  unsetenv("NetCDF_C_ROOT")
+  unsetenv("NetCDF_FORTRAN_ROOT")
 end
 
 setenv("CMAKE_C_COMPILER", "mpiicc")

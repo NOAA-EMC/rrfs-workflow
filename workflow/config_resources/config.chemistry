@@ -1,23 +1,8 @@
 #!/usr/bin/env bash
 # Aloha! This file is to setup chemistry configurations
 # shellcheck disable=SC2154
-# turn off DA by default. If doing DA, need to change them back to true
-export DO_IODA=false
-export DO_JEDI=false
-export DO_CYC=false
-export DO_SPINUP=false
-
-export LBC_CYCS="00"  # evenly divide 24 hours, e.g., "00 12", "00 06 12 18", etc
-export COLDSTART_CYCS="00"
-export MPASOUT_SAVE2COM_HRS="24"  # save mpasout file(s) for chem updates at next cycle(s)
-
-for i in {0..23}; do arr[i]="24"; done # 24hr fcst, only take effect at coldstart cycles
-export FCST_LEN_HRS_CYCLES="${arr[*]}"
-export LBC_LENGTH=24
-export REALTIME=false
-export RETRO_CYCLETHROTTLE=1
-#
 # ---------------------------------------------
+export MPASOUT_SAVE2COM_HRS="24"  # save mpasout file(s) for chem updates at next cycle(s)
 export CHEM_GROUPS="smoke" # any combinations of "smoke, anthro, pollen, dust, rwc"
 export EBB_DCYCLE=-1
 export REGRID_WRAPPER_DIR="${HOMErrfs}/sorc/chem-regrid-wrapper"
@@ -71,6 +56,3 @@ case ${MACHINE} in
     echo "!!! unsupported platform:'${MACHINE}'!!!"
     ;;
 esac
-#
-# users may overwrite some variables in the below, such as:
-#  export RAVE_INPUT="/path/to/my/RAVE/INPUT"

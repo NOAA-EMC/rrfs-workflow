@@ -60,14 +60,14 @@
          - filter: Polygon Check
            identifier:
              name: PolygonCheck
-             logging: false
+             logging: true
            <<: *polygonConfig
 
          # Time window filter
          - filter: Domain Check
            identifier:
              name: TimeWindowCheck
-             logging: false
+             logging: true
            where:
              - variable:
                  name: MetaData/timeOffset # units: s
@@ -80,7 +80,7 @@
          - filter: Perform Action
            identifier:
              name: ObsInvalidCheck
-             logging: false
+             logging: true
            where:
            - variable: ObsValue/windEastward
              value: is_not_valid
@@ -94,7 +94,7 @@
          - filter: Perform Action
            identifier:
              name: ObsTypeCheck
-             logging: false
+             logging: true
            where:
            - variable: ObsType/windEastward
              is_not_in: 288
@@ -109,13 +109,13 @@
            apply at iterations: 0,1
            identifier:
              name: RejectAllProviders
-             logging: false
+             logging: true
              diagnostic flag new: false
          - filter: AcceptList  # accept back selected providers
            apply at iterations: 0,1
            identifier:
              name: AcceptProviders_raws
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -127,7 +127,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_afa
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -138,7 +138,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_apg
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -149,7 +149,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_aprswxnet
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -160,7 +160,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_arlfrd
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -171,7 +171,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_aws
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -182,7 +182,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_awx
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -193,7 +193,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_caic
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -204,7 +204,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_codot
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -215,7 +215,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_coop
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -226,7 +226,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_dcnet
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -237,7 +237,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_gadot
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -248,7 +248,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_gldnws
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -259,7 +259,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_gomoos
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -270,7 +270,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_hads
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -281,7 +281,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_iadot
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -292,7 +292,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_iem
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -303,7 +303,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_indot
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -314,7 +314,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_internet
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -325,7 +325,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_ksdot
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -336,7 +336,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_map
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -347,7 +347,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_mddot
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -358,7 +358,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_mndot
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -369,7 +369,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_mocomagnet
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -380,7 +380,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_maritime
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -391,7 +391,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_mesowest
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -402,7 +402,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_nddot
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -413,7 +413,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_nedor
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -424,7 +424,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_nerrs
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -435,7 +435,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_nhdot
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -446,7 +446,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_njwxnet
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -457,7 +457,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_nonfedawos
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -468,7 +468,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_ohdot
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -479,7 +479,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_raws
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -490,7 +490,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_sao
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -501,7 +501,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_sfwmd
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -512,7 +512,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_udfcd
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -523,7 +523,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_urbanet
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -534,7 +534,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_vadot
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -545,7 +545,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_vtdot
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -556,7 +556,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_widot
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -567,7 +567,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_wxforyou
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -578,7 +578,7 @@
            apply at iterations: 0,1
            identifier:
              name: AcceptStations_wydot
-             logging: false
+             logging: true
              diagnostic flag new: false
            where:
            - variable: MetaData/dataProviderOrigin
@@ -590,7 +590,7 @@
          - filter: RejectList
            identifier:
              name: QcMarkerCheck
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: windEastward
@@ -607,7 +607,7 @@
 #         - filter: DuplicateThinning
 #           identifier:
 #             name: DuplicateThinning
-#             logging: false
+#             logging: true
 #           filter variables:
 #           - name: windEastward
 #           - name: windNorthward
@@ -627,7 +627,7 @@
            apply at iterations: 0,1
            identifier:
              name: RegionalDomainCheck
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: windEastward
@@ -642,7 +642,7 @@
            apply at iterations: 0,1
            identifier:
              name: ObsErrorInit
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: windEastward
@@ -665,7 +665,7 @@
            apply at iterations: 0,1
            identifier:
              name: ObsErrorFactorPressureCheckU
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: windEastward
@@ -688,7 +688,7 @@
            apply at iterations: 0,1
            identifier:
              name: ObsErrorFactorPressureCheckV
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: windNorthward
@@ -710,7 +710,7 @@
 #         - filter: Perform Action
 #           identifier:
 #             name: ObsErrorFactorConventionalU
-#             logging: false
+#             logging: true
 #             diagnostic flag new: false
 #           filter variables:
 #           - name: windEastward
@@ -732,7 +732,7 @@
 #         - filter: Perform Action
 #           identifier:
 #             name: ObsErrorFactorConventionalV
-#             logging: false
+#             logging: true
 #             diagnostic flag new: false
 #           filter variables:
 #           - name: windNorthward
@@ -755,7 +755,7 @@
            apply at iterations: 0,1
            identifier:
              name: ObsErrorFactorQm3_
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: windEastward
@@ -772,7 +772,7 @@
            apply at iterations: 0,1
            identifier:
              name: ObsErrorFactorHighAltitude
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: windEastward
@@ -789,7 +789,7 @@
            apply at iterations: 0,1
            identifier:
              name: ObsErrorBoundsCheck
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: windEastward
@@ -806,7 +806,7 @@
            apply at iterations: 0,1
            identifier:
              name: ObsValueBoundsCheck
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: windEastward
@@ -821,7 +821,7 @@
            apply at iterations: 0,1
            identifier:
              name: GrossErrorCheckU
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: windEastward
@@ -845,7 +845,7 @@
            apply at iterations: 0,1
            identifier:
              name: GrossErrorCheckV
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: windNorthward
@@ -869,7 +869,7 @@
            apply at iterations: 0,1
            identifier:
              name: GrossErrorCheckQm3U
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: windEastward
@@ -893,7 +893,7 @@
            apply at iterations: 0,1
            identifier:
              name: GrossErrorCheckQm3V
-             logging: false
+             logging: true
              diagnostic flag new: false
            filter variables:
            - name: windNorthward
