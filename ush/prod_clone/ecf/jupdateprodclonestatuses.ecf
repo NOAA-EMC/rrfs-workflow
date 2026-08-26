@@ -1,0 +1,66 @@
+#!/bin/bash
+
+model=prod_clone
+%include <head.h>
+
+set +x
+#module load ecflow/$ecflow_ver
+module load intel/$intel_ver
+module load python/$python_ver
+set -x
+
+#export envir=prod
+export envir=%ENVIR%
+export jobid=prod_clone.$$
+export DATA=/lfs/f2/t2o/ptmp/emc/para/stmp/prod_clone/$jobid
+rm -rf $DATA
+#mkdir -m 755 $DATA
+mkdir -p $DATA
+cd $DATA
+export PRODCLONEPREFIX=/prod_clone
+
+#PRODCHECKPOINTFILE=/lfs/h1/ops/test/com/ecflow/ecf.check.prod
+PRODCHECKPOINTFILE=/lfs/h2/emc/lam/noscrub/emc.lam/Shun.Liu/mirrior/prod_clone/ecf.check.prod
+PARACHECKPOINTFILE=/lfs/h2/emc/lam/noscrub/emc.lam/ecflow/submit/ecf.check
+#PARACHECKPOINTFILE=/lfs/h2/emc/lam/noscrub/emc.lam/ecflow/submit/ddecflow02.32035.ecf.check
+
+
+# If we're less than 25 seconds from the next prod checkpoint write, just wait:
+%nopp
+#nextcheckpointtime=$(($(stat -c %Y $PRODCHECKPOINTFILE)+60))  #( last modified time seconds since Epoch )
+nextcheckpointtime=$(($(stat -c %Z $PRODCHECKPOINTFILE)+60))   #( last changed time seconds since Epoch )
+#waittime=$(($(date +%s)-$nextcheckpointtime))
+waittime=$(($nextcheckpointtime-$(date +%s)))
+sleeptime=$((waittime+2))
+%end
+#if [[ $waittime -lt 25 && $waittime -gt 0 ]]; then sleep $waittime; fi
+if [[ $waittime -lt 25 && $waittime -gt 0 ]]; then sleep $sleeptime; fi
+if [ $waittime -eq 60 ]; then sleep 2; fi
+echo $LD_LIBRARY_PATH
+cp $PRODCHECKPOINTFILE ecf.check.prod
+cp $PARACHECKPOINTFILE ecf.check.para
+
+#$HOMEprod_clone/scripts/exupdateprodclonestatuses.py $PRODCHECKPOINTFILE $PARACHECKPOINTFILE
+$HOMEprod_clone/scripts/exupdateprodclonestatuses.py ecf.check.prod ecf.check.para
+python $HOMEprod_clone/scripts/clean.py
+python $HOMEprod_clone/scripts/complete_enkf_save_f1.py
+python $HOMEprod_clone/scripts/complete_enkf_save_f3.py
+python $HOMEprod_clone/scripts/complete_post.py
+
+export err=$?
+
+if [ $err -eq 0 -a $KEEPDATA != YES ]; then
+  mkdir -p /lfs/f2/t2o/ptmp/emc/ptmp/emc.lam/$envir/tmp
+  cd /lfs/f2/t2o/ptmp/emc/ptmp/emc.lam/$envir/tmp
+  rm -rf $jobid
+fi
+
+%include <tail.h>
+
+%manual
+# This job compares the prod and para ecflow checkpoint files once per minute and
+# updates tasks under the para server's /prod_clone suite accordingly.
+#
+# When adding jobs under the /prod_clone suite, remove all variables, cron's,
+# time dependencies, triggers, etc. from the definitions.
+%end
