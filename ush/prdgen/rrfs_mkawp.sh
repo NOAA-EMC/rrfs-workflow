@@ -48,6 +48,16 @@ then
   -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
   -new_grid ${gridspecs} rrfs.t${cyc}z.${inputfile}.${gridspacing}.f${fhr}.na.grib2
 
+  if [ $gridspacing == "3km" ]; then
+     cpreq rrfs.t${cyc}z.${inputfile}.${gridspacing}.f${fhr}.na.grib2 ${COMOUT}/rrfs.t${cyc}z.${inputfile}_awipsubset.${gridspacing}.f${fhr}.na.grib2
+     wgrib2 ${COMOUT}/rrfs.t${cyc}z.${inputfile}_awipsubset.${gridspacing}.f${fhr}.na.grib2 -s > \
+               ${COMOUT}/rrfs.t${cyc}z.${inputfile}_awipsubset.${gridspacing}.f${fhr}.na.grib2.idx
+     if [ $SENDDBN = YES ]; then
+      $DBNROOT/bin/dbn_alert MODEL RRFS_DET_2DFLD_NA3 ${job} ${COMOUT}/rrfs.t${cyc}z.${inputfile}_awipsubset.${gridspacing}.f${fhr}.na.grib2
+      $DBNROOT/bin/dbn_alert MODEL RRFS_DET_2DFLD_NA3_IDX ${job} ${COMOUT}/rrfs.t${cyc}z.${inputfile}_awipsubset.${gridspacing}.f${fhr}.na.grib2.idx
+     fi
+  fi
+
   # Run tocgrib2
 
   export pgm="tocgrib2"
@@ -60,8 +70,7 @@ then
 
   cpreq -p grib2.rrfs.t${cyc}z.${gridspacing}.f${fhr}.na ${COMOUT}/wmo
 
- if [ $SENDDBN_NTC = YES ]
- then
+ if [ $SENDDBN_NTC = YES ]; then
    $DBNROOT/bin/dbn_alert NTC_LOW $NET $job ${COMOUT}/wmo/grib2.rrfs.t${cyc}z.${gridspacing}.f${fhr}.na
  fi
 
