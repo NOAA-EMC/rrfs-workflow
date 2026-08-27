@@ -33,17 +33,17 @@ def nonvar_bufrobs(xmlFile, expdir):
     lght_path = f'{OBSPATH}/@Y@m@d@H.rap.t@Hz.lghtng.tm00.bufr_d'
     metar_path = f'{OBSPATH}/@Y@m@d@H.rap.t@Hz.prepbufr.tm00'
 
-    timedep = ""
-    datadep = ""
     if realtime.upper() == "TRUE":
         starttime = get_cascade_env(f"STARTTIME_{task_id}".upper())
-        timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
-    else:
-        datadep = f'\n    <datadep age="00:02:00"><cyclestr>{lght_path}</cyclestr></datadep>'
-    #
-    dependencies = f'''
+        dependencies = f'''
   <dependency>
-  <and>{timedep}{datadep}
+    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
+  </dependency>'''
+    else:
+        dependencies = f'''
+  <dependency>
+  <and>
+    <datadep age="00:02:00"><cyclestr>{lght_path}</cyclestr></datadep>
     <datadep age="00:02:00"><cyclestr>{larc_path}</cyclestr></datadep>
     <datadep age="00:02:00"><cyclestr>{metar_path}</cyclestr></datadep>
   </and>
