@@ -84,7 +84,7 @@ else
 if [[ ${STRICT_CHECK} == 1 ]]; then
   echo "ERROR: Missing satellite cloud-top observations"
   exit 1
-else	
+else
   echo "WARNING: Missing satellite cloud-top observations"
   echo "Cloud-top observations will NOT be processed for the nonvar cloud analysis"
 fi
@@ -135,7 +135,7 @@ else
 if [[ ${STRICT_CHECK} == 1 ]]; then
   echo "ERROR: Missing lightning observations"
   exit 1
-else	
+else
   echo "WARNING: Missing lightning observations"
   echo "Lightning observations will NOT be processed for the nonvar cloud analysis"
 fi
@@ -184,7 +184,7 @@ else
 if [[ ${STRICT_CHECK} == 1 ]]; then
   echo "ERROR: Missing METAR observations"
   exit 1
-else	
+else
   echo "WARNING: Missing METAR observations"
   echo "METAR observations will NOT be processed for the nonvar cloud analysis"
 fi
