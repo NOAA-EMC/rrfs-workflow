@@ -81,7 +81,7 @@ ${cpreq} NASALaRC_cloud4mpas.bin "${COMOUT}/nonvar_bufrobs/${WGF}/NASALaRC_cloud
 
 else
 
-if [[ ${STRICT_CHECK} -eq 1 ]]; then
+if [[ ${STRICT_CHECK} == 1 ]]; then
   echo "ERROR: Missing satellite cloud-top observations"
   exit 1
 else	
@@ -132,7 +132,7 @@ ${cpreq} LightningInMPAS.dat "${COMOUT}/nonvar_bufrobs/${WGF}/LightningInMPAS.da
 
 else
 
-if [[ ${STRICT_CHECK} -eq 1 ]]; then
+if [[ ${STRICT_CHECK} == 1 ]]; then
   echo "ERROR: Missing lightning observations"
   exit 1
 else	
@@ -181,7 +181,7 @@ ${cpreq} mpas_metarcloud.bin "${COMOUT}/nonvar_bufrobs/${WGF}/mpas_metarcloud.bi
 
 else
 
-if [[ ${STRICT_CHECK} -eq 1 ]]; then
+if [[ ${STRICT_CHECK} == 1 ]]; then
   echo "ERROR: Missing METAR observations"
   exit 1
 else	

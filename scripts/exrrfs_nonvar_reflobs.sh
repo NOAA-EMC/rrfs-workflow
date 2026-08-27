@@ -101,7 +101,7 @@ if [[ -s filelist_mrms ]]; then
   echo "Using radar data from: $(head -1 filelist_mrms | cut -c10-15)"
   echo "NSSL grib2 file levels = ${numgrib2}"
 else
-  if [[ ${STRICT_CHECK} -eq 1 ]]; then
+  if [[ ${STRICT_CHECK} == 1 ]]; then
     echo "ERROR: Not enough radar reflectivity files were found"
     err_exit
   else
