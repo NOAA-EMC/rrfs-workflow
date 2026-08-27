@@ -238,6 +238,32 @@
                coefs:
                - 1.0
 
+         # Clear-sky Tb conditional check (overwrites default value for after doing CRTM check)
+         - filter: Variable Assignment
+           apply at iterations: 0,1
+           identifier:
+             name: ClrCheckTbAllChannels
+             logging: false
+             diagnostic flag new: false
+           where:
+           - variable:
+               name: ObsDiag/brightness_temperature_assuming_clear_sky
+               channels: 1-12
+             minvalue: 1e-12
+           assignments:
+           - name: DerivedMetaData/ClearSkyTb
+             type: float
+             channels: 1-12
+             function:
+               name: ObsFunction/Arithmetic
+               channels: 1-12
+               options:
+                 variables:
+                 - name: ObsDiag/brightness_temperature_assuming_clear_sky
+                   channels: 1-12
+                 coefs:
+                 - 1.0
+
        # Calculate Modeled Cloud Impact
        - filter: Variable Assignment
          apply at iterations: 0,1
