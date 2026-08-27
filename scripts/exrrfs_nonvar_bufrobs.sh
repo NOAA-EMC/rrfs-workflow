@@ -81,9 +81,13 @@ ${cpreq} NASALaRC_cloud4mpas.bin "${COMOUT}/nonvar_bufrobs/${WGF}/NASALaRC_cloud
 
 else
 
-echo "WARNING: Missing satellite cloud-top observations"
-echo "Cloud-top observations will NOT be processed for the nonvar cloud analysis"
-echo "File: ${lgycld_bufr}"
+if [[ ${STRICT_CHECK} -eq 1 ]]; then
+  echo "ERROR: Missing satellite cloud-top observations"
+  exit 1
+else	
+  echo "WARNING: Missing satellite cloud-top observations"
+  echo "Cloud-top observations will NOT be processed for the nonvar cloud analysis"
+fi
 
 fi
 
@@ -128,9 +132,13 @@ ${cpreq} LightningInMPAS.dat "${COMOUT}/nonvar_bufrobs/${WGF}/LightningInMPAS.da
 
 else
 
-echo "WARNING: Missing lightning observations"
-echo "Lightning observations will NOT be processed for the nonvar cloud analysis"
-echo "File: ${lghtng_bufr}"
+if [[ ${STRICT_CHECK} -eq 1 ]]; then
+  echo "ERROR: Missing lightning observations"
+  exit 1
+else	
+  echo "WARNING: Missing lightning observations"
+  echo "Lightning observations will NOT be processed for the nonvar cloud analysis"
+fi
 
 fi
 
@@ -173,9 +181,13 @@ ${cpreq} mpas_metarcloud.bin "${COMOUT}/nonvar_bufrobs/${WGF}/mpas_metarcloud.bi
 
 else
 
-echo "WARNING: Missing METAR observations"
-echo "METAR observations will NOT be processed for the nonvar cloud analysis"
-echo "File: ${metar_bufr}"
+if [[ ${STRICT_CHECK} -eq 1 ]]; then
+  echo "ERROR: Missing METAR observations"
+  exit 1
+else	
+  echo "WARNING: Missing METAR observations"
+  echo "METAR observations will NOT be processed for the nonvar cloud analysis"
+fi
 
 fi
 

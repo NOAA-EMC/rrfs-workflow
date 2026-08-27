@@ -11,6 +11,11 @@ def nonvar_bufrobs(xmlFile, expdir):
     if os.getenv("DO_SPINUP", "FALSE").upper() == "TRUE":
         cycledefs = 'prod,spinup'
     OBSPATH = os.getenv("OBSPATH", 'OBSPATH_not_defined')
+    realtime = os.getenv("REALTIME", "false")
+    if realtime:
+        strict_check = 0
+    else:
+        strict_check = 1
     # Task-specific EnVars beyond the task_common_vars
     dcTaskEnv = {
         'REFERENCE_TIME': '@Y-@m-@dT@H:00:00Z',
@@ -18,7 +23,8 @@ def nonvar_bufrobs(xmlFile, expdir):
         'NONVAR_LARC_NPTS': os.getenv('NONVAR_LARC_NPTS', 'NONVAR_LARC_NPTS_not_defined'),
         'NONVAR_METAR_IMPACT': os.getenv('NONVAR_METAR_IMPACT', 'NONVAR_METAR_IMPACT_not_defined'),
         'NONVAR_PROJ_NAME': os.getenv('NONVAR_PROJ_NAME', 'NONVAR_PROJ_NAME_not_defined'),
-        'NONVAR_USERDX': os.getenv('NONVAR_USERDX', 'NONVAR_USERDX_not_defined')
+        'NONVAR_USERDX': os.getenv('NONVAR_USERDX', 'NONVAR_USERDX_not_defined'),
+        'STRICT_CHECK': f'{strict_check}'
     }
 
     dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
@@ -29,7 +35,6 @@ def nonvar_bufrobs(xmlFile, expdir):
 
     timedep = ""
     datadep = ""
-    realtime = os.getenv("REALTIME", "false")
     if realtime.upper() == "TRUE":
         starttime = get_cascade_env(f"STARTTIME_{task_id}".upper())
         timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
