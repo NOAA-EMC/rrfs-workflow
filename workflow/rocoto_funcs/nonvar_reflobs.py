@@ -12,7 +12,7 @@ def nonvar_reflobs(xmlFile, expdir):
         cycledefs = 'prod,spinup'
     OBSPATH_NSSLMOSIAC = os.getenv("OBSPATH_NSSLMOSIAC", 'OBSPATH_NSSLMOSIAC_not_defined')
     realtime = os.getenv("REALTIME", "false")
-    if realtime:
+    if realtime.upper() == "TRUE":
         strict_check = 0
     else:
         strict_check = 1

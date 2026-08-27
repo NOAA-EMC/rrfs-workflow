@@ -12,7 +12,7 @@ def nonvar_bufrobs(xmlFile, expdir):
         cycledefs = 'prod,spinup'
     OBSPATH = os.getenv("OBSPATH", 'OBSPATH_not_defined')
     realtime = os.getenv("REALTIME", "false")
-    if realtime:
+    if realtime.upper() == "TRUE":
         strict_check = 0
     else:
         strict_check = 1
