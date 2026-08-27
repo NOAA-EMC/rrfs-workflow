@@ -29,7 +29,11 @@ ${cpreq} "${meshgriddir}"/"${MESH_NAME}".grid.nc mesh.nc
 #-----------------------------------------------------------------------
 #
 
-${cpreq} "${OBSPATH}/${CDATE}.rap.t${cyc}z.lgycld.tm00.bufr_d" lgycld.bufr_d
+lgycld_bufr="${OBSPATH}/${CDATE}.rap.t${cyc}z.lgycld.tm00.bufr_d"
+
+if [[ -s ${lgycld_bufr} ]]; then
+
+${cpreq} ${lgycld_bufr} lgycld.bufr_d
 
 # Determine appropriate GOES IDs
 if (( CDATE > 2023010419 )); then
@@ -75,6 +79,14 @@ err_chk
 
 ${cpreq} NASALaRC_cloud4mpas.bin "${COMOUT}/nonvar_bufrobs/${WGF}/NASALaRC_cloud4mpas.bin"
 
+else
+
+echo "WARNING: Missing satellite cloud-top observations"
+echo "Cloud-top observations will NOT be processed for the nonvar cloud analysis"
+echo "File: ${lgycld_bufr}"
+
+fi
+
 #
 #-----------------------------------------------------------------------
 #
@@ -85,7 +97,11 @@ ${cpreq} NASALaRC_cloud4mpas.bin "${COMOUT}/nonvar_bufrobs/${WGF}/NASALaRC_cloud
 #-----------------------------------------------------------------------
 #
 
-${cpreq} "${OBSPATH}/${CDATE}.rap.t${cyc}z.lghtng.tm00.bufr_d" lghtngbufr
+lghtng_bufr="${OBSPATH}/${CDATE}.rap.t${cyc}z.lghtng.tm00.bufr_d"
+
+if [[ -s ${lghtng_bufr} ]]; then
+
+${cpreq} ${lghtng_bufr} lghtngbufr
 
 cat << EOF > namelist.lightning
  &setup
@@ -110,6 +126,14 @@ err_chk
 
 ${cpreq} LightningInMPAS.dat "${COMOUT}/nonvar_bufrobs/${WGF}/LightningInMPAS.dat"
 
+else
+
+echo "WARNING: Missing lightning observations"
+echo "Lightning observations will NOT be processed for the nonvar cloud analysis"
+echo "File: ${lghtng_bufr}"
+
+fi
+
 #
 #-----------------------------------------------------------------------
 #
@@ -120,7 +144,11 @@ ${cpreq} LightningInMPAS.dat "${COMOUT}/nonvar_bufrobs/${WGF}/LightningInMPAS.da
 #-----------------------------------------------------------------------
 #
 
-${cpreq} "${OBSPATH}/${CDATE}.rap.t${cyc}z.prepbufr.tm00" prepbufr
+metar_bufr="${OBSPATH}/${CDATE}.rap.t${cyc}z.prepbufr.tm00"
+
+if [[ -s ${metar_bufr} ]]; then
+
+${cpreq} ${metar_bufr} prepbufr
 
 cat << EOF > namelist.metarcld
  &setup
@@ -142,5 +170,13 @@ export err=$?
 err_chk
 
 ${cpreq} mpas_metarcloud.bin "${COMOUT}/nonvar_bufrobs/${WGF}/mpas_metarcloud.bin"
+
+else
+
+echo "WARNING: Missing METAR observations"
+echo "METAR observations will NOT be processed for the nonvar cloud analysis"
+echo "File: ${metar_bufr}"
+
+fi
 
 exit 0
