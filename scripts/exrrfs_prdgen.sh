@@ -543,13 +543,13 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
       fi
 
       if [ "${SENDDBN}" = "YES" ] ; then
-        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_${DBNDOM}_NOMADS $job \
+        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_NOMADS_${DBNDOM} $job \
             ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslevnomads.${outspacing}.f${fhr}.${domain}.grib2
-        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_${DBNDOM}_NOMADS_IDX $job \
+        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_NOMADS_${DBNDOM}_IDX $job \
             ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslevnomads.${outspacing}.f${fhr}.${domain}.grib2.idx
-        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_${DBNDOM}_NOMADS $job \
+        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_NOMADS_${DBNDOM} $job \
             ${COMOUT}/rrfs.t${cyc}z.${mem_num}.2dfldnomads.${outspacing}.f${fhr}.${domain}.grib2
-        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_${DBNDOM}_NOMADS_IDX $job \
+        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_NOMADS_${DBNDOM}_IDX $job \
             ${COMOUT}/rrfs.t${cyc}z.${mem_num}.2dfldnomads.${outspacing}.f${fhr}.${domain}.grib2.idx
       fi
 
