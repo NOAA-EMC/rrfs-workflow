@@ -13,14 +13,14 @@ def nonvar_reflobs(xmlFile, expdir):
     OBSPATH_NSSLMOSIAC = os.getenv("OBSPATH_NSSLMOSIAC", 'OBSPATH_NSSLMOSIAC_not_defined')
     realtime = os.getenv("REALTIME", "false")
     if realtime.upper() == "TRUE":
-        strict_check = 0
+        stop_if_no_obs = 0
     else:
-        strict_check = 1
+        stop_if_no_obs = 1
     # Task-specific EnVars beyond the task_common_vars
     dcTaskEnv = {
         'REFERENCE_TIME': '@Y-@m-@dT@H:00:00Z',
         'OBSPATH_NSSLMOSIAC': f'{OBSPATH_NSSLMOSIAC}',
-        'STRICT_CHECK': f'{strict_check}'
+        'STOP_IF_NO_OBS': f'{stop_if_no_obs}'
     }
 
     dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
