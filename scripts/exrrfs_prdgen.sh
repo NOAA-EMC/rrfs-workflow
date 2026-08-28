@@ -508,16 +508,18 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
     for domain in ${domains[@]}
     do
 
-      if [ $domain = "conus" || $domain = "ak" ]; then
-        gridspacing=3km
-      elif [  $domain = "hi" || $domain = "pr" ]; then
-        gridspacing=2p5km
+      DBNDOM="${domain^^}"
+
+      if [[ $domain = "conus" || $domain = "ak" ]]; then
+        outspacing=3km
+      elif [[  $domain = "hi" || $domain = "pr" ]]; then
+        outspacing=2p5km
       fi
 
-      fld2d_loc=${COMOUT}/${net4}.t${cyc}z.${mem_num}.2dfld.${gridspacing}.f${fhr}.${domain}.grib2
-      prslev_loc=${COMOUT}/${net4}.t${cyc}z.${mem_num}.2dfld.${gridspacing}.f${fhr}.${domain}.grib2
-      fld2d_nomads=${net4}.t${cyc}z.${mem_num}.2dfldnomads.${gridspacing}.f${fhr}.${gridname}.grib2
-      fld2d_prslevs=${net4}.t${cyc}z.${mem_num}.prslevnomads.${gridspacing}.f${fhr}.${gridname}.grib2
+      fld2d_loc=${COMOUT}/${net4}.t${cyc}z.${mem_num}.2dfld.${outspacing}.f${fhr}.${domain}.grib2
+      prslev_loc=${COMOUT}/${net4}.t${cyc}z.${mem_num}.2dfld.${outspacing}.f${fhr}.${domain}.grib2
+      fld2d_nomads=${net4}.t${cyc}z.${mem_num}.2dfldnomads.${outspacing}.f${fhr}.${domain}.grib2
+      prslev_nomads=${net4}.t${cyc}z.${mem_num}.prslevnomads.${outspacing}.f${fhr}.${domain}.grib2
 
       wgrib2 ${COMOUT}/${fld2d_loc} | grep -F -f ${FIX_UPP}/nomadsensf_fields_2dfld.txt | wgrib2 -i -grib ${DATA}/${fld2d_nomads} ${COMOUT}/${fld2d_loc} >>$pgmout 2>>errfile
       export err=$?; err_chk
@@ -526,6 +528,26 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
       wgrib2 ${COMOUT}/${prslev_loc} -match -match "(HGT|PRES|TMP|RH|DPT|VVEL|ABSV|CLWMR|UGRD|VGRD|SPFH)" -match "(1000 mb:|975 mb:|950 mb:|925 mb:|900 mb:|850 mb:|800 mb:|750 mb:|700 mb:|600 mb:|500 mb:|400 mb:|300 mb:|250 mb:)" -grib ${DATA}/${prslev_nomads} >>$pgmout 2>>errfile
       export err=$?; err_chk
       cpreq ${DATA}/${prslev_nomads} ${COMOUT}/${prslev_nomads}
+
+      # index files
+      if [ -s ${COMOUT}/${fld2d_nomads} ]; then
+        wgrib2 ${COMOUT}/${fld2d_nomads} -s > ${COMOUT}/${fld2d_nomads}.idx
+      fi
+      if [ -s ${COMOUT}/${prslev_nomads} ]; then
+        wgrib2 ${COMOUT}/${prslev_nomads} -s > ${COMOUT}/${prslev_nomads}.idx
+      fi
+
+      if [ "${SENDDBN}" = "YES" ] ; then
+        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_${DBNDOM}_NOMADS $job \
+            ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslevnomads.${outspacing}.f${fhr}.${domain}.grib2
+        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_${DBNDOM}_NOMADS_IDX $job \
+            ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslevnomads.${outspacing}.f${fhr}.${domain}.grib2.idx
+        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_${DBNDOM}_NOMADS $job \
+            ${COMOUT}/rrfs.t${cyc}z.${mem_num}.2dfldnomads.${outspacing}.f${fhr}.${domain}.grib2
+        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_${DBNDOM}_NOMADS_IDX $job \
+            ${COMOUT}/rrfs.t${cyc}z.${mem_num}.2dfldnomads.${outspacing}.f${fhr}.${domain}.grib2.idx
+      fi
+
     done
 
   fi
