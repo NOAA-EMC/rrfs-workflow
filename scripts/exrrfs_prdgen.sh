@@ -502,12 +502,9 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
   fi
 
   # extract subset of ensemble files for NOMADS
-  #
   if [ ${DO_ENSFCST} = "TRUE" ]; then
-
     for domain in ${domains[@]}
     do
-
       DBNDOM="${domain^^}"
 
       if [[ $domain = "conus" || $domain = "ak" ]]; then
@@ -552,9 +549,7 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
         $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_NOMADS_${DBNDOM}_IDX $job \
             ${COMOUT}/rrfs.t${cyc}z.${mem_num}.2dfldnomads.${outspacing}.f${fhr}.${domain}.grib2.idx
       fi
-
     done
-
   fi
 
   # create prslev and 2dfld files on 13-km North America grid
