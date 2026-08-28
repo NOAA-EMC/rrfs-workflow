@@ -33,61 +33,61 @@ lgycld_bufr="${OBSPATH}/${CDATE}.rap.t${cyc}z.lgycld.tm00.bufr_d"
 
 if [[ -s ${lgycld_bufr} ]]; then
 
-${cpreq} ${lgycld_bufr} lgycld.bufr_d
+  ${cpreq} ${lgycld_bufr} lgycld.bufr_d
 
-# Determine appropriate GOES IDs
-if (( CDATE > 2023010419 )); then
-  satidgoeswest=272
-else
-  satidgoeswest=271
-fi
+  # Determine appropriate GOES IDs
+  if (( CDATE > 2023010419 )); then
+    satidgoeswest=272
+  else
+    satidgoeswest=271
+  fi
 
-if (( CDATE > 2025040716 )); then
-  satidgoeseast=273
-else
-  satidgoeseast=270
-fi
+  if (( CDATE > 2025040716 )); then
+    satidgoeseast=273
+  else
+    satidgoeseast=270
+  fi
 
-if (( CDATE < 2021010118 )); then
-  echo "ERROR: This is an old retro. Please check whether the GOES IDs used by" 
-  echo "the nonvariational cloud analysis (larccld.fd) are appropriate for" 
-  echo "this time period"
-  exit 1
-fi
+  if (( CDATE < 2021010118 )); then
+    echo "ERROR: This is an old retro. Please check whether the GOES IDs used by" 
+    echo "the nonvariational cloud analysis (larccld.fd) are appropriate for" 
+    echo "this time period"
+    exit 1
+  fi
 
-cat << EOF > namelist.nasalarc
- &setup
-  analysis_time = ${CDATE},
-  bufrfile='NASALaRCCloudInGSI_bufr.bufr',
-  npts_rad=${NONVAR_LARC_NPTS},
-  ioption=2,
-  userDX=${NONVAR_USER_DX},
-  proj_name="${NONVAR_PROJ_NAME}",
-  satidgoeswest=${satidgoeswest},
-  satidgoeseast=${satidgoeseast},
-  debug=0,
- /
+  cat << EOF > namelist.nasalarc
+   &setup
+    analysis_time = ${CDATE},
+    bufrfile='NASALaRCCloudInGSI_bufr.bufr',
+    npts_rad=${NONVAR_LARC_NPTS},
+    ioption=2,
+    userDX=${NONVAR_USER_DX},
+    proj_name="${NONVAR_PROJ_NAME}",
+    satidgoeswest=${satidgoeswest},
+    satidgoeseast=${satidgoeseast},
+    debug=0,
+   /
 EOF
 
-module list
-export pgm="process_larccld.exe"
-${cpreq} "${EXECrrfs}/${pgm}" .
-source prep_step
-${MPI_RUN_CMD} ./${pgm}
-export err=$?
-err_chk
+  module list
+  export pgm="process_larccld.exe"
+  ${cpreq} "${EXECrrfs}/${pgm}" .
+  source prep_step
+  ${MPI_RUN_CMD} ./${pgm}
+  export err=$?
+  err_chk
 
-${cpreq} NASALaRC_cloud4mpas.bin "${COMOUT}/nonvar_bufrobs/${WGF}/NASALaRC_cloud4mpas.bin"
+  ${cpreq} NASALaRC_cloud4mpas.bin "${COMOUT}/nonvar_bufrobs/${WGF}/NASALaRC_cloud4mpas.bin"
 
 else
 
-if [[ ${STRICT_CHECK} == 1 ]]; then
-  echo "ERROR: Missing satellite cloud-top observations"
-  exit 1
-else
-  echo "WARNING: Missing satellite cloud-top observations"
-  echo "Cloud-top observations will NOT be processed for the nonvar cloud analysis"
-fi
+  if [[ ${STRICT_CHECK} == 1 ]]; then
+    echo "ERROR: Missing satellite cloud-top observations"
+    exit 1
+  else
+    echo "WARNING: Missing satellite cloud-top observations"
+    echo "Cloud-top observations will NOT be processed for the nonvar cloud analysis"
+  fi
 
 fi
 
