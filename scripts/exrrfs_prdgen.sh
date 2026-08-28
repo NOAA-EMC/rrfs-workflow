@@ -501,6 +501,35 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
 
   fi
 
+  # extract subset of ensemble files for NOMADS
+  #
+  if [ ${DO_ENSFCST} = "TRUE" ]; then
+
+    for domain in ${domains[@]}
+    do
+
+      if [ $domain = "conus" || $domain = "ak" ]; then
+        gridspacing=3km
+      elif [  $domain = "hi" || $domain = "pr" ]; then
+        gridspacing=2p5km
+      fi
+
+      fld2d_loc=${COMOUT}/${net4}.t${cyc}z.${mem_num}.2dfld.${gridspacing}.f${fhr}.${domain}.grib2
+      prslev_loc=${COMOUT}/${net4}.t${cyc}z.${mem_num}.2dfld.${gridspacing}.f${fhr}.${domain}.grib2
+      fld2d_nomads=${net4}.t${cyc}z.${mem_num}.2dfldnomads.${gridspacing}.f${fhr}.${gridname}.grib2
+      fld2d_prslevs=${net4}.t${cyc}z.${mem_num}.prslevnomads.${gridspacing}.f${fhr}.${gridname}.grib2
+
+      wgrib2 ${COMOUT}/${fld2d_loc} | grep -F -f ${FIX_UPP}/nomadsensf_fields_2dfld.txt | wgrib2 -i -grib ${DATA}/${fld2d_nomads} ${COMOUT}/${fld2d_loc} >>$pgmout 2>>errfile
+      export err=$?; err_chk
+      cpreq ${DATA}/${fld2d_nomads} ${COMOUT}/${fld2d_nomads}
+
+      wgrib2 ${COMOUT}/${prslev_loc} -match -match "(HGT|PRES|TMP|RH|DPT|VVEL|ABSV|CLWMR|UGRD|VGRD|SPFH)" -match "(1000 mb:|975 mb:|950 mb:|925 mb:|900 mb:|850 mb:|800 mb:|750 mb:|700 mb:|600 mb:|500 mb:|400 mb:|300 mb:|250 mb:)" -grib ${DATA}/${prslev_nomads} >>$pgmout 2>>errfile
+      export err=$?; err_chk
+      cpreq ${DATA}/${prslev_nomads} ${COMOUT}/${prslev_nomads}
+    done
+
+  fi
+
   # create prslev and 2dfld files on 13-km North America grid
   # Deterministic cycles only for now
   if [ ${DO_ENSFCST} = "FALSE" ]; then
