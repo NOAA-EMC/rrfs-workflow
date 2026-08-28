@@ -105,40 +105,40 @@ lghtng_bufr="${OBSPATH}/${CDATE}.rap.t${cyc}z.lghtng.tm00.bufr_d"
 
 if [[ -s ${lghtng_bufr} ]]; then
 
-${cpreq} ${lghtng_bufr} lghtngbufr
+  ${cpreq} ${lghtng_bufr} lghtngbufr
 
-cat << EOF > namelist.lightning
- &setup
-  analysis_time = ${CDATE},
-  minute=00,
-  trange_start=-10,
-  trange_end=10,
-  obs_type = "bufr",
-  proj_name = '${NONVAR_PROJ_NAME}',
-  search_rad = ${NONVAR_SEARCH_RAD},
-  debug=0
- /
+  cat << EOF > namelist.lightning
+   &setup
+    analysis_time = ${CDATE},
+    minute=00,
+    trange_start=-10,
+    trange_end=10,
+    obs_type = "bufr",
+    proj_name = '${NONVAR_PROJ_NAME}',
+    search_rad = ${NONVAR_SEARCH_RAD},
+    debug=0
+   /
 EOF
 
-module list
-export pgm="process_Lightning.exe"
-${cpreq} "${EXECrrfs}/${pgm}" .
-source prep_step
-${MPI_RUN_CMD} ./${pgm}
-export err=$?
-err_chk
+  module list
+  export pgm="process_Lightning.exe"
+  ${cpreq} "${EXECrrfs}/${pgm}" .
+  source prep_step
+  ${MPI_RUN_CMD} ./${pgm}
+  export err=$?
+  err_chk
 
-${cpreq} LightningInMPAS.dat "${COMOUT}/nonvar_bufrobs/${WGF}/LightningInMPAS.dat"
+  ${cpreq} LightningInMPAS.dat "${COMOUT}/nonvar_bufrobs/${WGF}/LightningInMPAS.dat"
 
 else
 
-if [[ ${STOP_IF_NO_OBS} == 1 ]]; then
-  echo "ERROR: Missing lightning observations"
-  exit 1
-else
-  echo "WARNING: Missing lightning observations"
-  echo "Lightning observations will NOT be processed for the nonvar cloud analysis"
-fi
+  if [[ ${STOP_IF_NO_OBS} == 1 ]]; then
+    echo "ERROR: Missing lightning observations"
+    exit 1
+  else
+    echo "WARNING: Missing lightning observations"
+    echo "Lightning observations will NOT be processed for the nonvar cloud analysis"
+  fi
 
 fi
 
@@ -156,38 +156,38 @@ metar_bufr="${OBSPATH}/${CDATE}.rap.t${cyc}z.prepbufr.tm00"
 
 if [[ -s ${metar_bufr} ]]; then
 
-${cpreq} ${metar_bufr} prepbufr
+  ${cpreq} ${metar_bufr} prepbufr
 
-cat << EOF > namelist.metarcld
- &setup
-  analysis_time = ${CDATE},
-  prepbufrfile='prepbufr',
-  twindin=0.5,
-  metar_impact_radius=${NONVAR_METAR_IMPACT},
-  proj_name="${NONVAR_PROJ_NAME}",
-  debug=0,
- /
+  cat << EOF > namelist.metarcld
+   &setup
+    analysis_time = ${CDATE},
+    prepbufrfile='prepbufr',
+    twindin=0.5,
+    metar_impact_radius=${NONVAR_METAR_IMPACT},
+    proj_name="${NONVAR_PROJ_NAME}",
+    debug=0,
+   /
 EOF
 
-module list
-export pgm="process_metarcld.exe"
-${cpreq} "${EXECrrfs}/${pgm}" .
-source prep_step
-${MPI_RUN_CMD} ./${pgm}
-export err=$?
-err_chk
+  module list
+  export pgm="process_metarcld.exe"
+  ${cpreq} "${EXECrrfs}/${pgm}" .
+  source prep_step
+  ${MPI_RUN_CMD} ./${pgm}
+  export err=$?
+  err_chk
 
-${cpreq} mpas_metarcloud.bin "${COMOUT}/nonvar_bufrobs/${WGF}/mpas_metarcloud.bin"
+  ${cpreq} mpas_metarcloud.bin "${COMOUT}/nonvar_bufrobs/${WGF}/mpas_metarcloud.bin"
 
 else
 
-if [[ ${STOP_IF_NO_OBS} == 1 ]]; then
-  echo "ERROR: Missing METAR observations"
-  exit 1
-else
-  echo "WARNING: Missing METAR observations"
-  echo "METAR observations will NOT be processed for the nonvar cloud analysis"
-fi
+  if [[ ${STOP_IF_NO_OBS} == 1 ]]; then
+    echo "ERROR: Missing METAR observations"
+    exit 1
+  else
+    echo "WARNING: Missing METAR observations"
+    echo "METAR observations will NOT be processed for the nonvar cloud analysis"
+  fi
 
 fi
 
