@@ -89,7 +89,6 @@ Run command has not been specified for this machine:
 esac
 export FIXLAM=${FIXLAM:-${FIXrrfs}/lam/${PREDEF_GRID_NAME}}
 
-
 #
 #-----------------------------------------------------------------------
 #
@@ -313,7 +312,9 @@ else
     done
     ncatted -O -a source,global,c,c,'FV3GFS GAUSSIAN NETCDF FILE' fv_core.res.tile1.nc
   else
+    #set ops email header for instances of missing restart files.
     opsemailhead="WARNING: Missing RRFS restart files listed below. Proceeding with older restart files.\n\nOps Action: No immediate action. If this warning email continues for subsequent cycles, investigate cause of system slow down.\n\n"
+
   # Setup the INPUT directory for warm start cycles, which can be spin-up cycle or product cycle.
   #
   # First decide the source of the first guess (fg_restart_dirname) depending on CYCLE_TYPE and BKTYPE:
@@ -420,7 +421,6 @@ else
 
   # Implement prep_cyc_alert_singleton capability; all 30 members will output status in the flag file
   if [ ${WGF} == "enkf" ]; then
-
     export umbrella_prep_cyc_fallback_flag=${umbrella_prep_cyc_fallback}/prep_cyc_flag.status
     if [ -f ${umbrella_prep_cyc_fallback_flag} ]; then
       # Ensure no duplicate record for each member
@@ -444,7 +444,6 @@ else
           exec 9> "${umbrella_prep_cyc_fallback}/email.lock"
           flock -x 9
           if [ ! -s ${umbrella_prep_cyc_fallback}/email.lock ]; then
-
             (echo -e $opsemailhead && cat ${umbrella_prep_cyc_fallback_flag}) | mail.py -s "RRFS prep_cyc fallback" -c ${MAILTO}
             echo "Sent ${mem_num}" >> "${umbrella_prep_cyc_fallback}/email.lock"
           fi
