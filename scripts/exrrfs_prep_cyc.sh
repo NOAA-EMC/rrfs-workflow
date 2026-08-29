@@ -417,8 +417,11 @@ else
     fi
   fi
 
+
+
   # Implement prep_cyc_alert_singleton capability; all 30 members will output status in the flag file
   if [ ${WGF} == "enkf" ]; then
+
     export umbrella_prep_cyc_fallback_flag=${umbrella_prep_cyc_fallback}/prep_cyc_flag.status
     if [ -f ${umbrella_prep_cyc_fallback_flag} ]; then
       # Ensure no duplicate record for each member
@@ -426,7 +429,7 @@ else
     else
       mkdir -p ${umbrella_prep_cyc_fallback}
     fi
-    if [ ! -z ${fallback_enable} ] && [ ${fallback_enable} == "YES" ];then
+    if [ ! -z ${fallback_enable} ] && [ ${fallback_enable} == "YES" ]; then
       # Output status in the flag file if the restart file not found
       flock -w 60 "${umbrella_prep_cyc_fallback}/file.lock" -c 'echo "WARNING: rrfs prep cycle member ${mem_num} in cycle ${cyc} cannot find restart files ${missing_restart_file} in previous 1 hour, it is degraded proceeding fallback in ${missing_restart_bkpath}, check rrfs enkf forecast job jrrfs_enkf_save_restart_${mem_num}_f1 from previous cycle for possible issue." >> "${umbrella_prep_cyc_fallback_flag}"'
       # Start alert action if all 30 member has registered its status and at least one member has issue
@@ -442,7 +445,8 @@ else
           exec 9> "${umbrella_prep_cyc_fallback}/email.lock"
           flock -x 9
           if [ ! -s ${umbrella_prep_cyc_fallback}/email.lock ]; then
-            mail.py -s "RRFS prep_cyc fallback" -c ${MAILTO} < ${umbrella_prep_cyc_fallback_flag}
+            opsemailhead="WARNING: Missing RRFS restart files listed below. Proceeding with older restart files.\n\nOps Action: No immediate action. If this warning email continues for subsequent cycles, investigate cause of system slow down.\n\n"
+            (echo -e $opsemailhead && cat ${umbrella_prep_cyc_fallback_flag}) | mail.py -s "RRFS prep_cyc fallback" -c ${MAILTO}
             echo "Sent ${mem_num}" >> "${umbrella_prep_cyc_fallback}/email.lock"
           fi
           exec 9>&-
