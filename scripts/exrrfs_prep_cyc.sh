@@ -89,6 +89,7 @@ Run command has not been specified for this machine:
 esac
 export FIXLAM=${FIXLAM:-${FIXrrfs}/lam/${PREDEF_GRID_NAME}}
 
+
 #
 #-----------------------------------------------------------------------
 #
@@ -312,7 +313,7 @@ else
     done
     ncatted -O -a source,global,c,c,'FV3GFS GAUSSIAN NETCDF FILE' fv_core.res.tile1.nc
   else
-
+    opsemailhead="WARNING: Missing RRFS restart files listed below. Proceeding with older restart files.\n\nOps Action: No immediate action. If this warning email continues for subsequent cycles, investigate cause of system slow down.\n\n"
   # Setup the INPUT directory for warm start cycles, which can be spin-up cycle or product cycle.
   #
   # First decide the source of the first guess (fg_restart_dirname) depending on CYCLE_TYPE and BKTYPE:
@@ -379,7 +380,7 @@ else
       if [ ${fallback_enable} == "YES" ]; then
         print_info_msg "$VERBOSE" "WARNING: cannot find restart files in previous 1 hour, proceeding fallback for older cycle"
         if [ ${SENDMAIL} == "YES" ] && [ ! ${WGF} == "enkf" ]; then
-          echo "WARNING: cannot find restart files in previous 1 hour, proceeding fallback for older cycle" | mail.py -s "RRFS prep_cyc fallback" -c ${MAILTO}
+          (echo -e ${opsemailhead} && echo "WARNING: cannot find restart files in previous 1 hour, proceeding fallback for older cycle") | mail.py -s "RRFS prep_cyc fallback" -c ${MAILTO}
         fi
         fg_restart_dirname=forecast
         restart_prefix="${YYYYMMDD}.${HH}0000."
@@ -406,7 +407,7 @@ else
            else
              print_info_msg "$VERBOSE" "WARNING: fallback cannot find restart files in previous ${n} hour"
              if [ ${SENDMAIL} == "YES" ] && [ ! ${WGF} == "enkf" ]; then
-               echo "WARNING: fallback cannot find restart files in previous ${n} hour" | mail.py -s "RRFS prep_cyc fallback" -c ${MAILTO}
+               (echo -e ${opsemailhead} && echo "WARNING: fallback cannot find restart files in previous ${n} hour") | mail.py -s "RRFS prep_cyc fallback" -c ${MAILTO}
              fi
              export missing_restart_file=${checkfile}
              export missing_restart_bkpath=${bkpath}
@@ -416,8 +417,6 @@ else
       fi
     fi
   fi
-
-
 
   # Implement prep_cyc_alert_singleton capability; all 30 members will output status in the flag file
   if [ ${WGF} == "enkf" ]; then
@@ -445,7 +444,7 @@ else
           exec 9> "${umbrella_prep_cyc_fallback}/email.lock"
           flock -x 9
           if [ ! -s ${umbrella_prep_cyc_fallback}/email.lock ]; then
-            opsemailhead="WARNING: Missing RRFS restart files listed below. Proceeding with older restart files.\n\nOps Action: No immediate action. If this warning email continues for subsequent cycles, investigate cause of system slow down.\n\n"
+
             (echo -e $opsemailhead && cat ${umbrella_prep_cyc_fallback_flag}) | mail.py -s "RRFS prep_cyc fallback" -c ${MAILTO}
             echo "Sent ${mem_num}" >> "${umbrella_prep_cyc_fallback}/email.lock"
           fi
