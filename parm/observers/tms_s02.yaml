@@ -77,23 +77,6 @@
            logging: false
          <<: *polygonConfig
 
-       # Thinning
-       - filter: Gaussian Thinning
-         identifier:
-           name: GaussianThinning
-           logging: false
-           diagnostic flag new: false
-         filter variables:
-         - name: brightnessTemperature
-           channels: 1-12
-         horizontal_mesh: 121
-         use_reduced_horizontal_grid: true
-         distance_norm: geodesic
-         actions:
-         - name: set
-           flag: GaussianThinning
-         - name: reduce obs space
-
        # Use PreQC filter to remove bad data
        - filter: Bounds Check
          identifier:
@@ -108,11 +91,23 @@
            channels: 1-12
          minvalue: 0
          maxvalue: 0
-         actions:
-         - name: set
-           flag: PreQC
-           ignore: rejected observations
-         - name: reduce obs space
+         action:
+           name: reduce obs space
+
+       # Thinning
+       - filter: Gaussian Thinning
+         identifier:
+           name: GaussianThinning
+           logging: false
+           diagnostic flag new: false
+         filter variables:
+         - name: brightnessTemperature
+           channels: 1-12
+         horizontal_mesh: 121
+         use_reduced_horizontal_grid: true
+         distance_norm: geodesic
+         action:
+           name: reduce obs space
 
        obs post filters:
        # Symmetric Cloud Impact (SCI)
@@ -490,11 +485,8 @@
          - variable:
              name: GeoVaLs/water_area_fraction
            minvalue: 0.99
-         actions:
-         - name: set
-           flag: LandtypeCheck
-           ignore: rejected observations
-         - name: reject
+         action:
+           name: reject
 
        # Reject based on Q2
        - filter: RejectList
@@ -516,11 +508,8 @@
              name: DerivedMetaData/Q2MCIBottomLimit
              channels: 1
            minvalue: 0.0
-         actions:
-         - name: set
-           flag: ObsModelCloudSignalCheck
-           ignore: rejected observations
-         - name: reject
+         action:
+           name: reject
 
        # Reject based on Q4
        - filter: RejectList
@@ -542,11 +531,8 @@
              name: DerivedMetaData/Q4OCILeftLimit
              channels: 1
            minvalue: 0.0
-         actions:
-         - name: set
-           flag: ObsModelCloudSignalCheck
-           ignore: rejected observations
-         - name: reject
+         action:
+           name: reject
 
        # Reject based on threshold value (Ch 1)
        - filter: Background Check
@@ -559,11 +545,8 @@
          - name: brightnessTemperature
            channels: 1
          absolute threshold: 60.0
-         actions:
-         - name: set
-           flag: GrossCheck
-           ignore: rejected observations
-         - name: reject
+         action:
+           name: reject
 
        # Reject based on threshold value (Ch 2,9,12)
        - filter: Background Check
@@ -576,11 +559,8 @@
          - name: brightnessTemperature
            channels: 2,9,12
          absolute threshold: 30.0
-         actions:
-         - name: set
-           flag: GrossCheck
-           ignore: rejected observations
-         - name: reject
+         action:
+           name: reject
 
        # Reject based on threshold value (Ch 3)
        - filter: Background Check
@@ -593,11 +573,8 @@
          - name: brightnessTemperature
            channels: 3
          absolute threshold: 22.0
-         actions:
-         - name: set
-           flag: GrossCheck
-           ignore: rejected observations
-         - name: reject
+         action:
+           name: reject
 
        # Reject based on threshold value (Ch 4-6,10,11)
        - filter: Background Check
@@ -610,11 +587,8 @@
          - name: brightnessTemperature
            channels: 4,5,6,10,11
          absolute threshold: 20.0
-         actions:
-         - name: set
-           flag: GrossCheck
-           ignore: rejected observations
-         - name: reject
+         action:
+           name: reject
 
        # Reject based on (non-abs) threshold value
        - filter: Background Check
@@ -627,11 +601,8 @@
          - name: brightnessTemperature
            channels: 1-12
          threshold: 3.0 # standard deviations away from bkg
-         actions:
-         - name: set
-           flag: GrossCheck
-           ignore: rejected observations
-         - name: reject
+         action:
+           name: reject
 
        # Useflag check
        - filter: Bounds Check
@@ -650,8 +621,5 @@
              channels: 1-12
              use_flag: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
          minvalue: 1e-12
-         actions:
-         - name: set
-           flag: UseflagCheck
-           ignore: rejected observations
-         - name: reject
+         action:
+           name: reject
