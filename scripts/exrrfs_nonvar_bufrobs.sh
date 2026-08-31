@@ -56,17 +56,17 @@ if [[ -s ${lgycld_bufr} ]]; then
   fi
 
   cat << EOF > namelist.nasalarc
-   &setup
-    analysis_time = ${CDATE},
-    bufrfile='NASALaRCCloudInGSI_bufr.bufr',
-    npts_rad=${NONVAR_LARC_NPTS},
-    ioption=2,
-    userDX=${NONVAR_USER_DX},
-    proj_name="${NONVAR_PROJ_NAME}",
-    satidgoeswest=${satidgoeswest},
-    satidgoeseast=${satidgoeseast},
-    debug=0,
-   /
+ &setup
+  analysis_time = ${CDATE},
+  bufrfile='NASALaRCCloudInGSI_bufr.bufr',
+  npts_rad=${NONVAR_LARC_NPTS},
+  ioption=2,
+  userDX=${NONVAR_USER_DX},
+  proj_name="${NONVAR_PROJ_NAME}",
+  satidgoeswest=${satidgoeswest},
+  satidgoeseast=${satidgoeseast},
+  debug=0,
+ /
 EOF
 
   module list
@@ -108,16 +108,16 @@ if [[ -s ${lghtng_bufr} ]]; then
   ${cpreq} ${lghtng_bufr} lghtngbufr
 
   cat << EOF > namelist.lightning
-   &setup
-    analysis_time = ${CDATE},
-    minute=00,
-    trange_start=-10,
-    trange_end=10,
-    obs_type = "bufr",
-    proj_name = '${NONVAR_PROJ_NAME}',
-    search_rad = ${NONVAR_SEARCH_RAD},
-    debug=0
-   /
+ &setup
+  analysis_time = ${CDATE},
+  minute=00,
+  trange_start=-10,
+  trange_end=10,
+  obs_type = "bufr",
+  proj_name = '${NONVAR_PROJ_NAME}',
+  search_rad = ${NONVAR_SEARCH_RAD},
+  debug=0
+ /
 EOF
 
   module list
@@ -159,14 +159,14 @@ if [[ -s ${metar_bufr} ]]; then
   ${cpreq} ${metar_bufr} prepbufr
 
   cat << EOF > namelist.metarcld
-   &setup
-    analysis_time = ${CDATE},
-    prepbufrfile='prepbufr',
-    twindin=0.5,
-    metar_impact_radius=${NONVAR_METAR_IMPACT},
-    proj_name="${NONVAR_PROJ_NAME}",
-    debug=0,
-   /
+ &setup
+  analysis_time = ${CDATE},
+  prepbufrfile='prepbufr',
+  twindin=0.5,
+  metar_impact_radius=${NONVAR_METAR_IMPACT},
+  proj_name="${NONVAR_PROJ_NAME}",
+  debug=0,
+ /
 EOF
 
   module list
