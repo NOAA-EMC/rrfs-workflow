@@ -11,6 +11,11 @@ def nonvar_bufrobs(xmlFile, expdir):
     if os.getenv("DO_SPINUP", "FALSE").upper() == "TRUE":
         cycledefs = 'prod,spinup'
     OBSPATH = os.getenv("OBSPATH", 'OBSPATH_not_defined')
+    realtime = os.getenv("REALTIME", "false")
+    if realtime.upper() == "TRUE":
+        stop_if_no_obs = 0
+    else:
+        stop_if_no_obs = 1
     # Task-specific EnVars beyond the task_common_vars
     dcTaskEnv = {
         'REFERENCE_TIME': '@Y-@m-@dT@H:00:00Z',
@@ -18,7 +23,8 @@ def nonvar_bufrobs(xmlFile, expdir):
         'NONVAR_LARC_NPTS': os.getenv('NONVAR_LARC_NPTS', 'NONVAR_LARC_NPTS_not_defined'),
         'NONVAR_METAR_IMPACT': os.getenv('NONVAR_METAR_IMPACT', 'NONVAR_METAR_IMPACT_not_defined'),
         'NONVAR_PROJ_NAME': os.getenv('NONVAR_PROJ_NAME', 'NONVAR_PROJ_NAME_not_defined'),
-        'NONVAR_USERDX': os.getenv('NONVAR_USERDX', 'NONVAR_USERDX_not_defined')
+        'NONVAR_USERDX': os.getenv('NONVAR_USERDX', 'NONVAR_USERDX_not_defined'),
+        'STOP_IF_NO_OBS': f'{stop_if_no_obs}'
     }
 
     dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
@@ -27,18 +33,17 @@ def nonvar_bufrobs(xmlFile, expdir):
     lght_path = f'{OBSPATH}/@Y@m@d@H.rap.t@Hz.lghtng.tm00.bufr_d'
     metar_path = f'{OBSPATH}/@Y@m@d@H.rap.t@Hz.prepbufr.tm00'
 
-    timedep = ""
-    datadep = ""
-    realtime = os.getenv("REALTIME", "false")
     if realtime.upper() == "TRUE":
         starttime = get_cascade_env(f"STARTTIME_{task_id}".upper())
-        timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
-    else:
-        datadep = f'\n    <datadep age="00:02:00"><cyclestr>{lght_path}</cyclestr></datadep>'
-    #
-    dependencies = f'''
+        dependencies = f'''
   <dependency>
-  <and>{timedep}{datadep}
+    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
+  </dependency>'''
+    else:
+        dependencies = f'''
+  <dependency>
+  <and>
+    <datadep age="00:02:00"><cyclestr>{lght_path}</cyclestr></datadep>
     <datadep age="00:02:00"><cyclestr>{larc_path}</cyclestr></datadep>
     <datadep age="00:02:00"><cyclestr>{metar_path}</cyclestr></datadep>
   </and>
