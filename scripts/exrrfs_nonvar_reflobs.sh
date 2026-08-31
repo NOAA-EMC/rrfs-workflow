@@ -102,7 +102,7 @@ if [[ -s filelist_mrms ]]; then
   echo "NSSL grib2 file levels = ${numgrib2}"
 else
   if [[ ${STOP_IF_NO_OBS} == 1 ]]; then
-    echo "ERROR: Not enough radar reflectivity files were found"
+    echo "FATAL ERROR: Not enough radar reflectivity files were found"
     err_exit
   else
     echo "WARNING: Not enough radar reflectivity files were found"
