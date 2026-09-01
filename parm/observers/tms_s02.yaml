@@ -146,7 +146,7 @@
                scale by omb: true
 
        # Clear-sky Obs Error
-       - filter: Variable Assignment
+       - filter: Perform Action
          apply at iterations: 0,1
          identifier:
            name: ClearSkyErrorAssign
@@ -186,7 +186,7 @@
              channels: 1-12
 
        # Initial All-Sky Obs Error
-       - filter: Variable Assignment
+       - filter: Perform Action
          apply at iterations: 0,1
          identifier:
            name: AllSkyErrorAssign
