@@ -23,15 +23,15 @@
          observed variables: [windEastward, windNorthward]
          simulated variables: [windEastward, windNorthward]
 
-        obs operator:
-          name: VertInterp
-          vertical coordinate: height_above_mean_sea_level
-          observation vertical coordinate: height
-          observation vertical coordinate group: DerivedMetaData
-          interpolation method: linear
-          variables:
-          - name: windEastward
-          - name: windNorthward
+       obs operator:
+         name: VertInterp
+         vertical coordinate: height_above_mean_sea_level
+         observation vertical coordinate: height
+         observation vertical coordinate group: DerivedMetaData
+         interpolation method: linear
+         variables:
+         - name: windEastward
+         - name: windNorthward
 
        linear obs operator:
          name: VertInterp
@@ -136,22 +136,22 @@
            action:
              name: reduce obs space
 
-          ## Obs height adjustment
-          - filter: Variable Assignment
-            apply at iterations: 0,1
-            identifier:
-              name: SurfaceWindHeightAdjustment
-              logging: false
-            assignments:
-            - name: DerivedMetaData/height
-              type: float
-              function:
-                name: ObsFunction/LinearCombination
-                options:
-                  variables:
-                  - name: GeoVaLs/height_above_mean_sea_level_at_surface
-                  coefs: [1.0]
-                  intercept: 10.0
+         # Obs height adjustment
+         - filter: Variable Assignment
+           apply at iterations: 0,1
+           identifier:
+             name: SurfaceWindHeightAdjustment
+             logging: false
+           assignments:
+           - name: DerivedMetaData/height
+             type: float
+             function:
+               name: ObsFunction/LinearCombination
+               options:
+                 variables:
+                 - name: GeoVaLs/height_above_mean_sea_level_at_surface
+                 coefs: [1.0]
+                 intercept: 10.0
 
          # Online domain check
          - filter: Bounds Check
