@@ -24,20 +24,24 @@
          simulated variables: [windEastward, windNorthward]
 
        obs operator:
-           name: VertInterp
-           vertical coordinate: air_pressure
-           observation vertical coordinate: pressure
-           observation vertical coordinate group: MetaData
-           interpolation method: log-linear
-           #gsi geovals:
-           #  filename: "obsout/sfc_uv_geoval_2024052700.nc"
-           #  levels_are_top_down: False
-           variables:
-           - name: windEastward
-           - name: windNorthward
+         name: VertInterp
+         vertical coordinate: height_above_mean_sea_level
+         observation vertical coordinate: height
+         observation vertical coordinate group: DerivedMetaData
+         interpolation method: linear
+         variables:
+         - name: windEastward
+         - name: windNorthward
 
        linear obs operator:
          name: VertInterp
+         vertical coordinate: height_above_mean_sea_level
+         observation vertical coordinate: height
+         observation vertical coordinate group: DerivedMetaData
+         interpolation method: linear
+         variables:
+         - name: windEastward
+         - name: windNorthward
 
        obs error:
          covariance model: diagonal
@@ -140,6 +144,23 @@
            action:
              name: reduce obs space
 
+         # Obs height adjustment
+         - filter: Variable Assignment
+           apply at iterations: 0,1
+           identifier:
+             name: SurfaceWindHeightAdjustment
+             logging: false
+           assignments:
+           - name: DerivedMetaData/height
+             type: float
+             function:
+               name: ObsFunction/LinearCombination
+               options:
+                 variables:
+                 - name: GeoVaLs/height_above_mean_sea_level_at_surface
+                 coefs: [1.0]
+                 intercept: 10.0
+
          # Online domain check
          - filter: Bounds Check
            apply at iterations: 0,1
@@ -226,6 +247,7 @@
 
 #         # Error inflation (windEastward) based on errormod (qcmod.f90)
 #         - filter: Perform Action
+#           apply at iterations: 0,1
 #           identifier:
 #             name: ObsErrorFactorConventionalU
 #             logging: true
@@ -248,6 +270,7 @@
 
 #         # Error inflation (windNorthward) based on errormod (qcmod.f90)
 #         - filter: Perform Action
+#           apply at iterations: 0,1
 #           identifier:
 #             name: ObsErrorFactorConventionalV
 #             logging: true
