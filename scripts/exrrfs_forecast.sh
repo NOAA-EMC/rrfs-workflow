@@ -538,7 +538,7 @@ if [ ${BKTYPE} -eq 0 ]; then
              echo "cpreq $fl ${DATA}/" >> ./para_copy.sh
            done
 	   cpprocs=`cat ./para_copy.sh | grep routehandle | wc -l`
-	   mpiexec -n ${cpprocs} -ppn ${cpprocs} --cpu-bind core cfp ./para_copy.sh
+	   #mpiexec -n ${cpprocs} -ppn ${cpprocs} --cpu-bind core cfp ./para_copy.sh
 	   rm ./para_copy.sh
 	  fi
 
@@ -554,7 +554,7 @@ if [ ${BKTYPE} -eq 0 ]; then
              echo "cpreq $fl ${DATA}/" >> ./para_copy.sh
            done
 	   cpprocs=`cat ./para_copy.sh | grep routehandle | wc -l`
-	   mpiexec -n ${cpprocs} -ppn ${cpprocs} --cpu-bind core cfp ./para_copy.sh
+	   #mpiexec -n ${cpprocs} -ppn ${cpprocs} --cpu-bind core cfp ./para_copy.sh
 	   rm ./para_copy.sh
 	  fi
 
