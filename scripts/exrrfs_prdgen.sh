@@ -518,8 +518,7 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
       fld2d_nomads=${net4}.t${cyc}z.${mem_num}.2dfldnomads.${outspacing}.f${fhr}.${domain}.grib2
       prslev_nomads=${net4}.t${cyc}z.${mem_num}.prslevnomads.${outspacing}.f${fhr}.${domain}.grib2
 
-      wgrib2 ${fld2d_loc} | grep -F -f ${FIX_UPP}/nomadsensf_fields_2dfld.txt | \ 
-        wgrib2 -i -grib ${DATA}/${fld2d_nomads} ${fld2d_loc} >>$pgmout 2>>errfile
+      wgrib2 ${fld2d_loc} | grep -F -f ${FIX_UPP}/nomadsensf_fields_2dfld.txt | wgrib2 -i -grib ${DATA}/${fld2d_nomads} ${fld2d_loc} >>$pgmout 2>>errfile
       export err=$?; err_chk
 
       cpreq ${DATA}/${fld2d_nomads} ${COMOUT}/${fld2d_nomads}
