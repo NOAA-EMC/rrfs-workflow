@@ -35,6 +35,13 @@
 
        linear obs operator:
          name: VertInterp
+         vertical coordinate: height_above_mean_sea_level
+         observation vertical coordinate: height
+         observation vertical coordinate group: DerivedMetaData
+         interpolation method: linear
+         variables:
+         - name: windEastward
+         - name: windNorthward
 
        obs error:
          covariance model: diagonal
