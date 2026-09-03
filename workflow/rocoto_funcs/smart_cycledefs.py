@@ -15,6 +15,11 @@ def smart_cycledefs():
         cycledef_prod = os.getenv('CYCLEDEF_PROD', 'not_defined')
         cycledef_spinup = os.getenv('CYCLEDEF_SPINUP', 'not_defined')
         cycledef_recenter = os.getenv('CYCLEDEF_RECENTER', 'not_defined')
+        # Needed by the da_nocold block below, which excludes the cold-start
+        # cycles from DA.  The auto-compute branch parses this too; the explicit
+        # branch must as well, otherwise cold_cycs is undefined whenever
+        # (DO_JEDI or DO_NONVAR_CLOUD_ANA) and COLDSTART_CYCS_DO_DA=false.
+        cold_cycs = os.getenv('COLDSTART_CYCS', '03 15').strip().split()
     else:  # compute cycledef automatically if no CYCLEDEF_* environment variables
         lbc_cycs = os.getenv('LBC_CYCS', '00 12').strip().split()
         lbc_step = str(int(24 / len(lbc_cycs)))
