@@ -15,6 +15,7 @@ def recenter(xmlFile, expdir):
     dcTaskEnv = {
         'ENS_SIZE': os.getenv("ENS_SIZE", '5'),
         'RECENTER_CYCS': f'{recenter_cycs}',
+        'RECENTER_TEMPLATE': os.getenv('RECENTER_TEMPLATE', 'CONTROL'),
     }
 
     dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
