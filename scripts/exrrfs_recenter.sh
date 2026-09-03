@@ -30,8 +30,8 @@ else
   exit 0
 fi
 
-ln -sf "${controlfile}"  ./mpasout_control.nc
-${cpreq} "${controlfile}"  ./mpasout_mean.nc
+ln -sf "${controlfile}"  ./mpasin_control.nc
+${cpreq} "${controlfile}"  ./mpasin_mean.nc
 
 #
 # Determine cold/warm start and use the appropriate ensemble files/varlist
