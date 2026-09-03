@@ -13,6 +13,7 @@ cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.satwnd.tm00.bufr_d" satwndbufr
 cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.gsrcsr.tm00.bufr_d" abibufr
 cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.atms.tm00.bufr_d" atmsbufr
 cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.crisf4.tm00.bufr_d" crisfsbufr
+cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.crsfdb.tm00.bufr_d" crsfdbbufr
 cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.mtiasi.tm00.bufr_d" iasibufr
 ${cpreq} "${EXECrrfs}"/bufr2ioda.x .
 ${cpreq} "${EXECrrfs}"/bufr2netcdf.x .
@@ -72,9 +73,9 @@ else
   echo "Input file ${input_file} does not exist."
 fi
 
-# --------------------------------------------------
-# run  bufr2netcdf tool for cris-fsr bufr obs
-# --------------------------------------------------
+# ---------------------------------------------------------------------
+# run bufr2netcdf tool for cris-fsr regular feed(crisfrbufr) bufr obs
+# ---------------------------------------------------------------------
 ${cpreq} "${PARMrrfs}/bufr2netcdf_cris-fsr.yaml" .
 input_file="crisfsbufr"
 output_file="ioda_crisf4_{splits/satId}.nc"
@@ -85,8 +86,21 @@ else
   echo "Input file ${input_file} does not exist."
 fi
 
+# -------------------------------------------------------------------
+# run bufr2netcdf tool for cris-fsr DB feed (crsfdbbufr) bufr obs
+# -------------------------------------------------------------------
+${cpreq} "${PARMrrfs}/bufr2netcdf_cris-fsr.yaml" .
+input_file="crsfdbbufr"
+output_file="ioda_crsfdb_{splits/satId}.nc"
+yaml="bufr2netcdf_cris-fsr.yaml"
+if [[ -s "${input_file}" ]]; then
+  ./bufr2netcdf.x "${input_file}" "${yaml}" "${output_file}"
+else
+  echo "Input file ${input_file} does not exist."
+fi
+
 # --------------------------------------------------
-# run  bufr2netcdf tool for mtiasi bufr obs
+# run bufr2netcdf tool for mtiasi bufr obs
 # --------------------------------------------------
 ${cpreq} "${PARMrrfs}/bufr2netcdf_mtiasi.yaml" .
 input_file="iasibufr"

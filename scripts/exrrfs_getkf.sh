@@ -67,7 +67,7 @@ nsoillevels=${NSOIL_LEVELS:-9}
 jedi_da=true #true
 pio_stride=${PIO_STRIDE:-${PPN}}
 pio_num_iotasks=$(( NODES * PPN / pio_stride ))
-do_sppt=${DO_SPPT:-'false'}
+do_sppt=${DO_SPPT:-'false'} 
 
 # We set dt, substeps, radt values to avoid errors in reading namelist.atmosphere
 # but they will NOT be used since no model integration in DA steps
