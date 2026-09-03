@@ -15,6 +15,7 @@ export REALTIME_MONTHS=${REALTIME_MONTHS:-2}
 export DO_FCST=${DO_FCST:-true}
 export DO_POST=${DO_POST:-true}
 export DO_IC_LBC=${DO_IC_LBC:-true}
+export DO_SUBHOURLY=${DO_SUBHOURLY:-FALSE}  # enable sub-hourly (minute-resolution) cycling (see workflow/rocoto_funcs/base.py:subhourly)
 export USE_THE_LATEST_SATBIAS=${USE_THE_LATEST_SATBIAS:-false} # whether DA tasks use the latest satbias from the previous cycle
 export PHYSICS_SUITE=${PHYSICS_SUITE:-"hrrrv5"} # hrrrv5, mesoscale_reference, convection_permitting
 export KEEPDATA=${KEEPDATA:-"NO"}

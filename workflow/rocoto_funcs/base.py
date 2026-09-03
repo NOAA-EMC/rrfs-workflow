@@ -6,6 +6,26 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 
+# --- Sub-hourly cycling helpers --------------------------------------------
+# DO_SUBHOURLY (config.base default FALSE) enables sub-hourly cycling.  When it
+# is TRUE every per-cycle path/label token carries minute resolution (@H@M) so
+# that cycles less than an hour apart do not collide.  When it is FALSE these
+# helpers return the exact legacy tokens, keeping existing experiments
+# byte-identical.
+def subhourly():
+    return os.getenv('DO_SUBHOURLY', 'FALSE').upper() == 'TRUE'
+
+
+def tok_hm():
+    """Cycle hour(+minute) token used in directory names and labels."""
+    return '@H@M' if subhourly() else '@H'
+
+
+def tok_cdate():
+    """CDATE token (analysis time)."""
+    return '@Y@m@d@H@M' if subhourly() else '@Y@m@d@H'
+
+
 def source(bash_file, optional=False):
     """
     Source a Bash file and capture the environment variables
@@ -71,6 +91,13 @@ def header_entities(xmlFile, expdir):
     wgf = os.getenv('WGF', 'det')
     cyc_interval = os.getenv('CYC_INTERVAL', '3')
     realtime = os.getenv("REALTIME", "false").upper()
+    # Minute-aware per-cycle tokens (byte-identical when DO_SUBHOURLY is off)
+    hm = tok_hm()
+    cdate_fmt = tok_cdate()
+    if subhourly():
+        subcyc_envar = '\n<envar><name>subcyc</name><value><cyclestr>@M</cyclestr></value></envar>'
+    else:
+        subcyc_envar = ''
 
     if os.getenv('DO_CHEMISTRY', 'FALSE').upper() == "TRUE":
         chem_envar = "\n<envar><name>DO_CHEMISTRY</name><value>TRUE</value></envar>"
@@ -130,10 +157,10 @@ def header_entities(xmlFile, expdir):
 <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
 <envar><name>DATAROOT</name><value><cyclestr>&DATAROOT;/@Y@m@d</cyclestr></value></envar>
 <envar><name>COMINrrfs</name><value>&COMROOT;/{net}/{rrfs_ver}</value></envar>
-<envar><name>COMOUT</name><value><cyclestr>&COMROOT;/{net}/{rrfs_ver}/{run}.@Y@m@d/@H</cyclestr></value></envar>
-<envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
+<envar><name>COMOUT</name><value><cyclestr>&COMROOT;/{net}/{rrfs_ver}/{run}.@Y@m@d/{hm}</cyclestr></value></envar>
+<envar><name>CDATE</name><value><cyclestr>{cdate_fmt}</cyclestr></value></envar>
 <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
-<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
+<envar><name>cyc</name><value><cyclestr>{hm}</cyclestr></value></envar>{subcyc_envar}
 <envar><name>NET</name><value>{net}</value></envar>
 <envar><name>RUN</name><value>{run}</value></envar>
 <envar><name>rrfs_ver</name><value>{rrfs_ver}</value></envar>
@@ -340,8 +367,8 @@ def xml_task(
         command_id = meta_id
     dcTaskRes = {
         'command': f'&HOMErrfs;/workflow/sideload/launch.sh JRRFS_' + f'{command_id}'.upper(),
-        'join': f'&LOGROOT;/{RUN}.@Y@m@d/@H/{WGF}/{RUN}_{task_id}_{TAG}_@Y@m@d@H.log',
-        'jobname': f'{TAG}_{task_id}_c@H',
+        'join': f'&LOGROOT;/{RUN}.@Y@m@d/{tok_hm()}/{WGF}/{RUN}_{task_id}_{TAG}_{tok_cdate()}.log',
+        'jobname': f'{TAG}_{task_id}_c{tok_hm()}',
         'account': get_cascade_env(f'ACCOUNT_{task_id}'.upper()),
         'queue': get_cascade_env(f'QUEUE_{task_id}'.upper()),
         'partition': get_cascade_env(f"PARTITION_{task_id}".upper()),
