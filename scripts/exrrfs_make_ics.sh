@@ -101,11 +101,12 @@ fcst_mn="00"
 case "${extrn_mdl_name}" in
 
   "GFS")
-    sysdir="${COMINgfs}/gfs.${yyyymmdd}/${hh}/atmos"
     if [ "${gfs_file_fmt}" = "grib2" ]; then
+      sysdir="${COMINgfs}/gfs.${yyyymmdd}/${hh}/products/atmos/grib2/0p25"
       fns_on_disk=( "gfs.t${hh}z.pgrb2.0p25.f0${fcst_hh}" )
     elif [ "${gfs_file_fmt}" = "netcdf" ]; then
-      fns=( "atm" "sfc" )
+      sysdir="${COMINgfs}/gfs.${yyyymmdd}/${hh}/model/atmos/history"
+      fns=( "atm." "sfc." )
       if [ "${fcst_hh}" = "00" ]; then
         suffix="anl.nc"
       else
@@ -118,8 +119,8 @@ case "${extrn_mdl_name}" in
     ;;
 
   "GDASENKF")
-    sysdir="${COMINgfs}/enkfgdas.${yyyymmdd}/${hh}/atmos/mem${MEMBER_NAME}"
-    fns_on_disk=( "gdas.t${hh}z.atmf0${fcst_hh}.nc" "gdas.t${hh}z.sfcf0${fcst_hh}.nc")
+    sysdir="${COMINgfs}/enkfgdas.${yyyymmdd}/${hh}/${MEMBER_NAME}/model/atmos/history/"
+    fns_on_disk=( "enkfgdas.t${hh}z.atm.f0${fcst_hh}.nc" "enkfgdas.t${hh}z.sfc.f0${fcst_hh}.nc")
     ;;
 
   "RRFS")
