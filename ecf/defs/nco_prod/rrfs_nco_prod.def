@@ -15946,7 +15946,7 @@ suite prod
               endfamily
               family post
                 task jrrfs_ensf_post_manager
-                  trigger :TIME >= 0715 and :TIME < 1315 and (../forecast==complete or ../forecast==active)
+                  trigger :TIME >= 0700 and :TIME < 1300 and (../forecast==complete or ../forecast==active)
                   event 1 release_ensf_post_mem001_f000
                   event 2 release_ensf_post_mem001_f001
                   event 3 release_ensf_post_mem001_f002
@@ -41191,7 +41191,7 @@ suite prod
               endfamily
               family post
                 task jrrfs_ensf_post_manager
-                  trigger ((:TIME >= 1915 and :TIME < 2359) or :TIME < 0115 ) and (../forecast==complete or ../forecast==active)
+                  trigger ((:TIME >= 1900 and :TIME < 2359) or :TIME < 0100 ) and (../forecast==complete or ../forecast==active)
                   event 1 release_ensf_post_mem001_f000
                   event 2 release_ensf_post_mem001_f001
                   event 3 release_ensf_post_mem001_f002
