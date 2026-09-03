@@ -139,10 +139,10 @@ if [[ "${RECENTER_TEMPLATE}" == "CONTROL" ]] && (( err == 0 )); then
       echo "  ${UMBRELLA_PREP_IC_DATA}/mem${i}/${filename_out}"
       exit 1
     fi
-	rm -f "${UMBRELLA_PREP_IC_DATA}/mem${i}/${initial_file}_old"
+    rm -f "${UMBRELLA_PREP_IC_DATA}/mem${i}/${initial_file}_old"
     mv "${UMBRELLA_PREP_IC_DATA}/mem${i}/${initial_file}" \
        "${UMBRELLA_PREP_IC_DATA}/mem${i}/${initial_file}_old"
-	rm -f "${UMBRELLA_PREP_IC_DATA}/mem${i}/${updated_file}"
+    rm -f "${UMBRELLA_PREP_IC_DATA}/mem${i}/${updated_file}"
     mv "${UMBRELLA_PREP_IC_DATA}/mem${i}/${filename_out}" \
        "${UMBRELLA_PREP_IC_DATA}/mem${i}/${updated_file}"
   done
