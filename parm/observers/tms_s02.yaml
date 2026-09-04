@@ -1,0 +1,625 @@
+     - obs space:
+         name: tms_s02
+         distribution:
+           name: "RoundRobin"
+         obsdatain:
+           engine:
+             type: H5File
+             obsfile: "data/obs/ioda_tms_s02.nc"
+             missing file action: "warn"
+         obsdataout:
+           empty obs space action: "@emptyObsSpaceAction@"
+           engine:
+             type: H5File
+             obsfile: jdiag_tms_s02.nc
+         simulated variables: [brightnessTemperature]
+         observed variables: [brightnessTemperature]
+         channels: 1-12
+       obs operator:
+         name: CRTM
+         Absorbers: [H2O,O3,CO2]
+         Clouds: [Water, Ice]
+         Cloud_Fraction: 1.0
+         Cloud_Seeding: true
+         SurfaceWindGeoVars: uv
+         obs options:
+           Sensor_ID: tms_tomorrow-s02_v4
+           EndianType: little_endian
+           CoefficientPath: data/crtm/
+         linear obs operator:
+           Absorbers: [H2O, O3]
+       obs localizations:
+         - localization method: Horizontal Gaspari-Cohn
+           lengthscale: 200e3 # orig
+
+       obs bias:
+         input file:  data/satbias_in/tms_s02.satbias.nc
+         output file: data/satbias_out/tms_s02.satbias.nc
+         variational bc:
+           predictors:
+           - name: constant
+           - name: lapseRate
+             order: 2
+             tlapse: data/satbias_in/tms_s02.tlapse.txt
+           - name: lapseRate
+             tlapse: data/satbias_in/tms_s02.tlapse.txt
+           - name: emissivityJacobian
+           - name: sensorScanAngle
+             order: 4
+           - name: sensorScanAngle
+             order: 3
+           - name: sensorScanAngle
+             order: 2
+           - name: sensorScanAngle
+         covariance:
+           minimal required obs number: 20
+           variance range: [1.0e-6, 10.0]
+           step size: 1.0e-4
+           largest analysis variance: 10000.0
+           prior:
+             input file: data/satbias_in/tms_s02.satbias_cov.nc
+             inflation:
+               ratio: 1.1
+               ratio for small dataset: 2.0
+           output file: data/satbias_out/tms_s02.satbias_cov.nc
+
+       obs pre filters:
+       # Reset the QCflags at the beginning of a new outer loop
+       - filter: AcceptList
+         apply at iterations: 1
+         identifier:
+           name: NewLoopReset
+
+       # Remove all obs outside the regional domain polygon
+       - filter: Polygon Check
+         identifier:
+           name: PolygonCheck
+           logging: false
+         <<: *polygonConfig
+
+       # Use PreQC filter to remove bad data
+       - filter: Bounds Check
+         identifier:
+           name: PreQC
+           logging: false
+           diagnostic flag new: false
+         filter variables:
+         - name: brightnessTemperature
+           channels: 1-12
+         test variables:
+         - name: PreQC/brightnessTemperature
+           channels: 1-12
+         minvalue: 0
+         maxvalue: 0
+         action:
+           name: reduce obs space
+
+       # Thinning
+       - filter: Gaussian Thinning
+         identifier:
+           name: GaussianThinning
+           logging: false
+           diagnostic flag new: false
+         filter variables:
+         - name: brightnessTemperature
+           channels: 1-12
+         horizontal_mesh: 121
+         use_reduced_horizontal_grid: true
+         distance_norm: geodesic
+         action:
+           name: reduce obs space
+
+       obs post filters:
+       # Symmetric Cloud Impact (SCI)
+       - filter: Variable Assignment
+         apply at iterations: 0,1
+         identifier:
+           name: VariableAssignSCI
+           logging: false
+           diagnostic flag new: false
+         assignments:
+         - name: DerivedMetaData/SymmCldImpact
+           type: float
+           channels: 1-12
+           function:
+             name: ObsFunction/SymmCldImpactIR
+             channels: 1-12
+             options:
+               channels: 1-12
+
+       # OMB-Scaled Symmetric Cloud Impact (scales SCI by the O-B value)
+       - filter: Variable Assignment
+         apply at iterations: 0,1
+         identifier:
+           name: VariableAssignOMBSCI
+           logging: false
+           diagnostic flag new: false
+         assignments:
+         - name: DerivedMetaData/OMBScaledSymmCldImpact
+           type: float
+           channels: 1-12
+           function:
+             name: ObsFunction/SymmCldImpactIR
+             channels: 1-12
+             options:
+               channels: 1-12
+               scale by omb: true
+
+       # Clear-sky Obs Error
+       - filter: Perform Action
+         apply at iterations: 0,1
+         identifier:
+           name: ClearSkyErrorAssign
+           logging: false
+           diagnostic flag new: false
+         filter variables:
+         - name: brightnessTemperature
+           channels: 1-12
+         action:
+           name: assign error
+           error function:
+             name: ObsFunction/ObsErrorModelRamp
+             channels: 1-12
+             options:
+               channels: 1-12
+                 xvar:
+                 name: DerivedMetaData/SymmCldImpact
+                 channels: 1-12
+               x0: [1.0, 1.0, 0.75, 0.3, 0.5, 0.5, 0.25, 0.25, 1.0, 1.0, 1.0, 1.0]
+               err0: [2.5, 1.9, 1.25, 0.8, 0.8, 0.8, 0.9, 0.9, 2.0, 1.5, 1.5, 1.5]
+               x1: [10.0, 10.0, 5.0, 4.0, 5.0, 1.5, 2.0, 2.0, 5.0, 5.0, 4.0, 10.0]
+               err1: [2.5, 1.9, 1.25, 0.8, 0.8, 0.8, 0.9, 0.9, 2.0, 1.5, 1.5, 1.5]
+
+       - filter: Perform Action
+         apply at iterations: 0,1
+         identifier:
+           name: ClearSkyErrorAssign
+           logging: false
+           diagnostic flag new: false
+         filter variables:
+         - name: brightnessTemperature
+           channels: 1-12
+         action:
+           name: assign error
+           error function:
+             name: DerivedMetaData/ClearSkyObsError
+             channels: 1-12
+
+       # Initial All-Sky Obs Error
+       - filter: Perform Action
+         apply at iterations: 0,1
+         identifier:
+           name: AllSkyErrorAssign
+           logging: false
+           diagnostic flag new: false
+         filter variables:
+         - name: brightnessTemperature
+           channels: 1-12
+         action:
+           name: assign error
+           error function:
+             name: ObsFunction/ObsErrorModelRamp
+             channels: 1-12
+             options:
+               channels: 1-12
+               xvar:
+                 name: DerivedMetaData/SymmCldImpact
+                 channels: 1-12
+               x0: [1.0, 1.0, 0.75, 0.3, 0.5, 0.5, 0.25, 0.25, 1.0, 1.0, 1.0, 1.0]
+               err0: [2.5, 1.9, 1.25, 0.8, 0.8, 0.8, 0.9, 0.9, 2.0, 1.5, 1.5, 1.5]
+               x1: [10.0, 10.0, 5.0, 4.0, 5.0, 1.5, 2.0, 2.0, 5.0, 5.0, 4.0, 10.0]
+               err1: [15.0, 20.0, 9.0, 7.0, 10.0, 2.0, 1.0, 1.0, 12.0, 10.0, 8.0, 22.0]
+               x2: [25.0, 20.0, 10.0, 9.0, 20.0, 6.0, 3.0, 3.0, 25.0, 10.0, 10.0, 20.0]
+               err2: [23.0, 30.0, 19.0, 18.0, 40.0, 13.0, 2.5, 2.5, 53.0, 20.0, 20.0, 30.0]
+
+       # Clear-sky Tb (set default value for all channels)
+       - filter: Variable Assignment
+         apply at iterations: 0,1
+         identifier:
+           name: VariableAssignClrTbAllChannels
+           logging: false
+           diagnostic flag new: false
+         assignments:
+         - name: DerivedMetaData/ClearSkyTb
+           type: float
+           channels: 1-12
+           function:
+             name: ObsFunction/Arithmetic
+             channels: 1-12
+             options:
+               variables:
+               - name: HofX/brightnessTemperature
+                 channels: 1-12
+               coefs:
+               - 1.0
+
+         # Clear-sky Tb conditional check (overwrites default value for after doing CRTM check)
+         - filter: Variable Assignment
+           apply at iterations: 0,1
+           identifier:
+             name: ClrCheckTbAllChannels
+             logging: false
+             diagnostic flag new: false
+           where:
+           - variable:
+               name: ObsDiag/brightness_temperature_assuming_clear_sky
+               channels: 1-12
+             minvalue: 1e-12
+           assignments:
+           - name: DerivedMetaData/ClearSkyTb
+             type: float
+             channels: 1-12
+             function:
+               name: ObsFunction/Arithmetic
+               channels: 1-12
+               options:
+                 variables:
+                 - name: ObsDiag/brightness_temperature_assuming_clear_sky
+                   channels: 1-12
+                 coefs:
+                 - 1.0
+
+       # Calculate Modeled Cloud Impact
+       - filter: Variable Assignment
+         apply at iterations: 0,1
+         identifier:
+           name: CalcModeledCloudImpact
+           logging: false
+           diagnostic flag new: false
+         assignments:
+         - name: DerivedMetaData/ModeledCloudImpact
+           type: float
+           channels: 1-12
+           function:
+             name: ObsFunction/Arithmetic
+             channels: 1-12
+             options:
+               variables:
+               - name: DerivedMetaData/ClearSkyTb
+                 channels: 1-12
+               - name: HofX/brightnessTemperature
+                 channels: 1-12
+               - name: ObsBiasData/brightnessTemperature
+                 channels: 1-12
+               coefs:
+               - 1.0
+               - -1.0
+               - 1.0
+
+       # Calculate Observed Cloud Impact
+       - filter: Variable Assignment
+         apply at iterations: 0,1
+         identifier:
+           name: CalcObservedCloudImpact
+           logging: false
+           diagnostic flag new: false
+         assignments:
+         - name: DerivedMetaData/ObservedCloudImpact
+           type: float
+           channels: 1-12
+           function:
+             name: ObsFunction/Arithmetic
+             channels: 1-12
+             options:
+               variables:
+               - name: DerivedMetaData/ClearSkyTb
+                 channels: 1-12
+               - name: ObsValue/brightnessTemperature
+                 channels: 1-12
+               - name: ObsBiasData/brightnessTemperature
+                 channels: 1-12
+               coefs:
+               - 1.0
+               - -1.0
+               - 1.0
+
+       # Calculate Mean Cloud Impact
+       - filter: Variable Assignment
+         apply at iterations: 0,1
+         identifier:
+           name: CalcMeanCloudImpact
+           logging: false
+           diagnostic flag new: false
+         assignments:
+         - name: DerivedMetaData/MeanCloudImpact
+           type: float
+           channels: 1-12
+           function:
+             name: ObsFunction/Arithmetic
+             channels: 1-12
+             options:
+               variables:
+               - name: DerivedMetaData/ModeledCloudImpact
+                 channels: 1-12
+               - name: DerivedMetaData/ObservedCloudImpact
+                 channels: 1-12
+               coefs:
+               - 0.5
+               - 0.5
+
+       # Calculate Q20CI Right Limit
+       - filter: Variable Assignment
+         apply at iterations: 0,1
+         identifier:
+           name: CalcQ20CIRightLimit
+           logging: false
+           diagnostic flag new: false
+         assignments:
+         - name: DerivedMetaData/Q2OCIRightLimit
+           type: float
+           channels: 1-12
+           function:
+             name: ObsFunction/Arithmetic
+             channels: 1-12
+             options:
+               variables:
+               - name: DerivedMetaData/ObservedCloudImpact
+                 channels: 1-12
+               - name: DerivedMetaData/ClearSkyObsError
+                 channels: 1-12
+               coefs:
+               - 1.0
+               - 0.25
+
+       # Calculate Q40CI Left Limit
+       - filter: Variable Assignment
+         apply at iterations: 0,1
+         identifier:
+           name: CalcQ40CILeftLimit
+           logging: false
+           diagnostic flag new: false
+         assignments:
+         - name: DerivedMetaData/Q4OCILeftLimit
+           type: float
+           channels: 1-12
+           function:
+             name: ObsFunction/Arithmetic
+             channels: 1-12
+             options:
+               variables:
+               - name: DerivedMetaData/ObservedCloudImpact
+                 channels: 1-12
+               - name: DerivedMetaData/ClearSkyObsError
+                 channels: 1-12
+               coefs:
+               - 1.0
+               - -0.25
+
+       # Calculate Q2MCI Bottom Limit
+       - filter: Variable Assignment
+         apply at iterations: 0,1
+         identifier:
+           name: CalcQ2MCIBottomLimit
+           logging: false
+           diagnostic flag new: false
+         assignments:
+         - name: DerivedMetaData/Q2MCIBottomLimit
+           type: float
+           channels: 1-12
+           function:
+             name: ObsFunction/Arithmetic
+             channels: 1-12
+             options:
+               variables:
+               - name: DerivedMetaData/ModeledCloudImpact
+                 channels: 1-12
+               - name: DerivedMetaData/ClearSkyObsError
+                 channels: 1-12
+               coefs:
+               - 1.0
+               - -0.25
+
+       # Calculate Q4MCI Top Limit
+       - filter: Variable Assignment
+         apply at iterations: 0,1
+         identifier:
+           name: CalcQ4MCITopLimit
+           logging: false
+           diagnostic flag new: false
+         assignments:
+         - name: DerivedMetaData/Q4MCITopLimit
+           type: float
+           channels: 1-12
+           function:
+             name: ObsFunction/Arithmetic
+             channels: 1-12
+             options:
+               variables:
+               - name: DerivedMetaData/ModeledCloudImpact
+                 channels: 1-12
+               - name: DerivedMetaData/ClearSkyObsError
+                 channels: 1-12
+               coefs:
+               - 1.0
+               - 0.25
+
+       # Calculate Ice Scattering Index (2000/2002 Bennartz MV scattering index)
+       - filter: Variable Assignment
+         apply at iterations: 0,1
+         identifier:
+           name: CalcIceScattering
+           logging: false
+           diagnostic flag new: false
+         assignments:
+         - name: DerivedMetaData/IceScatIndex
+           type: float
+           function:
+             name: ObsFunction/BennartzScatIndex
+             options:
+               channel_89ghz: 1
+               channel_150ghz: 12
+               bennartz_coeff_1: 0.0
+               bennartz_coeff_2: 0.0
+               apply_bias: ObsBiasData
+
+       # Calculate Liquid Scattering Index
+       - filter: Variable Assignment
+         apply at iterations: 0,1
+         identifier:
+           name: CalcLiqScattering
+           logging: false
+           diagnostic flag new: false
+         assignments:
+         - name: DerivedMetaData/LiquidScatIndex
+           type: float
+           function:
+             name: ObsFunction/BennartzScatIndex
+             options:
+               channel_89ghz: 1
+               channel_150ghz: 2
+               bennartz_coeff_1: 0.0
+               bennartz_coeff_2: 0.0
+               apply_bias: ObsBiasData
+
+       # Land type filter (reject over non-water surfaces in these channels)
+       - filter: Domain Check
+         apply at iterations: 0,1
+         identifier:
+           name: LandtypeFilter
+           logging: false
+           diagnostic flag new: false
+         filter variables:
+         - name: brightnessTemperature
+           channels: 1-5,10-12
+         where:
+         - variable:
+             name: GeoVaLs/water_area_fraction
+           minvalue: 0.99
+         action:
+           name: reject
+
+       # Reject based on Q2
+       - filter: RejectList
+         apply at iterations: 0,1
+         identifier:
+           name: ObsModelCloudSignalCheck
+           logging: false
+           diagnostic flag new: false
+         filter variables:
+         - name: brightnessTemperature
+           channels: 1-12
+         where operator: and
+         where:
+         - variable:
+             name: DerivedMetaData/Q2OCIRightLimit
+             channels: 1
+           maxvalue: 0.0
+         - variable:
+             name: DerivedMetaData/Q2MCIBottomLimit
+             channels: 1
+           minvalue: 0.0
+         action:
+           name: reject
+
+       # Reject based on Q4
+       - filter: RejectList
+         apply at iterations: 0,1
+         identifier:
+           name: ObsModelCloudSignalCheck
+           logging: false
+           diagnostic flag new: false
+         filter variables:
+         - name: brightnessTemperature
+           channels: 1-12
+         where operator: and
+         where:
+         - variable:
+             name: DerivedMetaData/Q4MCITopLimit
+             channels: 1
+           maxvalue: 0.0
+         - variable:
+             name: DerivedMetaData/Q4OCILeftLimit
+             channels: 1
+           minvalue: 0.0
+         action:
+           name: reject
+
+       # Reject based on threshold value (Ch 1)
+       - filter: Background Check
+         apply at iterations: 0,1
+         identifier:
+           name: GrossCheckCh1
+           logging: false
+           diagnostic flag new: false
+         filter variables:
+         - name: brightnessTemperature
+           channels: 1
+         absolute threshold: 60.0
+         action:
+           name: reject
+
+       # Reject based on threshold value (Ch 2,9,12)
+       - filter: Background Check
+         apply at iterations: 0,1
+         identifier:
+           name: GrossCheckCh2_9_12
+           logging: false
+           diagnostic flag new: false
+         filter variables:
+         - name: brightnessTemperature
+           channels: 2,9,12
+         absolute threshold: 30.0
+         action:
+           name: reject
+
+       # Reject based on threshold value (Ch 3)
+       - filter: Background Check
+         apply at iterations: 0,1
+         identifier:
+           name: GrossCheckCh_3
+           logging: false
+           diagnostic flag new: false
+         filter variables:
+         - name: brightnessTemperature
+           channels: 3
+         absolute threshold: 22.0
+         action:
+           name: reject
+
+       # Reject based on threshold value (Ch 4-6,10,11)
+       - filter: Background Check
+         apply at iterations: 0,1
+         identifier:
+           name: GrossCheckCh_4_5_6_10_11
+           logging: false
+           diagnostic flag new: false
+         filter variables:
+         - name: brightnessTemperature
+           channels: 4,5,6,10,11
+         absolute threshold: 20.0
+         action:
+           name: reject
+
+       # Reject based on (non-abs) threshold value
+       - filter: Background Check
+         apply at iterations: 0,1
+         identifier:
+           name: GrossCheckAll
+           logging: false
+           diagnostic flag new: false
+         filter variables:
+         - name: brightnessTemperature
+           channels: 1-12
+         threshold: 3.0 # standard deviations away from bkg
+         action:
+           name: reject
+
+       # Useflag check
+       - filter: Bounds Check
+         apply at iterations: 0,1
+         identifier:
+           name: UseflagCheck
+           logging: false
+           diagnostic flag new: false
+         filter variables:
+         - name: brightnessTemperature
+           channels: 1-12
+         test variables:
+         - name: ObsFunction/ChannelUseflagCheckRad
+           channels: 1-12
+           options:
+             channels: 1-12
+             use_flag: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+         minvalue: 1e-12
+         action:
+           name: reject
