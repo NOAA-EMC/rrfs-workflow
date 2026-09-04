@@ -18,11 +18,15 @@ if mode() == "load" then
   setenv("PNETCDF", os.getenv("parallel_netcdf_ROOT"))
   setenv("NetCDF_C_ROOT", os.getenv("netcdf_c_ROOT"))
   setenv("NetCDF_FORTRAN_ROOT", os.getenv("netcdf_fortran_ROOT"))
+  setenv("NETCDF_C_ROOT", os.getenv("netcdf_c_ROOT"))
+  setenv("NETCDF_FORTRAN_ROOT", os.getenv("netcdf_fortran_ROOT"))
 end
 if mode() == "unload" then
   unsetenv("PNETCDF")
   unsetenv("NetCDF_C_ROOT")
   unsetenv("NetCDF_FORTRAN_ROOT")
+  unsetenv("NETCDF_C_ROOT")
+  unsetenv("NETCDF_FORTRAN_ROOT")
 end
 
 setenv("CMAKE_C_COMPILER", "mpiicc")
