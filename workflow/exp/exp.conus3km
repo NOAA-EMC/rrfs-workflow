@@ -9,7 +9,7 @@ export EXP_NAME=conus3km
 export VERSION=$(cat ./VERSION)
 export TAG=d3km
 export OPSROOT=/scratch3/BMC/wrfruc/gge/OPSROOT/${EXP_NAME}
-export EXPDIR=${OPSROOT}/exp/rrfs${WGF}
+export EXPDIR=${OPSROOT}/exp/${NET}${WGF}
 export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
 export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=YES
 #
@@ -50,7 +50,7 @@ for i in {0..23..12}; do arr[$i]="12"; done # 12hr fcst every 12hrs
 export FCST_LEN_HRS_CYCLES="${arr[*]}"
 export HISTORY_INTERVAL=1
 export DIAG_INTERVAL=1
-#export MPASOUT_TIMELEVELS="0 1"
+export MPASOUT_TIMELEVELS="0 1"
 export POST_GROUP_TOT_NUM=2 # num of groups, the final group absorbs leftovers, the first group contains the extra f000h file
 
 export IC_OFFSET=3
