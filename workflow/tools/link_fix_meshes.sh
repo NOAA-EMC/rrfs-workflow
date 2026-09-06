@@ -23,3 +23,9 @@ meshdir="/work/noaa/zrtrr/FIX_MESHES"
 if [[ -d "${meshdir}" ]]; then
   ln -snf "${meshdir}"/*km "${HOMErrfs}/fix"
 fi
+
+# derecho
+meshdir="/glade/work/geguo/FIX_MESHES"
+if [[ -d "${meshdir}" ]]; then
+  ln -snf "${meshdir}"/*km "${HOMErrfs}/fix"
+fi
