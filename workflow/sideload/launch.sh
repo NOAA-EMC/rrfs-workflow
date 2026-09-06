@@ -178,9 +178,9 @@ case ${task_id} in
     source "${HOMErrfs}/workflow/sideload/pyDAmonitor/ush/load_pyDAmonitor.sh"
     set -x
     if [[ "${task_id^^}" == "PYDAMONITOR_SPINUP" ]]; then
-      "${HOMErrfs}/workflow/sideload/pyDAmonitor/ush/drive.sh"
+      "${HOMErrfs}/workflow/sideload/pyDAmonitor/ush/drive.sh" spinup
     else
-      "${HOMErrfs}/workflow/sideload/pyDAmonitor/ush/drive.sh spinup"
+      "${HOMErrfs}/workflow/sideload/pyDAmonitor/ush/drive.sh"
     fi
     ;;
   graphics)
