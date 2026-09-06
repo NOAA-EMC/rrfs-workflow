@@ -99,12 +99,16 @@ def setup_xml(HOMErrfs, expdir):
                 jedivar(xmlFile, expdir, spinup_mode=1)
                 if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
                     nonvar_cldana(xmlFile, expdir, spinup_mode=1)
+                if os.getenv("DO_PYDAMONITOR", "FALSE").upper() == "TRUE":
+                    pyDAmonitor(xmlFile, expdir, spinup_mode=1)
                 fcst(xmlFile, expdir, do_spinup=True)
                 # prod line
                 prep_ic(xmlFile, expdir, spinup_mode=-1)
                 jedivar(xmlFile, expdir, spinup_mode=-1)
                 if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
                     nonvar_cldana(xmlFile, expdir, spinup_mode=-1)
+                if os.getenv("DO_PYDAMONITOR", "FALSE").upper() == "TRUE":
+                    pyDAmonitor(xmlFile, expdir, spinup_mode=-1)
                 fcst(xmlFile, expdir)
                 for dcGrpInfo in listSave4NextGrpInfo:
                     save_for_next(xmlFile, expdir, dcGrpInfo)
