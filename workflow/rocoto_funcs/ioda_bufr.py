@@ -20,7 +20,7 @@ def ioda_bufr(xmlFile, expdir):
         'atms': '@Y@m@d@H.rap.t@Hz.atms.tm00',
         'crisfs': '@Y@m@d@H.rap.t@Hz.crisf4.tm00',
         'iasi': '@Y@m@d@H.rap.t@Hz.mtiasi.tm00',
-        }
+    }
     #
     # update default dcObs with user input
     obs_filename_pattern = os.getenv('OBS_FILENAME_PATTERN', '{}')

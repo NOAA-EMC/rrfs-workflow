@@ -155,7 +155,7 @@ if [[ -s abibufr ]]; then
   cp "rap.t${cyc}z.abi_g18.tm00.nc" "ioda_abi_g18.nc"
 fi
 
-if [[ "${VAD_THINNING:FALSE}" == "TRUE" ]]; then
+if [[ "${VAD_THINNING:-FALSE}" == "TRUE" ]]; then
 # run offline IODA tools
 ${cpreq} "${USHrrfs}"/offline_vad_thinning.py .
 # Run vadwnd superobbing and thinning offline tool.
