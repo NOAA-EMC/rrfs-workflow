@@ -48,7 +48,7 @@ if os.path.exists(f"{HOMErrfs}/workflow/config.override"):
 mesh = os.getenv("MESH_NAME", "conus3km")
 # Check compatibility of setup with nonvar cloud analysis
 if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
-    if mesh not in ["conus3km", "conus3.5km", "south3.5km", "conus12km"]:
+    if mesh not in ["conus3km", "conus3p5km", "south3.5km", "conus12km"]:
         print(f'WARN: {mesh} has not been fully tested with the nonvar cloud analysis')
         print(f'WARN: Configuration options in config_resources/config.meshdep may also be missing for {mesh}')
 
