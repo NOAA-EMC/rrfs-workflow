@@ -6,12 +6,6 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 
-# --- Sub-hourly cycling helpers --------------------------------------------
-# DO_SUBHOURLY (config.base default FALSE) enables sub-hourly cycling.  When it
-# is TRUE every per-cycle path/label token carries minute resolution (@H@M) so
-# that cycles less than an hour apart do not collide.  When it is FALSE these
-# helpers return the exact legacy tokens, keeping existing experiments
-# byte-identical.
 def subhourly():
     return os.getenv('DO_SUBHOURLY', 'FALSE').upper() == 'TRUE'
 
@@ -91,9 +85,6 @@ def header_entities(xmlFile, expdir):
     wgf = os.getenv('WGF', 'det')
     cyc_interval = os.getenv('CYC_INTERVAL', '3')
     realtime = os.getenv("REALTIME", "false").upper()
-    # Minute-aware per-cycle tokens (byte-identical when DO_SUBHOURLY is off)
-    hm = tok_hm()
-    cdate_fmt = tok_cdate()
     if subhourly():
         subcyc_envar = '\n<envar><name>subcyc</name><value><cyclestr>@M</cyclestr></value></envar>'
     else:
@@ -157,10 +148,10 @@ def header_entities(xmlFile, expdir):
 <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
 <envar><name>DATAROOT</name><value><cyclestr>&DATAROOT;/@Y@m@d</cyclestr></value></envar>
 <envar><name>COMINrrfs</name><value>&COMROOT;/{net}/{rrfs_ver}</value></envar>
-<envar><name>COMOUT</name><value><cyclestr>&COMROOT;/{net}/{rrfs_ver}/{run}.@Y@m@d/{hm}</cyclestr></value></envar>
-<envar><name>CDATE</name><value><cyclestr>{cdate_fmt}</cyclestr></value></envar>
+<envar><name>COMOUT</name><value><cyclestr>&COMROOT;/{net}/{rrfs_ver}/{run}.@Y@m@d/{tok_hm()}</cyclestr></value></envar>
+<envar><name>CDATE</name><value><cyclestr>{tok_cdate()}</cyclestr></value></envar>
 <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
-<envar><name>cyc</name><value><cyclestr>{hm}</cyclestr></value></envar>{subcyc_envar}
+<envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>{subcyc_envar}
 <envar><name>NET</name><value>{net}</value></envar>
 <envar><name>RUN</name><value>{run}</value></envar>
 <envar><name>rrfs_ver</name><value>{rrfs_ver}</value></envar>
