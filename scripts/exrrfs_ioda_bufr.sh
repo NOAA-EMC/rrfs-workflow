@@ -7,14 +7,13 @@ cpreq=${cpreq:-cpreq}
 cd "${DATA}" || exit 1
 
 # link the prepbufr file
-${cpreq} "${OBSPATH}/${CDATE}.rap.t${cyc}z.prepbufr.tm00" prepbufr
-cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.gpsipw.tm00.bufr_d" ztdbufr
-cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.satwnd.tm00.bufr_d" satwndbufr
-cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.gsrcsr.tm00.bufr_d" abibufr
-cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.atms.tm00.bufr_d" atmsbufr
-cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.crisf4.tm00.bufr_d" crisfsbufr
-cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.crsfdb.tm00.bufr_d" crsfdbbufr
-cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.mtiasi.tm00.bufr_d" iasibufr
+${cpreq} "${OBSPATH}/${FILE_PREPBUFR}" prepbufr
+cp "${OBSPATH}/${FILE_ZTD}" ztdbufr
+cp "${OBSPATH}/${FILE_SATWND}" satwndbufr
+cp "${OBSPATH}/${FILE_ABI}" abibufr
+cp "${OBSPATH}/${FILE_ATMS}" atmsbufr
+cp "${OBSPATH}/${FILE_CRISFS}" crisfsbufr
+cp "${OBSPATH}/${FILE_IASI}" iasibufr
 ${cpreq} "${EXECrrfs}"/bufr2ioda.x .
 ${cpreq} "${EXECrrfs}"/bufr2netcdf.x .
 
@@ -33,23 +32,6 @@ yaml_list=(
 "prepbufr_vadwnd.yaml"
 #"bufr2ioda_cris-fsr.yaml"
 )
-
-if (( ${YAML_GEN_METHOD:-1} == 2 )); then
-  # Copy empty ioda file to data/obs.
-  # Use these as the default when bufr2ioda doesn't create a ioda.
-  # Otherwise JEDI will crash due to missing ioda file
-  ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_adpsfc.nc
-  ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_adpupa.nc
-  ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_aircar.nc
-  ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_aircft.nc
-  ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_ascatw.nc
-  ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_gpsipw.nc
-  ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_msonet.nc
-  ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_proflr.nc
-  ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_rassda.nc
-  ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_sfcshp.nc
-  ${cpreq} "${FIXrrfs}"/jedi/ioda_empty.nc ioda_vadwnd.nc
-fi
 
 # run bufr2ioda.x
 for yaml in "${yaml_list[@]}"; do
@@ -137,25 +119,32 @@ ${cpreq} "${HOMErdasapp}"/rrfs-test/IODA/python/gen_bufr2ioda_json.py .
 ./bufr2ioda_adpupa_prepbufr.py -c bufr2ioda_adpupa_prepbufr_0.json
 
 # ZTD
-./gen_bufr2ioda_json.py -t bufr2ioda.json -o bufr2ioda_0.json
-./bufr2ioda_ztd.py -c bufr2ioda_0.json
+if [[ -s ztdbufr ]]; then
+  ./gen_bufr2ioda_json.py -t bufr2ioda.json -o bufr2ioda_0.json
+  ./bufr2ioda_ztd.py -c bufr2ioda_0.json
+fi
 
 # SATWND
-./gen_bufr2ioda_json.py -t bufr2ioda_satwnd_amv_goes.json -o bufr2ioda_satwnd_amv_goes_0.json
-./bufr2ioda_satwnd_amv_goes.py -c bufr2ioda_satwnd_amv_goes_0.json
+if [[ -s satwndbufr ]]; then
+  ./gen_bufr2ioda_json.py -t bufr2ioda_satwnd_amv_goes.json -o bufr2ioda_satwnd_amv_goes_0.json
+  ./bufr2ioda_satwnd_amv_goes.py -c bufr2ioda_satwnd_amv_goes_0.json
+fi
 
-# GSRCSR
-ln -sf abibufr "rap.t${cyc}z.gsrcsr.tm00.bufr_d"
-./run_bufr2ioda_gsrcsr.sh "${CDATE}" rap "${DATA}" "${DATA}" "${DATA}" "${HOMErdasapp}"
-cp "rap.t${cyc}z.abi_g16.tm00.nc" "ioda_abi_g16.nc"
-cp "rap.t${cyc}z.abi_g18.tm00.nc" "ioda_abi_g18.nc"
+# GSRCSR (ABI)
+if [[ -s abibufr ]]; then
+  ln -sf abibufr "rap.t${cyc}z.gsrcsr.tm00.bufr_d"
+  ./run_bufr2ioda_gsrcsr.sh "${CDATE}" rap "${DATA}" "${DATA}" "${DATA}" "${HOMErdasapp}"
+  cp "rap.t${cyc}z.abi_g16.tm00.nc" "ioda_abi_g16.nc"
+  cp "rap.t${cyc}z.abi_g18.tm00.nc" "ioda_abi_g18.nc"
+fi
 
+if [[ "${VAD_THINNING:-FALSE}" == "TRUE" ]]; then
 # run offline IODA tools
 ${cpreq} "${USHrrfs}"/offline_vad_thinning.py .
-
 # Run vadwnd superobbing and thinning offline tool.
 ./offline_vad_thinning.py -i ioda_vadwnd.nc -o ioda_vadwnd_thinned.nc
 mv ioda_vadwnd_thinned.nc ioda_vadwnd.nc
+fi
 
 # file count sanity check and copy to COMOUT
 if ls ./ioda*nc; then

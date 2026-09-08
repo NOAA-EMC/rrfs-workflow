@@ -172,12 +172,16 @@ case ${task_id} in
       exit 0
     fi
     ;;
-  pydamonitor)
+  pydamonitor*)
     module purge
     set +x
     source "${HOMErrfs}/workflow/sideload/pyDAmonitor/ush/load_pyDAmonitor.sh"
     set -x
-    "${HOMErrfs}/workflow/sideload/pyDAmonitor/ush/drive.sh"
+    if [[ "${task_id^^}" == "PYDAMONITOR_SPINUP" ]]; then
+      "${HOMErrfs}/workflow/sideload/pyDAmonitor/ush/drive.sh" spinup
+    else
+      "${HOMErrfs}/workflow/sideload/pyDAmonitor/ush/drive.sh"
+    fi
     ;;
   graphics)
     set +x
