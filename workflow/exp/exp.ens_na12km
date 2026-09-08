@@ -9,7 +9,7 @@ export EXP_NAME=hrly_12km
 export VERSION=$(cat ./VERSION)
 export TAG=e12km
 export OPSROOT=/scratch3/BMC/wrfruc/gge/OPSROOT/${EXP_NAME}
-export EXPDIR=${OPSROOT}/exp/rrfs${WGF}
+export EXPDIR=${OPSROOT}/exp/${NET}${WGF}
 export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
 export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=yes
 #

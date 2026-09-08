@@ -11,10 +11,16 @@ def nonvar_reflobs(xmlFile, expdir):
     if os.getenv("DO_SPINUP", "FALSE").upper() == "TRUE":
         cycledefs = 'prod,spinup'
     OBSPATH_NSSLMOSIAC = os.getenv("OBSPATH_NSSLMOSIAC", 'OBSPATH_NSSLMOSIAC_not_defined')
+    realtime = os.getenv("REALTIME", "false")
+    if realtime.upper() == "TRUE":
+        stop_if_no_obs = 0
+    else:
+        stop_if_no_obs = 1
     # Task-specific EnVars beyond the task_common_vars
     dcTaskEnv = {
         'REFERENCE_TIME': '@Y-@m-@dT@H:00:00Z',
-        'OBSPATH_NSSLMOSIAC': f'{OBSPATH_NSSLMOSIAC}'
+        'OBSPATH_NSSLMOSIAC': f'{OBSPATH_NSSLMOSIAC}',
+        'STOP_IF_NO_OBS': f'{stop_if_no_obs}'
     }
 
     dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()

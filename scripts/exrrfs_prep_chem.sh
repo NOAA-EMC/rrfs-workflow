@@ -57,7 +57,7 @@ current_hh="${HH}"
 #
 #prev_hh=$(date -d "$current_hh -24 hour" +"%H")
 previous_day=$(date '+%C%y%m%d' -d "$current_day-1 days")
-previous_day="${previous_day} ${HH}"
+#previous_day="${previous_day} ${HH}"
 #
 if [[ ${DOW} -le 5 ]]; then
    DOW_STRING=weekdy

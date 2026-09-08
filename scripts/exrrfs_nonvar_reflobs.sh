@@ -101,8 +101,14 @@ if [[ -s filelist_mrms ]]; then
   echo "Using radar data from: $(head -1 filelist_mrms | cut -c10-15)"
   echo "NSSL grib2 file levels = ${numgrib2}"
 else
-  echo "FATAL ERROR: Not enough radar reflectivity files were found"
-  err_exit
+  if [[ ${STOP_IF_NO_OBS} == 1 ]]; then
+    echo "FATAL ERROR: Not enough radar reflectivity files were found"
+    err_exit
+  else
+    echo "WARNING: Not enough radar reflectivity files were found"
+    echo "Radar reflectivity will not be processed for the nonvar cloud analysis"
+    exit 0
+  fi
 fi
 
 cat << EOF > namelist.mosaic

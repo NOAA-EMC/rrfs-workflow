@@ -29,29 +29,33 @@ ${cpreq} "${meshgriddir}"/"${MESH_NAME}".grid.nc mesh.nc
 #-----------------------------------------------------------------------
 #
 
-${cpreq} "${OBSPATH}/${CDATE}.rap.t${cyc}z.lgycld.tm00.bufr_d" lgycld.bufr_d
+lgycld_bufr="${OBSPATH}/${CDATE}.rap.t${cyc}z.lgycld.tm00.bufr_d"
 
-# Determine appropriate GOES IDs
-if (( CDATE > 2023010419 )); then
-  satidgoeswest=272
-else
-  satidgoeswest=271
-fi
+if [[ -s ${lgycld_bufr} ]]; then
 
-if (( CDATE > 2025040716 )); then
-  satidgoeseast=273
-else
-  satidgoeseast=270
-fi
+  ${cpreq} ${lgycld_bufr} lgycld.bufr_d
 
-if (( CDATE < 2021010118 )); then
-  echo "ERROR: This is an old retro. Please check whether the GOES IDs used by" 
-  echo "the nonvariational cloud analysis (larccld.fd) are appropriate for" 
-  echo "this time period"
-  exit 1
-fi
+  # Determine appropriate GOES IDs
+  if (( CDATE > 2023010419 )); then
+    satidgoeswest=272
+  else
+    satidgoeswest=271
+  fi
 
-cat << EOF > namelist.nasalarc
+  if (( CDATE > 2025040716 )); then
+    satidgoeseast=273
+  else
+    satidgoeseast=270
+  fi
+
+  if (( CDATE < 2021010118 )); then
+    echo "ERROR: This is an old retro. Please check whether the GOES IDs used by" 
+    echo "the nonvariational cloud analysis (larccld.fd) are appropriate for" 
+    echo "this time period"
+    exit 1
+  fi
+
+  cat << EOF > namelist.nasalarc
  &setup
   analysis_time = ${CDATE},
   bufrfile='NASALaRCCloudInGSI_bufr.bufr',
@@ -65,15 +69,27 @@ cat << EOF > namelist.nasalarc
  /
 EOF
 
-module list
-export pgm="process_larccld.exe"
-${cpreq} "${EXECrrfs}/${pgm}" .
-source prep_step
-${MPI_RUN_CMD} ./${pgm}
-export err=$?
-err_chk
+  module list
+  export pgm="process_larccld.exe"
+  ${cpreq} "${EXECrrfs}/${pgm}" .
+  source prep_step
+  ${MPI_RUN_CMD} ./${pgm}
+  export err=$?
+  err_chk
 
-${cpreq} NASALaRC_cloud4mpas.bin "${COMOUT}/nonvar_bufrobs/${WGF}/NASALaRC_cloud4mpas.bin"
+  ${cpreq} NASALaRC_cloud4mpas.bin "${COMOUT}/nonvar_bufrobs/${WGF}/NASALaRC_cloud4mpas.bin"
+
+else
+
+  if [[ ${STOP_IF_NO_OBS} == 1 ]]; then
+    echo "ERROR: Missing satellite cloud-top observations"
+    exit 1
+  else
+    echo "WARNING: Missing satellite cloud-top observations"
+    echo "Cloud-top observations will NOT be processed for the nonvar cloud analysis"
+  fi
+
+fi
 
 #
 #-----------------------------------------------------------------------
@@ -85,9 +101,13 @@ ${cpreq} NASALaRC_cloud4mpas.bin "${COMOUT}/nonvar_bufrobs/${WGF}/NASALaRC_cloud
 #-----------------------------------------------------------------------
 #
 
-${cpreq} "${OBSPATH}/${CDATE}.rap.t${cyc}z.lghtng.tm00.bufr_d" lghtngbufr
+lghtng_bufr="${OBSPATH}/${CDATE}.rap.t${cyc}z.lghtng.tm00.bufr_d"
 
-cat << EOF > namelist.lightning
+if [[ -s ${lghtng_bufr} ]]; then
+
+  ${cpreq} ${lghtng_bufr} lghtngbufr
+
+  cat << EOF > namelist.lightning
  &setup
   analysis_time = ${CDATE},
   minute=00,
@@ -100,15 +120,27 @@ cat << EOF > namelist.lightning
  /
 EOF
 
-module list
-export pgm="process_Lightning.exe"
-${cpreq} "${EXECrrfs}/${pgm}" .
-source prep_step
-${MPI_RUN_CMD} ./${pgm}
-export err=$?
-err_chk
+  module list
+  export pgm="process_Lightning.exe"
+  ${cpreq} "${EXECrrfs}/${pgm}" .
+  source prep_step
+  ${MPI_RUN_CMD} ./${pgm}
+  export err=$?
+  err_chk
 
-${cpreq} LightningInMPAS.dat "${COMOUT}/nonvar_bufrobs/${WGF}/LightningInMPAS.dat"
+  ${cpreq} LightningInMPAS.dat "${COMOUT}/nonvar_bufrobs/${WGF}/LightningInMPAS.dat"
+
+else
+
+  if [[ ${STOP_IF_NO_OBS} == 1 ]]; then
+    echo "ERROR: Missing lightning observations"
+    exit 1
+  else
+    echo "WARNING: Missing lightning observations"
+    echo "Lightning observations will NOT be processed for the nonvar cloud analysis"
+  fi
+
+fi
 
 #
 #-----------------------------------------------------------------------
@@ -120,9 +152,13 @@ ${cpreq} LightningInMPAS.dat "${COMOUT}/nonvar_bufrobs/${WGF}/LightningInMPAS.da
 #-----------------------------------------------------------------------
 #
 
-${cpreq} "${OBSPATH}/${CDATE}.rap.t${cyc}z.prepbufr.tm00" prepbufr
+metar_bufr="${OBSPATH}/${CDATE}.rap.t${cyc}z.prepbufr.tm00"
 
-cat << EOF > namelist.metarcld
+if [[ -s ${metar_bufr} ]]; then
+
+  ${cpreq} ${metar_bufr} prepbufr
+
+  cat << EOF > namelist.metarcld
  &setup
   analysis_time = ${CDATE},
   prepbufrfile='prepbufr',
@@ -133,14 +169,26 @@ cat << EOF > namelist.metarcld
  /
 EOF
 
-module list
-export pgm="process_metarcld.exe"
-${cpreq} "${EXECrrfs}/${pgm}" .
-source prep_step
-${MPI_RUN_CMD} ./${pgm}
-export err=$?
-err_chk
+  module list
+  export pgm="process_metarcld.exe"
+  ${cpreq} "${EXECrrfs}/${pgm}" .
+  source prep_step
+  ${MPI_RUN_CMD} ./${pgm}
+  export err=$?
+  err_chk
 
-${cpreq} mpas_metarcloud.bin "${COMOUT}/nonvar_bufrobs/${WGF}/mpas_metarcloud.bin"
+  ${cpreq} mpas_metarcloud.bin "${COMOUT}/nonvar_bufrobs/${WGF}/mpas_metarcloud.bin"
+
+else
+
+  if [[ ${STOP_IF_NO_OBS} == 1 ]]; then
+    echo "ERROR: Missing METAR observations"
+    exit 1
+  else
+    echo "WARNING: Missing METAR observations"
+    echo "METAR observations will NOT be processed for the nonvar cloud analysis"
+  fi
+
+fi
 
 exit 0
