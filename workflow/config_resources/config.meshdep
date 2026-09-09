@@ -57,6 +57,13 @@ elif [[ ${MESH_NAME} == "conus12km" ]]; then
   export NONVAR_USERDX=12000
   export NONVAR_SEARCH_RAD=4
 
+elif [[ ${MESH_NAME} == "conus3p5km" ]]; then
+  export NONVAR_LARC_NPTS=3
+  export NONVAR_METAR_IMPACT=20
+  export NONVAR_PROJ_NAME="CONUS"
+  export NONVAR_USERDX=3500
+  export NONVAR_SEARCH_RAD=1
+
 elif [[ ${MESH_NAME} == "conus3km" ]]; then
   export FCST_DT=20
   export FCST_SUBSTEPS=4
