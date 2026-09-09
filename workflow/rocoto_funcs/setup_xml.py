@@ -228,13 +228,11 @@ def setup_xml(HOMErrfs, expdir):
     elif machine in ['derecho']:
         extra = "\nsource /etc/profile.d/z00_modules.sh\nmodule use /glade/work/geguo/rocoto/modulefiles"
     # ~~~~
-    example = \
-f'''## Example crontab entry (use "crontab -e" to modify crontab):
+    example = f'''## Example crontab entry (use "crontab -e" to modify crontab):
 ## */5 * * * * {fPath}'''
     tail = ""
     if machine in ['gaeac6']:
-        example = \
-f'''## Example scrontab entry (remove the first "#" and use "scrontab -e" to modify scrontab):
+        example = f'''## Example scrontab entry (remove the first "#" and use "scrontab -e" to modify scrontab):
 ##SCRON --partition=cron_c6
 ##SCRON --account=@your_account@
 ##SCRON --time=00:05:00
