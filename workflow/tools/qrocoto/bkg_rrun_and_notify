@@ -2,7 +2,7 @@
 # shellcheck disable=all
 # Usage: bkg_rrun_and_notify [sleeptime] [email=freq_in_seconds] [email_address] [email_tag]
 
-sleeptime=60  # seconds
+sleeptime=180  # seconds
 email_freq=-1
 if (( $# > 0 )); then
   sleeptime=$1
