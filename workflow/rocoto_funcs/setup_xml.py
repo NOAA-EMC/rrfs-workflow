@@ -227,16 +227,34 @@ def setup_xml(HOMErrfs, expdir):
         extra = "\nmodule use /apps/ops/test/nco/modulefiles/core"
     elif machine in ['derecho']:
         extra = "\nsource /etc/profile.d/z00_modules.sh\nmodule use /glade/work/geguo/rocoto/modulefiles"
+    # ~~~~
+    example = f'''## Example crontab entry (use "crontab -e" to modify crontab):
+## */5 * * * * {fPath}'''
+    tail = ""
+    if machine in ['gaeac6']:
+        example = f'''## Example scrontab entry (remove the first "#" and use "scrontab -e" to modify scrontab):
+##SCRON --partition=cron_c6
+##SCRON --account=@your_account@
+##SCRON --time=00:05:00
+##SCRON --mem=8G
+##SCRON --mail-user=@your_email@
+##SCRON --dependency=singleton
+##SCRON --job-name=scron_rocoto
+##SCRON --output={expdir}/log.runrocoto
+#*/5 * * * * {fPath}'''
+        tail = f'''
+sleep 60s
+rocotorun -w {NET}.xml -d {NET}.db --harvest-only'''
+    #
     with open(fPath, 'w') as rocotoFile:
         text = \
             f'''#!/usr/bin/env bash
-## Example crontab entry (use "crontab -e" to modify crontab):
-## */5 * * * * {fPath}
+{example}
 
 source /etc/profile{extra}
 module load rocoto/1.3.7g
 cd {expdir}
-rocotorun -w {NET}.xml -d {NET}.db
+rocotorun -w {NET}.xml -d {NET}.db{tail}
 '''
         rocotoFile.write(text)
 
