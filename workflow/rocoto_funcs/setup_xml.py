@@ -3,7 +3,7 @@
 import os
 import stat
 from rocoto_funcs.base import header_begin, header_entities, header_end, \
-    wflow_begin, wflow_log, wflow_cycledefs, wflow_end
+    wflow_begin, wflow_log, wflow_cycledefs, wflow_end, tok_hm
 from rocoto_funcs.smart_cycledefs import smart_cycledefs
 from rocoto_funcs.smart_post_groups import smart_post_groups
 from rocoto_funcs.smart_save4next_groups import smart_save4next_groups
@@ -64,7 +64,7 @@ def setup_xml(HOMErrfs, expdir):
         header_entities(xmlFile, expdir)
         header_end(xmlFile)
         wflow_begin(xmlFile)
-        log_fpath = f'&LOGROOT;/&RUN;.@Y@m@d/@H/&WGF;/&RUN;.log'
+        log_fpath = f'&LOGROOT;/&RUN;.@Y@m@d/{tok_hm()}/&WGF;/&RUN;.log'
         wflow_log(xmlFile, log_fpath)
         wflow_cycledefs(xmlFile, dcCycledef)
 
