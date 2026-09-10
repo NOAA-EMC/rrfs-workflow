@@ -10,10 +10,10 @@
           - variables: *incvars
             multivariate strategy: duplicated
             horizontal:
-              filepath: data/diffusionloc/mpas_conus3km.diffusion_hz
+              filepath: data/diffusionloc/mpas.diffusion_hz
             vertical:
               levels: 59
-              filepath: data/diffusionloc/mpas_conus3km.diffusion_vt
+              filepath: data/diffusionloc/mpas.diffusion_vt
     members from template:
       template:
         <<: *memberConfig
