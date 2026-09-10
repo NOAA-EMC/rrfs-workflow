@@ -49,27 +49,13 @@ source qrocoto/load_qrocoto.sh
 (b) Enter `rrun` to launch the experiment (i.e., submit jobs)        
 We will need to execute `rrun` continously every a while to proceed from one task to the next task, one cycle to the next cycle.   
 
-To reduce manual effort, we can execute `bkg_rrun` at the command line instead. This utility will execute the `rrun` command continously every 1 minute. _(Bonus: we may put `bkg_rrun` in a [TMUX](https://github.com/tmux/tmux/wiki) or a [SCREEN](https://www.gnu.org/software/screen/manual/screen.html) window so that `bkg_rrun` continues to run even we lose network connection or close the terminal)_     
+To reduce manual effort, we can execute `bkg_rrun` at the command line instead. This utility will execute the `rrun` command continously every 3 minutes. _(Bonus: we may put `bkg_rrun` in a [TMUX](https://github.com/tmux/tmux/wiki) or a [SCREEN](https://www.gnu.org/software/screen/manual/screen.html) window so that `bkg_rrun` continues to run even we lose network connection or close the terminal)_     
 
-(c) Execute `rstat` to check workflow status, `rcheck YYYYMMDDHH task` to check details of a given task (such as why a task has not been submitted), `taskinfo YYYYMMDDHH task` to quickly get the location of the corresponding log file, STMP and COMROOT directories of a task.    
+(c) Execute `rstat` to check workflow status, `rcheck YYYYMMDDHH task` to check details of a given task (such as why a task has not been submitted), `taskinfo YYYYMMDDHH task` to quickly get the location of the corresponding log file, STMP and COMROOT directories of a task, `finddirs` to find main `exp, logs, com, stmp` directories.   
 
 **NOTE:**
 - Check [README.md](../workflow/tools/qrocoto/README.md) or [detailed instructions](https://github.com/rrfsx/qrocoto/wiki/qrocoto) for more information about `qrocoto`.
-- If you get an error message, such as `Lmod has detected the following error...` or `...command not found...`, it means the rocoto module is NOT available in your current environment.    
-
-Do as follows to solve the issue:    
-[Orion/Hercules]    
-```
-module load contrib
-```
-[Gaea]
-```
-module use /ncrc/proj/epic/rocoto/modulefiles
-```
-[Derecho]
-```
-module use /glade/work/epicufsrt/contrib/derecho/modulefiles
-```
+- If you get an error message, such as `Lmod has detected the following error...` or `...command not found...`, it means the rocoto module is NOT available in your current environment. A `run_rocoto.sh` script file is created under each `expdir`,  and we can refer to this script to see how to properly load the rocoto module on that platform.
 
 #### 2.3.2 Use `run_rocoto.sh` and crontab
 We can also use `./run_rocoto.sh` to launch the experiment.    
