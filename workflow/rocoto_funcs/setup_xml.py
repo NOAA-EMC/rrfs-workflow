@@ -241,10 +241,10 @@ def setup_xml(HOMErrfs, expdir):
 ##SCRON --dependency=singleton
 ##SCRON --job-name=scron_rocoto
 ##SCRON --output={expdir}/log.runrocoto
-#*/5 * * * * {fPath}'''
-        tail = f'''
-sleep 60s
-rocotorun -w {NET}.xml -d {NET}.db --harvest-only'''
+#*/5 * * * * {fPath} no-server
+opt=""
+[[ "$1" == "no-server" ]] && opt="--no-server"'''
+        tail = ' $opt'
     #
     with open(fPath, 'w') as rocotoFile:
         text = \
