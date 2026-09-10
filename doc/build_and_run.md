@@ -26,17 +26,12 @@ Refer to [this guide](https://github.com/NOAA-EMC/rrfs-workflow/wiki/deploy-a-re
 ### 2.2 setup_rocoto.py
 ```
 # Here we use exp.conus12km as an example:
+source tools/load_pyDAmonitor.sh
 ./setup_rocoto.py exp.conus12km
 ```   
     
 This Python script creates an experiment directory (i.e. `EXPDIR`), writes out a runtime version of `exp.setup` under EXPDIR, and  then copies runtime config files to `EXPDIR`.  
 
-If you get any errors when running `setup_rocoto.py`, it is mostly because the currently loaded Python does not have required packages (such as 'dateutil').    
-You can use the Python environment included in rrfs-workflow by running
-```
-source ../workflow/tools/load_pyDAmonitor.sh
-```
-and then run `setup_rocoto.py` again.  
 If the above source command fails to load a working Python environment, it usually means there is a module conflict. You may do `module purge` and/or start over from a clean terminal window.
        
 ### 2.3 run and monitor experiments
@@ -78,10 +73,27 @@ module use /glade/work/epicufsrt/contrib/derecho/modulefiles
 
 #### 2.3.2 Use `run_rocoto.sh` and crontab
 We can also use `./run_rocoto.sh` to launch the experiment.    
-Add a crontab entry similar to the following to run the experiment continuously.
+Run `crontab -e` and add a crontab entry similar to the following to run the experiment continuously.
 ```
 */5 * * * * /home/role.rtrr/RRFS/1.0.1/conus3km/run_rocoto.sh
 ```
+Note: An example crontab entry is provided in the header comments of the `run_rocoto.sh` script.
+
+#### 2.3.3 Use `run_rocoto.sh` and scrontab on Gaea
+Run `scrontab -e` and add a scrontab entry similar to the following to run the experiment continuously.
+```
+#SCRON --partition=cron_c6
+#SCRON --account=wrfruc
+#SCRON --time=00:05:00
+#SCRON --mem=8G
+#SCRON --mail-user=@replace_with_your_email@
+#SCRON --dependency=singleton
+#SCRON --job-name=scrontab_runrocoto
+#SCRON --output=/gpfs/f6/arfs-gsl/world-shared/gge/rrfs2/conus12km/exp/rrfsdet/log.runrocoto
+*/5 * * * * /gpfs/f6/arfs-gsl/world-shared/gge/rrfs2/conus12km/exp/rrfsdet/run_rocoto.sh no-server
+```
+Note: An example scrontab entry is provided in the header comments of the `run_rocoto.sh` script.
+
 # 3. Others
 The workflow depends on the environmental variables. If your environment defines and exports rrfs-workflow-specific environmental variables in an unexpected way or your environment is corrupt, the setup step may fail or generate incorrect `rrfs.xml`. Starting from a fresh terminal or `module purge` usually solves the problem.
 
