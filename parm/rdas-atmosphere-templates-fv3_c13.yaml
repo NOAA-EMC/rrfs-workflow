@@ -43,6 +43,7 @@ analysis_variables:
 - air_temperature
 - water_vapor_mixing_ratio_wrt_moist_air
 - ozone_mass_mixing_ratio
+- upward_air_velocity
 - air_pressure_at_surface
 
 control_variables:
@@ -51,6 +52,7 @@ control_variables:
 - virtual_temperature
 - water_vapor_mixing_ratio_wrt_moist_air
 - mole_fraction_of_ozone_in_air
+- upward_air_velocity
 - air_pressure_at_surface
 
 fields_to_write:
@@ -59,6 +61,7 @@ fields_to_write:
 - air_temperature
 - water_vapor_mixing_ratio_wrt_moist_air
 - ozone_mass_mixing_ratio
+- upward_air_velocity
 - air_pressure_thickness
 
 state_variables_to_inverse:
@@ -67,6 +70,7 @@ state_variables_to_inverse:
 - air_temperature
 - water_vapor_mixing_ratio_wrt_moist_air
 - ozone_mass_mixing_ratio
+- upward_air_velocity
 - geopotential_at_surface
 - air_pressure_thickness
 - air_pressure_at_surface
@@ -264,6 +268,7 @@ observations:
 - sfcshp_winds_284
 
 # Remote
+- nexrad_radialVelocity_999
 #- gnss_zenithTotalDelay
 
 # Meteosat / EUMETSAT satelliteIdentifier 56
@@ -364,6 +369,7 @@ iuse_sfcshp_winds_282: accept
 iuse_sfcshp_winds_284: accept
 
 # Remote
+iuse_nexrad_radialVelocity_999: accept
 iuse_gnss_zenithTotalDelay: accept
 iuse_satwnd_winds_243_56: accept
 iuse_satwnd_winds_253_56: accept

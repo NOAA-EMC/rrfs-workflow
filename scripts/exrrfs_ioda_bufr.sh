@@ -164,6 +164,7 @@ cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.atms.tm00.bufr_d" atmsbufr
 cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.crisf4.tm00.bufr_d" crisfsbufr
 cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.1bamua.tm00.bufr_d" 1bamsuabufr
 cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.esamua.tm00.bufr_d" esamsuabufr
+cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.nexrad.tm00.bufr_d" l2rwbufr
 #
 #-----------------------------------------------------------------------
 #
@@ -317,7 +318,32 @@ if [[ -f "$input_file" ]]; then
 else
   echo "Input file $input_file does not exist."
 fi
+#
+#-----------------------------------------------------------------------
+#
+# Run l2rw super-ob bufr2ioda tool
+#
+#-----------------------------------------------------------------------
+#
+pgm="rdas_nexrad_superob.x"
+input_bufr="l2rwbufr"
+grid_file="fv3_grid_spec"
+namelist="nexrad_superob.nml"
 
+cp "${EXECdir}/bin/${pgm}" .
+cp "${FIX_GSI}/${PREDEF_GRID_NAME}/${grid_file}" .
+cp "${RDASAPP_DIR}/rrfs-test/IODA/radar_renameStnID.py" .
+cp "${RDASAPP_DIR}/rrfs-test/IODA/${namelist}" .
+
+sed -i "s/@CYCLETIME@/${CDATE}/" "${namelist}"
+
+"./${pgm}" "${input_bufr}" "${grid_file}" "ioda_nexrad_unfixed.nc" "${namelist}" >> "${pgmout}"
+export err=$?
+err_chk
+mv errfile errfile_radialVelocity
+
+python radar_renameStnID.py --input "ioda_nexrad_unfixed.nc" --output "ioda_nexrad.nc"
+rm -f "ioda_nexrad_unfixed.nc"
 #
 #-----------------------------------------------------------------------
 #
@@ -352,7 +378,6 @@ for ioda_file in ioda*.nc; do
     echo "Skipping domain check & patch: $ioda_file is empty"
     continue
   fi
-  grid_file="${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec"
   if [[ "${ioda_file}" == *abi* && "${ioda_file}" != *satwnd* ]]; then
     echo " ${ioda_file} ioda file detected: running offline_domain_check_satrad.py"
     export pgm="offline_domain_check_satrad.py"
@@ -369,7 +394,9 @@ for ioda_file in ioda*.nc; do
     base_name=$(basename "$ioda_file" .nc)
     mv  "${base_name}_dc.nc" "${base_name}.nc"
     export pgm="offline_ioda_patch.py"
-    if [[ "${ioda_file}" == *adpupa* ]]; then
+    if [[ "${ioda_file}" == *nexrad* ]]; then
+      echo "Skipping ioda_patch for ${ioda_file}"
+    elif [[ "${ioda_file}" == *adpupa* ]]; then
       ./offline_ioda_patch.py -o "${ioda_file}" --patch-timeoffset >> $pgmout
     else
       ./offline_ioda_patch.py -o "${ioda_file}" >> $pgmout
