@@ -22,10 +22,10 @@ background error:
       - horizontal:
           fixed value: 15.0e3
         write:
-          filepath: mpas_conus3km.diffusion_hz
+          filepath: mpas.diffusion_hz
       - vertical:
           levels: 59
           fixed value: 11.0
           as gaussian: true
         write:
-          filepath: mpas_conus3km.diffusion_vt
+          filepath: mpas.diffusion_vt
