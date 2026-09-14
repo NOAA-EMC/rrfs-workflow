@@ -120,6 +120,14 @@ case $MACHINE in
     APRUN_UA="srun -n 1"
     ;;
 
+  "URSA")
+    # Launch exactly PE_MEMBER01 ranks with TPP_RUN_FCST threads, like WCOSS2: the node count is
+    # rounded up so the allocation can hold more ranks, and srun no longer inherits cpus-per-task.
+    OMP_NUM_THREADS=${TPP_RUN_FCST}
+    APRUN="srun --export=ALL --mem=0 -n ${PE_MEMBER01} --cpus-per-task=${OMP_NUM_THREADS}"
+    APRUN_UA="srun -n 1"
+    ;;
+
   "GAEA")
     APRUN="srun --export=ALL --mem=0"
     APRUN_UA="srun -n 1"

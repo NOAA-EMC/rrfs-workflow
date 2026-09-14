@@ -84,7 +84,7 @@ case $MACHINE in
   APRUN="mpiexec -n ${ncores} -ppn ${PPN_PROC_RADAR}"
   ;;
 #
-"HERA")
+"HERA"|"URSA")
   APRUN="srun --export=ALL"
   ;;
 #
@@ -209,7 +209,7 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
       obs_appendix=grib2
     fi
     ;;
-  "JET" | "HERA" | "ORION" | "HERCULES" | "GAEA")
+  "JET" | "HERA" | "ORION" | "HERCULES" | "GAEA" | "URSA")
     obs_appendix=grib2
   esac
 
@@ -377,9 +377,12 @@ EOF
   if [ "${DO_IODA_MRMS}" = "TRUE" ]; then
 
      # pyioda libraries
+     # Load this machine's RDASApp environment (RDASApp names its Gaea C6 modulefile gaeac6)
+     rdas_machine=${MACHINE,,}
+     [[ "${rdas_machine}" == "gaea" ]] && rdas_machine="gaeac6"
      module purge
      module use "${HOMErrfs}"/sorc/RDASApp/modulefiles
-     module load RDAS/wcoss2.intel
+     module load RDAS/${rdas_machine}.intel
      PYIODALIB=$(echo "${HOMErrfs}"/sorc/RDASApp/build/lib/python3.*)
      export PYTHONPATH=${PYIODALIB}:${PYTHONPATH}
      "${USHdir}"/MRMS2ioda.py -i ./Gridded_ref.nc -c "${YYYY}-${MM}-${DD}T${HH}:${bigmin}:00" -o "ioda_mrms_${YYYYMMDD}${HH}_${bigmin}.nc4"

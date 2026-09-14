@@ -90,7 +90,7 @@ case $MACHINE in
     APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_PRDGEN}"
     ;;
 
-  "HERA")
+  "HERA"|"URSA")
     APRUN="srun --export=ALL"
     ;;
 

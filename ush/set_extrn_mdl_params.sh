@@ -50,7 +50,7 @@ case ${EXTRN_MDL_NAME_ICS} in
   "WCOSS2")
     EXTRN_MDL_SYSBASEDIR_ICS=""
     ;;
-  "HERA")
+  "HERA"|"URSA")
     EXTRN_MDL_SYSBASEDIR_ICS=""
     ;;
   "ORION"|"HERCULES")
@@ -67,7 +67,7 @@ case ${EXTRN_MDL_NAME_ICS} in
   "WCOSS2")
     EXTRN_MDL_SYSBASEDIR_ICS="/lfs/h1/ops/prod/com/gfs/v16.3"
     ;;
-  "HERA")
+  "HERA"|"URSA")
     EXTRN_MDL_SYSBASEDIR_ICS="/scratch1/NCEPDEV/rstprod/com/gfs/prod"
     ;;
   "ORION"|"HERCULES")
@@ -84,7 +84,7 @@ case ${EXTRN_MDL_NAME_ICS} in
   "WCOSS2")
     EXTRN_MDL_SYSBASEDIR_ICS="/lfs/h1/ops/prod/com/gfs/v16.3"
     ;;
-  "HERA")
+  "HERA"|"URSA")
     EXTRN_MDL_SYSBASEDIR_ICS="/scratch1/NCEPDEV/rstprod/com/gfs/prod"
     ;;
   "JET")
@@ -98,13 +98,13 @@ case ${EXTRN_MDL_NAME_ICS} in
   "WCOSS2")
     EXTRN_MDL_SYSBASEDIR_ICS="${EXTRN_MDL_SOURCE_BASEDIR_ICS:-"/lfs/h1/ops/prod/com/gefs/v12.3"}"
     ;;
-  "HERA")
+  "HERA"|"URSA")
     EXTRN_MDL_SYSBASEDIR_ICS=""
     ;;
   "JET")
     EXTRN_MDL_SYSBASEDIR_ICS="${EXTRN_MDL_SOURCE_BASEDIR_ICS:-"/mnt/lfs4/BMC/public/data/grids/gens/pgrb2b"}"
     ;;
-  "HERA")
+  "HERA"|"URSA")
     EXTRN_MDL_SYSBASEDIR_ICS="${EXTRN_MDL_SOURCE_BASEDIR_ICS:-/mnt/lfs4/BMC/public/data/grids/gens/pgrb2b}"
     ;;
   esac
@@ -112,7 +112,7 @@ case ${EXTRN_MDL_NAME_ICS} in
 
 "RAP")
   case $MACHINE in
-  "HERA")
+  "HERA"|"URSA")
     EXTRN_MDL_SYSBASEDIR_ICS="/scratch2/BMC/public/data/gsd/rap/full/wrfnat"
     ;;
   "ORION"|"HERCULES")
@@ -126,7 +126,7 @@ case ${EXTRN_MDL_NAME_ICS} in
 
 "HRRR")
   case $MACHINE in
-  "HERA")
+  "HERA"|"URSA")
     EXTRN_MDL_SYSBASEDIR_ICS="/scratch2/BMC/public/data/gsd/hrrr/conus/wrfnat"
     ;;
   "ORION"|"HERCULES")
@@ -140,7 +140,7 @@ case ${EXTRN_MDL_NAME_ICS} in
 
 "HRRRDAS")
   case "$MACHINE" in
-  "HERA")
+  "HERA"|"URSA")
     EXTRN_MDL_SYSBASEDIR_ICS=""
     ;;
   "JET")
@@ -234,7 +234,7 @@ case ${EXTRN_MDL_NAME_LBCS} in
   "WCOSS2")
     EXTRN_MDL_SYSBASEDIR_LBCS=""
     ;;
-  "HERA")
+  "HERA"|"URSA")
     EXTRN_MDL_SYSBASEDIR_LBCS=""
     ;;
   "ORION"|"HERCULES")
@@ -251,7 +251,7 @@ case ${EXTRN_MDL_NAME_LBCS} in
   "WCOSS2")
     EXTRN_MDL_SYSBASEDIR_LBCS="/lfs/h1/ops/prod/com/gfs/v16.3"
     ;;
-  "HERA")
+  "HERA"|"URSA")
     EXTRN_MDL_SYSBASEDIR_LBCS="/scratch1/NCEPDEV/rstprod/com/gfs/prod"
     ;;
   "ORION"|"HERCULES")
@@ -265,7 +265,7 @@ case ${EXTRN_MDL_NAME_LBCS} in
 
 "GDASENKF")
   case "$MACHINE" in
-  "HERA")
+  "HERA"|"URSA")
     EXTRN_MDL_SYSBASEDIR_LBCS="/scratch1/NCEPDEV/rstprod/com/gfs/prod"
     ;;
   "JET")
@@ -282,7 +282,7 @@ case ${EXTRN_MDL_NAME_LBCS} in
   "JET")
     EXTRN_MDL_SYSBASEDIR_LBCS="${EXTRN_MDL_SOURCE_BASEDIR_LBCS:-"/mnt/lfs4/BMC/public/data/grids/gens/pgrb2b"}"
     ;;
-  "HERA")
+  "HERA"|"URSA")
     EXTRN_MDL_SYSBASEDIR_LBCS="${EXTRN_MDL_SOURCE_BASEDIR_LBCS:-/mnt/lfs4/BMC/public/data/grids/gens/pgrb2b}"
     ;;
   esac
@@ -290,7 +290,7 @@ case ${EXTRN_MDL_NAME_LBCS} in
 
 "RAP")
   case $MACHINE in
-  "HERA")
+  "HERA"|"URSA")
     EXTRN_MDL_SYSBASEDIR_LBCS="/scratch2/BMC/public/data/gsd/rap/full/wrfnat"
     ;;
   "ORION"|"HERCULES")
@@ -304,7 +304,7 @@ case ${EXTRN_MDL_NAME_LBCS} in
 
 "HRRR")
   case $MACHINE in
-  "HERA")
+  "HERA"|"URSA")
     EXTRN_MDL_SYSBASEDIR_LBCS="/scratch2/BMC/public/data/gsd/hrrr/conus/wrfnat"
     ;;
   "ORION"|"HERCULES")

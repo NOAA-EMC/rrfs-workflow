@@ -97,7 +97,7 @@ case $MACHINE in
     APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_POST} --cpu-bind core --depth ${OMP_NUM_THREADS}"
     ;;
 
-  "HERA")
+  "HERA"|"URSA")
     APRUN="srun --export=ALL"
     ;;
 

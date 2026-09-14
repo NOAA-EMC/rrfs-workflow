@@ -83,7 +83,7 @@ case $MACHINE in
   APRUN="mpiexec -n 1 -ppn 1"
   ;;
 #
-"HERA")
+"HERA"|"URSA")
   APRUN="srun --export=ALL"
   ;;
 #

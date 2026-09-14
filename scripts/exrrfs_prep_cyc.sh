@@ -81,7 +81,7 @@ case $MACHINE in
     APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_PREPSTART}"
     ;;
 
-  "HERA")
+  "HERA"|"URSA")
     APRUN="srun --export=ALL --mem=0"
     ;;
 
