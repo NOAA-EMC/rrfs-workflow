@@ -22,8 +22,8 @@ load("rrfs_common")
 
 -- Point CMake at a local bufr 11.7.0 (the WCOSS2 version) instead of the loaded bufr 12.1.0, which
 -- no longer builds the bufr_d library GSI links. <pkg>_ROOT is searched before CMAKE_PREFIX_PATH.
-setenv("bufr_ROOT","/scratch4/BMC/zrtrr/Samuel.Degelia/rrfs_libs/ursa/bufr.11.7.0")
-setenv("BUFR_ROOT","/scratch4/BMC/zrtrr/Samuel.Degelia/rrfs_libs/ursa/bufr.11.7.0")
+setenv("bufr_ROOT","/scratch4/BMC/rtrr/rrfs_lib/bufr.11.7.0")
+setenv("BUFR_ROOT","/scratch4/BMC/rtrr/rrfs_lib/bufr.11.7.0")
 
 -- oneAPI 2024 dropped icc/icpc, so use the icx/icpx MPI wrappers (Fortran stays on ifort)
 setenv("CMAKE_C_COMPILER","mpiicx")
