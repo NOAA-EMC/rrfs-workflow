@@ -28,6 +28,18 @@ atmosphere_number_ensemble_members: 30
 # I/O things
 # ----------
 write_into_existing_files: true
+fields_to_write:
+- eastward_wind
+- northward_wind
+- air_temperature
+- air_pressure_thickness
+- water_vapor_mixing_ratio_wrt_moist_air
+- cloud_liquid_ice
+- cloud_liquid_water
+- rain_water
+- snow_water
+- graupel
+- upward_air_velocity
 
 # Local Ensemble DA (LETKF)
 # -------------------------
@@ -117,7 +129,7 @@ state_variables:
 - cloud_liquid_ice
 - cloud_liquid_water
 - ozone_mass_mixing_ratio
-- geopotential_height_times_gravity_at_surface
+- geopotential_at_surface
 - f10m
 - slmsk
 - sheleg
@@ -150,7 +162,7 @@ water_vapor_mixing_ratio_wrt_moist_air: sphum
 cloud_liquid_ice: ice_wat
 cloud_liquid_water: liq_wat
 ozone_mass_mixing_ratio: o3mr
-geopotential_height_times_gravity_at_surface: phis
+geopotential_at_surface: phis
 skin_temperature_at_surface: tsfc
 tslb: tslb
 smois: smois
