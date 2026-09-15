@@ -32,7 +32,12 @@ def hofx(xmlFile, expdir, do_spinup=False):
     #
     dependencies = f'''
   <dependency>{timedep}
-    <taskdep task="fcst"/>
+    <or>
+      <taskdep task="fcst"/>
+      <taskdep task="fcst_h"/>
+      <taskdep task="fcst_hh"/>
+      <taskdep task="fcst_hhh"/>
+    </or>
   </dependency>'''
     #
     xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv, dependencies, command_id="hofx")
