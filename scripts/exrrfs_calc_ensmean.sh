@@ -57,7 +57,7 @@ case $MACHINE in
   APRUN="mpiexec -n ${ncores} -ppn ${PPN_RECENTER} --cpu-bind core --depth ${OMP_NUM_THREADS}"
   ;;
 #
-"HERA")
+"HERA" | "URSA")
   ulimit -v unlimited
   export OMP_NUM_THREADS=1
 #  export OMP_STACKSIZE=300M
