@@ -39,7 +39,7 @@ cp "${meshgriddir}"/"${MESH_NAME}".grid.nc mesh.nc
 #
 
 obs_appendix=${REFLOBS_APPENDIX:-grib2}
-NSSL=${OBSPATH_NSSLMOSIAC}
+NSSL=${OBSPATH_NSSLMOSAIC}
 
 mrms="MergedReflectivityQC"
 
