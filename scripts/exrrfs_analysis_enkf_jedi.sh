@@ -80,7 +80,7 @@ case $MACHINE in
   APRUN="mpirun -n ${ncores} -ppn ${ppn} --cpu-bind core --depth 1"
   ;;
 #
-"HERA")
+"HERA"|"URSA")
   APRUN="srun"
   ;;
   #

@@ -101,7 +101,7 @@ case "$MACHINE" in
     APRUN_PRE_BLENDING="mpiexec -n ${ncores_blending} -ppn ${PPN_PRE_BLENDING} --cpu-bind core --depth 2"
     ;;
 
-  "HERA")
+  "HERA"|"URSA")
     APRUN="srun --export=ALL"
     ;;
 
@@ -870,7 +870,7 @@ if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
        fi
       ;;
 
-    "HERA")
+    "HERA"|"URSA")
        if [[ $NCORES_PER_NODE -gt 80 ]]; then
           export OMP_NUM_THREADS="80"
        fi

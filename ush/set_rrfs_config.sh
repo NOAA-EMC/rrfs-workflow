@@ -19,7 +19,7 @@ else
 fi
 
 
-if [[ $MACHINE == "hera" ]] ; then
+if [[ $MACHINE == "hera" ]] || [[ $MACHINE == "ursa" ]] ; then
 
 # for using RAP as boundary and initial
 #  EXTRN_MDL_SOURCE_BASEDIR_ICS=/scratch4/BMC/public/data/grids/rap/full/wrfnat/grib2
@@ -139,7 +139,7 @@ if [[ $DO_RETRO == "TRUE" ]] ; then
     RAPHRRR_SOIL_ROOT=${RETRODATAPATH}/rap_hrrr_soil
     FIRE_RAVE_DIR=${RETRODATAPATH}/RAVE_RAW
   fi
-  if [[ $MACHINE == "hera" ]] ; then
+  if [[ $MACHINE == "hera" ]] || [[ $MACHINE == "ursa" ]] ; then
     RETRODATAPATH="/scratch3/BMC/zrtrr/RRFS_RETRO_DATA"
     if [[ ${DO_ENSEMBLE} == "TRUE" ]]; then
       if [[ ${EXTRN_MDL_NAME_ICS} == "GEFS" ]]; then

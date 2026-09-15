@@ -373,7 +373,7 @@ case "${anl_or_fcst}" in
     "GDASENKF")
       if [ "${MACHINE}" = "WCOSS2" ] ; then
         fns_on_disk=( "gdas.t${hh}z.atmf0${fcst_hh}.nc" "gdas.t${hh}z.sfcf0${fcst_hh}.nc")  # use netcdf
-      elif [ "${MACHINE}" = "HERA" ] ; then
+      elif [ "${MACHINE}" = "HERA" ] || [ "${MACHINE}" = "URSA" ] ; then
         fns_on_disk=( "gdas.t${hh}z.atmf0${fcst_hh}.nc" "gdas.t${hh}z.sfcf0${fcst_hh}.nc")  # use netcdf
       elif [ "${MACHINE}" = "GAEA" ] ; then
         fns_on_disk=( "gdas.t${hh}z.atmf0${fcst_hh}.nc" "gdas.t${hh}z.sfcf0${fcst_hh}.nc")  # use netcdf
@@ -491,7 +491,7 @@ and analysis or forecast (anl_or_fcst):
 
     "GDASENKF")
       fcst_hhh=( $( printf "%03d " "${lbc_spec_fhrs[@]}" ) )
-      if  [ "${MACHINE}" = "HERA" ]; then
+      if  [ "${MACHINE}" = "HERA" ] || [ "${MACHINE}" = "URSA" ]; then
         fns_on_disk=( "gdas.t${hh}z.atmf${fcst_hhh[@]}.nc" "gdas.t${hh}z.sfcf${fcst_hhh[@]}.nc")  # use netcdf
       elif  [ "${MACHINE}" = "GAEA" ]; then
         fns_on_disk=( "gdas.t${hh}z.atmf${fcst_hhh[@]}.nc" "gdas.t${hh}z.sfcf${fcst_hhh[@]}.nc")  # use netcdf
@@ -595,7 +595,7 @@ bination of external model (extrn_mdl_name) and analysis or forecast
     "WCOSS2")
       sysdir=""
       ;;
-    "HERA")
+    "HERA"|"URSA")
       sysdir=""
       ;;
     "GAEA")
@@ -627,7 +627,7 @@ has not been specified for this external model and machine combination:
         sysdir="$sysbasedir/gfs.${yyyymmdd}/${hh}/atmos"
       fi
       ;;
-    "HERA")
+    "HERA"|"URSA")
       sysdir="$sysbasedir"
       #sysdir="$sysbasedir/gfs.${yyyymmdd}/${hh}/atmos"
       ;;
@@ -657,7 +657,7 @@ has not been specified for this external model and machine combination:
     "WCOSS2")
        sysdir="$sysbasedir/enkfgdas.${yyyymmdd}/${hh}/atmos/${GDASENKF_INPUT_SUBDIR}"
        ;;
-    "HERA")
+    "HERA"|"URSA")
        sysdir="$sysbasedir/enkfgdas.${yyyymmdd}/${hh}/atmos/${GDASENKF_INPUT_SUBDIR}"
        ;;
     "GAEA")
@@ -681,7 +681,7 @@ has not been specified for this external model and machine combination:
 
   "GEFS")
     case "$MACHINE" in
-    "HERA")
+    "HERA"|"URSA")
        sysdir="$sysbasedir/${GEFS_INPUT_SUBDIR}"
        ;;
     "GAEA")
@@ -710,7 +710,7 @@ has not been specified for this external model and machine combination:
 
   "HRRRDAS")
     case "$MACHINE" in
-    "HERA")
+    "HERA"|"URSA")
        sysdir="$sysbasedir"
        ;;
     "GAEA")
@@ -734,7 +734,7 @@ has not been specified for this external model and machine combination:
     "WCOSS2")
       sysdir="$sysbasedir"
       ;;
-    "HERA")
+    "HERA"|"URSA")
       sysdir="$sysbasedir"
       ;;
     "GAEA")
@@ -762,7 +762,7 @@ has not been specified for this external model and machine combination:
     "WCOSS2")
       sysdir="$sysbasedir"
       ;;
-    "HERA")
+    "HERA"|"URSA")
       sysdir="$sysbasedir"
       ;;
     "GAEA")
@@ -789,7 +789,7 @@ has not been specified for this external model and machine combination:
     "WCOSS2")
       sysdir="$sysbasedir"
       ;;
-    "HERA")
+    "HERA"|"URSA")
       sysdir="$sysbasedir"
       ;;
     "GAEA")
@@ -816,7 +816,7 @@ has not been specified for this external model and machine combination:
     "WCOSS2")
       sysdir="$sysbasedir/rrfs.${yyyymmdd}/${hh}"
       ;;
-    "HERA")
+    "HERA"|"URSA")
       sysdir="$sysbasedir"
       ;;
     "GAEA")

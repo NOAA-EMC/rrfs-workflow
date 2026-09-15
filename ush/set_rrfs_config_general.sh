@@ -52,6 +52,13 @@ elif [[ $MACHINE == "hera" ]] ; then
   QUEUE_PRDGEN="batch"
   QUEUE_GRAPHICS="batch"
 
+elif [[ $MACHINE == "ursa" ]] ; then
+  ACCOUNT="${ACCOUNT:-zrtrr}"
+  QUEUE_ANALYSIS="batch"
+  QUEUE_PRDGEN="batch"
+  QUEUE_GRAPHICS="batch"
+  QUEUE_POST="batch"
+
 elif [[ $MACHINE == "orion" ]] ; then
   ACCOUNT="${ACCOUNT:-fv3-cam}"
   PARTITION_ANALYSIS=orion
@@ -371,7 +378,7 @@ elif [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_13km" ]] ; then
   CCPP_PHYS_SUITE="FV3_HRRR_gf"
   PPN_RUN_POSTANAL="5"
 
-  if [[ $MACHINE == "wcoss2" ]] ; then
+  if [[ $MACHINE == "wcoss2" ]] || [[ $MACHINE == "ursa" ]] ; then
     LAYOUT_X="7"
     LAYOUT_Y="8"
     PPN_MAKE_ICS="64"

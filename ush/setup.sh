@@ -596,6 +596,19 @@ case $MACHINE in
     QUEUE_POST=${QUEUE_POST:-"batch"}
     ;;
 
+  "URSA")
+    NCORES_PER_NODE=192
+    SCHED="${SCHED:-slurm}"
+    PARTITION_DEFAULT=${PARTITION_DEFAULT:-"u1-compute"}
+    QUEUE_DEFAULT=${QUEUE_DEFAULT:-"batch"}
+    PARTITION_HPSS=${PARTITION_HPSS:-"u1-service"}
+    QUEUE_HPSS=${QUEUE_HPSS:-"batch"}
+    PARTITION_FCST=${PARTITION_FCST:-"u1-compute"}
+    QUEUE_FCST=${QUEUE_FCST:-"batch"}
+    QUEUE_PRDGEN=${QUEUE_PRDGEN:-"batch"}
+    QUEUE_POST=${QUEUE_POST:-"batch"}
+    ;;
+
   "ORION")
     NCORES_PER_NODE=40
     SCHED="${SCHED:-slurm}"
@@ -882,6 +895,13 @@ case $MACHINE in
     TOPO_DIR=${TOPO_DIR:-"/scratch3/NCEPDEV/nems/role.epic/hera/UFS_SRW_data/develop/fix/fix_orog"}
     SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/scratch3/NCEPDEV/nems/role.epic/hera/UFS_SRW_data/develop/fix/fix_sfc_climo"}
     FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/scratch3/NCEPDEV/nems/role.epic/hera/UFS_SRW_data/develop/FV3LAM_pregen"}
+    ;;
+
+  "URSA")
+    FIXgsm=${FIXgsm:-"/scratch3/NCEPDEV/nems/role.epic/ursa/UFS_SRW_data/develop/fix/fix_am"}
+    TOPO_DIR=${TOPO_DIR:-"/scratch3/NCEPDEV/nems/role.epic/ursa/UFS_SRW_data/develop/fix/fix_orog"}
+    SFC_CLIMO_INPUT_DIR=${SFC_CLIMO_INPUT_DIR:-"/scratch3/NCEPDEV/nems/role.epic/ursa/UFS_SRW_data/develop/fix/fix_sfc_climo"}
+    FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"/scratch3/NCEPDEV/nems/role.epic/ursa/UFS_SRW_data/develop/FV3LAM_pregen"}
     ;;
 
   "ORION"|"HERCULES")

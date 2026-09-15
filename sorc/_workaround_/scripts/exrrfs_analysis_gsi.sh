@@ -90,7 +90,7 @@ case $MACHINE in
   APRUN="mpiexec -n ${ncores} -ppn ${PPN_RUN_ANALYSIS} --cpu-bind core --depth ${OMP_NUM_THREADS}"
   ;;
 #
-"HERA")
+"HERA"|"URSA")
   export OMP_NUM_THREADS=${TPP_RUN_ANALYSIS}
   export OMP_STACKSIZE=300M
   APRUN="srun"
@@ -289,7 +289,7 @@ if  [[ ${regional_ensemble_option:-1} -eq 1 || ${l_both_fv3sar_gfs_ens} = ".true
     fi
 
     ;;
-  "JET" | "HERA" | "ORION" | "HERCULES" | "GAEA" )
+  "JET" | "HERA" | "ORION" | "HERCULES" | "GAEA" | "URSA" )
 
     for loop in $loops; do
       for timelist in $(ls ${ENKF_FCST}/*.gdas.t*z.atmf${loop}.mem080.${ftype}); do
@@ -472,7 +472,7 @@ else
        obspath_tmp=${OBSPATH}
      fi
     ;;
-  "JET" | "HERA" | "GAEA")
+  "JET" | "HERA" | "GAEA" | "URSA")
      obsfileprefix=${YYYYMMDDHH}.${obs_source}
      obspath_tmp=${OBSPATH}
     ;;

@@ -31,7 +31,7 @@ OPTIONS
       show this help guide
   -p, --platform=PLATFORM
       name of machine you are building on
-      (e.g. cheyenne | hera | jet | orion | hercules | wcoss2)
+      (e.g. cheyenne | hera | jet | orion | hercules | wcoss2 | ursa)
   -c, --compiler=COMPILER
       compiler to use; default depends on platform
       (e.g. intel | gnu | cray | gccgfortran)
@@ -402,6 +402,16 @@ if [ "${DEFAULT_BUILD}" = true ]; then
   BUILD_RDASAPP="on"
 fi
 
+# Patch ufs-weather-model for Ursa's oneAPI 2024 compilers (icx, no classic icc; ifort 2021.13).
+# icx rejects the icc-only C flags "-fp-model source"/"-ftrapuv", and ifort 2021.13 rejects associate
+# names in OpenMP clauses, so select the dycore's existing associate-free (gfortran) OpenMP clauses.
+if [ "${PLATFORM}" = "ursa" ] && [ "${BUILD_UFS}" = "on" ]; then
+  sed -i -e 's/-fp-model source/-fp-model precise/' \
+         -e '/CMAKE_C_FLAGS_DEBUG/s/ -ftrapuv//' ${SORC_DIR}/ufs-weather-model/cmake/Intel.cmake
+  sed -i 's/^#ifdef __GFORTRAN__/#if 1/' \
+      ${SORC_DIR}/ufs-weather-model/FV3/atmos_cubed_sphere/model/{fv_dynamics,fv_mapz}.F90
+fi
+
 # Choose components to build for air quality modeling (RRFS-AQM)
 if [ "${APPLICATION}" = "ATMAQ" ]; then
   if [ "${DEFAULT_BUILD}" = true ]; then
@@ -419,7 +429,7 @@ set -eu
 # automatically determine compiler
 if [ -z "${COMPILER}" ] ; then
   case ${PLATFORM} in
-    jet|hera|gaea) COMPILER=intel ;;
+    jet|hera|gaea|ursa) COMPILER=intel ;;
     orion|hercules) COMPILER=intel ;;
     wcoss2) COMPILER=intel ;;
     gaeac6) COMPILER=intel ;;

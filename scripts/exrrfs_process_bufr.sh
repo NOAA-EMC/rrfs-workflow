@@ -83,7 +83,7 @@ case $MACHINE in
   APRUN="mpiexec -n 1 -ppn 1"
   ;;
 #
-"HERA")
+"HERA"|"URSA")
   APRUN="srun --export=ALL"
   ;;
 #
@@ -181,7 +181,7 @@ else
     fi
 
     ;;
-  "JET" | "HERA" | "ORION" | "HERCULES" | "GAEA" )
+  "JET" | "HERA" | "ORION" | "HERCULES" | "GAEA" | "URSA" )
 
     obsfileprefix=${YYYYMMDDHH}.${obs_source}
     obspath_tmp=${OBSPATH}

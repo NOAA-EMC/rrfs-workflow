@@ -104,7 +104,7 @@ case $MACHINE in
   APRUN_UA="mpirun -n 1 -ppn 1 --cpu-bind core --depth 1"
   ;;
 #
-"HERA")
+"HERA"|"URSA")
   APRUN="srun"
   APRUN_UA="srun -n 1"
   ;;
@@ -293,7 +293,7 @@ if  [[ ${regional_ensemble_option:-1} -eq 1 || ${l_both_fv3sar_gfs_ens} = ".true
     fi
 
     ;;
-  "JET" | "HERA" | "ORION" | "HERCULES" | "GAEA" )
+  "JET" | "HERA" | "ORION" | "HERCULES" | "GAEA" | "URSA" )
 
     for loop in $loops; do
       for timelist in $(ls ${ENKF_FCST}/*.gdas.t*z.atmf${loop}.mem080.${ftype}); do

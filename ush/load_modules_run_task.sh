@@ -100,6 +100,12 @@ set -u
 #
 default_modules_dir="$HOMErrfs/modulefiles"
 machine=$(echo_lowercase $MACHINE)
+
+# Let srun steps inherit this task's environment on Ursa. Jobs are submitted with --export=NONE,
+# which Slurm passes on to srun via SLURM_EXPORT_ENV, so a bare srun would start ranks with no env.
+if [ "${machine}" = "ursa" ]; then
+  export SLURM_EXPORT_ENV=ALL
+fi
 if [ "${WORKFLOW_MANAGER}" != "ecflow" ]; then
   source "${USHdir}/etc/lmod-setup.sh" ${machine}
 fi
