@@ -24,20 +24,24 @@
          simulated variables: [windEastward, windNorthward]
 
        obs operator:
-           name: VertInterp
-           vertical coordinate: air_pressure
-           observation vertical coordinate: pressure
-           observation vertical coordinate group: MetaData
-           interpolation method: log-linear
-           #gsi geovals:
-           #  filename: "obsout/sfc_uv_geoval_2022052619.nc"
-           #  levels_are_top_down: False
-           variables:
-           - name: windEastward
-           - name: windNorthward
+         name: VertInterp
+         vertical coordinate: height_above_mean_sea_level
+         observation vertical coordinate: height
+         observation vertical coordinate group: DerivedMetaData
+         interpolation method: linear
+         variables:
+         - name: windEastward
+         - name: windNorthward
 
        linear obs operator:
          name: VertInterp
+         vertical coordinate: height_above_mean_sea_level
+         observation vertical coordinate: height
+         observation vertical coordinate group: DerivedMetaData
+         interpolation method: linear
+         variables:
+         - name: windEastward
+         - name: windNorthward
 
        obs error:
          covariance model: diagonal
@@ -77,6 +81,9 @@
              name: reduce obs space
 
          - filter: Perform Action
+           identifier:
+             name: ObsInvalidCheck
+             logging: false
            where:
            - variable: ObsValue/windEastward
              value: is_not_valid
@@ -136,6 +143,23 @@
            action:
              name: reduce obs space
 
+         # Obs height adjustment
+         - filter: Variable Assignment
+           apply at iterations: 0,1
+           identifier:
+             name: SurfaceWindHeightAdjustment
+             logging: false
+           assignments:
+           - name: DerivedMetaData/height
+             type: float
+             function:
+               name: ObsFunction/LinearCombination
+               options:
+                 variables:
+                 - name: GeoVaLs/height_above_mean_sea_level_at_surface
+                 coefs: [1.0]
+                 intercept: 10.0
+
          # Online domain check
          - filter: Bounds Check
            apply at iterations: 0,1
@@ -174,55 +198,58 @@
                  xvals: [110000, 105000, 100000, 95000, 90000, 85000, 80000, 75000, 70000, 65000, 60000, 55000, 50000, 45000, 40000, 35000, 30000, 25000, 20000, 15000, 10000, 7500, 5000, 4000, 3000, 2000, 1000, 500, 400, 300, 200, 100, 0]
                  errors: [1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874, 1.5874]
 
-#         # Error inflation (windEastward) based on pressure check (setupw.f90)
-#         - filter: Perform Action
-#           identifier:
-#             name: ObsErrorFactorPressureCheckU
-#             logging: true
-#             diagnostic flag new: false
-#           filter variables:
-#           - name: windEastward
-#           where:
-#           - variable: ObsType/windEastward
-#             is_in: 287
-#           action:
-#             name: inflate error
-#             inflation variable:
-#               name: ObsFunction/ObsErrorFactorPressureCheck
-#               options:
-#                 variable: windEastward
-#                 inflation factor: 4.0
-#                 SetSfcWndObsHeight: true
-#                 AddObsHeightToStationElevation: true
-#                 AssumedSfcWndObsHeight: 10
+         # Error inflation (windEastward) based on pressure check (setupw.f90)
+         - filter: Perform Action
+           apply at iterations: 0,1
+           identifier:
+             name: ObsErrorFactorPressureCheckU
+             logging: false
+             diagnostic flag new: false
+           filter variables:
+           - name: windEastward
+           where:
+           - variable: ObsType/windEastward
+             is_in: 287
+           action:
+             name: inflate error
+             inflation variable:
+               name: ObsFunction/ObsErrorFactorPressureCheck
+               options:
+                 variable: windEastward
+                 inflation factor: 4.0
+                 SetSfcWndObsHeight: true
+                 AddObsHeightToStationElevation: true
+                 AssumedSfcWndObsHeight: 10
 
-#         # Error inflation (windNorthward) based on pressure check (setupw.f90)
-#         - filter: Perform Action
-#           identifier:
-#             name: ObsErrorFactorPressureCheckV
-#             logging: true
-#             diagnostic flag new: false
-#           filter variables:
-#           - name: windNorthward
-#           where:
-#           - variable: ObsType/windNorthward
-#             is_in: 287
-#           action:
-#             name: inflate error
-#             inflation variable:
-#               name: ObsFunction/ObsErrorFactorPressureCheck
-#               options:
-#                 variable: windNorthward
-#                 inflation factor: 4.0
-#                 SetSfcWndObsHeight: true
-#                 AddObsHeightToStationElevation: true
-#                 AssumedSfcWndObsHeight: 10
+         # Error inflation (windNorthward) based on pressure check (setupw.f90)
+         - filter: Perform Action
+           apply at iterations: 0,1
+           identifier:
+             name: ObsErrorFactorPressureCheckV
+             logging: false
+             diagnostic flag new: false
+           filter variables:
+           - name: windNorthward
+           where:
+           - variable: ObsType/windNorthward
+             is_in: 287
+           action:
+             name: inflate error
+             inflation variable:
+               name: ObsFunction/ObsErrorFactorPressureCheck
+               options:
+                 variable: windNorthward
+                 inflation factor: 4.0
+                 SetSfcWndObsHeight: true
+                 AddObsHeightToStationElevation: true
+                 AssumedSfcWndObsHeight: 10
 
 #         # Error inflation (windEastward) based on errormod (qcmod.f90)
 #         - filter: Perform Action
+#           apply at iterations: 0,1
 #           identifier:
-#             name: ObsErrorFactorPressureCheckU
-#             logging: true
+#             name: ObsErrorFactorConventionalU
+#             logging: false
 #             diagnostic flag new: false
 #           filter variables:
 #           - name: windEastward
@@ -242,9 +269,10 @@
 
 #         # Error inflation (windNorthward) based on errormod (qcmod.f90)
 #         - filter: Perform Action
+#           apply at iterations: 0,1
 #           identifier:
-#             name: ObsErrorFactorPressureCheckV
-#             logging: true
+#             name: ObsErrorFactorConventionalV
+#             logging: false
 #             diagnostic flag new: false
 #           filter variables:
 #           - name: windNorthward
@@ -266,8 +294,8 @@
          - filter: Perform Action
            apply at iterations: 0,1
            identifier:
-             name: ObsErrorFactorPressureCheckU
-             logging: true
+             name: ObsErrorFactorQm3_
+             logging: false
              diagnostic flag new: false
            filter variables:
            - name: windEastward
