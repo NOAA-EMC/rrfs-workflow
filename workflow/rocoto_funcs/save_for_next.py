@@ -7,8 +7,13 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 
 def save_for_next(xmlFile, expdir, dcGrpInfo, do_ensemble=False):
     meta_id = 'save_for_next'
-    fhr = dcGrpInfo["fhr"]
-    task_id = f'{meta_id}_f{fhr:02d}'
+    do_subcyc = int(os.getenv("SUBCYC_INTERVAL", "0")) > 0
+    if do_subcyc:
+        fmn = dcGrpInfo["fmn"]
+        task_id = f'{meta_id}_f{fmn:02d}'
+    else:
+        fhr = dcGrpInfo["fhr"]
+        task_id = f'{meta_id}_f{fhr:02d}'
     cycledefs = dcGrpInfo['cycledef']
     cyc_interval = os.getenv('CYC_INTERVAL')
     mpasout_interval = os.getenv('MPASOUT_INTERVAL', '1') or cyc_interval
@@ -16,8 +21,13 @@ def save_for_next(xmlFile, expdir, dcGrpInfo, do_ensemble=False):
     # Task-specific EnVars beyond the task_common_vars
     dcTaskEnv = {
         'MPASOUT_INTERVAL': mpasout_interval,
-        'FCST_HR': f'{fhr}',
     }
+    if do_subcyc:
+        dcTaskEnv['FCST_MN'] = f'{fmn}'
+        offset_str = f'00:{fmn}:00'
+    else:
+        dcTaskEnv['FCST_HR'] = f'{fhr}'
+        offset_str = f'{fhr}:00:00'
 
     if do_ensemble:
         ens_size = int(os.getenv('ENS_SIZE', '2'))
@@ -30,9 +40,9 @@ def save_for_next(xmlFile, expdir, dcGrpInfo, do_ensemble=False):
         datadep = ""
         for i in range(1, int(ens_size) + 1):
             memdirstr = f'/mem{i:03d}'
-            datadep = datadep + f'''\n    <datadep age="00:00:10"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_@H_&rrfs_ver;/&WGF;{memdirstr}</cyclestr><cyclestr offset="{fhr}:00:00">/mpasout.@Y-@m-@d_@H.@M.@S.nc.done</cyclestr></datadep>'''
+            datadep = datadep + f'''\n    <datadep age="00:00:10"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_@H_&rrfs_ver;/&WGF;{memdirstr}</cyclestr><cyclestr offset="{offset_str}">/mpasout.@Y-@m-@d_@H.@M.@S.nc.done</cyclestr></datadep>'''
     else:
-        datadep = f'''\n    <datadep age="00:00:10"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_@H_&rrfs_ver;/&WGF;</cyclestr><cyclestr offset="{fhr}:00:00">/mpasout.@Y-@m-@d_@H.@M.@S.nc.done</cyclestr></datadep>'''
+        datadep = f'''\n    <datadep age="00:00:10"><cyclestr>&DATAROOT;/@Y@m@d/&RUN;_fcst_@H_&rrfs_ver;/&WGF;</cyclestr><cyclestr offset="{offset_str}">/mpasout.@Y-@m-@d_@H.@M.@S.nc.done</cyclestr></datadep>'''
 
     timedep = ""
     realtime = os.getenv("REALTIME", "false")

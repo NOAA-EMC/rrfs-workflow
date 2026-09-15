@@ -4,15 +4,29 @@ import shutil
 import sys
 import os
 from rocoto_funcs.setup_xml import setup_xml
-from rocoto_funcs.base import source, get_required_env, run_git_command
+from rocoto_funcs.base import source, get_required_env, run_git_command, configure_wofs
 from rocoto_funcs.smart_superyaml import smart_superyaml
 print('Aloha!')
 #
 
-if len(sys.argv) == 2:
+if len(sys.argv) >= 2:
     EXPin = sys.argv[1]
 else:
     EXPin = "exp.setup"
+#
+# update WOFS_INDEX based on the command line input
+# if missing, default to 1
+if len(sys.argv) == 3:
+    s = sys.argv[2].strip()
+    if not (s.isdigit() and int(s) > 0):
+        print("wofs_index should be larger than 0")
+        print("WoFS Usage: setup_rocoto.py exp.wofs <wofs_index>")
+        exit()
+    os.environ["WOFS_INDEX"] = sys.argv[2].strip()
+elif "wofs" in EXPin:
+    print("wofs_index not provided, exit.")
+    print("WoFS Usage: setup_rocoto.py exp.wofs <wofs_index>")
+    exit()
 
 # find the HOMErrfs directory and the MACHINE; run init.sh
 HOMErrfs = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -143,6 +157,10 @@ export HOMErrfs={HOMErrfs}
 export MACHINE={machine}
 #===
 '''
+# get WoFS domain specifiction
+do_wofs = os.getenv('DO_WOFS', 'FALSE').upper() == "TRUE"
+if do_wofs:
+    wofs_header, removelist = configure_wofs()
 #
 EXPout = f'{expdir}/exp.setup'
 with open(EXPin, 'r') as infile, open(EXPout, 'w') as outfile:
@@ -157,8 +175,11 @@ with open(EXPin, 'r') as infile, open(EXPout, 'w') as outfile:
                 still_header = False
                 outfile.write(header)
                 outfile.write(text)
-                outfile.write(line)
-        else:
+                if do_wofs:
+                    outfile.write(wofs_header)
+                if not (do_wofs and any(word in line for word in removelist)):
+                    outfile.write(line)
+        elif not (do_wofs and any(word in line for word in removelist)):
             outfile.write(line)
     # ~~~~~~~~~~~~
 

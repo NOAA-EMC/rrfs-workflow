@@ -2,7 +2,7 @@
 import subprocess
 import os
 import calendar
-from datetime import datetime
+from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
 
@@ -72,6 +72,11 @@ def header_entities(xmlFile, expdir):
     cyc_interval = os.getenv('CYC_INTERVAL', '3')
     realtime = os.getenv("REALTIME", "false").upper()
 
+    subcyc_interval = os.getenv('SUBCYC_INTERVAL', '')
+    if subcyc_interval:
+        subcyc_envar = "\n<envar><name>SUBCYC_INTERVAL</name><value>{subcyc_interval}</value></envar>"
+    else:
+        subcyc_envar = ""
     if os.getenv('DO_CHEMISTRY', 'FALSE').upper() == "TRUE":
         chem_envar = "\n<envar><name>DO_CHEMISTRY</name><value>TRUE</value></envar>"
     else:
@@ -140,7 +145,7 @@ def header_entities(xmlFile, expdir):
 <envar><name>MPI_RUN_CMD</name><value>{mpi_run_cmd}</value></envar>
 <envar><name>MESH_NAME</name><value>{mesh_name}</value></envar>
 <envar><name>WGF</name><value>{wgf}</value></envar>
-<envar><name>CYC_INTERVAL</name><value>{cyc_interval}</value></envar>{chem_envar}
+<envar><name>CYC_INTERVAL</name><value>{cyc_interval}</value></envar>{subcyc_envar}{chem_envar}
 "
 >{entities_for_cycledef}
 '''
@@ -371,3 +376,26 @@ def xml_task(
     if metatask is True:
         xmlFile.write(meta_end)
 # end of xml_task
+
+
+# configure_wofs
+def configure_wofs():
+    print(f'WOFS: get specificaitons for ------ domain{os.getenv("WOFS_INDEX")} ------')
+    predefined_lat_lon = f'{os.getenv("WOFS_LAT")}  {os.getenv("WOFS_LON")}'
+    lat, lon = input(f" enter the domain 'lat lon' [eg: {predefined_lat_lon}]: ").strip().split() or predefined_lat_lon.split()
+    predefined_start_cycle = os.getenv("WOFS_PERIOD").split("-")[0]
+    start_cycle = input(f" enter the start cycle [YYYYMMDDHH, eg: {predefined_start_cycle}]: ").strip() or predefined_start_cycle
+    os.environ["WOFS_LAT"] = lat
+    os.environ["WOFS_LON"] = lon
+    start_date = datetime.strptime(start_cycle, "%Y%m%d%H")
+    end_date = start_date + timedelta(hours=12)
+    end_cycle = end_date.strftime("%Y%m%d%H")
+    os.environ["WOFS_PERIOD"] = f"{start_cycle}-{end_cycle}"
+    #
+    text = f'''export WOFS_INDEX="{os.getenv('WOFS_INDEX')}"
+export WOFS_LAT="{os.getenv('WOFS_LAT')}"
+export WOFS_LON="{os.getenv('WOFS_LON')}"
+export WOFS_PERIOD="{os.getenv('WOFS_PERIOD')}"
+'''
+    #
+    return text, ["WOFS_INDEX", "WOFS_LAT", "WOFS_LON", "WOFS_PERIOD"]
