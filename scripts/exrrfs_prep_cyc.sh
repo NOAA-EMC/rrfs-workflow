@@ -59,7 +59,7 @@ case $MACHINE in
     APRUN="mpiexec -n ${ncores} -ppn ${PPN_PREP_CYC}"
     ;;
 
-  "HERA")
+  "HERA" | "URSA")
     APRUN="srun --export=ALL --mem=0"
     ;;
 
@@ -475,7 +475,12 @@ else
     done
 
     cpprocs=5
-    mpiexec -n ${cpprocs} -ppn ${cpprocs} --cpu-bind core cfp ./para_copy.sh
+    # cfp only exists on WCOSS2, so run the copies serially on other machines
+    if [ "${MACHINE}" = "WCOSS2" ]; then
+      mpiexec -n ${cpprocs} -ppn ${cpprocs} --cpu-bind core cfp ./para_copy.sh
+    else
+      bash ./para_copy.sh
+    fi
     ctrl_bkpath=${bkpath}/../INPUT
     cpreq -p ${ctrl_bkpath}/gfs_ctrl.nc  gfs_ctrl.nc
 

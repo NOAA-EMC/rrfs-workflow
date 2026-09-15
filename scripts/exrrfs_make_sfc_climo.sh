@@ -128,7 +128,7 @@ case $MACHINE in
     APRUN="mpiexec -n ${nprocs}"
     ;;
 
-  "HERA")
+  "HERA" | "URSA")
     APRUN="srun --export=ALL"
     ;;
 
