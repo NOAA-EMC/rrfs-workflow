@@ -10,7 +10,7 @@ cleanup() {
   exit 1
 }
 trap cleanup SIGINT SIGTERM
-# 
+#
 # get command line parameters
 da_opt="build_rdas"
 export REDUCED_SCALARS=true
@@ -20,7 +20,7 @@ get_parms(){
     chem_opt=${str}
   elif [[ "${str}" == noda ]]; then
     da_opt=${str}
-  elif [[ "${str}" == jedi_full_scalars  ]]; then
+  elif [[ "${str}" == jedi_full_scalars ]] || [[ "${str}" = wofs  ]]; then
     export REDUCED_SCALARS=false
   fi
 }
