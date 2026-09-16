@@ -58,7 +58,7 @@ case $MACHINE in
     APRUN="mpiexec -n ${ncores} -ppn ${PPN_PRDGEN}"
     ;;
 
-  "HERA")
+  "HERA" | "URSA")
     APRUN="srun --export=ALL"
     ;;
 
@@ -289,8 +289,13 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
   chmod 775 $DATAprdgen/poescript_${fhr}
 
   # Execute the script
-  export CMDFILE=$DATAprdgen/poescript_${fhr} 
-  mpiexec -np 12 --cpu-bind core cfp $CMDFILE >>$pgmout 2>errfile
+  export CMDFILE=$DATAprdgen/poescript_${fhr}
+  # cfp only exists on WCOSS2, so run the subpieces serially on other machines
+  if [ "${MACHINE}" = "WCOSS2" ]; then
+    mpiexec -np 12 --cpu-bind core cfp $CMDFILE >>$pgmout 2>errfile
+  else
+    bash $CMDFILE >>$pgmout 2>errfile
+  fi
   export err=$?; err_chk
 
   # reassemble the CONUS and Alaska prslev output grids and send to COM

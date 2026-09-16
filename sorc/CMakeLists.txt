@@ -333,6 +333,12 @@ if (BUILD_RRFS_UTILS)
     "-DUSE_RAPHRRR_SFC=ON"
   )
 
+  # Skip dpt2m_post on Ursa: it links through WCOSS2-only library variables (WGRIB2_LIBDIR, IP_LIB4, ...)
+  # that spack-stack doesn't set, and app_build.sh deletes dpt2m_post.exe after the build anyway.
+  if("$ENV{CMAKE_Platform}" STREQUAL "ursa.intel")
+    list(APPEND RRFS_UTILS_ARGS "-DDPT2M_POST=OFF")
+  endif()
+
   ExternalProject_Add(RRFS_UTILS
     PREFIX ${CMAKE_CURRENT_BINARY_DIR}/rrfs_utl
     SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/rrfs_utl

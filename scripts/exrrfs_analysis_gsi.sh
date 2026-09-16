@@ -78,7 +78,7 @@ case $MACHINE in
   APRUN="mpiexec -n ${ncores} -ppn ${PPN_ANALYSIS_GSI} --cpu-bind core --depth ${OMP_NUM_THREADS}"
   ;;
 #
-"HERA")
+"HERA" | "URSA")
   export OMP_NUM_THREADS=${TPP_ANALYSIS_GSI}
   export OMP_STACKSIZE=300M
   APRUN="srun"
@@ -238,7 +238,12 @@ if  [[ ${regional_ensemble_option:-1} -eq 5 ]]; then
   else
     poe_script=parallel_copy.sh
     export MP_CMDFILE=${poe_script}
-    launcher="time mpiexec -np ${ncores} -ppn ${PPN_ANALYSIS_GSI} --cpu-bind core cfp"
+    # cfp only exists on WCOSS2, so run the copies serially on other machines
+    if [ "${MACHINE}" = "WCOSS2" ]; then
+      launcher="time mpiexec -np ${ncores} -ppn ${PPN_ANALYSIS_GSI} --cpu-bind core cfp"
+    else
+      launcher="time bash"
+    fi
     $launcher $MP_CMDFILE
     export err=$?; err_chk
   fi
@@ -298,7 +303,7 @@ if  [[ ${regional_ensemble_option:-1} -eq 1 || ${l_both_fv3sar_gfs_ens} = ".true
     fi
 
     ;;
-  "JET" | "HERA" | "ORION" | "HERCULES" )
+  "JET" | "HERA" | "ORION" | "HERCULES" | "URSA")
 
     for loop in $loops; do
       for timelist in $(ls ${COMINgfs}/*.gdas.t*z.atmf${loop}.mem080.${ftype}); do
@@ -473,7 +478,7 @@ else
      obsfileprefix=${obs_source}
      obspath_tmp=${COMINobsproc}/${obs_source}.${YYYYMMDD}
     ;;
-  "JET" | "HERA")
+  "JET" | "HERA" | "URSA")
      obsfileprefix=${YYYYMMDDHH}.${obs_source}
      obspath_tmp=${COMINobsproc}
     ;;
@@ -1185,7 +1190,12 @@ for file in $filelist; do
   fi
 done
 cd ${shared_output_data}
-launcher="time mpiexec -np ${ncores} -ppn ${PPN_ANALYSIS_GSI} --cpu-bind core cfp"
+# cfp only exists on WCOSS2, so run the copies serially on other machines
+if [ "${MACHINE}" = "WCOSS2" ]; then
+  launcher="time mpiexec -np ${ncores} -ppn ${PPN_ANALYSIS_GSI} --cpu-bind core cfp"
+else
+  launcher="time bash"
+fi
 ${launcher} ${shared_output_data}/copy_shared_file.sh
 export err=$?; err_chk
 #

@@ -62,7 +62,7 @@ case $MACHINE in
   APRUN="mpiexec -n ${ncores} -ppn ${PPN_RECENTER} --cpu-bind core --depth ${OMP_NUM_THREADS}"
   ;;
 #
-"HERA")
+"HERA" | "URSA")
   export OMP_NUM_THREADS=1
 #  export OMP_STACKSIZE=300M
   APRUN="srun --export=ALL"
@@ -171,7 +171,12 @@ for imem in  $(seq 1 $nens)
 
 if [ ${DO_ENSFCST} = "FALSE" ] ; then
   cpprocs=90
-  mpiexec -n ${cpprocs} -ppn ${cpprocs} --cpu-bind core cfp ./para_copy.sh
+  # cfp only exists on WCOSS2, so run the copies serially on other machines
+  if [ "${MACHINE}" = "WCOSS2" ]; then
+    mpiexec -n ${cpprocs} -ppn ${cpprocs} --cpu-bind core cfp ./para_copy.sh
+  else
+    bash ./para_copy.sh
+  fi
 fi
 
 #

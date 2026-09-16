@@ -57,7 +57,7 @@ case $MACHINE in
     APRUNS="time"
     ;;
 
-  "HERA")
+  "HERA" | "URSA")
     APRUNC="srun --export=ALL"
     APRUNS="time"
     ;;
