@@ -6,6 +6,9 @@ set -x
 if [[ -d /lfs/h2 ]] ; then
     PLATFORM=wcoss2
     FIX_RRFS_LOCATION="/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS"
+elif [[ "$(hostname -f)" == *"ufe"* ]] ; then
+    PLATFORM=ursa
+    FIX_RRFS_LOCATION="/scratch4/BMC/rtrr/FIX_RRFS"
 elif [[ -d /scratch1 ]] ; then
     PLATFORM=hera
     FIX_RRFS_LOCATION="/scratch2/BMC/rtrr/FIX_RRFS"

@@ -80,7 +80,7 @@ suite para
         edit PACKAGEHOME '/lfs/h1/ops/%ENVIR%/packages/rrfs.%rrfs_ver%'
         edit PROJ 'RRFS'
         edit ECF_FILES '%PACKAGEHOME%/ecf/scripts'
-        edit ECF_TRIES '3'
+        edit ECF_TRIES '1'
         limit rrfs_submission 50
         family v1.0
           defstatus complete
@@ -12346,6 +12346,10 @@ suite para
                 label storage ""
             endfamily
           endfamily
+          task cycle_end
+            edit ECF_FILES '%PACKAGEHOME%/ecf/scripts'
+            edit CYC '00'
+            trigger ../../../18/rrfs/v1.0/23z == active or ../../../18/rrfs/v1.0/23z == complete
         endfamily
       
       endfamily # rrfs
@@ -12355,7 +12359,7 @@ suite para
         edit PACKAGEHOME '/lfs/h1/ops/%ENVIR%/packages/rrfs.%rrfs_ver%'
         edit PROJ 'RRFS'
         edit ECF_FILES '%PACKAGEHOME%/ecf/scripts'
-        edit ECF_TRIES '3'
+        edit ECF_TRIES '1'
         limit rrfs_submission 50
         family v1.0
           defstatus complete
@@ -25161,6 +25165,10 @@ suite para
                 label storage ""
             endfamily
           endfamily
+          task cycle_end
+            edit ECF_FILES '%PACKAGEHOME%/ecf/scripts'
+            edit CYC '06'
+            trigger ../../../00/rrfs/v1.0/05z == active or ../../../00/rrfs/v1.0/05z == complete
         endfamily
       
       endfamily # rrfs
@@ -25170,7 +25178,7 @@ suite para
         edit PACKAGEHOME '/lfs/h1/ops/%ENVIR%/packages/rrfs.%rrfs_ver%'
         edit PROJ 'RRFS'
         edit ECF_FILES '%PACKAGEHOME%/ecf/scripts'
-        edit ECF_TRIES '3'
+        edit ECF_TRIES '1'
         limit rrfs_submission 50
         family v1.0
           defstatus complete
@@ -37432,6 +37440,10 @@ suite para
                 label storage ""
             endfamily
           endfamily
+          task cycle_end
+            edit ECF_FILES '%PACKAGEHOME%/ecf/scripts'
+            edit CYC '06'
+            trigger ../../../00/rrfs/v1.0/05z == active or ../../../00/rrfs/v1.0/05z == complete
         endfamily
       
       endfamily # rrfs
@@ -37441,7 +37453,7 @@ suite para
         edit PACKAGEHOME '/lfs/h1/ops/%ENVIR%/packages/rrfs.%rrfs_ver%'
         edit PROJ 'RRFS'
         edit ECF_FILES '%PACKAGEHOME%/ecf/scripts'
-        edit ECF_TRIES '3'
+        edit ECF_TRIES '1'
         limit rrfs_submission 50
         family v1.0
           defstatus complete
@@ -50245,6 +50257,10 @@ suite para
                 label storage ""
             endfamily
           endfamily
+          task cycle_end
+            edit ECF_FILES '%PACKAGEHOME%/ecf/scripts'
+            edit CYC '06'
+            trigger ../../../00/rrfs/v1.0/05z == active or ../../../00/rrfs/v1.0/05z == complete
         endfamily
       
       endfamily # rrfs

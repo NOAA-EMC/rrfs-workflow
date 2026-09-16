@@ -1,0 +1,395 @@
+suite prod_clone
+  # Explicitly define the home and output directories to fix the pathing error
+  edit ECF_HOME "/lfs/h2/emc/lam/noscrub/emc.lam/ecflow/submit"
+  edit ECF_OUT  "/lfs/h2/emc/lam/noscrub/emc.lam/ecflow/output"
+  edit OUTPUTDIR "/lfs/f2/t2o/ptmp/emc/para/output/prod_clone"
+  edit ENVIR 'prod'
+  edit MACHINE_SITE 'production'
+  
+  # Base directory for your package
+  edit PACKAGEHOME "/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/prod_clone.v0.0.2"
+  
+  # Use the absolute path for ECF_FILES to avoid expansion issues
+  edit ECF_FILES "/lfs/h2/emc/lam/noscrub/emc.lam/rrfs/prod_clone.v0.0.2/ecf"
+
+  task jupdateprodclonestatuses
+    defstatus complete
+    cron 00:00 23:59 00:01
+
+  family primary
+    family 00
+      family gfs
+        family v16.3
+          family gfs
+            family atmos
+              family post
+                task jgfs_atmos_post_f003
+                task jgfs_atmos_post_f102
+              endfamily
+            endfamily
+          endfamily
+          family enkfgdas
+            family post
+              task jenkfgdas_post_f007
+            endfamily
+          endfamily
+        endfamily # v16.3
+      endfamily # gfs
+      family gefs
+        family v12.3
+          family members
+            family d0_16
+              task jgefs_pgrb2abp5_f192_done
+            endfamily
+          endfamily
+        endfamily # v12.3
+      endfamily # gefs
+      family obsproc
+        family v1.2
+          family rrfs
+            family 00z
+              family prep
+                task jobsproc_rrfs_prep
+                task jobsproc_rrfs_prep_erly
+              endfamily
+              family dump
+                task jobsproc_rrfs_dump
+                task jobsproc_rrfs_dump_erly
+              endfamily
+            endfamily # 00z
+            family 01z 
+              family prep
+                task jobsproc_rrfs_prep
+              endfamily
+              family dump
+                task jobsproc_rrfs_dump
+              endfamily
+            endfamily # 01z
+            family 02z
+              family prep
+                task jobsproc_rrfs_prep
+              endfamily
+              family dump
+                task jobsproc_rrfs_dump
+              endfamily
+            endfamily # 02z
+            family 03z
+              family prep
+                task jobsproc_rrfs_prep
+              endfamily
+              family dump
+                task jobsproc_rrfs_dump
+              endfamily
+            endfamily # 03z
+            family 04z
+              family prep
+                task jobsproc_rrfs_prep
+              endfamily
+              family dump
+                task jobsproc_rrfs_dump
+              endfamily
+            endfamily # 04z
+            family 05z
+              family prep
+                task jobsproc_rrfs_prep
+              endfamily
+              family dump
+                task jobsproc_rrfs_dump
+              endfamily
+            endfamily # 05z
+          endfamily #rrfs
+        endfamily #v1.2
+      endfamily #obsproc
+      family nosofs
+        family v3.6
+          family leofs
+            task jnos_ofs_nowcst_fcst
+          endfamily # leofs
+          family lmhofs
+            task jnos_ofs_nowcst_fcst
+          endfamily # lmhofs
+          family loofs
+            task jnos_ofs_nowcst_fcst
+          endfamily # loofs
+          family lsofs
+            task jnos_ofs_nowcst_fcst
+          endfamily # lsofs
+        endfamily # v3.6
+      endfamily # nosofs
+    endfamily # 00
+    family 06
+      family gfs
+        family v16.3
+          family gfs
+            family atmos
+              family post
+                task jgfs_atmos_post_f003
+                task jgfs_atmos_post_f102
+              endfamily
+            endfamily
+          endfamily
+          family enkfgdas
+            family post
+              task jenkfgdas_post_f007
+            endfamily
+          endfamily
+        endfamily # v16.3
+      endfamily # gfs
+      family gefs
+        family v12.3
+          family members
+            family d0_16
+              task jgefs_pgrb2abp5_f192_done
+            endfamily
+          endfamily
+        endfamily # v12.3
+      endfamily # gefs
+      family obsproc
+        family v1.2
+          family rrfs
+            family 06z
+              family prep
+                task jobsproc_rrfs_prep
+              endfamily
+              family dump
+                task jobsproc_rrfs_dump
+              endfamily
+            endfamily # 06z
+            family 07z 
+              family prep
+                task jobsproc_rrfs_prep
+              endfamily
+              family dump
+                task jobsproc_rrfs_dump
+              endfamily
+            endfamily # 07z
+            family 08z
+              family prep
+                task jobsproc_rrfs_prep
+              endfamily
+              family dump
+                task jobsproc_rrfs_dump
+              endfamily
+            endfamily # 08z
+            family 09z
+              family prep
+                task jobsproc_rrfs_prep
+              endfamily
+              family dump
+                task jobsproc_rrfs_dump
+              endfamily
+            endfamily # 09z
+            family 10z
+              family prep
+                task jobsproc_rrfs_prep
+              endfamily
+              family dump
+                task jobsproc_rrfs_dump
+              endfamily
+            endfamily # 10z
+            family 11z
+              family prep
+                task jobsproc_rrfs_prep
+              endfamily
+              family dump
+                task jobsproc_rrfs_dump
+              endfamily
+            endfamily # 11z
+          endfamily #rrfs
+        endfamily #v1.2
+      endfamily #obsproc
+      family nosofs
+        family v3.6
+          family leofs
+            task jnos_ofs_nowcst_fcst
+          endfamily # leofs
+        endfamily # v3.6
+      endfamily # nosofs
+    endfamily # 06
+    family 12 
+      family nsst
+        family v1.2
+          task jnsst
+        endfamily
+      endfamily
+      family gfs
+        family v16.3
+          family gfs
+            family atmos
+              family post
+                task jgfs_atmos_post_f003
+                task jgfs_atmos_post_f102
+              endfamily
+            endfamily
+          endfamily
+          family enkfgdas
+            family post
+              task jenkfgdas_post_f007
+            endfamily
+          endfamily
+        endfamily # v16.3
+      endfamily # gfs
+      family gefs
+        family v12.3
+          family members
+            family d0_16
+              task jgefs_pgrb2abp5_f192_done
+            endfamily
+          endfamily
+        endfamily # v12.3
+      endfamily # gefs
+      family obsproc
+        family v1.2
+          family rrfs
+            family 12z
+              family prep
+                task jobsproc_rrfs_prep
+                task jobsproc_rrfs_prep_erly
+              endfamily
+              family dump
+                task jobsproc_rrfs_dump
+                task jobsproc_rrfs_dump_erly
+              endfamily
+            endfamily # 12z
+            family 13z 
+              family prep
+                task jobsproc_rrfs_prep
+              endfamily
+              family dump
+                task jobsproc_rrfs_dump
+              endfamily
+            endfamily # 13z
+            family 14z
+              family prep
+                task jobsproc_rrfs_prep
+              endfamily
+              family dump
+                task jobsproc_rrfs_dump
+              endfamily
+            endfamily # 14z
+            family 15z
+              family prep
+                task jobsproc_rrfs_prep
+              endfamily
+              family dump
+                task jobsproc_rrfs_dump
+              endfamily
+            endfamily # 15z
+            family 16z
+              family prep
+                task jobsproc_rrfs_prep
+              endfamily
+              family dump
+                task jobsproc_rrfs_dump
+              endfamily
+            endfamily # 16z
+            family 17z
+              family prep
+                task jobsproc_rrfs_prep
+              endfamily
+              family dump
+                task jobsproc_rrfs_dump
+              endfamily
+            endfamily # 17z
+          endfamily #rrfs
+        endfamily #v1.2
+      endfamily #obsproc
+      family nosofs
+        family v3.6
+          family leofs
+            task jnos_ofs_nowcst_fcst
+          endfamily # leofs
+        endfamily # v3.6
+      endfamily # nosofs
+    endfamily #12 
+    family 18
+      family gfs
+        family v16.3
+          family gfs
+            family atmos
+              family post
+                task jgfs_atmos_post_f003
+                task jgfs_atmos_post_f102
+              endfamily
+            endfamily   
+          endfamily
+          family enkfgdas
+            family post
+              task jenkfgdas_post_f007
+            endfamily
+          endfamily
+        endfamily # v16.3
+      endfamily # gfs
+      family gefs
+        family v12.3
+          family members
+            family d0_16
+              task jgefs_pgrb2abp5_f192_done
+            endfamily
+          endfamily
+        endfamily # v12.3
+      endfamily # gefs
+      family obsproc
+        family v1.2
+          family rrfs
+            family 18z
+              family prep
+                task jobsproc_rrfs_prep
+              endfamily
+              family dump
+                task jobsproc_rrfs_dump
+              endfamily
+            endfamily # 18z
+            family 19z 
+              family prep
+                task jobsproc_rrfs_prep
+              endfamily
+              family dump
+                task jobsproc_rrfs_dump
+              endfamily
+            endfamily # 19z
+            family 20z
+              family prep
+                task jobsproc_rrfs_prep
+              endfamily
+              family dump
+                task jobsproc_rrfs_dump
+              endfamily
+            endfamily # 20z
+            family 21z
+              family prep
+                task jobsproc_rrfs_prep
+              endfamily
+              family dump
+                task jobsproc_rrfs_dump
+              endfamily
+            endfamily # 21z
+            family 22z
+              family prep
+                task jobsproc_rrfs_prep
+              endfamily
+              family dump
+                task jobsproc_rrfs_dump
+              endfamily
+            endfamily # 22z
+            family 23z
+              family prep
+                task jobsproc_rrfs_prep
+              endfamily
+              family dump
+                task jobsproc_rrfs_dump
+              endfamily
+            endfamily # 23z
+          endfamily #rrfs
+        endfamily #v1.2
+      endfamily #obsproc
+      family nosofs
+        family v3.6
+          family leofs
+            task jnos_ofs_nowcst_fcst
+          endfamily # leofs
+        endfamily # v3.6
+      endfamily # nosofs
+    endfamily #18
+  endfamily # primary
+endsuite

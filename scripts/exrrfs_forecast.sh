@@ -141,6 +141,11 @@ case $MACHINE in
     APRUN="srun --export=ALL --mem=0"
     ;;
 
+  "URSA")
+    OMP_NUM_THREADS=${TPP_FORECAST}
+    APRUN="srun --export=ALL --mem=0"
+    ;;
+
   "ORION")
     APRUN="srun --export=ALL --mem=0"
     ;;
@@ -538,7 +543,7 @@ if [ ${BKTYPE} -eq 0 ]; then
              echo "cpreq $fl ${DATA}/" >> ./para_copy.sh
            done
 	   cpprocs=`cat ./para_copy.sh | grep routehandle | wc -l`
-	   mpiexec -n ${cpprocs} -ppn ${cpprocs} --cpu-bind core cfp ./para_copy.sh
+	   #mpiexec -n ${cpprocs} -ppn ${cpprocs} --cpu-bind core cfp ./para_copy.sh
 	   rm ./para_copy.sh
 	  fi
 
@@ -554,7 +559,7 @@ if [ ${BKTYPE} -eq 0 ]; then
              echo "cpreq $fl ${DATA}/" >> ./para_copy.sh
            done
 	   cpprocs=`cat ./para_copy.sh | grep routehandle | wc -l`
-	   mpiexec -n ${cpprocs} -ppn ${cpprocs} --cpu-bind core cfp ./para_copy.sh
+	   #mpiexec -n ${cpprocs} -ppn ${cpprocs} --cpu-bind core cfp ./para_copy.sh
 	   rm ./para_copy.sh
 	  fi
 
@@ -694,7 +699,12 @@ fi
 
 PE_RAW=$(( LAYOUT_X*LAYOUT_Y ))
 PE_FCST=$(( ${PE_RAW} + ${WRITE_GRP}*${WRITE_TSK} ))
-APRUN="mpiexec -n ${PE_FCST} -ppn ${PPN_FORECAST} --cpu-bind core --depth ${OMP_NUM_THREADS}"
+if [ "${MACHINE}" = "URSA" ]; then
+  # Launch exactly PE_FCST ranks; FMS aborts if the job has more ranks than the layout uses
+  APRUN="${APRUN} -n ${PE_FCST} --cpus-per-task=${OMP_NUM_THREADS}"
+else
+  APRUN="mpiexec -n ${PE_FCST} -ppn ${PPN_FORECAST} --cpu-bind core --depth ${OMP_NUM_THREADS}"
+fi
 
 #
 #-----------------------------------------------------------------------

@@ -75,7 +75,7 @@ case $MACHINE in
   APRUN="mpiexec -n ${ncores} -ppn ${PPN_PROCESS_RADAR}"
   ;;
 #
-"HERA")
+"HERA" | "URSA")
   APRUN="srun --export=ALL"
   ;;
 #
@@ -181,7 +181,7 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
   "WCOSS2")
     obs_appendix=grib2.gz
     ;;
-  "JET" | "HERA" | "ORION" | "HERCULES")
+  "JET" | "HERA" | "ORION" | "HERCULES" | "URSA")
     obs_appendix=grib2
   esac
 
