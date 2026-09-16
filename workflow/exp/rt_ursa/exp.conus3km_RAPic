@@ -94,7 +94,7 @@ export LBC_EXTRN_MDL_FILENAME_PATTERN=${IC_EXTRN_MDL_FILENAME_PATTERN}
 export IC_EXTRN_MDL_BASEDIR="/public/data/grids/rap/full/wrfnat/grib2"
 export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
 export OBSPATH="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/obs_rap"
-export OBSPATH_NSSLMOSIAC="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/reflectivity"
+export OBSPATH_NSSLMOSAIC="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/reflectivity"
 export OBSPATH_AIRNOW="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/airnow"
 
 export NODES_IC="<nodes>2:ppn=192</nodes>"
