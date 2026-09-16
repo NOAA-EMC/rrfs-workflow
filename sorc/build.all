@@ -10,11 +10,28 @@ cleanup() {
   exit 1
 }
 trap cleanup SIGINT SIGTERM
+# 
+# get command line parameters
+da_opt="build_rdas"
+export REDUCED_SCALARS=true
+get_parms(){
+  local str=${1,,}  # convert to all lower cases
+  if [[ "${str}" == chem* ]]; then
+    chem_opt=${str}
+  elif [[ "${str}" == noda ]]; then
+    da_opt=${str}
+  elif [[ "${str}" == jedi_full_scalars  ]]; then
+    export REDUCED_SCALARS=false
+  fi
+}
+get_parms "$1"
+get_parms "$2"
+get_parms "$3"
 
-if [[ "${1,,}" == chem* ]] || [[ "${2,,}" == chem* ]]; then
+if [[ "${chem_opt}" == chem* ]]; then
   cd "${HOMErrfs}/sorc" || exit 1
   echo "Option 'chem' found in the command line, downloading chem-specific MPAS-Model ......"
-  if [[ "${1,,}" == chemrrfs ]] || [[ "${2,,}" == chemrrfs ]]; then
+  if [[ "${chem_opt}" == chemrrfs ]]; then
     remote_url="https://github.com/RRFSx/MPAS-Model"
     branch_commit="chemrrfs"
   else
@@ -38,7 +55,7 @@ echo "building all components, it may take more than one hour..."
 ./build.rank_run  &> ./log.build.rank_run  2>&1 &
 ./build.mpasblend  &> ./log.build.mpasblend  2>&1 &
 
-if [[ "${1,,}" != "noda" ]] && [[ "${2,,}" != "noda" ]]; then
+if [[ "${da_opt}" == "build_rdas" ]]; then
   ./build.rdas &> ./log.build.rdas 2>&1 &
 fi
 
