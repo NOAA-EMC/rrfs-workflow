@@ -116,7 +116,7 @@
            epoch: "@ANALYSIS_DATE@"    # your analysis time
 
        # ----------------------------------------------------------------------------------------------------
-       # Step 3: Time window filter: remove (reduce obs space) observations oustide of time window definied by   
+       # Step 3: Time window filter: remove (reduce obs space) observations oustide of time window defined by   
        #         minvalue/maxvalue: seconds relative to analysis time
        # -----------------------------------------------------------------------------------------------------
        - filter: Domain Check
@@ -132,7 +132,7 @@
            name: reduce obs space
 
        # ----------------------------------------------------------------
-       # Step 4 : Create Derived Variables for radiane to BT conversion
+       # Step 4 : Create Derived Variables for radiance to BT conversion
        #          Assign channel wavenumbers in m-1
        # ----------------------------------------------------------------
        - filter: Variable Assignment
