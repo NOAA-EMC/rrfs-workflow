@@ -156,7 +156,7 @@ do
   done
 
   if [ -s $COMOUT/rrfs_firewx_loc ]; then
-    cp -p $COMOUT/rrfs_firewx_loc $COMOUT/rrfs_firewx_loc_prev
+    cp $COMOUT/rrfs_firewx_loc $COMOUT/rrfs_firewx_loc_prev
   fi
   cp rrfs_firewx_loc $COMOUT/rrfs_firewx_loc
 
