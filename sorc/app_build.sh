@@ -10,7 +10,7 @@ OPTIONS
       show this help guide
   -p, --platform=PLATFORM
       name of machine you are building on
-      (e.g. cheyenne | hera | jet | orion | hercules | wcoss2)
+      (e.g. cheyenne | hera | jet | orion | hercules | wcoss2 | ursa)
   -c, --compiler=COMPILER
       compiler to use; default depends on platform
       (e.g. intel | gnu | cray | gccgfortran)
@@ -247,6 +247,8 @@ if [ -z $PLATFORM ] ; then
       PLATFORM=hera
   elif [[ "$HOME_DIR" == "/jetmon"* ]] ; then
       PLATFORM=jet
+  elif [[ "$(hostname -f)" == *"ufe"* ]] ; then
+      PLATFORM=ursa
   elif [[ "$HOME_DIR" == "/work"* ]]; then
       hoststr=$(hostname)
       if [[ "$hoststr" == "hercules"* ]]; then
@@ -313,7 +315,7 @@ set -eu
 # automatically determine compiler
 if [ -z "${COMPILER}" ] ; then
   case ${PLATFORM} in
-    jet|hera|gaea) COMPILER=intel ;;
+    jet|hera|gaea|ursa) COMPILER=intel ;;
     orion|hercules) COMPILER=intel ;;
     wcoss2) COMPILER=intel ;;
     cheyenne) COMPILER=intel ;;
@@ -379,6 +381,23 @@ if [ "${EXTRN}" = true ]; then
   fi
   printf "... checking out external components ...\n"
   ./manage_externals/checkout_externals
+fi
+
+# Patch ufs-weather-model for Ursa's oneAPI 2024 compilers (icx, no classic icc; ifort 2021.13).
+# icx rejects the icc-only C flags "-fp-model source"/"-ftrapuv", and ifort 2021.13 rejects associate
+# names in OpenMP clauses, so select the dycore's existing associate-free (gfortran) OpenMP clauses.
+# This runs after the checkout above, which would otherwise replace the patched sources.
+if [ "${PLATFORM}" = "ursa" ] && [ "${BUILD_UFS}" = "on" ]; then
+  sed -i -e 's/-fp-model source/-fp-model precise/' \
+         -e '/CMAKE_C_FLAGS_DEBUG/s/ -ftrapuv//' ${SORC_DIR}/ufs-weather-model/cmake/Intel.cmake
+  sed -i 's/^#ifdef __GFORTRAN__/#if 1/' \
+      ${SORC_DIR}/ufs-weather-model/FV3/atmos_cubed_sphere/model/{fv_dynamics,fv_mapz}.F90
+fi
+
+# Let rrfs_utl's raymond (blending) build with Python 3.11, the newest spack-stack Python on Ursa.
+# It requires 3.12 (WCOSS2's version) but only uses f2py to generate wrapper sources, which 3.11 does too.
+if [ "${PLATFORM}" = "ursa" ] && [ "${BUILD_RRFS_UTILS}" = "on" ]; then
+  sed -i 's/^  Python 3.12 REQUIRED$/  Python 3.11 REQUIRED/' ${SORC_DIR}/rrfs_utl/blending.fd/raymond/CMakeLists.txt
 fi
 
 # set MODULE_FILE for this platform/compiler combination

@@ -160,7 +160,7 @@ case "$MACHINE" in
     APRUN_PRE_BLENDING="mpiexec -n ${ncores_blending} -ppn ${PPN_PRE_BLENDING} --cpu-bind core --depth 2"
     ;;
 
-  "HERA")
+  "HERA" | "URSA")
     APRUN="srun --export=ALL"
     ;;
 

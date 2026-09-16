@@ -56,7 +56,7 @@ case $MACHINE in
   APRUN="mpiexec -n ${ncores} -ppn ${PPN_ANALYSIS_NONVARCLD}"
   ;;
 #
-"HERA")
+"HERA" | "URSA")
   APRUN="srun --export=ALL"
   ;;
 #

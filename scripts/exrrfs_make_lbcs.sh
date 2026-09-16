@@ -197,7 +197,7 @@ case "$MACHINE" in
     APRUN="mpiexec -n ${ncores} -ppn ${PPN_MAKE_LBCS} --cpu-bind core --depth ${OMP_NUM_THREADS}"
     ;;
 
-  "HERA")
+  "HERA" | "URSA")
     APRUN="srun --export=ALL"
     ;;
 
@@ -352,7 +352,12 @@ if [ ${extrn_mdl_name} != GEFS ] ; then
    if [ -s ${DATA}/parallel_copy.sh ]; then
       poe_script=parallel_copy.sh
       export MP_CMDFILE=${poe_script}
-      launcher="mpiexec -np ${ncores} --cpu-bind core cfp"
+      # cfp only exists on WCOSS2, so run the copies serially on other machines
+      if [ "${MACHINE}" = "WCOSS2" ]; then
+        launcher="mpiexec -np ${ncores} --cpu-bind core cfp"
+      else
+        launcher="bash"
+      fi
       $launcher $MP_CMDFILE
       export err=$?; err_chk
       ecflow_client --event release_${WGF}_make_lbcs
