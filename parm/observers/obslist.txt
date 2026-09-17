@@ -63,3 +63,5 @@ amsua_metop-b
 amsua_metop-c
 cris-fsr_n20
 cris-fsr_n21
+iasi_metop-b
+iasi_metop-c

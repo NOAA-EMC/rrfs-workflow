@@ -63,13 +63,13 @@ bufr:
     sensorChannelNumber:
       query: "*/IASICHN/CHNM"
 
-    # ObsValue
     fractionOfClearPixelsInFOV:
       query: "*/IASIL1CS{1}/FCPH"
       type: float
       transforms:
         - scale: 0.01
 
+    # ObsValue
     spectralRadiance:
       spectralRadiance:
         sensorChannelNumber: "*/IASICHN/CHNM"
@@ -212,12 +212,13 @@ encoder:
       source: variables/sensorChannelNumber
       longName: "Sensor Channel Number"
 
-    - name: "ObsValue/cloudFree"
+    - name: "MetaData/fractionOfClearPixelsInFOV"
       source: variables/fractionOfClearPixelsInFOV
       longName: "Fraction of Clear Pixels in a Field of View"
       units: "1"
       range: [ 0, 1 ]
 
+    # ObsValue
     - name: "ObsValue/spectralRadiance"
       source: variables/spectralRadiance
       longName: "IASI Spectral Radiance"
