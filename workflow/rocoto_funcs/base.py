@@ -72,11 +72,13 @@ def header_entities(xmlFile, expdir):
     cyc_interval = os.getenv('CYC_INTERVAL', '3')
     realtime = os.getenv("REALTIME", "false").upper()
 
-    subcyc_interval = os.getenv('SUBCYC_INTERVAL', '')
-    if subcyc_interval:
-        subcyc_envar = "\n<envar><name>SUBCYC_INTERVAL</name><value>{subcyc_interval}</value></envar>"
+    subcyc_interval = os.getenv('SUBCYC_INTERVAL') or 0
+    if int(subcyc_interval) > 0:
+        subcyc_envar = f"\n<envar><name>SUBCYC_INTERVAL</name><value>{subcyc_interval}</value></envar>"
+        token_hm = "@H@M"
     else:
         subcyc_envar = ""
+        token_hm = "@H"
     if os.getenv('DO_CHEMISTRY', 'FALSE').upper() == "TRUE":
         chem_envar = "\n<envar><name>DO_CHEMISTRY</name><value>TRUE</value></envar>"
     else:
@@ -135,7 +137,7 @@ def header_entities(xmlFile, expdir):
 <envar><name>COMROOT</name><value>&COMROOT;</value></envar>
 <envar><name>DATAROOT</name><value><cyclestr>&DATAROOT;/@Y@m@d</cyclestr></value></envar>
 <envar><name>COMINrrfs</name><value>&COMROOT;/{net}/{rrfs_ver}</value></envar>
-<envar><name>COMOUT</name><value><cyclestr>&COMROOT;/{net}/{rrfs_ver}/{run}.@Y@m@d/@H</cyclestr></value></envar>
+<envar><name>COMOUT</name><value><cyclestr>&COMROOT;/{net}/{rrfs_ver}/{run}.@Y@m@d/{token_hm}</cyclestr></value></envar>
 <envar><name>CDATE</name><value><cyclestr>@Y@m@d@H</cyclestr></value></envar>
 <envar><name>PDY</name><value><cyclestr>@Y@m@d</cyclestr></value></envar>
 <envar><name>cyc</name><value><cyclestr>@H</cyclestr></value></envar>
@@ -339,14 +341,18 @@ def xml_task(
     RUN = os.getenv('NET', 'RUN_not_defined')  # so far, RUN = NET
     realtime = os.getenv('REALTIME', 'false')
     deadline = get_cascade_env(f'DEADLINE_{task_id}'.upper())
+    if int(os.getenv('SUBCYC_INTERVAL') or 0) > 0:
+        tok_hm = "@H@M"
+    else:
+        tok_hm = "@H"
     if metatask is False:
         meta_id = task_id
     if command_id == "":
         command_id = meta_id
     dcTaskRes = {
         'command': f'&HOMErrfs;/workflow/sideload/launch.sh JRRFS_' + f'{command_id}'.upper(),
-        'join': f'&LOGROOT;/{RUN}.@Y@m@d/@H/{WGF}/{RUN}_{task_id}_{TAG}_@Y@m@d@H.log',
-        'jobname': f'{TAG}_{task_id}_c@H',
+        'join': f'&LOGROOT;/{RUN}.@Y@m@d/{tok_hm}/{WGF}/{RUN}_{task_id}_{TAG}_@Y@m@d{tok_hm}.log',
+        'jobname': f'{TAG}_{task_id}_c{tok_hm}',
         'account': get_cascade_env(f'ACCOUNT_{task_id}'.upper()),
         'queue': get_cascade_env(f'QUEUE_{task_id}'.upper()),
         'partition': get_cascade_env(f"PARTITION_{task_id}".upper()),

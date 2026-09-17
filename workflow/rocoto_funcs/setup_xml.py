@@ -48,7 +48,11 @@ def setup_xml(HOMErrfs, expdir):
     do_ensemble = os.getenv('DO_ENSEMBLE', 'FALSE').upper()
     do_ensmean_post = os.getenv('DO_ENSMEAN_POST', 'FALSE').upper()
     do_chemistry = os.getenv('DO_CHEMISTRY', 'FALSE').upper()
-    do_subcyc = int(os.getenv('SUBCYC_INTERVAL', '0')) > 0
+    subhourly = int(os.getenv('SUBCYC_INTERVAL') or 0) > 0
+    if subhourly:
+        tok_hm = "@H@M"
+    else:
+        tok_hm = "@H"
     #
     # create cycledefs smartly
     dcCycledef = smart_cycledefs()
@@ -57,7 +61,7 @@ def setup_xml(HOMErrfs, expdir):
         listPostGrpInfo = smart_post_groups(dcCycledef)
     # define extra save4next cycledefs smartly
     if os.getenv("DO_SPINUP", "FALSE").upper() == "TRUE" or os.getenv('DO_CYC', 'FALSE').upper() == "TRUE" and os.getenv('DO_RTMA', 'FALSE').upper() == 'FALSE':
-        if do_subcyc:
+        if subhourly:
             listSave4NextGrpInfo = smart2_save4next_groups(dcCycledef)
         else:
             listSave4NextGrpInfo = smart_save4next_groups(dcCycledef)
@@ -68,7 +72,7 @@ def setup_xml(HOMErrfs, expdir):
         header_entities(xmlFile, expdir)
         header_end(xmlFile)
         wflow_begin(xmlFile)
-        log_fpath = f'&LOGROOT;/&RUN;.@Y@m@d/@H/&WGF;/&RUN;.log'
+        log_fpath = f'&LOGROOT;/&RUN;.@Y@m@d/{tok_hm}/&WGF;/&RUN;.log'
         wflow_log(xmlFile, log_fpath)
         wflow_cycledefs(xmlFile, dcCycledef)
 

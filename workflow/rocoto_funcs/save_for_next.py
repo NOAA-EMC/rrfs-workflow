@@ -7,8 +7,8 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 
 def save_for_next(xmlFile, expdir, dcGrpInfo, do_ensemble=False):
     meta_id = 'save_for_next'
-    do_subcyc = int(os.getenv("SUBCYC_INTERVAL", "0")) > 0
-    if do_subcyc:
+    subhourly = int(os.getenv("SUBCYC_INTERVAL") or 0) > 0
+    if subhourly:
         fmn = dcGrpInfo["fmn"]
         task_id = f'{meta_id}_f{fmn:02d}'
     else:
@@ -22,7 +22,7 @@ def save_for_next(xmlFile, expdir, dcGrpInfo, do_ensemble=False):
     dcTaskEnv = {
         'MPASOUT_INTERVAL': mpasout_interval,
     }
-    if do_subcyc:
+    if subhourly:
         dcTaskEnv['FCST_MN'] = f'{fmn}'
         offset_str = f'00:{fmn}:00'
     else:
