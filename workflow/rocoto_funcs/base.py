@@ -72,6 +72,11 @@ def header_entities(xmlFile, expdir):
     cyc_interval = os.getenv('CYC_INTERVAL', '3')
     realtime = os.getenv("REALTIME", "false").upper()
 
+    subcyc_interval = os.getenv('SUBCYC_INTERVAL', '')
+    if subcyc_interval:
+        subcyc_envar = "\n<envar><name>SUBCYC_INTERVAL</name><value>{subcyc_interval}</value></envar>"
+    else:
+        subcyc_envar = ""
     if os.getenv('DO_CHEMISTRY', 'FALSE').upper() == "TRUE":
         chem_envar = "\n<envar><name>DO_CHEMISTRY</name><value>TRUE</value></envar>"
     else:
@@ -140,7 +145,7 @@ def header_entities(xmlFile, expdir):
 <envar><name>MPI_RUN_CMD</name><value>{mpi_run_cmd}</value></envar>
 <envar><name>MESH_NAME</name><value>{mesh_name}</value></envar>
 <envar><name>WGF</name><value>{wgf}</value></envar>
-<envar><name>CYC_INTERVAL</name><value>{cyc_interval}</value></envar>{chem_envar}
+<envar><name>CYC_INTERVAL</name><value>{cyc_interval}</value></envar>{subcyc_envar}{chem_envar}
 "
 >{entities_for_cycledef}
 '''

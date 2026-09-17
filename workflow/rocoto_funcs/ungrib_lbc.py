@@ -9,6 +9,7 @@ def ungrib_lbc(xmlFile, expdir, do_ensemble=False):
     meta_id = 'ungrib_lbc'
     cycledefs = 'lbc'
     #
+    # do_subcyc = int(os.getenv("SUBCYC_INTERVAL", "0")) > 0
     offset = int(os.getenv('LBC_OFFSET', '6'))
     length = int(os.getenv('LBC_LENGTH', '12'))
     interval = int(os.getenv('LBC_INTERVAL', '3'))
