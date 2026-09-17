@@ -5,10 +5,10 @@
 #
 export NET=rrfs
 export MESH_NAME="conus3km"
-export WGF=det
-export EXP_NAME=subcyc
+export WGF=enkf
+export EXP_NAME=test
 export VERSION=$(cat ./VERSION)
-export TAG=sub
+export TAG=co
 export OPSROOT=/scratch3/BMC/wrfruc/gge/OPSROOT/${EXP_NAME}
 export EXPDIR=${OPSROOT}/exp/${NET}${WGF}
 export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
