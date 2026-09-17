@@ -25,7 +25,7 @@ fi
 cd "${HOMErrfs}/sorc/MPAS-Model" || exit 1
 remote_name=$(git config --get "branch.$(git branch --show-current).remote" || true)
 remote_name=${remote_name:-origin}  # default to origin if detached HEAD
-remote_url=$(git remote get-url ${remote_name})
+remote_url=$(git remote get-url "${remote_name}")
 hash_workflow=$(git rev-parse HEAD)
 cd "${HOMErrfs}/sorc/RDASApp/sorc/mpas" || exit 1
 hash_rdasapp=$(git rev-parse HEAD)
