@@ -8,10 +8,10 @@
              type: H5File
              obsfile: "data/obs/ioda_aircft.nc"
              missing file action: "warn"
-           obsgrouping:
-             group variables: ["stationIdentification"]
-             sort variable: "pressure"
-             sort order: "descending"
+#           obsgrouping:
+#             group variables: ["stationIdentification"]
+#             sort variable: "pressure"
+#             sort order: "descending"
          obsdataout:
            empty obs space action: "@emptyObsSpaceAction@"
            engine:
