@@ -43,11 +43,11 @@ def smart_fcst_groups(dcCycleDef):
                 exclude_hours = [x for x in all_hours if x not in set(valid_hours)]
                 exclude_str = " ".join(f"{i:02d}" for i in exclude_hours)
 
-            # fcst, fcst_g2, fcst_g3, ...  # fcst means fcst_g1
+            # fcst, fcst_l, fcst_xl, fcst_xxl, ...
             if index == 0:
                 cycledef_name = "fcst"
             else:
-                cycledef_name = f'fcst_{"h" * index}'
+                cycledef_name = f'fcst_{"x" * (index - 1)}l'
             grp_name = cycledef_name
             if exclude_str == '':
                 dcCycleDef[cycledef_name] = {'valid_hours': f'{valid_str}', "cycledef": f'{cycledef_prod}'}

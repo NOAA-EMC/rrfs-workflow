@@ -34,9 +34,9 @@ def hofx(xmlFile, expdir, do_spinup=False):
   <dependency>{timedep}
     <or>
       <taskdep task="fcst"/>
-      <taskdep task="fcst_h"/>
-      <taskdep task="fcst_hh"/>
-      <taskdep task="fcst_hhh"/>
+      <taskdep task="fcst_l"/>
+      <taskdep task="fcst_xl"/>
+      <taskdep task="fcst_xxl"/>
     </or>
   </dependency>'''
     #
