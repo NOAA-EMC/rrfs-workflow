@@ -16,6 +16,7 @@ from rocoto_funcs.prep_lbc import prep_lbc
 from rocoto_funcs.mpas_blend import mpas_blend
 from rocoto_funcs.jedivar import jedivar
 from rocoto_funcs.fcst import fcst
+from rocoto_funcs.smart_fcst_groups import smart_fcst_groups
 from rocoto_funcs.smart_ens_groups import smart_ens_groups
 from rocoto_funcs.save_for_next import save_for_next
 from rocoto_funcs.getkf import getkf
@@ -65,6 +66,7 @@ def setup_xml(HOMErrfs, expdir):
             listSave4NextGrpInfo = smart2_save4next_groups(dcCycledef)
         else:
             listSave4NextGrpInfo = smart_save4next_groups(dcCycledef)
+    listFcstGrpInfo = smart_fcst_groups(dcCycledef)
 
     fPath = f"{expdir}/{NET}.xml"
     with open(fPath, 'w') as xmlFile:
@@ -117,7 +119,8 @@ def setup_xml(HOMErrfs, expdir):
                     nonvar_cldana(xmlFile, expdir, spinup_mode=-1)
                 if os.getenv("DO_PYDAMONITOR", "FALSE").upper() == "TRUE":
                     pyDAmonitor(xmlFile, expdir, spinup_mode=-1)
-                fcst(xmlFile, expdir)
+                for dcGrpInfo in listFcstGrpInfo:
+                    fcst(xmlFile, expdir, dcFcstGrpInfo=dcGrpInfo)
                 for dcGrpInfo in listSave4NextGrpInfo:
                     save_for_next(xmlFile, expdir, dcGrpInfo)
             elif os.getenv("DO_FCST", "TRUE").upper() == "TRUE":
@@ -134,7 +137,8 @@ def setup_xml(HOMErrfs, expdir):
                     nonvar_cldana(xmlFile, expdir)
                 if os.getenv("DO_PYDAMONITOR", "FALSE").upper() == "TRUE":
                     pyDAmonitor(xmlFile, expdir)
-                fcst(xmlFile, expdir)
+                for dcGrpInfo in listFcstGrpInfo:
+                    fcst(xmlFile, expdir, dcFcstGrpInfo=dcGrpInfo)
                 if os.getenv('DO_CYC', 'FALSE').upper() == "TRUE" and os.getenv('DO_RTMA', 'FALSE').upper() == 'FALSE':
                     for dcGrpInfo in listSave4NextGrpInfo:
                         save_for_next(xmlFile, expdir, dcGrpInfo)
