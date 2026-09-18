@@ -17,3 +17,8 @@ __pycache__
 *.swp
 .venv
 *~
+
+# Generated suite definitions: ecf/defs/make_ursa_def.sh writes the first,
+# ush/prod_clone/make_retro_def.sh the second. Regenerate them, do not commit them.
+ecf/defs/rrfs_ursa.def
+ush/prod_clone/ecf/defs_retro.def
