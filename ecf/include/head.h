@@ -10,10 +10,12 @@ export ECF_HOST=%ECF_LOGHOST%
 export ECF_PORT=%ECF_PORT%
 export ECF_PASS=%ECF_PASS%
 export ECF_TRYNO=%ECF_TRYNO%
-export ECF_RID=${ECF_RID:-${PBS_JOBID:-$(hostname -s).$$}}
+export ECF_RID=${ECF_RID:-${PBS_JOBID:-${SLURM_JOB_ID:-$(hostname -s).$$}}}
 export ECF_JOB=%ECF_JOB%
 export ECF_JOBOUT=%ECF_JOBOUT%
 export ecflow_ver=%ecflow_ver%
+# Machine the suite runs on (WCOSS2 or URSA); scripts that set MACHINE themselves keep their value
+export MACHINE=${MACHINE:-%MACHINE:WCOSS2%}
 
 if [ -d /apps/ops/prod ]; then # On WCOSS2
   set +x
@@ -67,6 +69,27 @@ if [ -d /apps/ops/prod ]; then # On WCOSS2
 ####   echo "----------------------------------------------"
 fi
 
+# On Ursa, load the ecflow client and the RRFS run-time modules (modulefiles/run_ursa.lua).
+# Slurm jobs start from the ecflow server's environment, which may not have Lmod set up.
+if [ "%MACHINE:WCOSS2%" = "URSA" ]; then
+  set +xe
+  if ! type module >/dev/null 2>&1; then source /etc/profile; fi
+  module purge
+  module load ecflow/${ecflow_ver}
+  module use ${HOMErrfs}/modulefiles
+  module load run_ursa
+  export UTILROOT=${prod_util_ROOT}
+  # Ursa copy of compath.py (prod_util's only works on WCOSS2) and the staged DCOM data
+  export PATH=${HOMErrfs}/ush/ursa:${PATH}
+  export DCOMROOT=%DCOMROOT:%
+  # the ecflow module points ECF_HOST/ECF_PORT at the site server, so set them back to this suite's
+  export ECF_HOST=%ECF_LOGHOST%
+  export ECF_PORT=%ECF_PORT%
+  echo "Listing modules from head.h:"
+  module list
+  set -xe
+fi
+
 timeout 300 ecflow_client --init=${ECF_RID}
 
 if [[ " ops.prod ops.para " =~ " $(whoami) " ]]; then
@@ -83,7 +106,7 @@ fi
 ERROR() {
   set +ex
   if [ "$1" -eq 0 ]; then
-     msg="Killed by signal (likely via qdel)"
+     msg="Killed by signal (likely via qdel or scancel)"
   else
      msg="Killed by signal $1"
   fi

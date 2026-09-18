@@ -1,3 +1,4 @@
+#!/bin/bash
 #PBS -N rrfs_clean_early_%CYC%
 #PBS -j oe
 #PBS -S /bin/bash
@@ -6,6 +7,15 @@
 #PBS -l walltime=00:10:00
 #PBS -l place=vscatter:shared,select=1:ncpus=1:mem=10G
 #PBS -l debug=true
+#SBATCH --job-name=rrfs_clean_early_%CYC%
+#SBATCH --account=%PROJ%
+#SBATCH --qos=%QUEUE%
+#SBATCH --partition=%PARTITION:u1-compute%
+#SBATCH --time=00:10:00
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --mem=10G
+#SBATCH --output=%ECF_JOBOUT%
 set -x
 
 model=rrfs
