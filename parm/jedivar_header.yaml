@@ -35,6 +35,7 @@ cost function:
     streams_file: ./streams.atmosphere
     deallocate non-da fields: true
     interpolation type: unstructured
+    update 2mTQ between outer loops: True
   analysis variables: *incvars
   background:
     state variables:
