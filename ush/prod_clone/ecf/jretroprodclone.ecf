@@ -1,0 +1,48 @@
+#!/bin/bash
+# Retro version of jupdateprodclonestatuses for Ursa (see scripts/exretroprodclone.py).
+# Runs every minute on the ecflow server host rather than through Slurm, so it only needs the
+# ecflow client and its python module.
+set -xe
+
+export ECF_NAME=%ECF_NAME%
+export ECF_HOST=%ECF_HOST%
+export ECF_PORT=%ECF_PORT%
+export ECF_PASS=%ECF_PASS%
+export ECF_TRYNO=%ECF_TRYNO%
+export ECF_RID=$$
+
+set +xe
+if ! type module >/dev/null 2>&1; then source /etc/profile; fi
+module load ecflow/%ecflow_ver%
+set -xe
+# the module points these at the site server; this suite runs its own
+export ECF_HOST=%ECF_HOST%
+export ECF_PORT=%ECF_PORT%
+# ecflow's python module is built for the system python3
+ecflow_site=$(ls -d $(dirname $(command -v ecflow_client))/../lib/python3*/site-packages | head -1)
+export PYTHONPATH=${ecflow_site}${PYTHONPATH:+:${PYTHONPATH}}
+
+ecflow_client --init=${ECF_RID}
+trap 'ecflow_client --abort="exretroprodclone.py failed"; trap 0; exit 1' ERR
+
+export RETRO_COMROOT=%RETRO_COMROOT%
+export RETRO_START=%RETRO_START%
+export RETRO_END=%RETRO_END%
+export RETRO_STATE=%ECF_HOME%/retro_prod_clone_state.json
+export RRFS_SUITE=%RRFS_SUITE:para%
+export RRFS_VER=%rrfs_ver:v1.0%
+export ALWAYS_COMPLETE=%ALWAYS_COMPLETE:nosofs%
+
+/usr/bin/python3 %PACKAGEHOME%/ush/prod_clone/scripts/exretroprodclone.py
+
+ecflow_client --complete
+trap 0
+exit 0
+
+%manual
+Retro stand-in for jupdateprodclonestatuses. Each run marks /prod_clone tasks complete once their
+upstream files exist under RETRO_COMROOT for the family's date, and releases the next RRFS primary
+family (setting PDY and requeuing it) once the current one is complete.
+
+To restart a retro from RETRO_START, remove %ECF_HOME%/retro_prod_clone_state.json.
+%end
