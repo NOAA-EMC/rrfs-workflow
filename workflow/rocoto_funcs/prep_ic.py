@@ -29,6 +29,9 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
         'NSST_SOURCE_DIR': os.getenv('NSST_SOURCE_DIR', ''),
         'DO_BLENDING': os.getenv('DO_BLENDING', 'FALSE'),
     }
+    if os.getenv('DO_CHEMISTRY', 'FALSE').upper() == "TRUE":
+        dcTaskEnv['USE_EXTERNAL_CHEM'] = os.getenv('USE_EXTERNAL_CHEM_ICS', 'FALSE').upper()
+        dcTaskEnv['CHEM_GROUPS'] = os.getenv('CHEM_GROUPS', 'smoke')
     if spinup_mode != 0:
         dcTaskEnv['SPINUP_MODE'] = f'{spinup_mode}'
     if spinup_mode == 1:

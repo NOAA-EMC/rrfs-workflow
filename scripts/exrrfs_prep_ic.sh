@@ -94,6 +94,12 @@ for index in "${mem_list[@]}"; do # loop through all the members
       echo "FATAL ERROR: PREP_IC failed, cannot find warm start file: ${thisfile}"
       err_exit
     fi
+
+    # add/update chemistry species to init.nc
+    if [[ "${DO_CHEMISTRY^^}" == "TRUE" ]]; then
+      source "${USHrrfs}"/chem_ic_update.sh
+    fi
+
   else
     echo "FATAL ERROR: PREP_IC failed, start type is not defined"
     err_exit

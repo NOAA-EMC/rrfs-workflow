@@ -12,7 +12,7 @@ species_list=(smoke_fine smoke_coarse unspc_fine unspc_coarse dust_fine dust_coa
 # otherwise, set small initial species values
 found=false
 look_back_hours=48
-increment_hours=24
+increment_hours=${CYC_INTERVAL}
 timestr=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)
 offset_hours=${increment_hours}
 while [[ "${found}" == "false" ]] && (( 10#${offset_hours} <= 10#${look_back_hours} )); do
@@ -27,6 +27,7 @@ done
 
 if [[ "${found}" == "true" ]]; then
    for species in "${species_list[@]}"; do
+#TODO - add check for CHEM_GROUPS	   
       # Check to see if the species is in the file
       if ncdump -hv "${species}" "${mpasout}" 1>/dev/null; then
         ncks -A -v "${species}" "${mpasout}" init.nc
