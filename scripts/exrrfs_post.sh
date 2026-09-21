@@ -71,8 +71,14 @@ case $MACHINE in
     ncores=$(( NNODES_POST*PPN_POST))
     APRUN="mpiexec -n ${ncores} -ppn ${PPN_POST} --cpu-bind core --depth ${OMP_NUM_THREADS}"
     ;;
+  "URSA")
+    export OMP_NUM_THREADS=${TPP_POST}
+    export OMP_STACKSIZE=1G
+    ncores=$(( NNODES_POST*PPN_POST))
+    APRUN="srun --export=ALL -n ${ncores} --ntasks-per-node=${PPN_POST} --cpus-per-task=${OMP_NUM_THREADS}"
+    ;;
 
-  "HERA" | "URSA")
+  "HERA")
     APRUN="srun --export=ALL"
     ;;
 
@@ -312,7 +318,11 @@ fi
 if [ $post_min = 15 -o $post_min = 30 -o $post_min = 45 ]; then 
   export OMP_NUM_THREADS=${TPP_POST_SUBH}
   ncores=$(( NNODES_POST_SUBH*PPN_POST_SUBH))
-  APRUN="mpiexec -n ${ncores} -ppn ${PPN_POST_SUBH} --cpu-bind core --depth ${OMP_NUM_THREADS}"
+  if [ "${MACHINE}" = "URSA" ]; then
+    APRUN="srun --export=ALL -n ${ncores} --ntasks-per-node=${PPN_POST_SUBH} --cpus-per-task=${OMP_NUM_THREADS}"
+  else
+    APRUN="mpiexec -n ${ncores} -ppn ${PPN_POST_SUBH} --cpu-bind core --depth ${OMP_NUM_THREADS}"
+  fi
 fi
 #
 #-----------------------------------------------------------------------

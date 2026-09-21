@@ -1,3 +1,4 @@
+#!/bin/bash
 #PBS -N rrfs_enkf_save_restart_manager_%CYC%
 #PBS -j oe
 #PBS -S /bin/bash
@@ -6,6 +7,15 @@
 #PBS -l walltime=01:20:00
 #PBS -l place=shared,select=1:ncpus=1:mem=4GB:prepost=false
 #PBS -l debug=true
+#SBATCH --job-name=rrfs_enkf_save_restart_manager_%CYC%
+#SBATCH --account=%PROJ%
+#SBATCH --qos=%QUEUE%
+#SBATCH --partition=%PARTITION:u1-compute%
+#SBATCH --time=01:20:00
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --mem=4G
+#SBATCH --output=%ECF_JOBOUT%
 
 export model=rrfs
 

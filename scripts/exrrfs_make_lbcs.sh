@@ -196,8 +196,14 @@ case "$MACHINE" in
     ncores=$(( NNODES_MAKE_LBCS*PPN_MAKE_LBCS ))
     APRUN="mpiexec -n ${ncores} -ppn ${PPN_MAKE_LBCS} --cpu-bind core --depth ${OMP_NUM_THREADS}"
     ;;
+  "URSA")
+    export OMP_STACKSIZE=1G
+    export OMP_NUM_THREADS=${TPP_MAKE_LBCS}
+    ncores=$(( NNODES_MAKE_LBCS*PPN_MAKE_LBCS ))
+    APRUN="srun --export=ALL -n ${ncores} --ntasks-per-node=${PPN_MAKE_LBCS} --cpus-per-task=${OMP_NUM_THREADS}"
+    ;;
 
-  "HERA" | "URSA")
+  "HERA")
     APRUN="srun --export=ALL"
     ;;
 

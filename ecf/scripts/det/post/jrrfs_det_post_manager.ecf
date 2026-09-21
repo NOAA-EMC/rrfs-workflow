@@ -1,3 +1,4 @@
+#!/bin/bash
 #PBS -N rrfs_det_post_manager_%CYC%
 #PBS -j oe
 #PBS -S /bin/bash
@@ -6,9 +7,18 @@
 #PBS -l walltime=03:05:00
 #PBS -l place=shared,select=1:ncpus=1:mem=10GB
 #PBS -l debug=true
+#SBATCH --job-name=rrfs_det_post_manager_%CYC%
+#SBATCH --account=%PROJ%
+#SBATCH --qos=%QUEUE%
+#SBATCH --partition=%PARTITION:u1-compute%
+#SBATCH --time=03:05:00
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --mem=10G
+#SBATCH --output=%ECF_JOBOUT%
 
 export model=rrfs
-export MACHINE=WCOSS2
+export MACHINE=%MACHINE:WCOSS2%
 
 %include <head.h>
 %include <envir-p1.h>

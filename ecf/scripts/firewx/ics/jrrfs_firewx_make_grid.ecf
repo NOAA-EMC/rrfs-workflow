@@ -1,3 +1,4 @@
+#!/bin/bash
 #PBS -N rrfs_firewx_make_grid_%CYC%
 #PBS -j oe
 #PBS -S /bin/bash
@@ -6,6 +7,15 @@
 #PBS -l walltime=00:20:00
 #PBS -l place=vscatter:shared,select=1:mpiprocs=24:ncpus=24:mem=24G
 #PBS -l debug=true
+#SBATCH --job-name=rrfs_firewx_make_grid_%CYC%
+#SBATCH --account=%PROJ%
+#SBATCH --qos=%QUEUE%
+#SBATCH --partition=%PARTITION:u1-compute%
+#SBATCH --time=00:20:00
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=24
+#SBATCH --mem=24G
+#SBATCH --output=%ECF_JOBOUT%
 
 model=rrfs
 export cyc="%CYC%"
@@ -14,6 +24,8 @@ export cyc="%CYC%"
 ############################################################
 # Load modules
 ############################################################
+# Cray modules for WCOSS2; on Ursa, head.h loads modulefiles/run_ursa.lua instead
+if [ "${MACHINE}" = "WCOSS2" ]; then
 module load intel/${intel_ver}
 module load craype/${craype_ver}
 module load ve/rrfs/${rrfs_pythonve_ver}
@@ -29,6 +41,7 @@ module load sp/${sp_ver}
 module load ip/${ip_ver}
 module load g2/${g2_ver}
 module load esmf-D/${esmf_ver}
+fi
 
 module list
 export WGF="%WGF%"

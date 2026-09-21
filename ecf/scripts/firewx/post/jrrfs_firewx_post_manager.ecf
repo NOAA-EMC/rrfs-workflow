@@ -1,3 +1,4 @@
+#!/bin/bash
 #PBS -N rrfs_firewx_post_manager_%CYC%
 #PBS -j oe
 #PBS -S /bin/bash
@@ -6,9 +7,18 @@
 #PBS -l walltime=01:45:00
 #PBS -l place=shared,select=1:ncpus=1:mem=5GB:prepost=true
 #PBS -l debug=true
+#SBATCH --job-name=rrfs_firewx_post_manager_%CYC%
+#SBATCH --account=%PROJ%
+#SBATCH --qos=%QUEUE%
+#SBATCH --partition=%PARTITION:u1-compute%
+#SBATCH --time=01:45:00
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --mem=5G
+#SBATCH --output=%ECF_JOBOUT%
 
 export model=rrfs
-export MACHINE=WCOSS2
+export MACHINE=%MACHINE:WCOSS2%
 
 %include <head.h>
 %include <envir-p1.h>

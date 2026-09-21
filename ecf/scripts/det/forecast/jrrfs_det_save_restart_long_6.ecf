@@ -1,3 +1,4 @@
+#!/bin/bash
 #PBS -N rrfs_det_save_restart_long_6_%CYC%
 #PBS -j oe
 #PBS -S /bin/bash
@@ -6,6 +7,15 @@
 #PBS -l walltime=00:15:00
 #PBS -l place=vscatter:shared,select=1:ncpus=1:mem=40G
 #PBS -l debug=true
+#SBATCH --job-name=rrfs_det_save_restart_long_6_%CYC%
+#SBATCH --account=%PROJ%
+#SBATCH --qos=%QUEUE%
+#SBATCH --partition=%PARTITION:u1-compute%
+#SBATCH --time=00:15:00
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --mem=40G
+#SBATCH --output=%ECF_JOBOUT%
 
 model=rrfs
 export cyc="%CYC%"
@@ -14,6 +24,8 @@ export cyc="%CYC%"
 ############################################################
 # Load modules
 ############################################################
+# Cray modules for WCOSS2; on Ursa, head.h loads modulefiles/run_ursa.lua instead
+if [ "${MACHINE}" = "WCOSS2" ]; then
 module load intel/${intel_ver}
 module load craype/${craype_ver}
 module load ve/rrfs/${rrfs_pythonve_ver}
@@ -29,6 +41,7 @@ module load libjpeg/${libjpeg_ver}
 module load udunits/${udunits_ver}
 module load gsl/${gsl_ver}
 module load nco/${nco_ver}
+fi
 
 module list
 export WGF="%WGF%"

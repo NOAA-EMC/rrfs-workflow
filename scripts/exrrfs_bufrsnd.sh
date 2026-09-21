@@ -56,8 +56,13 @@ case $MACHINE in
     APRUNC="mpiexec -n ${ncores} -ppn ${PPN_BUFRSND}"
     APRUNS="time"
     ;;
+  "URSA")
+    ncores=$(( NNODES_BUFRSND*PPN_BUFRSND ))
+    APRUNC="srun --export=ALL -n ${ncores} --ntasks-per-node=${PPN_BUFRSND}"
+    APRUNS="time"
+    ;;
 
-  "HERA" | "URSA")
+  "HERA")
     APRUNC="srun --export=ALL"
     APRUNS="time"
     ;;

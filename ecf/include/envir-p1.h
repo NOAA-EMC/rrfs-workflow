@@ -1,6 +1,6 @@
 # envir-p1.h
-export job=${job:-$PBS_JOBNAME}
-export jobid=${jobid:-$job.$PBS_JOBID}
+export job=${job:-${PBS_JOBNAME:-$SLURM_JOB_NAME}}
+export jobid=${jobid:-$job.${PBS_JOBID:-$SLURM_JOB_ID}}
 
 export RUN_ENVIR=nco
 export envir=%ENVIR%
@@ -24,12 +24,15 @@ export DBNROOT=$SIPHONROOT
 
 if [[ ! " prod para test " =~ " ${envir} " && " ops.prod ops.para " =~ " $(whoami) " ]]; then err_exit "ENVIR must be prod, para, or test [envir-p1.h]"; fi
 
-# Developer configuration
-PTMP=/lfs/h3/emc/lam/noscrub/ecflow/ptmp
+# Developer configuration. DEV_PTMP and DEV_DATAROOT can be set in the suite (e.g. on Ursa);
+# the defaults are the WCOSS2 locations.
+PTMP=%DEV_PTMP:/lfs/h3/emc/lam/noscrub/ecflow/ptmp%
 model=rrfs
 PSLOT=ecflow_rrfs
 export COMROOT=${PTMP}/${USER}/${PSLOT}/para/com
-export COMPATH=${COMROOT}/${model}
+# DEV_COMPATH adds upstream COM directories to search, e.g. staged retro data on Ursa
+DEV_COMPATH="%DEV_COMPATH:%"
+export COMPATH=${COMROOT}/${model}${DEV_COMPATH:+:${DEV_COMPATH}}
 if [ -n "%PDY:%" ]; then
   export PDY=${PDY:-%PDY:%}
 else
@@ -39,7 +42,7 @@ export CDATE=${PDY}%CYC:%
 export COMrrfs=$(compath.py rrfs/${rrfs_ver})
 export COMOUT_PREP="$(compath.py obsproc/v1.2)"
 
-export DATAROOT=/lfs/h3/emc/lam/noscrub/ecflow/stmp/${USER}/${model}/${PSLOT}
+export DATAROOT=%DEV_DATAROOT:/lfs/h3/emc/lam/noscrub/ecflow/stmp/${USER}/${model}/${PSLOT}%
 #### export umbrella_fsm_data=${DATAROOT}/rrfs_fsm_${PDY}${cyc}_${rrfs_ver}/${WGF}
 #if [ "${CYCLE_TYPE}" = "spinup" ]; then
 #  export umbrella_init_data="${DATAROOT}/${PDY}/${RUN}_init_spinup_${cyc}_${rrfs_ver}/${WGF}"

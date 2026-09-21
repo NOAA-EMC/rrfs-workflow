@@ -60,7 +60,14 @@ case $MACHINE in
   APRUN="mpiexec -n ${ncores} -ppn ${PPN_ANALYSIS_GSIDIAG} --cpu-bind core --depth ${OMP_NUM_THREADS}"
   ;;
 #
-"HERA" | "URSA")
+"URSA")
+  export OMP_STACKSIZE=1G
+  export OMP_NUM_THREADS=1
+  ncores=$(( NNODES_ANALYSIS_GSIDIAG*PPN_ANALYSIS_GSIDIAG ))
+  APRUN="srun --export=ALL -n ${ncores} --ntasks-per-node=${PPN_ANALYSIS_GSIDIAG} --cpus-per-task=${OMP_NUM_THREADS}"
+  ;;
+#
+"HERA")
   export OMP_NUM_THREADS=1
   export OMP_STACKSIZE=300M
   APRUN="srun --export=ALL"

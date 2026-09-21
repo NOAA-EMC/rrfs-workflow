@@ -57,8 +57,13 @@ case $MACHINE in
     ncores=$(( NNODES_PRDGEN*PPN_PRDGEN))
     APRUN="mpiexec -n ${ncores} -ppn ${PPN_PRDGEN}"
     ;;
+  "URSA")
+    export OMP_NUM_THREADS=1
+    ncores=$(( NNODES_PRDGEN*PPN_PRDGEN))
+    APRUN="srun --export=ALL -n ${ncores} --ntasks-per-node=${PPN_PRDGEN}"
+    ;;
 
-  "HERA" | "URSA")
+  "HERA")
     APRUN="srun --export=ALL"
     ;;
 

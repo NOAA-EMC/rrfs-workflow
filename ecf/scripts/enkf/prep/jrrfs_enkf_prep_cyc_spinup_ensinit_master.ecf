@@ -1,3 +1,4 @@
+#!/bin/bash
 #PBS -N rrfs_enkf_prep_cyc_spinup_ensinit_mem@enkf_prep_cyc_spinup_ensinit_member@_%CYC%
 #PBS -j oe
 #PBS -S /bin/bash
@@ -6,15 +7,27 @@
 #PBS -l walltime=00:20:00
 #PBS -l place=vscatter:shared,select=1:ncpus=5:mem=500G
 #PBS -l debug=true
+#SBATCH --job-name=rrfs_enkf_prep_cyc_spinup_ensinit_mem@enkf_prep_cyc_spinup_ensinit_member@_%CYC%
+#SBATCH --account=%PROJ%
+#SBATCH --qos=%QUEUE%
+#SBATCH --partition=%PARTITION:u1-compute%
+#SBATCH --time=00:20:00
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=5
+# WCOSS2 asks for mem=500G, more than an Ursa u1-compute node has (376G), so take the whole node's memory
+#SBATCH --mem=0
+#SBATCH --output=%ECF_JOBOUT%
 
 model=rrfs
-export MACHINE=WCOSS2
+export MACHINE=%MACHINE:WCOSS2%
 export cyc="%CYC%"
 %include <head.h>
 %include <envir-p1.h>
 ############################################################
 # Load modules
 ############################################################
+# Cray modules for WCOSS2; on Ursa, head.h loads modulefiles/run_ursa.lua instead
+if [ "${MACHINE}" = "WCOSS2" ]; then
 module load intel/${intel_ver}
 module load craype/${craype_ver}
 module load ve/rrfs/${rrfs_pythonve_ver}
@@ -39,6 +52,7 @@ module load udunits/${udunits_ver}
 module load gsl/${gsl_ver}
 module load nco/${nco_ver}
 module load cfp/${cfp_ver}
+fi
 
 export WGF="%WGF%"
 export MEMBER_NAME="%MEMBER_NAME%"
