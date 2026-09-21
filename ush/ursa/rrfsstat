@@ -1,0 +1,210 @@
+#!/usr/bin/env python3
+"""Show the state of the RRFS ecflow suite as text, in the spirit of rocotostat.
+
+ecflow keeps the workflow state on the server, so this asks the server and prints it. By default
+it prints one line per cycle (a rollup); --tasks prints one line per task, like rocotostat does.
+
+  rrfsstat                          rollup of every released cycle
+  rrfsstat -t                       every task, most interesting states first
+  rrfsstat -t -s aborted,active     only these states
+  rrfsstat -c 03z                   only the 03z cycle
+  rrfsstat -t -o status.txt         write to a file instead of the terminal
+  rrfsstat -l 60                    refresh every 60 seconds until interrupted
+
+The server to talk to comes from --host/--port, else ECF_HOST/ECF_PORT, else
+ecf/defs/ursa_config.sh next to this script. Note that the ecflow module sets ECF_HOST and
+ECF_PORT to the site server, so pass --port (or set ECF_PORT after loading it) for your own.
+
+States are ecflow's: queued, submitted, active, complete, aborted, suspended, unknown.
+"aborted" is the one to look at; it means the job failed. "suspended" is a node someone held.
+"""
+
+import argparse
+import os
+import re
+import subprocess
+import sys
+import time
+
+import ecflow
+
+# most interesting first, so the states worth acting on sort to the top of a task listing
+STATE_ORDER = ["aborted", "active", "submitted", "queued", "unknown", "complete"]
+DEFAULT_SUITE = "para"
+
+
+def settings_from_config():
+    """Fall back to ecf/defs/ursa_config.sh so this works without any environment set up."""
+    here = os.path.dirname(os.path.realpath(__file__))
+    cfg = os.path.join(here, "..", "..", "ecf", "defs", "ursa_config.sh")
+    host = port = None
+    try:
+        with open(cfg) as f:
+            text = f.read()
+    except OSError:
+        return host, port
+    m = re.search(r"^ECFLOW_HOST=\$\{ECFLOW_HOST:-([^}]+)\}", text, re.M)
+    if m:
+        host = m.group(1).strip()
+    return host, port
+
+
+def tasks_under(node):
+    for child in node.nodes:
+        if isinstance(child, ecflow.Task):
+            yield child
+        else:
+            yield from tasks_under(child)
+
+
+def suspended_ancestor(defs, path):
+    """True if the task or anything above it is suspended (ecflow does not inherit the flag)."""
+    parts = path.split("/")
+    for i in range(2, len(parts) + 1):
+        node = defs.find_abs_node("/".join(parts[:i]))
+        if node is not None and node.is_suspended():
+            return True
+    return False
+
+
+def family_pdy(node):
+    for v in node.variables:
+        if v.name() == "PDY":
+            return v.value()
+    return None
+
+
+def collect(defs, suite, cycle_filter, state_filter, show_all=False):
+    """One record per task: cycle date, cycle hour, path, state, try number, last change."""
+    rows = []
+    primary = defs.find_abs_node(f"/{suite}/primary")
+    if primary is None:
+        sys.exit(f"ERROR: /{suite}/primary not found on the server")
+    for day_fam in primary.nodes:
+        pdy = family_pdy(day_fam)
+        if pdy is None and not show_all:
+            continue    # a day family the retro has not released yet
+        pdy = pdy or "-"
+        for task in tasks_under(day_fam):
+            path = task.get_abs_node_path()
+            m = re.search(r"/(\d\dz)/", path)
+            cyc = m.group(1) if m else "-"
+            if cycle_filter and cyc not in cycle_filter:
+                continue
+            state = "suspended" if suspended_ancestor(defs, path) else str(task.get_state())
+            if state_filter and state not in state_filter:
+                continue
+            short = path.split("/rrfs/", 1)[-1].split("/", 1)[-1] if "/rrfs/" in path else path
+            rows.append({
+                "pdy": pdy,
+                "cycle": cyc,
+                "task": short,
+                "state": state,
+                "try": task.get_try_no(),
+                "changed": str(task.get_state_change_time()).replace("T", " ")[5:],
+            })
+    return rows
+
+
+def slurm_jobs():
+    """Running and pending job names from squeue, to show alongside the ecflow state."""
+    try:
+        out = subprocess.run(["squeue", "-u", os.environ.get("USER", ""), "-h", "-o", "%j|%T|%M"],
+                             capture_output=True, text=True, timeout=20).stdout
+    except (OSError, subprocess.SubprocessError):
+        return {}
+    jobs = {}
+    for line in out.splitlines():
+        parts = line.split("|")
+        if len(parts) == 3:
+            jobs[parts[0]] = (parts[1], parts[2])
+    return jobs
+
+
+def print_rollup(rows, jobs, out):
+    counts = {}
+    for r in rows:
+        key = (r["pdy"], r["cycle"])
+        counts.setdefault(key, {}).setdefault(r["state"], 0)
+        counts[key][r["state"]] += 1
+    head = f"{'CYCLE':<16}{'TASKS':>7}  " + "  ".join(f"{s.upper():>9}" for s in STATE_ORDER)
+    print(head, file=out)
+    print("-" * len(head), file=out)
+    for (pdy, cyc), c in sorted(counts.items()):
+        total = sum(c.values())
+        cells = "  ".join(f"{c.get(s, 0):>9}" for s in STATE_ORDER)
+        susp = c.get("suspended", 0)
+        line = f"{pdy + ' ' + cyc:<16}{total:>7}  {cells}"
+        if susp:
+            line += f"   (+{susp} suspended)"
+        print(line, file=out)
+    running = sum(1 for v in jobs.values() if v[0] == "RUNNING")
+    print(f"\nslurm: {len(jobs)} job(s) in the queue, {running} running", file=out)
+
+
+def print_tasks(rows, jobs, out):
+    order = {s: i for i, s in enumerate(STATE_ORDER)}
+    rows = sorted(rows, key=lambda r: (order.get(r["state"], 99), r["pdy"], r["cycle"], r["task"]))
+    head = f"{'CYCLE':<16}{'TASK':<58}{'STATE':<11}{'TRY':>4}  {'CHANGED':<16}{'SLURM':<20}"
+    print(head, file=out)
+    print("-" * len(head), file=out)
+    for r in rows:
+        name = r["task"].rsplit("/", 1)[-1]
+        sj = ""
+        for jname, (jstate, jtime) in jobs.items():
+            if jname.startswith(name.replace("jrrfs_", "rrfs_")):
+                sj = f"{jstate} {jtime}"
+                break
+        task = r["task"] if len(r["task"]) <= 57 else "…" + r["task"][-56:]
+        print(f"{r['pdy'] + ' ' + r['cycle']:<16}{task:<58}{r['state']:<11}{r['try']:>4}  "
+              f"{r['changed']:<16}{sj:<20}", file=out)
+    print(f"\n{len(rows)} task(s)", file=out)
+
+
+def main():
+    p = argparse.ArgumentParser(description="state of the RRFS ecflow suite, rocotostat style")
+    p.add_argument("--host", help="ecflow server host (default: ECF_HOST, then ursa_config.sh)")
+    p.add_argument("--port", help="ecflow server port (default: ECF_PORT)")
+    p.add_argument("--suite", default=os.getenv("RRFS_SUITE", DEFAULT_SUITE))
+    p.add_argument("-t", "--tasks", action="store_true", help="one line per task, not a rollup")
+    p.add_argument("-c", "--cycle", help="only these cycles, e.g. 03z or 00z,03z")
+    p.add_argument("-s", "--state", help="only these states, e.g. aborted,active")
+    p.add_argument("-a", "--all", action="store_true",
+                   help="include day families the retro has not released yet")
+    p.add_argument("-o", "--out", help="write to this file instead of the terminal")
+    p.add_argument("-l", "--loop", type=int, metavar="SECONDS", help="refresh until interrupted")
+    a = p.parse_args()
+
+    cfg_host, cfg_port = settings_from_config()
+    host = a.host or os.getenv("ECF_HOST") or cfg_host
+    port = a.port or os.getenv("ECF_PORT") or cfg_port
+    if not host or not port:
+        sys.exit("ERROR: no ecflow server; pass --host and --port or set ECF_HOST/ECF_PORT")
+    cycles = set(a.cycle.split(",")) if a.cycle else None
+    states = set(a.state.split(",")) if a.state else None
+
+    while True:
+        ci = ecflow.Client(str(host), str(port))
+        ci.sync_local()
+        defs = ci.get_defs()
+        if defs is None:
+            sys.exit(f"ERROR: no definition loaded on {host}:{port}")
+        rows = collect(defs, a.suite, cycles, states, a.all)
+        jobs = slurm_jobs()
+        out = open(a.out, "w") if a.out else sys.stdout
+        try:
+            print(f"suite /{a.suite} on {host}:{port}   {time.strftime('%Y-%m-%d %H:%M:%S')}\n", file=out)
+            if a.tasks:
+                print_tasks(rows, jobs, out)
+            else:
+                print_rollup(rows, jobs, out)
+        finally:
+            if a.out:
+                out.close()
+        if not a.loop:
+            break
+        time.sleep(a.loop)
+
+
+if __name__ == "__main__":
+    main()
