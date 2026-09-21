@@ -86,3 +86,18 @@ def smart_save4next_groups(dcCycleDef):
     # sys.exit()
     # ~~~~~~~~~~~~~
     return listGroupInfo
+
+
+#  for subcyc cycling
+def smart2_save4next_groups(dcCycleDef):
+    # ~~~~~~~~~~~~~
+    # construct listGroupInfo: fmn and corresponding cycledef
+    cycledef_prod = dcCycleDef['prod']
+    if isinstance(cycledef_prod, dict):
+        cycledef_prod = cycledef_prod["cycledef"]
+    listGroupInfo = []
+    mycycledef = cycledef_prod
+    dcTmp = {"fmn": 15, "cycledef": f'{mycycledef}'}
+    listGroupInfo.append(dcTmp)
+    # ~~~~~~~~~~~~~
+    return listGroupInfo

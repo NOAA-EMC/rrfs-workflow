@@ -195,14 +195,19 @@ if [[ ${START_TYPE} == "warm" ]] || [[ ${START_TYPE} == "cold" && ${COLDSTART_CY
       fi
   fi
   # the input/output file are linked from the umbrella directory, so no need to copy
-  cp "${DATA}/${initial_file}" "${COMOUT}/jedivar/${WGF}/${initial_file%.nc}.${timestr}.nc"
-  cp "${DATA}"/jdiag* "${COMOUT}/jedivar/${WGF}"
-  cp "${DATA}"/jedivar*.yaml "${COMOUT}/jedivar/${WGF}"
-  cp "${DATA}"/log.out "${COMOUT}/jedivar/${WGF}"
-  if  [[ -s log.pass2.out ]]; then
-    cp "${DATA}"/log.pass2.out "${COMOUT}/jedivar/${WGF}"
+  if [[ "${DO_SPINUP^^}" == "TRUE" ]];  then
+    jedivar_str="jedivar_spinup"
+  else
+    jedivar_str="jedivar"
   fi
-  touch "${COMOUT}/jedivar/${WGF}/jedivar.done"
+  cp "${DATA}/${initial_file}" "${COMOUT}/${jedivar_str}/${WGF}/${initial_file%.nc}.${timestr}.nc"
+  cp "${DATA}"/jdiag* "${COMOUT}/${jedivar_str}/${WGF}"
+  cp "${DATA}"/jedivar*.yaml "${COMOUT}/${jedivar_str}/${WGF}"
+  cp "${DATA}"/log.out "${COMOUT}/${jedivar_str}/${WGF}"
+  if  [[ -s log.pass2.out ]]; then
+    cp "${DATA}"/log.pass2.out "${COMOUT}/${jedivar_str}/${WGF}"
+  fi
+  touch "${COMOUT}/${jedivar_str}/${WGF}/${jedivar_str}.done"
 else
   echo "INFO: No DA at the cold start cycle"
 fi

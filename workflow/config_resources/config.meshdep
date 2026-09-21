@@ -57,6 +57,34 @@ elif [[ ${MESH_NAME} == "conus12km" ]]; then
   export NONVAR_USERDX=12000
   export NONVAR_SEARCH_RAD=4
 
+elif [[ ${MESH_NAME} == "conus3p5km" ]]; then
+  export FCST_DT=20
+  export FCST_SUBSTEPS=4
+  export FCST_RADT=15
+  export UPP_DOMAIN="conus."
+  export MRMS_GRIDSPACINGDEG=0.03
+
+  export MPASSIT_NX=1800
+  export MPASSIT_NY=1060
+  export MPASSIT_DX=3000.0
+  export MPASSIT_REF_LAT=38.5
+  export MPASSIT_REF_LON=-97.5
+
+  export GSIBEC_NLAT=593
+  export GSIBEC_NLON=921
+  export GSIBEC_NORTH_POLE_LAT=51.226749
+  export GSIBEC_NORTH_POLE_LON=82.592899
+  export GSIBEC_LON_START=-24.840000
+  export GSIBEC_LON_END=24.840000
+  export GSIBEC_LAT_START=-15.984000
+  export GSIBEC_LAT_END=15.984000
+
+  export NONVAR_LARC_NPTS=3
+  export NONVAR_METAR_IMPACT=20
+  export NONVAR_PROJ_NAME="CONUS"
+  export NONVAR_USERDX=3500
+  export NONVAR_SEARCH_RAD=1
+
 elif [[ ${MESH_NAME} == "conus3km" ]]; then
   export FCST_DT=20
   export FCST_SUBSTEPS=4
@@ -85,11 +113,11 @@ elif [[ ${MESH_NAME} == "conus3km" ]]; then
   export NONVAR_USERDX=3000
   export NONVAR_SEARCH_RAD=1
 
-elif [[ ${MESH_NAME} == "fwx1.25km" ]]; then
+elif [[ ${MESH_NAME} == "fwx1p25km" ]]; then
   export FCST_DT=12
   export FCST_SUBSTEPS=4
   export FCST_RADT=10
-  export UPP_DOMAIN="fwx1.25."
+  export UPP_DOMAIN="fwx1p25."
 
   export MPASSIT_NX=2600
   export MPASSIT_NY=2600
@@ -97,7 +125,7 @@ elif [[ ${MESH_NAME} == "fwx1.25km" ]]; then
   export MPASSIT_REF_LAT=41.5
   export MPASSIT_REF_LON=-112.5
 
-elif [[ ${MESH_NAME} == "south3.5km" ]]; then
+elif [[ ${MESH_NAME} == "south3p5km" ]]; then
   export FCST_DT=25
   export FCST_SUBSTEPS=4
   export FCST_RADT=15
@@ -116,7 +144,7 @@ elif [[ ${MESH_NAME} == "south3.5km" ]]; then
   export NONVAR_USERDX=3500
   export NONVAR_SEARCH_RAD=1
 
-elif [[ ${MESH_NAME} == "ar3.5km" ]]; then
+elif [[ ${MESH_NAME} == "ar3p5km" ]]; then
   export FCST_DT=25
   export FCST_SUBSTEPS=4
   export FCST_RADT=15

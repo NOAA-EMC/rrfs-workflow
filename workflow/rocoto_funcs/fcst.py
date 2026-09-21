@@ -7,13 +7,21 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 # begin of fcst --------------------------------------------------------
 
 
-def fcst(xmlFile, expdir, do_ensemble=False, dcEnsGrpInfo=None, do_spinup=False):
-    meta_id = 'fcst'
+def fcst(xmlFile, expdir, do_ensemble=False, dcEnsGrpInfo=None, do_spinup=False, dcFcstGrpInfo=None):
     dep_xml = ""
-    if do_spinup:
-        cycledefs = 'spinup'
+    if dcFcstGrpInfo is None:
+        meta_id = 'fcst'
+        if do_spinup:
+            cycledefs = 'spinup'
+        else:
+            cycledefs = 'prod'
     else:
-        cycledefs = 'prod'
+        meta_id = dcFcstGrpInfo['grp']
+        if do_spinup:
+            print("FATAL: smart fcst group not supported at spinup cycles")
+            sys.exit(1)
+        else:
+            cycledefs = dcFcstGrpInfo['cycledef']
     # Task-specific EnVars beyond the task_common_vars
     extrn_mdl_source = os.getenv('IC_EXTRN_MDL_NAME', 'IC_PREFIX_not_defined')
     fcst_len_hrs_cycles = os.getenv('FCST_LEN_HRS_CYCLES', '03 03')

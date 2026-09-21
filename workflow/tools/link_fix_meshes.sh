@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # FIX_RRFS2 only contains conus3km, conus12km, na12km meshes
-# this script faciliates linking other meshes, such as fwx1.25km, south3.5km, eu12km, etc
+# this script faciliates linking other meshes, such as fwx1p25km, south3p5km, eu12km, etc
 #
 # shellcheck disable=all
 run_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
@@ -20,6 +20,12 @@ fi
 
 # orion/hercules
 meshdir="/work/noaa/zrtrr/FIX_MESHES"
+if [[ -d "${meshdir}" ]]; then
+  ln -snf "${meshdir}"/*km "${HOMErrfs}/fix"
+fi
+
+# derecho
+meshdir="/glade/work/geguo/FIX_MESHES"
 if [[ -d "${meshdir}" ]]; then
   ln -snf "${meshdir}"/*km "${HOMErrfs}/fix"
 fi
