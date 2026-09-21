@@ -1,3 +1,4 @@
+#!/bin/bash
 #PBS -N rrfs_enkf_calc_ensmean_spinup_%CYC%
 #PBS -j oe
 #PBS -S /bin/bash
@@ -6,15 +7,26 @@
 #PBS -l walltime=01:00:00
 #PBS -l place=vscatter:excl,select=10:ncpus=128:mem=500G
 #PBS -l debug=true
+#SBATCH --job-name=rrfs_enkf_calc_ensmean_spinup_%CYC%
+#SBATCH --account=%PROJ%
+#SBATCH --qos=%QUEUE%
+#SBATCH --partition=%PARTITION:u1-compute%
+#SBATCH --time=01:00:00
+#SBATCH --nodes=10
+#SBATCH --exclusive
+#SBATCH --mem=0
+#SBATCH --output=%ECF_JOBOUT%
 
 model=rrfs
-export MACHINE=WCOSS2
+export MACHINE=%MACHINE:WCOSS2%
 export cyc="%CYC%"
 %include <head.h>
 %include <envir-p1.h>
 ############################################################
 # Load modules
 ############################################################
+# Cray modules for WCOSS2; on Ursa, head.h loads modulefiles/run_ursa.lua instead
+if [ "${MACHINE}" = "WCOSS2" ]; then
 module load intel/${intel_ver}
 module load craype/${craype_ver}
 module load ve/rrfs/${rrfs_pythonve_ver}
@@ -27,6 +39,7 @@ module load libjpeg/${libjpeg_ver}
 module load udunits/${udunits_ver}
 module load gsl/${gsl_ver}
 module load nco/${nco_ver}
+fi
 
 module list
 export WGF="%WGF%"

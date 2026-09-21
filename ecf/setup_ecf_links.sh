@@ -1,11 +1,40 @@
 #!/bin/bash
 # Must be run from $PACKAGEHOME/ecf
 set -eux
-module load prod_util
+# prod_util provides cpreq; on Ursa it comes from modulefiles/run_ursa.lua (spack-stack)
+if [[ "$(hostname -f)" == *"ufe"* ]]; then
+  module use "$(pwd)/../modulefiles"
+  module load run_ursa
+else
+  module load prod_util
+fi
 
-# Assume resource is using NCO production configuration
-resource_config="NCO"
 ECF_DIR=$(pwd)
+# On Ursa the shared settings file supplies RESOURCE_CONFIG and FIX_RRFS_DIR; elsewhere (WCOSS2)
+# the NCO production resources stay the default.
+if [[ "$(hostname -f)" == *"ufe"* ]] && [ -f "${ECF_DIR}/defs/ursa_config.sh" ]; then
+  # shellcheck source=/dev/null
+  . "${ECF_DIR}/defs/ursa_config.sh"
+fi
+resource_config=${RESOURCE_CONFIG:-NCO}
+
+# On Ursa, build fix/ as links into a copy of the WCOSS2 fix tree (FIX_RRFS_DIR overrides it).
+# workflow/ is a local directory because the workflow.conf step below writes into it.
+if [[ "$(hostname -f)" == *"ufe"* ]]; then
+  fix_src=${FIX_RRFS_DIR}
+  fix_dir=${ECF_DIR}/../fix
+  mkdir -p ${fix_dir}
+  for src in ${fix_src}/*; do
+    name=$(basename ${src})
+    [ "${name}" = "workflow" ] && continue
+    ln -snf ${src} ${fix_dir}/${name}
+  done
+  for wgf in det enkf ensf firewx; do
+    mkdir -p ${fix_dir}/workflow/${wgf}
+    ln -sf ${fix_src}/workflow/${wgf}/workflow.conf_prod ${fix_dir}/workflow/${wgf}/workflow.conf_prod
+    ln -sf ${fix_src}/workflow/${wgf}/workflow.conf_dev ${fix_dir}/workflow/${wgf}/workflow.conf_dev
+  done
+fi
 
 # Create tmp file for git exclude
 tmp_exclude="${ECF_DIR}/exclude_list.tmp"
@@ -69,6 +98,18 @@ else
   cpreq ./enkf/workflow.conf_dev ./enkf/workflow.conf
   cpreq ./ensf/workflow.conf_dev ./ensf/workflow.conf
   cpreq ./firewx/workflow.conf_dev ./firewx/workflow.conf
+fi
+
+# Ursa retros read the staged GFS GRIB2 files for the deterministic boundaries; the netcdf files
+# operations uses (hourly out to f102, four cycles a day) are far too large to stage.
+if [[ "$(hostname -f)" == *"ufe"* ]]; then
+  echo "Ursa: deterministic LBCs from GFS grib2, fewer forecast ranks per node..."
+  sed -i "s|^export GFS_FILE_FMT_LBCS=.*|export GFS_FILE_FMT_LBCS='grib2'|" ./det/workflow.conf
+  # An Ursa node has 360 GB for 192 cores, against 500 GB on WCOSS2, so 64 forecast ranks per node
+  # leaves the write tasks short and they are OOM-killed. 48 per node restores ~7.5 GB per rank;
+  # the rank count itself comes from the layout and does not change (see the ecf cards' --nodes).
+  sed -i "s|^export PPN_FORECAST=.*|export PPN_FORECAST='48'|" ./det/workflow.conf
+  grep -n "GFS_FILE_FMT\|PPN_FORECAST" ./det/workflow.conf
 fi
 
 # det prdgen files

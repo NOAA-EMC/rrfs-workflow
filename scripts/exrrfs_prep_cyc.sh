@@ -58,8 +58,12 @@ case $MACHINE in
     ncores=$(( NNODES_PREP_CYC*PPN_PREP_CYC))
     APRUN="mpiexec -n ${ncores} -ppn ${PPN_PREP_CYC}"
     ;;
+  "URSA")
+    ncores=$(( NNODES_PREP_CYC*PPN_PREP_CYC))
+    APRUN="srun --export=ALL -n ${ncores} --ntasks-per-node=${PPN_PREP_CYC}"
+    ;;
 
-  "HERA" | "URSA")
+  "HERA")
     APRUN="srun --export=ALL --mem=0"
     ;;
 
