@@ -1,4 +1,5 @@
 #!/bin/bash
+set -Ee -o pipefail
 
 # usage instructions
 usage () {
@@ -29,6 +30,8 @@ OPTIONS
       build with GTG (default is false, this option turns it on)
   --ifi
       build with IFI (default is false, this option turns it on)
+  --workaround
+      apply local development workarounds, including RDASApp sources
   --noparalstart
       do not build module with enabled parallel start (default is on)
   --extrn
@@ -100,6 +103,7 @@ Settings:
   BUILD_RRFS_UTILS=${BUILD_RRFS_UTILS}
   BUILD_NEXUS=${BUILD_NEXUS}
   BUILD_AQM_UTILS=${BUILD_AQM_UTILS}
+  BUILD_RDASAPP=${BUILD_RDASAPP}
 
 EOF_SETTINGS
 }
@@ -115,6 +119,27 @@ usage_error () {
 LCL_PID=$$
 SORC_DIR=$(cd "$(dirname "$(readlink -f -n "${BASH_SOURCE[0]}" )" )" && pwd -P)
 HOME_DIR="${SORC_DIR}/.."
+LOG_DIR="${LOG_DIR:-${HOME_DIR}/logs}"
+mkdir -p "${LOG_DIR}"
+RUN_TIMESTAMP="$(date +%Y%m%d_%H%M%S)"
+RUN_LOG="${LOG_DIR}/app_build_${RUN_TIMESTAMP}.log"
+CMAKE_LOG="${LOG_DIR}/cmake_${RUN_TIMESTAMP}.log"
+MAKE_LOG="${LOG_DIR}/make_${RUN_TIMESTAMP}.log"
+exec > >(tee -a "${RUN_LOG}") 2>&1
+RUN_START_SECONDS=$(date +%s)
+printf "Build started: %s\nLog: %s\nCommand: %s\n" "$(date)" "${RUN_LOG}" "$0 $*"
+build_exit() {
+  rc=$?
+  run_end_seconds=$(date +%s)
+  run_elapsed_seconds=$((run_end_seconds - RUN_START_SECONDS))
+  run_hours=$((run_elapsed_seconds / 3600))
+  run_minutes=$(((run_elapsed_seconds % 3600) / 60))
+  run_seconds=$((run_elapsed_seconds % 60))
+  printf "Build finished with status %s at %s\n" "${rc}" "$(date)"
+  printf "Build duration: %02d:%02d:%02d (%s seconds)\n" \
+    "${run_hours}" "${run_minutes}" "${run_seconds}" "${run_elapsed_seconds}"
+}
+trap build_exit EXIT
 BUILD_DIR="${SORC_DIR}/build"
 INSTALL_DIR="${SORC_DIR}/build"
 BIN_DIR="exec"
@@ -132,6 +157,7 @@ PARALSTART=true
 REMOVE=false
 CONTINUE=false
 VERBOSE=false
+BUILD_WORKAROUND=false
 
 # Turn off all apps to build and choose default later
 DEFAULT_BUILD=true
@@ -142,6 +168,7 @@ BUILD_GSI="off"
 BUILD_RRFS_UTILS="off"
 BUILD_NEXUS="off"
 BUILD_AQM_UTILS="off"
+BUILD_RDASAPP="off"
 
 # Make options
 CLEAN=false
@@ -175,6 +202,7 @@ while :; do
     --extrn=?*|--extrn=) usage_error "$1 argument ignored." ;;
     --gtg) GTG=true ;;
     --ifi) IFI=true ;;
+    --workaround) BUILD_WORKAROUND=true ;;
     --noparalstart) PARALSTART=false ;;
     --remove) REMOVE=true ;;
     --remove=?*|--remove=) usage_error "$1 argument ignored." ;;
@@ -200,7 +228,7 @@ while :; do
     default) ;;
     all) DEFAULT_BUILD=false; BUILD_UFS="on";
          BUILD_UFS_UTILS="on"; BUILD_UPP="on";
-         BUILD_GSI="on"; BUILD_RRFS_UTILS="on";;
+         BUILD_GSI="on"; BUILD_RRFS_UTILS="on"; BUILD_RDASAPP="on";;
     ufs) DEFAULT_BUILD=false; BUILD_UFS="on" ;;
     ufs_utils) DEFAULT_BUILD=false; BUILD_UFS_UTILS="on" ;;
     upp) DEFAULT_BUILD=false; BUILD_UPP="on" ;;
@@ -208,6 +236,7 @@ while :; do
     rrfs_utils) DEFAULT_BUILD=false; BUILD_RRFS_UTILS="on" ;;
     nexus) DEFAULT_BUILD=false; BUILD_NEXUS="on" ;;
     aqm_utils) DEFAULT_BUILD=false; BUILD_AQM_UTILS="on" ;;
+    rdasapp) DEFAULT_BUILD=false; BUILD_RDASAPP="on" ;;
     # unknown
     -?*|?*) usage_error "Unknown option $1" ;;
     *) break
@@ -296,6 +325,7 @@ if [ "${DEFAULT_BUILD}" = true ]; then
   BUILD_GSI="on"
   BUILD_RRFS_UTILS="on"
   BUILD_AQM_UTILS="on"
+  BUILD_RDASAPP="on"
 fi
 
 # Choose components to build for air quality modeling (RRFS-AQM)
@@ -372,6 +402,14 @@ if [ "${EXTRN}" = true ]; then
     printf "... removing AQM-utils ...\n"
     rm -rf "${SORC_DIR}/AQM-utils"
   fi
+  if [ -d "${SORC_DIR}/RDASApp" ]; then
+    printf "... removing RDASApp ...\n"
+    rm -rf "${SORC_DIR}/RDASApp"
+  fi
+  if [ -d "${HOME_DIR}/${BIN_DIR}/bin" ]; then
+    printf "... removing stale RDASApp exec/bin ...\n"
+    rm -rf "${HOME_DIR}/${BIN_DIR}/bin"
+  fi
 
   # run check-out
   if [[ "$NCO_BUILD" == "TRUE" ]]; then
@@ -381,6 +419,24 @@ if [ "${EXTRN}" = true ]; then
   fi
   printf "... checking out external components ...\n"
   ./manage_externals/checkout_externals
+fi
+
+# Apply the development workarounds that are carried with this branch. These
+# are intentionally opt-in and are applied after external checkout.
+if [ "${BUILD_WORKAROUND}" = true ] && [ "${BUILD_RDASAPP}" = "on" ]; then
+  printf "... copying RDASApp workaround codes ...\n"
+  cp "${SORC_DIR}/_workaround_/gsibec/constants.f90" \
+     "${SORC_DIR}/RDASApp/sorc/gsibec/src/gsibec/gsi/constants.f90"
+  cp "${SORC_DIR}/_workaround_/gsibec/gsimod.F90" \
+     "${SORC_DIR}/RDASApp/sorc/gsibec/src/gsibec/gsi/gsimod.F90"
+  cp "${SORC_DIR}/_workaround_/gsibec/mod_fv3_lola.f90" \
+     "${SORC_DIR}/RDASApp/sorc/gsibec/src/gsibec/gsi/mod_fv3_lola.f90"
+  cp "${SORC_DIR}/_workaround_/parm/rdas-atmosphere-templates-fv3_c13.yaml" \
+     "${HOME_DIR}/parm/rdas-atmosphere-templates-fv3_c13.yaml"
+  cp "${SORC_DIR}/_workaround_/ush/config_det_c13_3dvar_gsi_baseline005.sh" \
+     "${HOME_DIR}/ush/config_det_c13_3dvar_gsi_baseline005.sh"
+  cp "${SORC_DIR}/_workaround_/ush/config_det_c13_3dvar_jedi_baseline005.sh" \
+     "${HOME_DIR}/ush/config_det_c13_3dvar_jedi_baseline005.sh"
 fi
 
 # Patch ufs-weather-model for Ursa's oneAPI 2024 compilers (icx, no classic icc; ifort 2021.13).
@@ -417,11 +473,20 @@ printf "MODULE_FILE=${MODULE_FILE}\n" >&2
 # if build directory already exists then exit
 if [ "${REMOVE}" = true ]; then
   printf "Remove build directory\n"
-  printf "  BUILD_DIR=${BUILD_DIR}\n\n"
+  printf "  BUILD_DIR=${BUILD_DIR}\n"
   rm -rf ${BUILD_DIR}
+  if [ "${BUILD_RDASAPP}" = "on" ] && [ -d "${SORC_DIR}/RDASApp/build" ]; then
+    printf "  RDASAPP_BUILD_DIR=${SORC_DIR}/RDASApp/build\n"
+    rm -rf "${SORC_DIR}/RDASApp/build"
+  fi
+  printf "\n"
 elif [ "${CONTINUE}" = true ]; then
   printf "Continue build in directory\n"
-  printf "  BUILD_DIR=${BUILD_DIR}\n\n"
+  printf "  BUILD_DIR=${BUILD_DIR}\n"
+  if [ "${BUILD_RDASAPP}" = "on" ] && [ -d "${SORC_DIR}/RDASApp/build" ]; then
+    printf "  RDASApp build directory exists; continuing incrementally (automatic choice: C).\n"
+  fi
+  printf "\n"
 else
   if [ -d "${BUILD_DIR}" ]; then
     while true; do
@@ -460,6 +525,7 @@ CMAKE_SETTINGS="\
  -DBUILD_RRFS_UTILS=${BUILD_RRFS_UTILS}\
  -DBUILD_NEXUS=${BUILD_NEXUS}\
  -DBUILD_AQM_UTILS=${BUILD_AQM_UTILS}\
+ -DBUILD_RDASAPP=${BUILD_RDASAPP}\
  -DBUILD_IFI=${BUILD_IFI}\
  -DBUILD_GTG=${BUILD_GTG}\
  -DENABLE_PARALLELRESTART=${ENABLE_PARALLELRESTART}\
@@ -565,6 +631,11 @@ if [ $USE_SUB_MODULES = true ]; then
         module use ${SORC_DIR}/AQM-utils/modulefiles
         load_module ""
     fi
+    if [ $BUILD_RDASAPP = "on" ]; then
+        printf "... Loading RDASApp modules ...\n"
+        module use ${SORC_DIR}/RDASApp/modulefiles
+        load_module "RDAS/"
+    fi
 else
     module use ${HOME_DIR}/modulefiles
     module load ${MODULE_FILE}
@@ -577,14 +648,14 @@ cd ${BUILD_DIR}
 if [ "${CLEAN}" = true ]; then
     if [ -f $PWD/Makefile ]; then
        printf "... Clean executables ...\n"
-       make ${MAKE_SETTINGS} clean 2>&1 | tee log.make
+       make ${MAKE_SETTINGS} clean 2>&1 | tee "${MAKE_LOG}" | tee log.make
     fi
 else
     printf "... Generate CMAKE configuration ...\n"
-    cmake ${SORC_DIR} ${CMAKE_SETTINGS} 2>&1 | tee log.cmake
+    cmake ${SORC_DIR} ${CMAKE_SETTINGS} 2>&1 | tee "${CMAKE_LOG}" | tee log.cmake
 
     printf "... Compile and install executables ...\n"
-    make ${MAKE_SETTINGS} install 2>&1 | tee log.make
+    make ${MAKE_SETTINGS} install 2>&1 | tee "${MAKE_LOG}" | tee log.make
 
     # move executables to the designated location (HOMEdir/exec) only when 
     # both --build and --move are not set (no additional arguments) or
