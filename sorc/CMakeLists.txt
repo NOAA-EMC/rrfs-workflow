@@ -120,6 +120,7 @@ include(ExternalProject)
 option(BUILD_UFS "Build UFS weather model" ON)
 option(BUILD_UFS_UTILS "Build UFS utilities" ON)
 option(BUILD_UPP "Build UPP" ON)
+option(BUILD_RDASAPP "Build RDASApp" OFF)
 option(BUILD_GSI "Build GSI" ON)
 option(BUILD_RRFS_UTILS "Build RRFS utilities" ON)
 option(BUILD_AQM_UTILS "Build AQM utilities" ON)
@@ -132,6 +133,7 @@ message(STATUS "BUILD_UFS ............... ${BUILD_UFS}")
 message(STATUS "BUILD_UFS_UTILS ......... ${BUILD_UFS_UTILS}")
 message(STATUS "BUILD_GSI ............... ${BUILD_GSI}")
 message(STATUS "BUILD_UPP ............... ${BUILD_UPP}")
+message(STATUS "BUILD_RDASAPP ........... ${BUILD_RDASAPP}")
 message(STATUS "BUILD_RRFS_UTILS ........ ${BUILD_RRFS_UTILS}")
 message(STATUS "BUILD_NEXUS ............. ${BUILD_NEXUS}")
 message(STATUS "BUILD_AQM_UTILS ......... ${BUILD_AQM_UTILS}")
@@ -139,6 +141,21 @@ message(STATUS "BUILD_IFI ............... ${BUILD_IFI}")
 message(STATUS "BUILD_GTG ............... ${BUILD_GTG}")
 message(STATUS "ENABLE_PARALLELRESTART ............... ${ENABLE_PARALLELRESTART}")
 message(STATUS "ENABLE_RRFS_WAR ...................... ${ENABLE_RRFS_WAR}")
+
+# Build RDASApp (JEDI/RDAS bundle). RDASApp owns its dependency bundle and
+# performs its own configure, build, and install steps.
+if(BUILD_RDASAPP)
+  list(APPEND TARGET_LIST RDASApp)
+  ExternalProject_Add(RDASApp
+    PREFIX ${CMAKE_CURRENT_BINARY_DIR}/RDASApp
+    SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/RDASApp
+    CONFIGURE_COMMAND ""
+    BUILD_COMMAND bash -c "echo c | '${CMAKE_CURRENT_SOURCE_DIR}/RDASApp/build.sh' -p '${CMAKE_INSTALL_PREFIX}' -c \"-DCMAKE_INSTALL_BINDIR=${CMAKE_INSTALL_BINDIR}\" -m FV3 -b YES -t NO"
+    INSTALL_COMMAND ""
+    BUILD_ALWAYS TRUE
+    STEP_TARGETS build
+  )
+endif()
 
 # Set dependency of ufs weather model only for coupled model
 if (NOT APP)
