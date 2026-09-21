@@ -23,6 +23,7 @@ def nonvar_cldana(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
     extrn_mdl_source = os.getenv('IC_EXTRN_MDL_NAME', 'IC_PREFIX_not_defined')
     dcTaskEnv = {
         'EXTRN_MDL_SOURCE': f'{extrn_mdl_source}',
+        'SAVE_CLDANA': os.getenv('SAVE_CLDANA', 'FALSE').upper(),
     }
     if do_spinup:
         dcTaskEnv['DO_SPINUP'] = 'TRUE'

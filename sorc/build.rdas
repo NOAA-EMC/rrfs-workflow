@@ -23,7 +23,9 @@ else
   use_same_mpas=yes
 fi
 cd "${HOMErrfs}/sorc/MPAS-Model" || exit 1
-remote_url=$(git remote get-url origin)
+remote_name=$(git config --get "branch.$(git branch --show-current).remote" || true)
+remote_name=${remote_name:-origin}  # default to origin if detached HEAD
+remote_url=$(git remote get-url "${remote_name}")
 hash_workflow=$(git rev-parse HEAD)
 cd "${HOMErrfs}/sorc/RDASApp/sorc/mpas" || exit 1
 hash_rdasapp=$(git rev-parse HEAD)
@@ -47,7 +49,12 @@ cd "${HOMErrfs}/sorc/RDASApp" || exit 1
 cp "${HOMErrfs}/sorc/_workaround_/saber/gsi_covariance_mod.f90" "${HOMErrfs}/sorc/RDASApp/sorc/saber/src/saber/gsi/covariance/gsi_covariance_mod.f90"
 
 rm -rf build/
-./build.sh -m MPAS -t NO -w YES -b NO
+
+extra=()
+if [[ "${REDUCED_SCALARS^^}" == TRUE ]]; then
+  extra=(-c "-DREDUCED_SCALARS=ON")
+fi
+./build.sh -m MPAS -t NO -w NO -b NO "${extra[@]}"
 
 mkdir -p "${HOMErrfs}/exec"
 echo "copy ${EXEC} to ../exec/mpasjedi_variational.x"
