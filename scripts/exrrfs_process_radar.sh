@@ -75,7 +75,12 @@ case $MACHINE in
   APRUN="mpiexec -n ${ncores} -ppn ${PPN_PROCESS_RADAR}"
   ;;
 #
-"HERA" | "URSA")
+"URSA")
+  ncores=$(( NNODES_PROCESS_RADAR*PPN_PROCESS_RADAR))
+  APRUN="srun --export=ALL -n ${ncores} --ntasks-per-node=${PPN_PROCESS_RADAR}"
+  ;;
+#
+"HERA")
   APRUN="srun --export=ALL"
   ;;
 #

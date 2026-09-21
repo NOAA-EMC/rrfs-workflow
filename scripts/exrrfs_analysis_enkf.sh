@@ -62,7 +62,15 @@ case $MACHINE in
   APRUN="mpiexec -n ${ncores} -ppn ${PPN_ANALYSIS_ENKF} --label --line-buffer --cpu-bind core --depth ${OMP_NUM_THREADS}"
   ;;
 #
-"HERA" | "URSA")
+"URSA")
+  export OMP_STACKSIZE=2G
+  export OMP_NUM_THREADS=${TPP_ANALYSIS_ENKF}
+  ncores=160
+  PPN_ANALYSIS_ENKF=8
+  APRUN="srun --export=ALL -n ${ncores} --ntasks-per-node=${PPN_ANALYSIS_ENKF} --cpus-per-task=${OMP_NUM_THREADS}"
+  ;;
+#
+"HERA")
   export OMP_NUM_THREADS=${TPP_ANALYSIS_ENKF}
 #  export OMP_STACKSIZE=300M
   APRUN="srun"

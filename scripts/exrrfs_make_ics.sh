@@ -159,8 +159,16 @@ case "$MACHINE" in
     ncores_blending=$(( NNODES_MAKE_ICS*PPN_PRE_BLENDING ))
     APRUN_PRE_BLENDING="mpiexec -n ${ncores_blending} -ppn ${PPN_PRE_BLENDING} --cpu-bind core --depth 2"
     ;;
+  "URSA")
+    export OMP_STACKSIZE=1G
+    export OMP_NUM_THREADS=${TPP_MAKE_ICS}
+    ncores=$(( NNODES_MAKE_ICS*PPN_MAKE_ICS ))
+    APRUN="srun --export=ALL -n ${ncores} --ntasks-per-node=${PPN_MAKE_ICS} --cpus-per-task=${OMP_NUM_THREADS}"
+    ncores_blending=$(( NNODES_MAKE_ICS*PPN_PRE_BLENDING ))
+    APRUN_PRE_BLENDING="srun --export=ALL -n ${ncores_blending} --ntasks-per-node=${PPN_PRE_BLENDING} --cpus-per-task=2"
+    ;;
 
-  "HERA" | "URSA")
+  "HERA")
     APRUN="srun --export=ALL"
     ;;
 
