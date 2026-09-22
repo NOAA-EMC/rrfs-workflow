@@ -18,13 +18,16 @@ RUN=${NET}
 CDATE=$1
 taskraw=$2
 task=${taskraw%_g*}
+if [[ "${task}" == fcst* ]]; then
+  task="fcst"
+fi
 if [[ "${task}" == *prep_chem* ]]; then
   task="prep_chem"
 fi
 PDY=${CDATE:0:8}
 cyc=${CDATE:8:2}
 logroot=${COMROOT}/${NET}/${VERSION}/logs
-logfile="${logroot}/${RUN}.${PDY}/${cyc}/${WGF}/${RUN}_${taskraw}_${TAG}_${PDY}${cyc}.log"
+logfile="${logroot}/${RUN}.${PDY}/${cyc}/${WGF}/${RUN}_${taskraw}*_${TAG}_${PDY}${cyc}.log"
 echo "----log file:"
 ls ${logfile}*
 echo "${logroot}/${RUN}.${PDY}/${cyc}/${WGF}/rrfs.log"

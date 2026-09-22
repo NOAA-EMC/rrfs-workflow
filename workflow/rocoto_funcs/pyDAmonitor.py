@@ -8,15 +8,18 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 
 
 def pyDAmonitor(xmlFile, expdir, spinup_mode=0):
-    task_id = 'pyDAmonitor'
     nocoldda = os.getenv('COLDSTART_CYCS_DO_DA', 'TRUE').upper() == 'FALSE'
     do_spinup = spinup_mode == 1
     if do_spinup:
+        task_id = 'pyDAmonitor_spinup'
+        spinup_str = "_spinup"
         if nocoldda:
             cycledefs = 'da_nocold'
         else:
             cycledefs = 'spinup'
     else:
+        task_id = 'pyDAmonitor'
+        spinup_str = ""
         if spinup_mode == 0 and nocoldda:
             cycledefs = 'da_nocold'
         else:
@@ -39,9 +42,9 @@ def pyDAmonitor(xmlFile, expdir, spinup_mode=0):
     #
     wgf = os.getenv('WGF', 'det')
     if wgf == "det":
-        taskdep = '\n<taskdep task="jedivar"/>'
+        taskdep = f'\n<taskdep task="jedivar{spinup_str}"/>'
         if do_nonvar_cloud_ana == "TRUE":
-            taskdep += '\n<taskdep task="nonvar_cldana"/>'
+            taskdep += f'\n<taskdep task="nonvar_cldana{spinup_str}"/>'
     else:
         if os.getenv("GETKF_ONESTEP", "TRUE").upper() == "FALSE":
             taskdep = '\n<taskdep task="getkf_solver"/>'
