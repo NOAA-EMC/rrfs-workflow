@@ -19,7 +19,7 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 #
 export pid=${pid:-$$}
 export UMBRELLA_FCST_DATA=${UMBRELLA_FCST_DATA:-${DATAROOT}/${RUN}_fcst_${cyc}_${rrfs_ver}/${WGF}}
-export jobid=${jobid:-save_for_next_${cyc}}
+export jobid=${jobid:-save_for_next_f$(printf "%02d" "${FCST_HR}")_${cyc}}
 export UMBRELLA_SAVE_FOR_NEXT_DATA=${UMBRELLA_SAVE_FOR_NEXT_DATA:-${DATAROOT}/${RUN}_save_for_next_${cyc}_${rrfs_ver}/${WGF}}
 export DATA=${DATA:-${UMBRELLA_SAVE_FOR_NEXT_DATA}/${jobid}}
 

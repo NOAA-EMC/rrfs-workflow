@@ -17,11 +17,12 @@ workflow/rrfsexps/
 workflow/config.chemistry
 sorc/build_timing.txt
 superyamls
-fix/ar3.5km
+fix/ar3p5km
+fix/south3p5km
 fix/ea5km
 fix/global*km
 fix/eu12km
-fix/fwx1.25km
+fix/fwx1p25km
 pygraf
 tests/xml
 tests/yaml

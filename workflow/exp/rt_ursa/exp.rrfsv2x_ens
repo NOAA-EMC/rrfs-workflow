@@ -114,7 +114,7 @@ export LBC_EXTRN_MDL_FILENAME_PATTERN_B=${IC_EXTRN_MDL_FILENAME_PATTERN_B}
 export IC_EXTRN_MDL_BASEDIR="/public/data/grids/gefs/ncep"
 export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
 export OBSPATH="/public/data/grids/rap/obs"
-export OBSPATH_NSSLMOSIAC="/public/data/radar/mrms"
+export OBSPATH_NSSLMOSAIC="/public/data/radar/mrms"
 #
 export STARTTIME_UNGRIB_IC="00:05:00"
 export STARTTIME_UNGRIB_LBC="00:05:00"

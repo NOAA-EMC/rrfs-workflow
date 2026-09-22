@@ -37,7 +37,7 @@ def nonvar_bufrobs(xmlFile, expdir):
         starttime = get_cascade_env(f"STARTTIME_{task_id}".upper())
         dependencies = f'''
   <dependency>
-    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
+    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>
   </dependency>'''
     else:
         dependencies = f'''

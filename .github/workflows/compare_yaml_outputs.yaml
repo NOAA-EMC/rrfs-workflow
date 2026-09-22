@@ -5,12 +5,12 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
     paths:
-      - 'parm/jedivar.yaml'
-      - 'parm/getkf.yaml'
+      - 'parm/observers/*'
       - 'parm/bec*.yaml'
       - 'ush/yaml_finalize'
       - 'ush/yamltools4rrfs.py'
       - 'ush/hifiyaml4rrfs.py'
+      - 'workflow/rocoto_funcs/smart_superyaml.py'
 
 jobs:
   compare-YAML-outputs:
