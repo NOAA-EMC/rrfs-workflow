@@ -15,6 +15,7 @@ def smart_cycledefs():
         cycledef_prod = os.getenv('CYCLEDEF_PROD', 'not_defined')
         cycledef_spinup = os.getenv('CYCLEDEF_SPINUP', 'not_defined')
         cycledef_recenter = os.getenv('CYCLEDEF_RECENTER', 'not_defined')
+        cold_cycs = os.getenv('COLDSTART_CYCS', '03 15').strip().split()
     else:  # compute cycledef automatically if no CYCLEDEF_* environment variables
         lbc_cycs = os.getenv('LBC_CYCS', '00 12').strip().split()
         lbc_step = str(int(24 / len(lbc_cycs)))

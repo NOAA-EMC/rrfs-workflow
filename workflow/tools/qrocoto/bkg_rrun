@@ -2,7 +2,7 @@
 # shellcheck disable=all
 
 cycle=""
-sleeptime=60
+sleeptime=180
 if (( $# > 0 )); then
   tmp=$1
   if (( ${#tmp} < 8 )); then

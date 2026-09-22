@@ -13,14 +13,15 @@
 
 ./:
 INIT_DONE
-ar3.5km
+ar3p5km
 ea5km
 global12km
 global-15-3km
 global15km
-south3.5km
+south3p5km
 eu12km
 sf1km
+fwx1p25km
 
 chemistry/dust:
 fengsha_dust_inputs.conus12km.nc

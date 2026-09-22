@@ -67,6 +67,7 @@ nsoillevels=${NSOIL_LEVELS:-9}
 jedi_da=true #true
 pio_stride=${PIO_STRIDE:-${PPN}}
 pio_num_iotasks=$(( NODES * PPN / pio_stride ))
+do_sppt=${DO_SPPT:-'false'} 
 
 # We set dt, substeps, radt values to avoid errors in reading namelist.atmosphere
 # but they will NOT be used since no model integration in DA steps
@@ -117,7 +118,7 @@ if [[ ${START_TYPE} == "warm" ]] || [[ ${START_TYPE} == "cold" && ${COLDSTART_CY
   err_chk
   #
   cp "${DATA}"/getkf*.yaml "${COMOUT}/getkf${TYPESTR}/${WGF}"
-  cp "${DATA}"/log.* "${COMOUT}/getkf${TYPESTR}/${WGF}"
+  cp "${DATA}"/log.out "${COMOUT}/getkf${TYPESTR}/${WGF}"
 
   # rename ombg to oman for posterior observer jdiag files
   if [[ "${GETKF_TYPE}" == "post" ]]; then

@@ -9,10 +9,10 @@
              obsfile: "data/obs/ioda_sfcshp.nc"
              missing file action: "warn"
              #obsfile: "obsout/sfcship_tsen_obs_2024052700_dc.nc4"
-           obsgrouping:
-             group variables: ["stationIdentification"]
-             sort variable: "pressure"
-             sort order: "descending"
+#           obsgrouping:
+#             group variables: ["stationIdentification"]
+#             sort variable: "pressure"
+#             sort order: "descending"
          obsdataout:
            empty obs space action: "@emptyObsSpaceAction@"
            engine:

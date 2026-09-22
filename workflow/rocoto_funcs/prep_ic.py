@@ -15,7 +15,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
     else:
         cycledefs = 'prod'
     coldhrs = os.getenv('COLDSTART_CYCS', '03 15')
-    cyc_interval = os.getenv('CYC_INTERVAL')
+    cyc_interval = os.getenv('CYC_INTERVAL', '1')
     do_sfc_update = os.getenv('DO_SFC_UPDATE', 'false').upper()
     sst_update_cycs = os.getenv('SST_UPDATE_CYCS', '99')
     sfc_update_look_back_hrs = os.getenv('SFC_UPDATE_LOOK_BACK_HRS', cyc_interval)
