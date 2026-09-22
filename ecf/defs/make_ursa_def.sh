@@ -74,6 +74,48 @@ awk -v q="'" -v ph="${PACKAGEHOME}" -v eh="${ECF_HOME}" -v od="${OUTPUTDIR}" \
 # tasks and on /prod_clone stay, and the retro prod_clone steps the dates (ush/prod_clone/make_retro_def.sh)
 if [ "${RETRO}" = "YES" ]; then
   sed -i -E 's/:TIME *(>=|>) *[0-9]{4}/:TIME >= 0000/g; s/:TIME *(<=|<) *[0-9]{4}/:TIME < 2400/g' "${out_def}"
+  # The clock also ordered each cycle's work: preclean at :00 wipes the cycle's working directories,
+  # then fire weather (:15), the EnKF (:22) and the ensemble forecast (:30) start. Only det waits for
+  # preclean explicitly, so with the clock gone the others would race it and lose their directories.
+  # Make them wait for preclean too, which is the ordering the clock gave them.
+  python3 - "${out_def}" <<'EOF'
+import re, sys
+path = sys.argv[1]
+lines = open(path).read().split("\n")
+out, stack, i = [], [], 0
+while i < len(lines):
+    line = lines[i]; t = line.strip()
+    if t.startswith("family "):
+        name = t.split()[1]
+        if stack and re.fullmatch(r"\d\dz", stack[-1]) and name in ("enkf", "ensf", "firewx"):
+            out.append(line)
+            indent = line[:len(line) - len(line.lstrip())] + "  "
+            # the family's own attributes run until its first child or endfamily
+            j = i + 1
+            while j < len(lines) and not re.match(r"\s*(family|task|endfamily)\b", lines[j]):
+                j += 1
+            attrs = lines[i + 1:j]
+            k = next((n for n, a in enumerate(attrs) if a.strip().startswith("trigger ")), None)
+            if k is None:
+                attrs.insert(0, indent + "trigger preclean == complete")
+            else:
+                expr = attrs[k].strip()[len("trigger "):]
+                attrs[k] = indent + f"trigger ( {expr} ) and preclean == complete"
+            out.extend(attrs)
+            stack.append(name)
+            i = j
+            continue
+        stack.append(name)
+    elif t.startswith("endfamily") and stack:
+        stack.pop()
+    out.append(line)
+    i += 1
+open(path, "w").write("\n".join(out))
+EOF
+  # cycle_end is the suite's developer retro driver (ecf/scripts/cycle_end.ecf): it bumps PDY and
+  # force-requeues the cycle families, which would fight the retro prod_clone that drives the dates
+  # here. defstatus complete keeps it from ever running, including after a family is requeued.
+  sed -i -E 's/^( *)task cycle_end$/&\n\1  defstatus complete/' "${out_def}"
 fi
 
 echo "Wrote ${out_def} from ${BASE_DEF}"

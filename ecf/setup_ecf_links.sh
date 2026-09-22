@@ -109,6 +109,18 @@ if [[ "$(hostname -f)" == *"ufe"* ]]; then
   # leaves the write tasks short and they are OOM-killed. 48 per node restores ~7.5 GB per rank;
   # the rank count itself comes from the layout and does not change (see the ecf cards' --nodes).
   sed -i "s|^export PPN_FORECAST=.*|export PPN_FORECAST='48'|" ./det/workflow.conf
+  # Even at 48 per node the production forecast's write ranks run out of memory as output builds up
+  # (OOM near hour 12). Two write groups of 384 instead of three of 192 halve what each write rank
+  # holds; the output is the same and the job still fits in 74 nodes (see the forecast cards).
+  sed -i -E "s/^export (WRTCMP_write_groups(_18H|_LONG)?)=.*/export \1='2'/; s/^export (WRTCMP_write_tasks_per_group(_18H|_LONG)?)=.*/export \1='384'/" ./det/workflow.conf
+  # No Great Lakes FVCOM (nosofs) data is staged on Ursa, and warm starts abort without it; the
+  # Rocoto retros run without it too (PREP_FVCOM=FALSE)
+  sed -i "s|^export USE_FVCOM=.*|export USE_FVCOM='FALSE'|; s|^export PREP_FVCOM=.*|export PREP_FVCOM='FALSE'|" ./det/workflow.conf
+  # An EnKF member spreads the same domain over 704 ranks against 1856 for the deterministic
+  # spinup, so each rank holds far more and needs 24 per node (see the member cards' --nodes).
+  sed -i "s|^export PPN_FORECAST=.*|export PPN_FORECAST='24'|" ./enkf/workflow.conf
+  # An ensf member is 3200 compute ranks over the same domain, so 48 per node as for det
+  sed -i "s|^export PPN_FORECAST=.*|export PPN_FORECAST='48'|" ./ensf/workflow.conf
   grep -n "GFS_FILE_FMT\|PPN_FORECAST" ./det/workflow.conf
 fi
 
