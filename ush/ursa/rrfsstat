@@ -1,4 +1,6 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
+# /usr/bin/python3 (3.9), not env python3: the ecflow module's Python bindings are built for 3.9
+# and crash under the spack-stack 3.11 that is often first on PATH on Ursa.
 """Show the state of the RRFS ecflow suite as text, in the spirit of rocotostat.
 
 ecflow keeps the workflow state on the server, so this asks the server and prints it. By default
@@ -11,9 +13,9 @@ it prints one line per cycle (a rollup); --tasks prints one line per task, like 
   rrfsstat -t -o status.txt         write to a file instead of the terminal
   rrfsstat -l 60                    refresh every 60 seconds until interrupted
 
-The server to talk to comes from --host/--port, else ECF_HOST/ECF_PORT, else
-ecf/defs/ursa_config.sh next to this script. Note that the ecflow module sets ECF_HOST and
-ECF_PORT to the site server, so pass --port (or set ECF_PORT after loading it) for your own.
+The server to talk to comes from --host/--port, else ECF_HOST/ECF_PORT, else the host in
+ecf/defs/ursa_config.sh and port 1500 + your uid, which is what the ecflow module sets. So it
+works with or without the module loaded; pass --port only if your server runs on another port.
 
 States are ecflow's: queued, submitted, active, complete, aborted, suspended, unknown.
 "aborted" is the one to look at; it means the job failed. "suspended" is a node someone held.
@@ -47,6 +49,11 @@ def settings_from_config():
     if m:
         host = m.group(1).strip()
     return host, port
+
+
+def default_port():
+    """The port the ecflow module gives each user, 1500 + uid, which is where the server runs."""
+    return str(1500 + os.getuid())
 
 
 def tasks_under(node):
@@ -91,7 +98,11 @@ def collect(defs, suite, cycle_filter, state_filter, show_all=False):
             cyc = m.group(1) if m else "-"
             if cycle_filter and cyc not in cycle_filter:
                 continue
-            state = "suspended" if suspended_ancestor(defs, path) else str(task.get_state())
+            state = str(task.get_state())
+            # show held work as suspended, but never hide a failure: an aborted task below a
+            # suspended family still makes that family roll up as aborted
+            if state != "aborted" and suspended_ancestor(defs, path):
+                state = "suspended"
             if state_filter and state not in state_filter:
                 continue
             short = path.split("/rrfs/", 1)[-1].split("/", 1)[-1] if "/rrfs/" in path else path
@@ -177,7 +188,7 @@ def main():
 
     cfg_host, cfg_port = settings_from_config()
     host = a.host or os.getenv("ECF_HOST") or cfg_host
-    port = a.port or os.getenv("ECF_PORT") or cfg_port
+    port = a.port or os.getenv("ECF_PORT") or cfg_port or default_port()
     if not host or not port:
         sys.exit("ERROR: no ecflow server; pass --host and --port or set ECF_HOST/ECF_PORT")
     cycles = set(a.cycle.split(",")) if a.cycle else None
@@ -185,10 +196,19 @@ def main():
 
     while True:
         ci = ecflow.Client(str(host), str(port))
-        ci.sync_local()
+        ci.set_retry_connection_period(1)
+        ci.set_connection_attempts(1)
+        try:
+            ci.sync_local()
+        except RuntimeError:
+            sys.exit(f"rrfsstat: no ecflow server is answering on {host}:{port}.\n"
+                     "  Start one first (step C on the run instructions), or, if yours runs on a\n"
+                     "  different port, pass --port <port>. The ecflow module sets ECF_PORT to\n"
+                     "  your default, 1500 + your uid.")
         defs = ci.get_defs()
-        if defs is None:
-            sys.exit(f"ERROR: no definition loaded on {host}:{port}")
+        if defs is None or defs.find_suite(a.suite) is None:
+            sys.exit(f"rrfsstat: the server on {host}:{port} is running but has no /{a.suite} suite loaded "
+                     "yet (step D on the run instructions).")
         rows = collect(defs, a.suite, cycles, states, a.all)
         jobs = slurm_jobs()
         out = open(a.out, "w") if a.out else sys.stdout
