@@ -33,9 +33,11 @@ die() { echo "ERROR: $*" >&2; exit 1; }
 # shellcheck source=/dev/null
 . "${repo}/ecf/defs/ursa_config.sh"
 if ! type module >/dev/null 2>&1; then source /etc/profile; fi
+# the module sets ECF_PORT to the user's default (1500 + uid), so keep a port chosen beforehand
+port_requested=${ECF_PORT:-}
 module load "ecflow/${ECFLOW_VER}" >/dev/null 2>&1 || die "cannot load ecflow/${ECFLOW_VER}"
 export ECF_HOST=${ECFLOW_HOST}
-export ECF_PORT=${ECF_PORT:-$((1500 + $(id -u)))}
+export ECF_PORT=${port_requested:-$((1500 + $(id -u)))}
 echo "repo:   ${repo}"
 echo "server: ${ECF_HOST}:${ECF_PORT}   ECF_HOME: ${ECF_HOME}"
 echo "retro:  ${RETRO_START} to ${RETRO_END}"
