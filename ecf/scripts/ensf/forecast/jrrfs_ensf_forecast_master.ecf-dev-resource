@@ -12,7 +12,7 @@
 #SBATCH --qos=%QUEUE%
 #SBATCH --partition=%PARTITION:u1-compute%
 #SBATCH --time=04:45:00
-#SBATCH --nodes=52
+#SBATCH --nodes=68  # Ursa: fewer ranks per node than WCOSS2
 #SBATCH --exclusive
 #SBATCH --mem=0
 #SBATCH --output=%ECF_JOBOUT%
