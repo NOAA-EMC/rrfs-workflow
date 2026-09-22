@@ -81,8 +81,8 @@
        - filter: Bounds Check
          identifier:
            name: PreQC
-           logging: false
-           diagnostic flag new: false
+           logging: true
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: 1-12
@@ -98,8 +98,8 @@
        - filter: Gaussian Thinning
          identifier:
            name: GaussianThinning
-           logging: false
-           diagnostic flag new: false
+           logging: true
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: 1-12
@@ -115,14 +115,14 @@
          apply at iterations: 0,1
          identifier:
            name: VariableAssignSCI
-           logging: false
-           diagnostic flag new: false
+           logging: true
+           diagnostic flag new: true
          assignments:
          - name: DerivedMetaData/SymmCldImpact
            type: float
            channels: 1-12
            function:
-             name: ObsFunction/SymmCldImpactIR
+             name: ObsFunction/SymmCldImpact
              channels: 1-12
              options:
                channels: 1-12
@@ -132,37 +132,36 @@
          apply at iterations: 0,1
          identifier:
            name: VariableAssignOMBSCI
-           logging: false
-           diagnostic flag new: false
+           logging: true
+           diagnostic flag new: true
          assignments:
          - name: DerivedMetaData/OMBScaledSymmCldImpact
            type: float
            channels: 1-12
            function:
-             name: ObsFunction/SymmCldImpactIR
+             name: ObsFunction/SymmCldImpact
              channels: 1-12
              options:
                channels: 1-12
                scale by omb: true
 
        # Clear-sky Obs Error
-       - filter: Perform Action
+       - filter: Variable Assignment
          apply at iterations: 0,1
          identifier:
-           name: ClearSkyErrorAssign
-           logging: false
-           diagnostic flag new: false
-         filter variables:
-         - name: brightnessTemperature
+           name: VariableAssignClearSkyError
+           logging: true
+           diagnostic flag new: true
+         assignments:
+         - name: DerivedMetaData/ClearSkyObsError
+           type: float
            channels: 1-12
-         action:
-           name: assign error
-           error function:
+           function:
              name: ObsFunction/ObsErrorModelRamp
              channels: 1-12
              options:
                channels: 1-12
-                 xvar:
+               xvar:
                  name: DerivedMetaData/SymmCldImpact
                  channels: 1-12
                x0: [1.0, 1.0, 0.75, 0.3, 0.5, 0.5, 0.25, 0.25, 1.0, 1.0, 1.0, 1.0]
@@ -174,8 +173,8 @@
          apply at iterations: 0,1
          identifier:
            name: ClearSkyErrorAssign
-           logging: false
-           diagnostic flag new: false
+           logging: true
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: 1-12
@@ -186,18 +185,17 @@
              channels: 1-12
 
        # Initial All-Sky Obs Error
-       - filter: Perform Action
+       - filter: Variable Assignment
          apply at iterations: 0,1
          identifier:
-           name: AllSkyErrorAssign
-           logging: false
-           diagnostic flag new: false
-         filter variables:
-         - name: brightnessTemperature
+           name: VariableAssignAllSkyError
+           logging: true
+           diagnostic flag new: true
+         assignments:
+         - name: DerivedMetaData/InitialAllSkyObsError
+           type: float
            channels: 1-12
-         action:
-           name: assign error
-           error function:
+           function:
              name: ObsFunction/ObsErrorModelRamp
              channels: 1-12
              options:
@@ -212,13 +210,28 @@
                x2: [25.0, 20.0, 10.0, 9.0, 20.0, 6.0, 3.0, 3.0, 25.0, 10.0, 10.0, 20.0]
                err2: [23.0, 30.0, 19.0, 18.0, 40.0, 13.0, 2.5, 2.5, 53.0, 20.0, 20.0, 30.0]
 
+       - filter: Perform Action
+         apply at iterations: 0,1
+         identifier:
+           name: AllSkyErrorAssign
+           logging: true
+           diagnostic flag new: true
+         filter variables:
+         - name: brightnessTemperature
+           channels: 1-12
+         action:
+           name: assign error
+           error function:
+             name: DerivedMetaData/InitialAllSkyObsError
+             channels: 1-12
+
        # Clear-sky Tb (set default value for all channels)
        - filter: Variable Assignment
          apply at iterations: 0,1
          identifier:
            name: VariableAssignClrTbAllChannels
-           logging: false
-           diagnostic flag new: false
+           logging: true
+           diagnostic flag new: true
          assignments:
          - name: DerivedMetaData/ClearSkyTb
            type: float
@@ -233,39 +246,39 @@
                coefs:
                - 1.0
 
-         # Clear-sky Tb conditional check (overwrites default value for after doing CRTM check)
-         - filter: Variable Assignment
-           apply at iterations: 0,1
-           identifier:
-             name: ClrCheckTbAllChannels
-             logging: false
-             diagnostic flag new: false
-           where:
-           - variable:
-               name: ObsDiag/brightness_temperature_assuming_clear_sky
-               channels: 1-12
-             minvalue: 1e-12
-           assignments:
-           - name: DerivedMetaData/ClearSkyTb
-             type: float
+       # Clear-sky Tb conditional check (overwrites default value for after doing CRTM check)
+       - filter: Variable Assignment
+         apply at iterations: 0,1
+         identifier:
+           name: ClrCheckTbAllChannels
+           logging: true
+           diagnostic flag new: true
+         where:
+         - variable:
+             name: ObsDiag/brightness_temperature_assuming_clear_sky
              channels: 1-12
-             function:
-               name: ObsFunction/Arithmetic
-               channels: 1-12
-               options:
-                 variables:
-                 - name: ObsDiag/brightness_temperature_assuming_clear_sky
-                   channels: 1-12
-                 coefs:
-                 - 1.0
+           minvalue: 1e-12
+         assignments:
+         - name: DerivedMetaData/ClearSkyTb
+           type: float
+           channels: 1-12
+           function:
+             name: ObsFunction/Arithmetic
+             channels: 1-12
+             options:
+               variables:
+               - name: ObsDiag/brightness_temperature_assuming_clear_sky
+                 channels: 1-12
+               coefs:
+               - 1.0
 
        # Calculate Modeled Cloud Impact
        - filter: Variable Assignment
          apply at iterations: 0,1
          identifier:
            name: CalcModeledCloudImpact
-           logging: false
-           diagnostic flag new: false
+           logging: true
+           diagnostic flag new: true
          assignments:
          - name: DerivedMetaData/ModeledCloudImpact
            type: float
@@ -291,8 +304,8 @@
          apply at iterations: 0,1
          identifier:
            name: CalcObservedCloudImpact
-           logging: false
-           diagnostic flag new: false
+           logging: true
+           diagnostic flag new: true
          assignments:
          - name: DerivedMetaData/ObservedCloudImpact
            type: float
@@ -318,8 +331,8 @@
          apply at iterations: 0,1
          identifier:
            name: CalcMeanCloudImpact
-           logging: false
-           diagnostic flag new: false
+           logging: true
+           diagnostic flag new: true
          assignments:
          - name: DerivedMetaData/MeanCloudImpact
            type: float
@@ -342,8 +355,8 @@
          apply at iterations: 0,1
          identifier:
            name: CalcQ20CIRightLimit
-           logging: false
-           diagnostic flag new: false
+           logging: true
+           diagnostic flag new: true
          assignments:
          - name: DerivedMetaData/Q2OCIRightLimit
            type: float
@@ -366,8 +379,8 @@
          apply at iterations: 0,1
          identifier:
            name: CalcQ40CILeftLimit
-           logging: false
-           diagnostic flag new: false
+           logging: true
+           diagnostic flag new: true
          assignments:
          - name: DerivedMetaData/Q4OCILeftLimit
            type: float
@@ -390,8 +403,8 @@
          apply at iterations: 0,1
          identifier:
            name: CalcQ2MCIBottomLimit
-           logging: false
-           diagnostic flag new: false
+           logging: true
+           diagnostic flag new: true
          assignments:
          - name: DerivedMetaData/Q2MCIBottomLimit
            type: float
@@ -414,8 +427,8 @@
          apply at iterations: 0,1
          identifier:
            name: CalcQ4MCITopLimit
-           logging: false
-           diagnostic flag new: false
+           logging: true
+           diagnostic flag new: true
          assignments:
          - name: DerivedMetaData/Q4MCITopLimit
            type: float
@@ -438,8 +451,8 @@
          apply at iterations: 0,1
          identifier:
            name: CalcIceScattering
-           logging: false
-           diagnostic flag new: false
+           logging: true
+           diagnostic flag new: true
          assignments:
          - name: DerivedMetaData/IceScatIndex
            type: float
@@ -457,8 +470,8 @@
          apply at iterations: 0,1
          identifier:
            name: CalcLiqScattering
-           logging: false
-           diagnostic flag new: false
+           logging: true
+           diagnostic flag new: true
          assignments:
          - name: DerivedMetaData/LiquidScatIndex
            type: float
@@ -476,8 +489,8 @@
          apply at iterations: 0,1
          identifier:
            name: LandtypeFilter
-           logging: false
-           diagnostic flag new: false
+           logging: true
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: 1-5,10-12
@@ -493,8 +506,8 @@
          apply at iterations: 0,1
          identifier:
            name: ObsModelCloudSignalCheck
-           logging: false
-           diagnostic flag new: false
+           logging: true
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: 1-12
@@ -516,8 +529,8 @@
          apply at iterations: 0,1
          identifier:
            name: ObsModelCloudSignalCheck
-           logging: false
-           diagnostic flag new: false
+           logging: true
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: 1-12
@@ -539,8 +552,8 @@
          apply at iterations: 0,1
          identifier:
            name: GrossCheckCh1
-           logging: false
-           diagnostic flag new: false
+           logging: true
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: 1
@@ -553,8 +566,8 @@
          apply at iterations: 0,1
          identifier:
            name: GrossCheckCh2_9_12
-           logging: false
-           diagnostic flag new: false
+           logging: true
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: 2,9,12
@@ -567,8 +580,8 @@
          apply at iterations: 0,1
          identifier:
            name: GrossCheckCh_3
-           logging: false
-           diagnostic flag new: false
+           logging: true
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: 3
@@ -581,8 +594,8 @@
          apply at iterations: 0,1
          identifier:
            name: GrossCheckCh_4_5_6_10_11
-           logging: false
-           diagnostic flag new: false
+           logging: true
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: 4,5,6,10,11
@@ -595,8 +608,8 @@
          apply at iterations: 0,1
          identifier:
            name: GrossCheckAll
-           logging: false
-           diagnostic flag new: false
+           logging: true
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: 1-12
@@ -609,8 +622,8 @@
          apply at iterations: 0,1
          identifier:
            name: UseflagCheck
-           logging: false
-           diagnostic flag new: false
+           logging: true
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: 1-12
