@@ -90,7 +90,7 @@
          identifier:
            name: CreateDiagnosticFlags
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *amsua_metop-c_channels
@@ -105,7 +105,7 @@
          identifier:
            name: Thinning
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          #horizontal_mesh: 145
          horizontal_mesh: 60
          use_reduced_horizontal_grid: true
@@ -122,7 +122,7 @@
          identifier:
            name: RegionalDomainCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *amsua_metop-c_channels
@@ -137,7 +137,7 @@
          identifier:
            name: HofXValidCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *amsua_metop-c_channels
@@ -155,7 +155,7 @@
          identifier:
            name: ObsErrorInit
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *amsua_metop-c_channels
@@ -190,7 +190,7 @@
          identifier:
            name: CLWRetCheckObs
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: 1-6, 15
@@ -209,7 +209,7 @@
          identifier:
            name: CLWRetCheckBkg
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: 1-6, 15
@@ -228,7 +228,7 @@
          identifier:
            name: HydrometeorCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *amsua_metop-c_channels
@@ -276,7 +276,7 @@
          identifier:
            name: TopographyCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *amsua_metop-c_channels
@@ -294,7 +294,7 @@
          identifier:
            name: TransmitTopCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *amsua_metop-c_channels
@@ -312,7 +312,7 @@
          identifier:
            name: SurfJacobianCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *amsua_metop-c_channels
@@ -332,7 +332,7 @@
          identifier:
            name: SituDependCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *amsua_metop-c_channels
@@ -417,7 +417,7 @@
          identifier:
            name: GrossErrorCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *amsua_metop-c_channels
@@ -475,7 +475,7 @@
          identifier:
            name: InterChannelCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *amsua_metop-c_channels
@@ -495,7 +495,7 @@
          identifier:
            name: UseflagCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *amsua_metop-c_channels
