@@ -1,6 +1,6 @@
 #!/bin/bash
 # shellcheck disable=all
-# a wrapper to rocotoboot
+# a wrapper to rocotogather
 # by Guoqing Ge, 2019/04
 #
 fulltasks="yes"
@@ -38,4 +38,7 @@ elif [[ ! -e "${xmlfile}.xml" ]]; then
   echo "${xmlfile}.xml: no such file"
   exit
 fi
-echo -e "\nrocotoboot -w ${xmlfile}.xml -d ${xmlfile}.db --harvest-only
+echo "ok, work on ${xmlfile}.xml..."
+
+rocotogather -w ${xmlfile}.xml -d ${xmlfile}.db
+echo -e "\nrocotogather -w ${xmlfile}.xml -d ${xmlfile}.db"
