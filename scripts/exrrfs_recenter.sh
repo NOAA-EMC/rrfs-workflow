@@ -57,7 +57,7 @@ fi
 
 if [[ "${RECENTER_TEMPLATE}" == "CONTROL" ]]; then
 # Use control file as the output template
-  varlist1="rho qv theta u"
+  varlist1="rho qv theta u tslb smois"
   filename_out="rec_$(basename "${controlfile}")"
 
   export CMDFILE="${DATA}/poescript_cp"
