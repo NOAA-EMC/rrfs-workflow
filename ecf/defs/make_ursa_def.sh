@@ -116,6 +116,22 @@ EOF
   # force-requeues the cycle families, which would fight the retro prod_clone that drives the dates
   # here. defstatus complete keeps it from ever running, including after a family is requeued.
   sed -i -E 's/^( *)task cycle_end$/&\n\1  defstatus complete/' "${out_def}"
+  # The cold-start prep (03z/15z prep_cyc_spinup) waits only for its own initial conditions; in real
+  # time the family's boundaries (made at 00z/12z) finish hours earlier. Without the clock a fast
+  # make_ics beats them, and on the first day there are no older boundaries to fall back on.
+  python3 - "${out_def}" <<'EOF'
+import re, sys
+path = sys.argv[1]
+lines = open(path).read().split("\n")
+fam = None
+for i, line in enumerate(lines):
+    m = re.match(r"\s*family (\d\d)\s*$", line)
+    if m: fam = m.group(1)
+    if line.strip() == "task jrrfs_det_prep_cyc_spinup" and fam and i + 1 < len(lines) \
+            and lines[i + 1].strip() == "trigger ../ics==complete":
+        lines[i + 1] += f" and ../../../{fam}z/det/ics==complete"
+open(path, "w").write("\n".join(lines))
+EOF
 fi
 
 echo "Wrote ${out_def} from ${BASE_DEF}"

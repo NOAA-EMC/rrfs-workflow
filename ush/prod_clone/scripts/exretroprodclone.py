@@ -286,7 +286,14 @@ def skip_first_day(ci, defs, fam, pdy):
                 continue
             old = trigger.get_expression()
             parsed = parse_expr(old)
-            kept = prune_fallbacks(parsed)[0]
+            kept, dead = prune_fallbacks(parsed)
+            # The first production cycle (DET_COLD_HR) has nothing but skipped cycles to wait for,
+            # so it would start the moment the family is released, before the spinup chain has
+            # written the restart it warm starts from. Point it at that spinup save instead.
+            if dead and node.name() == "jrrfs_det_prep_cyc" and int(cyc_node.name()[:2]) == DET_COLD_HR:
+                spinup = (f"/{RRFS_SUITE}/primary/{fam}/rrfs/{RRFS_VER}/{DET_COLD_HR - 1:02d}z"
+                          "/det/forecast/jrrfs_det_save_restart_spinup_f001")
+                kept = ("atom", f"{spinup} == complete")
             if kept != parsed:
                 set_variable(ci, path, "RETRO_FIRST_DAY_TRIGGER", old)
                 ci.alter(path, "change", "trigger", show_expr(kept))
