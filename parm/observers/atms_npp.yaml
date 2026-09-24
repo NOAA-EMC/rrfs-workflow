@@ -104,7 +104,7 @@
          identifier:
            name: CreateDiagnosticFlags
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *atms_npp_channels
@@ -142,7 +142,7 @@
          identifier:
            name: CLWRetFromObs
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          assignments:
          - name: CLWRetFromObs@DerivedMetaData
            type: float
@@ -158,7 +158,7 @@
          identifier:
            name: CLWRetFromObs
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          assignments:
          - name: CLWRetFromBkg@DerivedMetaData
            type: float
@@ -175,7 +175,7 @@
          identifier:
            name: CLWRetSymmetric
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          assignments:
          - name: CLWRetSymmetric@DerivedMetaData
            type: float
@@ -186,7 +186,7 @@
          identifier:
            name: VarAssign
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          where:
          - variable:
              name: CLWRetFromObs@DerivedMetaData
@@ -214,7 +214,7 @@
          identifier:
            name: SIRetFromObs
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          assignments:
          - name: SIRetFromObs@DerivedMetaData
            type: float
@@ -232,7 +232,7 @@
          identifier:
            name: CLWRetFromObs
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          assignments:
          - name: CLWMatchIndex@DerivedMetaData
            channels: *atms_npp_channels
@@ -258,7 +258,7 @@
          identifier:
            name: InitialObsError
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          assignments:
          - name: InitialObsError@DerivedMetaData
            channels: *atms_npp_channels
@@ -297,7 +297,7 @@
          identifier:
            name: Innovation
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          assignments:
          - name: Innovation@DerivedMetaData
            channels: *atms_npp_channels
@@ -319,7 +319,7 @@
          identifier:
            name: HofXValidCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *atms_npp_channels
@@ -339,7 +339,7 @@
          identifier:
            name: RegionalDomainCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *atms_npp_channels
@@ -355,7 +355,7 @@
          identifier:
            name: ObsErrorInit
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *atms_npp_channels
@@ -371,7 +371,7 @@
          identifier:
            name: ScanEdgeRemoval
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: 1-22
@@ -390,7 +390,7 @@
          identifier:
            name: Thinning
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          #horizontal_mesh: 145
          horizontal_mesh: 60
          use_reduced_horizontal_grid: true
@@ -408,7 +408,7 @@
          identifier:
            name: CLWRetCheckObs
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: 1-7, 16-22
@@ -426,7 +426,7 @@
          identifier:
            name: CLWRetCheckBkg
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: 1-7, 16-22
@@ -444,7 +444,7 @@
          identifier:
            name: WindowChannelExtremeResidual
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: 1-7, 16, 17-22
@@ -465,7 +465,7 @@
          identifier:
            name: HydrometeorCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          assignments:
          - name: DerivedMetaData/HydrometeorCheckATMS
            channels: *atms_npp_channels
@@ -487,7 +487,7 @@
          identifier:
            name: HydrometeorCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *atms_npp_channels
@@ -507,7 +507,7 @@
          identifier:
            name: TopographyCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          assignments:
          - name: ObsErrorFactorTopo@DerivedMetaData
            channels: *atms_npp_channels
@@ -524,7 +524,7 @@
          identifier:
            name: TopographyCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *atms_npp_channels
@@ -540,7 +540,7 @@
          identifier:
            name: ObsErrorFactorTransmitTop
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          assignments:
          - name: ObsErrorFactorTransmitTop@DerivedMetaData
            channels: *atms_npp_channels
@@ -556,7 +556,7 @@
          identifier:
            name: TransmitTopCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *atms_npp_channels
@@ -572,7 +572,7 @@
          identifier:
            name: SurfJacobianCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          assignments:
          - name: ObsErrorFactorSurfJacobian@DerivedMetaData
            channels: *atms_npp_channels
@@ -591,7 +591,7 @@
          identifier:
            name: SurfJacobianCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *atms_npp_channels
@@ -607,7 +607,7 @@
          identifier:
            name: SituDependCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          assignments:
          - name: ObsErrorFactorSituDepend@DerivedMetaData
            channels: *atms_npp_channels
@@ -637,7 +637,7 @@
          identifier:
            name: SituDependCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *atms_npp_channels
@@ -654,7 +654,7 @@
          identifier:
            name: GrossErrorCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          assignments:
          - name: ObsErrorFactorLat@DerivedMetaData
            type: float
@@ -668,7 +668,7 @@
          identifier:
            name: VarAssign
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          assignments:
          - name: ObsErrorBound@DerivedMetaData
            channels: *atms_npp_channels
@@ -700,7 +700,7 @@
          identifier:
            name: GrossErrorCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *atms_npp_channels
@@ -719,7 +719,7 @@
          identifier:
            name: InterChannelCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *atms_npp_channels
@@ -743,7 +743,7 @@
          identifier:
            name: UseflagCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *atms_npp_channels
