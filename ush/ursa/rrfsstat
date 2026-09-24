@@ -8,6 +8,8 @@ it prints one line per cycle (a rollup); --tasks prints one line per task, like 
 
   rrfsstat                          rollup of every released cycle
   rrfsstat -t                       every task, most interesting states first
+  rrfsstat -w                       every task in workflow order, grouped by cycle
+  rrfsstat --report                 write stat, RUN and DEAD files, like the Rocoto stat script
   rrfsstat -t -s aborted,active     only these states
   rrfsstat -c 03z                   only the 03z cycle
   rrfsstat -t -o status.txt         write to a file instead of the terminal
@@ -19,6 +21,8 @@ works with or without the module loaded; pass --port only if your server runs on
 
 States are ecflow's: queued, submitted, active, complete, aborted, suspended, unknown.
 "aborted" is the one to look at; it means the job failed. "suspended" is a node someone held.
+--workflow prints them in the words rocotostat uses (RUNNING, DONE, FAILED and so on) and marks
+a task the retro set aside on purpose, which is complete but never ran, as SET-ASIDE.
 """
 
 import argparse
@@ -32,6 +36,9 @@ import ecflow
 
 # most interesting first, so the states worth acting on sort to the top of a task listing
 STATE_ORDER = ["aborted", "active", "submitted", "queued", "unknown", "complete"]
+# rocotostat-style words for --workflow, so the listing reads like the Rocoto one
+STATE_WORD = {"aborted": "FAILED", "active": "RUNNING", "submitted": "SUBMITTED",
+              "queued": "QUEUED", "complete": "DONE", "suspended": "HELD", "unknown": "UNKNOWN"}
 DEFAULT_SUITE = "para"
 
 
@@ -106,7 +113,9 @@ def collect(defs, suite, cycle_filter, state_filter, show_all=False):
             if state_filter and state not in state_filter:
                 continue
             short = path.split("/rrfs/", 1)[-1].split("/", 1)[-1] if "/rrfs/" in path else path
+            aside = any(v.name() == "RETRO_SET_ASIDE" for v in task.variables)
             rows.append({
+                "aside": aside,
                 "pdy": pdy,
                 "cycle": cyc,
                 "task": short,
@@ -160,16 +169,87 @@ def print_tasks(rows, jobs, out):
     print(head, file=out)
     print("-" * len(head), file=out)
     for r in rows:
-        name = r["task"].rsplit("/", 1)[-1]
-        sj = ""
-        for jname, (jstate, jtime) in jobs.items():
-            if jname.startswith(name.replace("jrrfs_", "rrfs_")):
-                sj = f"{jstate} {jtime}"
-                break
+        sj = slurm_for(r, jobs)
         task = r["task"] if len(r["task"]) <= 57 else "…" + r["task"][-56:]
         print(f"{r['pdy'] + ' ' + r['cycle']:<16}{task:<58}{r['state']:<11}{r['try']:>4}  "
               f"{r['changed']:<16}{sj:<20}", file=out)
     print(f"\n{len(rows)} task(s)", file=out)
+
+
+def slurm_for(r, jobs):
+    """The Slurm state of this task's job, matched on the job name the ecf card builds.
+
+    The cards name jobs <task without the leading j>_<cycle>, so match that exactly; a prefix
+    match would pair a task with the same job in another cycle.
+    """
+    name = r["task"].rsplit("/", 1)[-1].replace("jrrfs_", "rrfs_")
+    jstate = jobs.get(f"{name}_{r['cycle'][:2]}")
+    return f"{jstate[0]} {jstate[1]}" if jstate else ""
+
+
+def word_for(r):
+    """The rocotostat-style word for a task, or SET-ASIDE for one completed without running."""
+    if r["aside"] and r["state"] == "complete":
+        return "SET-ASIDE"
+    return STATE_WORD.get(r["state"], r["state"].upper())
+
+
+def write_report(rows, jobs, directory):
+    """Write stat, RUN and DEAD, the way the Rocoto workflow's stat script does.
+
+    stat  the full per-cycle listing (what --workflow prints)
+    RUN   what is moving: running, submitted and queued tasks, then a count of every state
+    DEAD  what needs a look: failed and unknown tasks, with their counts
+    """
+    counts = {}
+    for r in rows:
+        w = word_for(r)
+        counts[w] = counts.get(w, 0) + 1
+    line = lambda r: f"{r['pdy']} {r['cycle']}  {r['task']}  {word_for(r)}"
+
+    with open(os.path.join(directory, "stat"), "w") as f:
+        print_workflow(rows, jobs, f)
+
+    with open(os.path.join(directory, "RUN"), "w") as f:
+        print("----------", file=f)
+        for w in ("RUNNING", "SUBMITTED", "QUEUED"):
+            for r in rows:
+                if word_for(r) == w:
+                    print(line(r), file=f)
+        for w in ("DONE", "RUNNING", "SUBMITTED", "QUEUED", "FAILED", "HELD", "SET-ASIDE", "UNKNOWN"):
+            print(f"#{w.title() + ':':<11}{counts.get(w, 0)}", file=f)
+        print(time.strftime("%a %b %d %H:%M:%S %Z %Y"), file=f)
+
+    with open(os.path.join(directory, "DEAD"), "w") as f:
+        print("----------", file=f)
+        for w in ("FAILED", "UNKNOWN"):
+            for r in rows:
+                if word_for(r) == w:
+                    print(line(r), file=f)
+        print(f"#Failed:  {counts.get('FAILED', 0)}", file=f)
+        print(f"#Unknown: {counts.get('UNKNOWN', 0)}", file=f)
+    return counts
+
+
+def print_workflow(rows, jobs, out):
+    """Every task in the order the workflow defines them, grouped by cycle, like rocotostat."""
+    cycles = {}
+    for r in rows:
+        cycles.setdefault((r["pdy"], r["cycle"]), []).append(r)
+    print("STATE: DONE complete, RUNNING active, SUBMITTED queued in Slurm, QUEUED waiting on a "
+          "trigger,\n       FAILED aborted, HELD suspended, SET-ASIDE completed without running\n", file=out)
+    for (pdy, cyc), items in cycles.items():
+        counts = {}
+        for r in items:
+            counts[word_for(r)] = counts.get(word_for(r), 0) + 1
+        summary = ", ".join(f"{n} {w.lower()}" for w, n in sorted(counts.items(), key=lambda kv: -kv[1]))
+        print(f"{pdy} {cyc}   {len(items)} tasks: {summary}", file=out)
+        for r in items:
+            word = word_for(r)
+            task = r["task"] if len(r["task"]) <= 57 else "\u2026" + r["task"][-56:]
+            print(f"  {task:<58}{word:<11}{r['try']:>4}  {r['changed']:<16}{slurm_for(r, jobs):<20}".rstrip(), file=out)
+        print("", file=out)
+    print(f"{len(rows)} task(s) in {len(cycles)} cycle(s)", file=out)
 
 
 def main():
@@ -178,11 +258,15 @@ def main():
     p.add_argument("--port", help="ecflow server port (default: ECF_PORT)")
     p.add_argument("--suite", default=os.getenv("RRFS_SUITE", DEFAULT_SUITE))
     p.add_argument("-t", "--tasks", action="store_true", help="one line per task, not a rollup")
+    p.add_argument("-w", "--workflow", action="store_true",
+                   help="every task in workflow order, grouped by cycle (like rocotostat -c all)")
     p.add_argument("-c", "--cycle", help="only these cycles, e.g. 03z or 00z,03z")
     p.add_argument("-s", "--state", help="only these states, e.g. aborted,active")
     p.add_argument("-a", "--all", action="store_true",
                    help="include day families the retro has not released yet")
     p.add_argument("-o", "--out", help="write to this file instead of the terminal")
+    p.add_argument("--report", nargs="?", const=".", metavar="DIR",
+                   help="write stat, RUN and DEAD files into DIR (default: here)")
     p.add_argument("-l", "--loop", type=int, metavar="SECONDS", help="refresh until interrupted")
     a = p.parse_args()
 
@@ -211,10 +295,20 @@ def main():
                      "yet (step D on the run instructions).")
         rows = collect(defs, a.suite, cycles, states, a.all)
         jobs = slurm_jobs()
+        if a.report:
+            counts = write_report(rows, jobs, a.report)
+            print(f"wrote stat, RUN and DEAD in {os.path.abspath(a.report)}: "
+                  + ", ".join(f"{n} {w.lower()}" for w, n in sorted(counts.items(), key=lambda kv: -kv[1])))
+            if not a.loop:
+                break
+            time.sleep(a.loop)
+            continue
         out = open(a.out, "w") if a.out else sys.stdout
         try:
             print(f"suite /{a.suite} on {host}:{port}   {time.strftime('%Y-%m-%d %H:%M:%S')}\n", file=out)
-            if a.tasks:
+            if a.workflow:
+                print_workflow(rows, jobs, out)
+            elif a.tasks:
                 print_tasks(rows, jobs, out)
             else:
                 print_rollup(rows, jobs, out)
