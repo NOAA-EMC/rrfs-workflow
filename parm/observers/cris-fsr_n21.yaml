@@ -105,7 +105,7 @@
          identifier:
            name: CreateDiagnosticFlags
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *cris-fsr_n21_channels
@@ -144,7 +144,7 @@
          identifier:
            name: VarAssign
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          assignments:
          - name: MetaData/sensorCentralWavenumber
            type: float
@@ -253,7 +253,7 @@
          identifier:
            name: BrightnessTempTransform
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          Transform: SatBrightnessTempFromRad
          transform from:
            name: ObsValue/radiance
@@ -274,7 +274,7 @@
          identifier:
            name: ObsErrorInit
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *cris-fsr_n21_channels
@@ -291,7 +291,7 @@
          identifier:
            name: VarAssign
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          assignments:
          - name: DerivedMetaData/cloudFree
            type: int
@@ -349,7 +349,7 @@
          identifier:
            name: Thinning
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *cris-fsr_n21_channels
@@ -376,7 +376,7 @@
          identifier:
            name: RegionalDomainCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *cris-fsr_n21_channels
@@ -399,7 +399,7 @@
          identifier:
            name: ZenithAngleCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: 1972, 1973, 1974, 1975, 1976, 1977, 1978, 1979, 1980, 1981,
@@ -425,7 +425,7 @@
          identifier:
            name: ZenithAngleCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *cris-fsr_n21_channels
@@ -446,7 +446,7 @@
          identifier:
            name: TopographyCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *cris-fsr_n21_channels
@@ -468,7 +468,7 @@
          identifier:
            name: TransmitTopCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *cris-fsr_n21_channels
@@ -494,7 +494,7 @@
          identifier:
            name: CloudDetect
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *cris-fsr_n21_channels
@@ -522,7 +522,7 @@
          identifier:
            name: SurfaceTempJacobianCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *cris-fsr_n21_channels
@@ -551,7 +551,7 @@
          identifier:
            name: NearSSTRetCheckIR
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *cris-fsr_n21_channels
@@ -579,7 +579,7 @@
          identifier:
            name: SurfJacobianCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *cris-fsr_n21_channels
@@ -603,7 +603,7 @@
          identifier:
            name: GrossErrorCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *cris-fsr_n21_channels
@@ -637,7 +637,7 @@
          identifier:
            name: UseflagCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *cris-fsr_n21_channels
