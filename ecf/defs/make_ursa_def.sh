@@ -116,6 +116,46 @@ EOF
   # force-requeues the cycle families, which would fight the retro prod_clone that drives the dates
   # here. defstatus complete keeps it from ever running, including after a family is requeued.
   sed -i -E 's/^( *)task cycle_end$/&\n\1  defstatus complete/' "${out_def}"
+  # A manager task that waits on the whole forecast family is fragile once anything is requeued:
+  # the family reads active while other tasks in it run, so the manager can start before the
+  # forecast does, and it reads queued while the saves it releases wait, which deadlocks it.
+  # Point those triggers at the forecast task itself.
+  python3 - "${out_def}" <<'EOF'
+import re, sys
+path = sys.argv[1]
+lines = open(path).read().split("\n")
+# first pass: the forecast task in each cycle's <wgf>/forecast family
+fcst, cyc, wgf, in_forecast = {}, None, None, False
+for line in lines:
+    t = line.strip()
+    m = re.match(r"family (\d\dz)$", t)
+    if m: cyc = m.group(1)
+    m = re.match(r"family (det|enkf|ensf|firewx)\s*$", t)
+    if m: wgf = m.group(1)
+    if re.match(r"family forecast\s*$", t): in_forecast = True
+    elif t.startswith("family "): in_forecast = False
+    if in_forecast and t.startswith("task "):
+        name = t.split()[1]
+        if re.fullmatch(rf"jrrfs_{wgf}_forecast(_spinup|_long|_ensinit)?(_mem001)?", name):
+            fcst.setdefault((cyc, wgf), name)
+# second pass: rewrite the manager triggers that name the family
+cyc = wgf = None
+out, n = [], 0
+for line in lines:
+    t = line.strip()
+    m = re.match(r"family (\d\dz)$", t)
+    if m: cyc = m.group(1)
+    m = re.match(r"family (det|enkf|ensf|firewx)\s*$", t)
+    if m: wgf = m.group(1)
+    if t.startswith("trigger ") and re.search(r"\.\./forecast\s*==", t):
+        task = fcst.get((cyc, wgf))
+        if task:
+            line = re.sub(r"\.\./forecast(\s*==)", rf"../forecast/{task}\1", line)
+            n += 1
+    out.append(line)
+open(path, "w").write("\n".join(out))
+print(f"{n} manager trigger(s) pointed at the forecast task")
+EOF
   # The cold-start prep (03z/15z prep_cyc_spinup) waits only for its own initial conditions; in real
   # time the family's boundaries (made at 00z/12z) finish hours earlier. Without the clock a fast
   # make_ics beats them, and on the first day there are no older boundaries to fall back on.
