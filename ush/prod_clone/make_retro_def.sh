@@ -15,6 +15,12 @@ out_def=${1:-${clone_dir}/ecf/defs_retro.def}
 # Settings live in ecf/defs/ursa_config.sh; environment variables still win.
 PACKAGEHOME=${PACKAGEHOME:-$(cd "${clone_dir}/../.." && pwd)}
 # shellcheck source=/dev/null
+if [ ! -f "${PACKAGEHOME}/ecf/defs/ursa_config.sh" ]; then
+  echo "ecf/defs/ursa_config.sh not found." >&2
+  echo "Link or copy the sample for your domain, e.g." >&2
+  echo "  ln -s ursa_config_na3km.sh ecf/defs/ursa_config.sh" >&2
+  exit 1
+fi
 . "${PACKAGEHOME}/ecf/defs/ursa_config.sh"
 
 awk -v q="'" -v ph="${PACKAGEHOME}" -v eh="${ECF_HOME}" -v com="${RETRO_DATA_ROOT}/com" \

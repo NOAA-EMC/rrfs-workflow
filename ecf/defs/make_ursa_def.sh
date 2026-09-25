@@ -13,6 +13,12 @@ out_def=${1:-${defs_dir}/rrfs_ursa.def}
 
 # Settings live in ursa_config.sh next to this script; environment variables still win.
 # shellcheck source=/dev/null
+if [ ! -f "${defs_dir}/ursa_config.sh" ]; then
+  echo "ecf/defs/ursa_config.sh not found." >&2
+  echo "Link or copy the sample for your domain, e.g." >&2
+  echo "  ln -s ursa_config_na3km.sh ecf/defs/ursa_config.sh" >&2
+  exit 1
+fi
 . "${defs_dir}/ursa_config.sh"
 
 # Derived from the settings above
@@ -116,6 +122,15 @@ EOF
   # force-requeues the cycle families, which would fight the retro prod_clone that drives the dates
   # here. defstatus complete keeps it from ever running, including after a family is requeued.
   sed -i -E 's/^( *)task cycle_end$/&\n\1  defstatus complete/' "${out_def}"
+
+  # Workflow groups switched off in ursa_config.sh (RUN_ENKF, RUN_ENSF, RUN_FIREWX): the same
+  # mechanism as cycle_end above, applied to the whole family.
+  for wgf in enkf ensf firewx; do
+    run_var=RUN_$(echo "${wgf}" | tr '[:lower:]' '[:upper:]')
+    [ "${!run_var:-TRUE}" = "FALSE" ] || continue
+    sed -i -E "s/^( *)family ${wgf}\$/&\n\1  defstatus complete/" "${out_def}"
+    echo "  ${wgf}: families set to defstatus complete (${run_var}=FALSE)"
+  done
   # A manager task that waits on the whole forecast family is fragile once anything is requeued:
   # the family reads active while other tasks in it run, so the manager can start before the
   # forecast does, and it reads queued while the saves it releases wait, which deadlocks it.

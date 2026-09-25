@@ -31,6 +31,12 @@ step() { printf '\n=== %s\n' "$*"; }
 die() { echo "ERROR: $*" >&2; exit 1; }
 
 # shellcheck source=/dev/null
+if [ ! -f "${repo}/ecf/defs/ursa_config.sh" ]; then
+  echo "ecf/defs/ursa_config.sh not found." >&2
+  echo "Link or copy the sample for your domain, e.g." >&2
+  echo "  ln -s ursa_config_na3km.sh ecf/defs/ursa_config.sh" >&2
+  exit 1
+fi
 . "${repo}/ecf/defs/ursa_config.sh"
 if ! type module >/dev/null 2>&1; then source /etc/profile; fi
 # the module sets ECF_PORT to the user's default (1500 + uid), so keep a port chosen beforehand
