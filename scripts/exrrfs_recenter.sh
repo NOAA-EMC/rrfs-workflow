@@ -141,7 +141,9 @@ if [[ "${RECENTER_TEMPLATE}" == "CONTROL" ]] && (( err == 0 )); then
     fi
   done
   for i in $(seq -w 001 "${ENS_SIZE}"); do
-    rm -f "${UMBRELLA_PREP_IC_DATA}/mem${i}/${initial_file}_old"
+    if [[ -s "${UMBRELLA_PREP_IC_DATA}/mem${i}/${initial_file}_old" ]]; then
+      rm -f "${UMBRELLA_PREP_IC_DATA}/mem${i}/${initial_file}_old"
+    fi
     mv "${UMBRELLA_PREP_IC_DATA}/mem${i}/${initial_file}" \
        "${UMBRELLA_PREP_IC_DATA}/mem${i}/${initial_file}_old"
     rm -f "${UMBRELLA_PREP_IC_DATA}/mem${i}/${updated_file}"
