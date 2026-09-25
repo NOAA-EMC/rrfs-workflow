@@ -132,13 +132,15 @@ err_chk
 
 # Replace the ensemble files if using control as the template
 if [[ "${RECENTER_TEMPLATE}" == "CONTROL" ]] && (( err == 0 )); then
+  updated_file="${filename_out#rec_}"
   for i in $(seq -w 001 "${ENS_SIZE}"); do
-    updated_file="${filename_out#rec_}"
     if [[ ! -s "${UMBRELLA_PREP_IC_DATA}/mem${i}/${filename_out}" ]]; then
       echo "ERROR: Updated member file not found:"
       echo "  ${UMBRELLA_PREP_IC_DATA}/mem${i}/${filename_out}"
       exit 1
     fi
+  done
+  for i in $(seq -w 001 "${ENS_SIZE}"); do
     rm -f "${UMBRELLA_PREP_IC_DATA}/mem${i}/${initial_file}_old"
     mv "${UMBRELLA_PREP_IC_DATA}/mem${i}/${initial_file}" \
        "${UMBRELLA_PREP_IC_DATA}/mem${i}/${initial_file}_old"
