@@ -1,6 +1,10 @@
 #!/bin/bash
 #
-# Settings for running the rrfs-dev ecflow suite on Ursa, in one place.
+# Sample settings for an RRFS_NA_3km retro on Ursa.
+#
+# This is the configuration the deterministic and EnKF retro runs on this branch were tested with.
+# Copy it over ecf/defs/ursa_config.sh and change the paths in the first two blocks to
+# your own; everything below them is what the tested run used.
 #
 # This is the ecflow equivalent of the Rocoto workflow's ush/config.sh, for the parts we control.
 # It is sourced by ecf/setup_ecf_links.sh, ecf/defs/make_ursa_def.sh and ush/prod_clone/make_retro_def.sh,
@@ -61,6 +65,12 @@ RETRO_START=${RETRO_START:-20240506}      # first retro day, and the day that co
 RETRO_END=${RETRO_END:-20240512}          # last retro day
 # YES relaxes the suite's 399 clock-time triggers so cycles are not gated on the wall clock
 RETRO=${RETRO:-YES}
+
+# Which workflow groups to run. FALSE gives that group's families defstatus complete, so they
+# never run and nothing waiting on them blocks. Operations runs all of them.
+RUN_ENKF=${RUN_ENKF:-TRUE}
+RUN_ENSF=${RUN_ENSF:-TRUE}
+RUN_FIREWX=${RUN_FIREWX:-TRUE}
 # suite definition to copy, relative to ecf/defs
 BASE_DEF=${BASE_DEF:-nco_para/rrfs_nco_para.def}
 RRFS_SUITE=${RRFS_SUITE:-para}            # suite name in the generated definition
