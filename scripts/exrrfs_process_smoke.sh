@@ -91,7 +91,11 @@ fi
 #-----------------------------------------------------------------------
 #
 
-python -u  ${USHrrfs}/generate_fire_emissions.py \
+# Ursa: launch through srun; the script's ESMF regridding initializes MPI, which Intel MPI
+# refuses inside a Slurm job unless srun started the process (PMI2_Job_GetId returned 14)
+pyrun=""
+[ "${MACHINE}" = "URSA" ] && pyrun="srun --export=ALL -n 1"
+${pyrun} python -u  ${USHrrfs}/generate_fire_emissions.py \
   "${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}" \
   "${fire_rave_dir_work}" \
   "${DATA}" \
