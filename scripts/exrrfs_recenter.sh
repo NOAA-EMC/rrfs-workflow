@@ -84,7 +84,7 @@ elif [[ "${RECENTER_TEMPLATE}" == "MEMBER" ]]; then
     varlist1="pressure_p rho qv qc qr qi qs qg ni nr ng nc nifa nwfa volg surface_pressure theta smois sh2o tslb q2 u uReconstructZonal uReconstructMeridional refl10cm w"
   fi
   
-  filename_out="rec_$(basename "${initial_file}")"
+  filename_out="${initial_file}"
   
 else
   echo "ERROR: RECENTER_TEMPLATE must be CONTROL or MEMBER"
