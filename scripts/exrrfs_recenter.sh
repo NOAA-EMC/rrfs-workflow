@@ -145,10 +145,10 @@ if [[ "${RECENTER_TEMPLATE}" == "CONTROL" ]] && (( err == 0 )); then
       rm -f "${UMBRELLA_PREP_IC_DATA}/mem${i}/${initial_file}_old"
     fi
     mv "${UMBRELLA_PREP_IC_DATA}/mem${i}/${initial_file}" \
-       "${UMBRELLA_PREP_IC_DATA}/mem${i}/${initial_file}_old"
+       "${UMBRELLA_PREP_IC_DATA}/mem${i}/${initial_file}_old" || exit 1
     rm -f "${UMBRELLA_PREP_IC_DATA}/mem${i}/${updated_file}"
     mv "${UMBRELLA_PREP_IC_DATA}/mem${i}/${filename_out}" \
-       "${UMBRELLA_PREP_IC_DATA}/mem${i}/${updated_file}"
+       "${UMBRELLA_PREP_IC_DATA}/mem${i}/${updated_file}" || exit 1
   done
 fi
 
