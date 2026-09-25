@@ -153,10 +153,14 @@ elif [[ "${mpasout_interval,,}" != "none" ]]; then
 fi
 # shellcheck disable=SC2068
 for fhr in ${mpasout_all[@]}; do
-  CDATEp=$( ${NDATE} "${fhr}" "${CDATE}" )
-  timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
-  ln -snf "${UMBRELLA_FCST_DATA}/mpasout.${timestr}.nc" "${DATA}/"
-  ln -snf "${UMBRELLA_FCST_DATA}/mpasout.${timestr}.nc.done" "${DATA}/"
+  cur_hr=10#${fhr}
+  max_hr=10#${fcst_len_hrs_thiscyc}
+  if (( cur_hr <= max_hr )); then
+    CDATEp=$( ${NDATE} "${fhr}" "${CDATE}" )
+    timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
+    ln -snf "${UMBRELLA_FCST_DATA}/mpasout.${timestr}.nc" "${DATA}/"
+    ln -snf "${UMBRELLA_FCST_DATA}/mpasout.${timestr}.nc.done" "${DATA}/"
+  fi
 done
 
 # run the MPAS model
