@@ -319,6 +319,12 @@ def write_status():
                            check=False, timeout=120)
         except (OSError, subprocess.SubprocessError) as err:
             print(f"WARNING: could not write {name}: {err}")
+    # and the three files the Rocoto workflow's stat script writes: stat, RUN and DEAD
+    try:
+        subprocess.run(common + ["--report", STATUS_DIR], check=False, timeout=180,
+                       stdout=subprocess.DEVNULL)
+    except (OSError, subprocess.SubprocessError) as err:
+        print(f"WARNING: could not write stat/RUN/DEAD: {err}")
 
 
 def prime_clone_history(ci, pdy):
