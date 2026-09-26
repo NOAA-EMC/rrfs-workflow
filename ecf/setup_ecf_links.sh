@@ -109,6 +109,25 @@ if [[ "$(hostname -f)" == *"ufe"* ]]; then
   # leaves the write tasks short and they are OOM-killed. 48 per node restores ~7.5 GB per rank;
   # the rank count itself comes from the layout and does not change (see the ecf cards' --nodes).
   sed -i "s|^export PPN_FORECAST=.*|export PPN_FORECAST='48'|" ./det/workflow.conf
+  # Even at 48 per node the production forecast's write ranks run out of memory as output builds up.
+  # One write group of 768 instead of three of 192 quarters what each write rank holds and keeps a
+  # single output copy in flight; the rank count is unchanged, so the job still fits in 74 nodes.
+  sed -i -E "s/^export (WRTCMP_write_groups(_18H|_LONG)?)=.*/export \1='1'/; s/^export (WRTCMP_write_tasks_per_group(_18H|_LONG)?)=.*/export \1='768'/" ./det/workflow.conf
+  # No Great Lakes FVCOM (nosofs) data is staged on Ursa, and warm starts abort without it; the
+  # Rocoto retros run without it too (PREP_FVCOM=FALSE)
+  sed -i "s|^export USE_FVCOM=.*|export USE_FVCOM='FALSE'|; s|^export PREP_FVCOM=.*|export PREP_FVCOM='FALSE'|" ./det/workflow.conf
+  # An EnKF member spreads the same domain over 704 ranks against 1856 for the deterministic
+  # spinup, so each rank holds far more and needs 24 per node (see the member cards' --nodes).
+  sed -i "s|^export PPN_FORECAST=.*|export PPN_FORECAST='24'|" ./enkf/workflow.conf
+  # The EMC ensf layout (50 x 64 for every member) does not match the per-member stochastic
+  # physics namelists, which are 40 x 72 for members 1 and 4 and 44 x 72 for 2, 3 and 5, so the
+  # model aborts with "at least one pe in pelist is not used by any tile". The NCO set agrees with
+  # them, so take its layout; LAYOUT_X_ENSF_LARGER is the value members 2, 3 and 5 use.
+  sed -i "s|^export LAYOUT_X_ENSF=.*|export LAYOUT_X_ENSF='40'|; \
+          s|^export LAYOUT_X_ENSF_LARGER=.*|export LAYOUT_X_ENSF_LARGER='44'|; \
+          s|^export LAYOUT_Y_ENSF=.*|export LAYOUT_Y_ENSF='72'|" ./ensf/workflow.conf
+  # 2880 or 3168 compute ranks plus 128 write, so 48 per node as for det (63 and 69 nodes)
+  sed -i "s|^export PPN_FORECAST=.*|export PPN_FORECAST='48'|" ./ensf/workflow.conf
   grep -n "GFS_FILE_FMT\|PPN_FORECAST" ./det/workflow.conf
 fi
 

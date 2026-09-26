@@ -481,11 +481,12 @@ else
     done
 
     cpprocs=5
-    # cfp only exists on WCOSS2, so run the copies serially on other machines
+    # cfp only exists on WCOSS2, so run the copies ${cpprocs} at a time with xargs on other machines;
+    # one at a time, the ~280 GB of deterministic restarts overran the 20-minute job on Ursa
     if [ "${MACHINE}" = "WCOSS2" ]; then
       mpiexec -n ${cpprocs} -ppn ${cpprocs} --cpu-bind core cfp ./para_copy.sh
     else
-      bash ./para_copy.sh
+      xargs -P ${cpprocs} -I{} bash -c {} < ./para_copy.sh
     fi
     ctrl_bkpath=${bkpath}/../INPUT
     cpreq -p ${ctrl_bkpath}/gfs_ctrl.nc  gfs_ctrl.nc
