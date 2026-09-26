@@ -119,7 +119,14 @@ if [[ "$(hostname -f)" == *"ufe"* ]]; then
   # An EnKF member spreads the same domain over 704 ranks against 1856 for the deterministic
   # spinup, so each rank holds far more and needs 24 per node (see the member cards' --nodes).
   sed -i "s|^export PPN_FORECAST=.*|export PPN_FORECAST='24'|" ./enkf/workflow.conf
-  # An ensf member is 3200 compute ranks over the same domain, so 48 per node as for det
+  # The EMC ensf layout (50 x 64 for every member) does not match the per-member stochastic
+  # physics namelists, which are 40 x 72 for members 1 and 4 and 44 x 72 for 2, 3 and 5, so the
+  # model aborts with "at least one pe in pelist is not used by any tile". The NCO set agrees with
+  # them, so take its layout; LAYOUT_X_ENSF_LARGER is the value members 2, 3 and 5 use.
+  sed -i "s|^export LAYOUT_X_ENSF=.*|export LAYOUT_X_ENSF='40'|; \
+          s|^export LAYOUT_X_ENSF_LARGER=.*|export LAYOUT_X_ENSF_LARGER='44'|; \
+          s|^export LAYOUT_Y_ENSF=.*|export LAYOUT_Y_ENSF='72'|" ./ensf/workflow.conf
+  # 2880 or 3168 compute ranks plus 128 write, so 48 per node as for det (63 and 69 nodes)
   sed -i "s|^export PPN_FORECAST=.*|export PPN_FORECAST='48'|" ./ensf/workflow.conf
   grep -n "GFS_FILE_FMT\|PPN_FORECAST" ./det/workflow.conf
 fi
