@@ -62,8 +62,13 @@ mkdir -p "${ECF_HOME}" "${OUTPUTDIR}" "${DEV_PTMP}" "${DEV_DATAROOT}"
 # setup_ecf_links.sh must run from ecf/ and is verbose; keep its output in a log
 (cd "${repo}/ecf" && ./setup_ecf_links.sh > "${log}" 2>&1) || die "setup_ecf_links.sh failed; see ${log}"
 echo "links and generated job cards: done (log: ${log})"
-(cd "${repo}/ecf" && ./defs/make_ursa_def.sh | head -1)
-"${repo}/ush/prod_clone/make_retro_def.sh" | head -1
+# Do not pipe these into head: the generators print several progress lines, and head closing the
+# pipe after the first one SIGPIPEs them part way through, which silently drops later steps (the
+# per-domain job sizes, for one). Capture the output instead, then show the first line.
+gen_out=$(cd "${repo}/ecf" && ./defs/make_ursa_def.sh) || die "make_ursa_def.sh failed"
+printf '%s\n' "${gen_out}" | grep -E "^(Wrote|  [a-z]+:|[0-9]+ )" || true
+gen_out=$("${repo}/ush/prod_clone/make_retro_def.sh") || die "make_retro_def.sh failed"
+printf '%s\n' "${gen_out}" | head -1
 
 step "C: ecflow server"
 if ping_ok; then
