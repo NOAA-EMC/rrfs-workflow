@@ -2,7 +2,7 @@
          name: amsua_metop-c
          _anchor_channels: &amsua_metop-c_channels 1-15
          _anchor_use_flag: &amsua_metop-c_use_flag [ 1,  1,  1,  1,  1, 1, 1,  1,  1,  1, -1,  -1,  -1, 1,  1 ]
-         _anchor_error: &amsua_metop-c_error [
+         _anchor_error0: &amsua_metop-c_error0 [
              2.500, 2.200, 2.000, 0.550, 0.300,
              0.230, 0.230, 0.250, 0.250, 0.350,
              0.400, 0.550, 0.800, 3.000, 3.500]

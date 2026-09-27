@@ -3,7 +3,7 @@
          _anchor_channels: &iasi_metop-b_channels 1
          _anchor_use_flag: &iasi_metop-b_use_flag [1]
          _anchor_use_flag_clddet: &iasi_metop-b_use_flag_clddet [1]
-         _anchor_error: &iasi_metop-b_error [1]
+         _anchor_error0: &iasi_metop-b_error0 [1]
          _anchor_obserr_bound_max: &iasi_metop-b_obserr_bound_max [1]
          distribution:
            name: "RoundRobin"
