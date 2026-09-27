@@ -111,7 +111,7 @@
 
          # Duplicate Check
          - filter: DuplicateThinning
-           identifier: 
+           identifier:
              name: DuplicateThinning
              logging: true
            filter variables:

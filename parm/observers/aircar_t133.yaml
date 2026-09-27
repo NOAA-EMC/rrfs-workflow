@@ -272,7 +272,7 @@
            action:
              name: reject
 
-         # Create TempObsErrorData 
+         # Create TempObsErrorData
          - filter: Variable Assignment
            apply at iterations: 0,1
            identifier:
