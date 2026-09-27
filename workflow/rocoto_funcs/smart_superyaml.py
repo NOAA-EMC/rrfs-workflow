@@ -60,6 +60,9 @@ def smart_superyaml(HOMErrfs, ytype, mesh, getkf_onestep=False):
         fpolygon = f'{HOMErrfs}/fix/{mesh}/{mesh}.polygon.yaml'
         polygon = hy.load(fpolygon)
         data[0:0] = polygon  # insert at the beginning
+    else:
+        # remove polyogn filters from all observers
+        yj.removefilter(data, "PolygonCheck")
     # ------------------------------------------------------------------------
     # dump out the final yaml file
     hy.dump(data, fpath=fpacked)
