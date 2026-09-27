@@ -131,6 +131,15 @@ EOF
     sed -i -E "s/^( *)family ${wgf}\$/&\n\1  defstatus complete/" "${out_def}"
     echo "  ${wgf}: families set to defstatus complete (${run_var}=FALSE)"
   done
+
+  # Same idea for individual task types rather than whole families (RUN_GEMPAK, RUN_BUFRSND).
+  for tsk in gempak bufrsnd; do
+    run_var=RUN_$(echo "${tsk}" | tr '[:lower:]' '[:upper:]')
+    [ "${!run_var:-TRUE}" = "FALSE" ] || continue
+    ntsk=$(grep -cE "^ *task jrrfs_[a-z]+_${tsk}[a-z0-9_]*\$" "${out_def}")
+    sed -i -E "s/^( *)task (jrrfs_[a-z]+_${tsk}[a-z0-9_]*)\$/&\n\1  defstatus complete/" "${out_def}"
+    echo "  ${tsk}: ${ntsk} task(s) set to defstatus complete (${run_var}=FALSE)"
+  done
   # A manager task that waits on the whole forecast family is fragile once anything is requeued:
   # the family reads active while other tasks in it run, so the manager can start before the
   # forecast does, and it reads queued while the saves it releases wait, which deadlocks it.

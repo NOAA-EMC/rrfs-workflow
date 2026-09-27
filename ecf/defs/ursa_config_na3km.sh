@@ -71,6 +71,14 @@ RETRO=${RETRO:-YES}
 RUN_ENKF=${RUN_ENKF:-TRUE}
 RUN_ENSF=${RUN_ENSF:-TRUE}
 RUN_FIREWX=${RUN_FIREWX:-TRUE}
+
+# Two task types no retro needs, off by default on Ursa because neither works here:
+#   gempak   exrrfs_gempak.sh launches "mpiexec -configfile", the WCOSS2 cfp idiom, and has no
+#            srun arm, so every task exits 255
+#   bufrsnd  the station list fix/bufrsnd/<grid>/rrfs_profdat.<NSTAT> exists only for some grids,
+#            and on RRFS_NA_3km the 84 h sounding job runs past its 3 h card limit
+RUN_GEMPAK=${RUN_GEMPAK:-FALSE}
+RUN_BUFRSND=${RUN_BUFRSND:-FALSE}
 # suite definition to copy, relative to ecf/defs
 BASE_DEF=${BASE_DEF:-nco_para/rrfs_nco_para.def}
 RRFS_SUITE=${RRFS_SUITE:-para}            # suite name in the generated definition

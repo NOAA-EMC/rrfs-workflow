@@ -126,7 +126,11 @@ if [[ "$(hostname -f)" == *"ufe"* ]]; then
   sed -i "s|^export LAYOUT_X_ENSF=.*|export LAYOUT_X_ENSF='40'|; \
           s|^export LAYOUT_X_ENSF_LARGER=.*|export LAYOUT_X_ENSF_LARGER='44'|; \
           s|^export LAYOUT_Y_ENSF=.*|export LAYOUT_Y_ENSF='72'|" ./ensf/workflow.conf
-  # 2880 or 3168 compute ranks plus 128 write, so 48 per node as for det (63 and 69 nodes)
+  # A 60 h member OOM-killed a write rank at hour 58 with one group of 128, the same way the
+  # deterministic forecast did: the write ranks fill as output accumulates. Doubling the group
+  # halves what each one holds. 2880 or 3168 compute plus 256 write at 48 per node is 66 or 72
+  # nodes, inside the 75-node cap.
+  sed -i "s|^export WRTCMP_write_tasks_per_group_ENSF=.*|export WRTCMP_write_tasks_per_group_ENSF='256'|" ./ensf/workflow.conf
   sed -i "s|^export PPN_FORECAST=.*|export PPN_FORECAST='48'|" ./ensf/workflow.conf
   grep -n "GFS_FILE_FMT\|PPN_FORECAST" ./det/workflow.conf
 fi
