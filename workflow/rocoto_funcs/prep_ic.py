@@ -29,6 +29,10 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
         'NSST_SOURCE_DIR': os.getenv('NSST_SOURCE_DIR', ''),
         'DO_BLENDING': os.getenv('DO_BLENDING', 'FALSE'),
     }
+    if os.getenv('DO_CHEMISTRY', 'FALSE').upper() == "TRUE":
+        dcTaskEnv['USE_EXTERNAL_CHEM'] = os.getenv('USE_EXTERNAL_CHEM_ICS', 'FALSE').upper()
+        dcTaskEnv['CHEM_GROUPS'] = os.getenv('CHEM_GROUPS', 'smoke')
+        dcTaskEnv['CYCLE_CHEMISTRY'] = os.getenv('CYCLE_CHEMISTRY','FALSE').upper()
     if spinup_mode != 0:
         dcTaskEnv['SPINUP_MODE'] = f'{spinup_mode}'
     if spinup_mode == 1:
@@ -91,6 +95,11 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
         sfc_dep = f'''
       <or>{timedep}{datadep_sfc}
       </or>'''
+    
+    # chemistry update dependencies
+    datadep_chem = ""
+    if os.getenv('DO_CHEMISTRY', 'FALSE').upper() == "TRUE" and os.getenv('CYCLE_CHEMISTRY','FALSE').upper() == "TRUE":
+       datadep_chem = f'''\n        <datadep age="00:00:05"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;/mpasout.@Y-@m-@d_@H.@M.@S.nc'''
 
     #
     satbias_dep = ""
@@ -114,6 +123,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
   <dependency>
    <or>
     <and>
+      {datadep_chem}
       <or>
 {streqs}
       </or>{icdep}{sfc_dep}{satbias_dep}
