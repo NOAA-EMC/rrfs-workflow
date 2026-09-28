@@ -200,7 +200,9 @@ if [[ ${START_TYPE} == "warm" ]] || [[ ${START_TYPE} == "cold" && ${COLDSTART_CY
   else
     jedivar_str="jedivar"
   fi
-  cp "${DATA}/${initial_file}" "${COMOUT}/${jedivar_str}/${WGF}/${initial_file%.nc}.${timestr}.nc"
+  if [[ "${SAVE_JEDI_ANL:-"FALSE"}" == "TRUE" ]];  then
+    cp "${DATA}/${initial_file}" "${COMOUT}/${jedivar_str}/${WGF}/${initial_file%.nc}.${timestr}.nc"
+  fi  
   cp "${DATA}"/jdiag* "${COMOUT}/${jedivar_str}/${WGF}"
   cp "${DATA}"/jedivar*.yaml "${COMOUT}/${jedivar_str}/${WGF}"
   cp "${DATA}"/log.out "${COMOUT}/${jedivar_str}/${WGF}"
@@ -230,7 +232,7 @@ done
 satbias_list=(data/satbias_out/*satbias*.nc)
 if (( ${#satbias_list[@]} > 0 )); then
 #if ls ./data/satbias_out/*satbias*.nc >/dev/null 2>&1; then
-  cp "${DATA}"/data/satbias_out/*satbias*.nc "${COMOUT}/jedivar/${WGF}"
+  cp "${DATA}"/data/satbias_out/*satbias*.nc "${COMOUT}/${jedivar_str}/${WGF}"
 fi
 eval "${nullglob_save}" # Restore previous nullglob state
 
