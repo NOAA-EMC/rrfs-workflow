@@ -1036,8 +1036,18 @@ cd INPUT
 acsnow_ct=$(ncdump -h sfc_data.nc|grep acsnow|wc -l)
 if [ $acsnow_ct -eq 0 ] && [ ! ${WGF} = "firewx" ]; then
   echo "Run DATA sfc_data.nc surge for acsnow"
-  ncks -A ${FIXrrfs}/acsnow/acsnow.nc sfc_data.nc
-  export err=$?; err_chk
+  # Ursa, coarser domains (strip when merging to the nco branch): the acsnow fix file is on the
+  # NA 3 km grid, so ncks rejects it on any other domain. Its fields are zeros, so make them here.
+  if [ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]; then
+    ncks -A ${FIXrrfs}/acsnow/acsnow.nc sfc_data.nc
+    export err=$?; err_chk
+  else
+    ncap2 -O -s 'acsnow_land=float(slmsk*0.0); acsnow_ice=float(slmsk*0.0)' sfc_data.nc sfc_data_acsnow.nc
+    export err=$?; err_chk
+    ncatted -a long_name,acsnow_land,d,, -a long_name,acsnow_ice,d,, sfc_data_acsnow.nc
+    export err=$?; err_chk
+    mv sfc_data_acsnow.nc sfc_data.nc
+  fi
 fi
 cd ..
 #
