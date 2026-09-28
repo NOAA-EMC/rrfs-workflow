@@ -64,6 +64,28 @@ jobs:
             exit 1
           fi
 
+  rrfs-yaml-convention:
+    name: RRFS YAML Convention Linting
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install HiFiYAML
+        run: pip install hifiyaml
+
+      - name: Run RRFS YAML Convention Linting
+        run: workflow/tools/linter_rrfs_yaml_convention.py parm/observers/
+
   python-lint:
     name: Python Linting
     runs-on: ubuntu-latest
@@ -93,4 +115,4 @@ jobs:
         run: pip install yamllint
 
       - name: Run Yamllint on all YAML files
-        run: yamllint parm/*.yaml
+        run: yamllint parm/*.yaml parm/observers/*.yaml

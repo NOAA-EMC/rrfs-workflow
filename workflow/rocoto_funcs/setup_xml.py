@@ -253,9 +253,9 @@ def setup_xml(HOMErrfs, expdir):
 ##SCRON --dependency=singleton
 ##SCRON --job-name=scron_rocoto
 ##SCRON --output={expdir}/log.runrocoto
-#*/5 * * * * {fPath} no-server
+#*/5 * * * * {fPath} foreground
 opt=""
-[[ "$1" == "no-server" ]] && opt="--no-server"'''
+[[ "$1" == "foreground" ]] && opt="--foreground"'''
         tail = ' $opt'
     #
     with open(fPath, 'w') as rocotoFile:
