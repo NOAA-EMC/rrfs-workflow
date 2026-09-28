@@ -81,10 +81,10 @@ jobs:
           python-version: '3.11'
 
       - name: Install HiFiYAML
-        run: python3 -m pip install hifiyaml
+        run: pip install hifiyaml
 
       - name: Run RRFS YAML Convention Linting
-        run: python3 workflow/tools/linter_rrfs_yaml_convention.py parm/observers/
+        run: workflow/tools/linter_rrfs_yaml_convention.py parm/observers/
 
   python-lint:
     name: Python Linting
