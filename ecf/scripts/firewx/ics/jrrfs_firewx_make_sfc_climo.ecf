@@ -14,7 +14,7 @@
 #SBATCH --time=00:20:00
 #SBATCH --nodes=9
 #SBATCH --ntasks-per-node=8
-#SBATCH --mem=200G
+#SBATCH --mem=0  # Ursa: whole-node memory; at 200G the vegetation interpolation ran out
 #SBATCH --output=%ECF_JOBOUT%
 
 model=rrfs

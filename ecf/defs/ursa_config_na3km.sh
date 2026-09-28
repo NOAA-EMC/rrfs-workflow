@@ -1,6 +1,10 @@
 #!/bin/bash
 #
-# Settings for running the rrfs-dev ecflow suite on Ursa, in one place.
+# Sample settings for an RRFS_NA_3km retro on Ursa.
+#
+# This is the configuration the deterministic and EnKF retro runs on this branch were tested with.
+# Copy it over ecf/defs/ursa_config.sh and change the paths in the first two blocks to
+# your own; everything below them is what the tested run used.
 #
 # This is the ecflow equivalent of the Rocoto workflow's ush/config.sh, for the parts we control.
 # It is sourced by ecf/setup_ecf_links.sh, ecf/defs/make_ursa_def.sh and ush/prod_clone/make_retro_def.sh,
@@ -61,6 +65,40 @@ RETRO_START=${RETRO_START:-20240506}      # first retro day, and the day that co
 RETRO_END=${RETRO_END:-20240512}          # last retro day
 # YES relaxes the suite's 399 clock-time triggers so cycles are not gated on the wall clock
 RETRO=${RETRO:-YES}
+
+# Which workflow groups to run. FALSE gives that group's families defstatus complete, so they
+# never run and nothing waiting on them blocks. Operations runs all of them.
+RUN_ENKF=${RUN_ENKF:-TRUE}
+RUN_ENSF=${RUN_ENSF:-TRUE}
+RUN_FIREWX=${RUN_FIREWX:-TRUE}
+
+# Two task types no retro needs, off by default on Ursa because neither works here:
+#   gempak   exrrfs_gempak.sh launches "mpiexec -configfile", the WCOSS2 cfp idiom, and has no
+#            srun arm, so every task exits 255
+#   bufrsnd  the station list fix/bufrsnd/<grid>/rrfs_profdat.<NSTAT> exists only for some grids,
+#            and on RRFS_NA_3km the 84 h sounding job runs past its 3 h card limit
+RUN_GEMPAK=${RUN_GEMPAK:-FALSE}
+RUN_BUFRSND=${RUN_BUFRSND:-FALSE}
+
+# The 84 h deterministic forecast at 00z, 06z, 12z and 18z, with its post, product generation and
+# restarts. FALSE leaves the hourly 18 h forecasts alone and is the one setting that shortens a
+# retro noticeably: the long forecast is 67 of the 81 minutes on each 6-hourly family's critical
+# path, so a 13 km week goes from about 38 h to about 13 h. Operations needs it; a cycling or DA
+# retro usually does not. Fire weather takes its initial and boundary conditions from the long
+# forecast's post, so RUN_FIREWX must be FALSE as well, and the generator says so if it is not.
+# The 85 boundary jobs at each long cycle are left alone: the hourly cycles in the family share
+# them, so the safe cut needs the forecast length rather than the task name.
+DO_LONG_FORECAST=${DO_LONG_FORECAST:-TRUE}
+
+# Whether each job keeps its working directory under stmp. The base NCO definition sets YES at all
+# eight places, which on Ursa filled a 244 TiB project quota in ten days and stopped all three
+# suites: with YES, exrrfs_clean.sh does not delete the shared umbrella directories but *renames*
+# them (rrfs_forecast_12_v1.0 -> rrfs_forecast_<pid>_12_v1.0), so nothing is ever reclaimed.
+# NO costs no debugging, because head.h traps ERR and EXIT and exits before the J-job reaches its
+# cleanup line, so a job that fails keeps its working directory either way. Set YES only when you
+# want the directories of jobs that *succeeded*.
+KEEPDATA=${KEEPDATA:-NO}
+
 # suite definition to copy, relative to ecf/defs
 BASE_DEF=${BASE_DEF:-nco_para/rrfs_nco_para.def}
 RRFS_SUITE=${RRFS_SUITE:-para}            # suite name in the generated definition
