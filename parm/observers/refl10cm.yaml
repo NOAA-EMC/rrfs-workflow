@@ -33,7 +33,7 @@
        - filter: AcceptList
          apply at iterations: 1
          identifier:
-           name: NewLoopReset
+           name: NewLoopReset_loop1
 
        # Remove all obs outside the regional domain polygon
        - filter: Polygon Check
