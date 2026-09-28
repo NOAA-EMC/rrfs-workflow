@@ -7,7 +7,7 @@
                1,  1,  1, -1, -1,
                1,  1,  1,  1,  1,
                1,  1]
-         _anchor_error: &atms_n20_error [
+         _anchor_error0: &atms_n20_error0 [
              4.500,  4.500,  4.500,  2.500,  0.550,
              0.300,  0.300,  0.400,  0.400,  0.400,
              0.450,  0.450,  0.550,  0.800,  4.000,
@@ -96,7 +96,7 @@
          identifier:
            name: PolygonCheck
            logging: true
-         <<: *polygonConfig
+         <<: *polygonConfig  # yamllint disable-line rule:anchors
 
        - filter: Create Diagnostic Flags
          apply at iterations: 0,1
@@ -139,7 +139,7 @@
        - filter: Variable Assignment
          apply at iterations: 0,1
          identifier:
-           name: CLWRetFromObs
+           name: CLWRetFromObs0_
            logging: true
            diagnostic flag new: true
          assignments:
@@ -155,7 +155,7 @@
        - filter: Variable Assignment
          apply at iterations: 0,1
          identifier:
-           name: CLWRetFromObs
+           name: CLWRetFromObs1_
            logging: true
            diagnostic flag new: true
          assignments:
@@ -183,7 +183,7 @@
        - filter: Variable Assignment
          apply at iterations: 0,1
          identifier:
-           name: VarAssign
+           name: VarAssign0_
            logging: true
            diagnostic flag new: true
          where:
@@ -229,7 +229,7 @@
        - filter: Variable Assignment
          apply at iterations: 0,1
          identifier:
-           name: CLWRetFromObs
+           name: CLWRetFromObs2_
            logging: true
            diagnostic flag new: true
          assignments:
@@ -462,7 +462,7 @@
        - filter: Variable Assignment
          apply at iterations: 0,1
          identifier:
-           name: HydrometeorCheck
+           name: HydrometeorCheck0_
            logging: true
            diagnostic flag new: true
          assignments:
@@ -474,7 +474,7 @@
              channels: *atms_n20_channels
              options:
                channels: *atms_n20_channels
-               obserr_clearsky: *atms_n20_error
+               obserr_clearsky: *atms_n20_error0
                clwret_function:
                  name: CLWRetFromObs@DerivedMetaData
                obserr_function:
@@ -484,7 +484,7 @@
        - filter: Bounds Check
          apply at iterations: 0,1
          identifier:
-           name: HydrometeorCheck
+           name: HydrometeorCheck1_
            logging: true
            diagnostic flag new: true
          filter variables:
@@ -504,7 +504,7 @@
        - filter: Variable Assignment
          apply at iterations: 0,1
          identifier:
-           name: TopographyCheck
+           name: TopographyCheck0_
            logging: true
            diagnostic flag new: true
          assignments:
@@ -521,7 +521,7 @@
        - filter: Perform Action
          apply at iterations: 0,1
          identifier:
-           name: TopographyCheck
+           name: TopographyCheck1_
            logging: true
            diagnostic flag new: true
          filter variables:
@@ -569,7 +569,7 @@
        - filter: Variable Assignment
          apply at iterations: 0,1
          identifier:
-           name: SurfJacobianCheck
+           name: SurfJacobianCheck0_
            logging: true
            diagnostic flag new: true
          assignments:
@@ -588,7 +588,7 @@
        - filter: Perform Action
          apply at iterations: 0,1
          identifier:
-           name: SurfJacobianCheck
+           name: SurfJacobianCheck1_
            logging: true
            diagnostic flag new: true
          filter variables:
@@ -604,7 +604,7 @@
        - filter: Variable Assignment
          apply at iterations: 0,1
          identifier:
-           name: SituDependCheck
+           name: SituDependCheck0_
            logging: true
            diagnostic flag new: true
          assignments:
@@ -629,12 +629,12 @@
                obserr_function:
                  name: InitialObsError@DerivedMetaData
                  channels: *atms_n20_channels
-               obserr_clearsky: *atms_n20_error
+               obserr_clearsky: *atms_n20_error0
 
        - filter: Perform Action
          apply at iterations: 0,1
          identifier:
-           name: SituDependCheck
+           name: SituDependCheck1_
            logging: true
            diagnostic flag new: true
          filter variables:
@@ -651,7 +651,7 @@
        - filter: Variable Assignment
          apply at iterations: 0,1
          identifier:
-           name: GrossErrorCheck
+           name: GrossErrorCheck0_
            logging: true
            diagnostic flag new: true
          assignments:
@@ -665,7 +665,7 @@
        - filter: Variable Assignment
          apply at iterations: 0,1
          identifier:
-           name: VarAssign
+           name: VarAssign1_
            logging: true
            diagnostic flag new: true
          assignments:
@@ -697,7 +697,7 @@
        - filter: Background Check
          apply at iterations: 0,1
          identifier:
-           name: GrossErrorCheck
+           name: GrossErrorCheck1_
            logging: true
            diagnostic flag new: true
          filter variables:

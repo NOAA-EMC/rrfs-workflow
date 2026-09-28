@@ -3,7 +3,7 @@
          _anchor_channels: &iasi_metop-b_channels 1
          _anchor_use_flag: &iasi_metop-b_use_flag [1]
          _anchor_use_flag_clddet: &iasi_metop-b_use_flag_clddet [1]
-         _anchor_error: &iasi_metop-b_error [1]
+         _anchor_error0: &iasi_metop-b_error0 [1]
          _anchor_obserr_bound_max: &iasi_metop-b_obserr_bound_max [1]
          distribution:
            name: "RoundRobin"
@@ -95,16 +95,16 @@
            logging: true
 
        # --------------------------------------------------------------------------------------
-       # Step 1: Polygon Check: Remove (reduce obs space) all obs outside the regional domain   
+       # Step 1: Polygon Check: Remove (reduce obs space) all obs outside the regional domain
        # --------------------------------------------------------------------------------------
        - filter: Polygon Check
          identifier:
            name: PolygonCheck
            logging: true
-         <<: *polygonConfig
+         <<: *polygonConfig  # yamllint disable-line rule:anchors
 
        # ----------------------------------------------------------------------
-       # Step 2: Convert dateTime to timeOffset (seconds since analysis time)   
+       # Step 2: Convert dateTime to timeOffset (seconds since analysis time)
        # -----------------------------------------------------------------------
        - filter: Variable Assignment
          identifier:
@@ -116,7 +116,7 @@
            epoch: "@ANALYSIS_DATE@"    # your analysis time
 
        # ----------------------------------------------------------------------------------------------------
-       # Step 3: Time window filter: remove (reduce obs space) observations oustide of time window defined by   
+       # Step 3: Time window filter: remove (reduce obs space) observations oustide of time window defined by
        #         minvalue/maxvalue: seconds relative to analysis time
        # -----------------------------------------------------------------------------------------------------
        - filter: Domain Check
@@ -191,16 +191,16 @@
            sensor: iasi_metop-b
          action:
            name: assign error
-           error parameter vector: *iasi_metop-b_error
+           error parameter vector: *iasi_metop-b_error0
 
        # ------------------------------------------------------------------------------------------------
-       # Step 7: Create cloudFree variable as thinning priority variable 
-       #         bigger cloudFree values, bigger priority in thinning 
+       # Step 7: Create cloudFree variable as thinning priority variable
+       #         bigger cloudFree values, bigger priority in thinning
        #         unit of MetaData/fractionOfClearPixelsInFOV in ioda is fraction (0-1)
-       #         convert to percent (0-100%) 
+       #         convert to percent (0-100%)
        #         the unit of the original variable FCPH in the bufr file is percent (0-100)
-       #         To accommodate the unit convention of fractionOfClearPixelsInFOV in JEDI, 
-       #         in the bufr2ioda conversion, the program converts the unit from percent to 
+       #         To accommodate the unit convention of fractionOfClearPixelsInFOV in JEDI,
+       #         in the bufr2ioda conversion, the program converts the unit from percent to
        #         fraction for fractionOfClearPixelsInFOV
        #         Here, in JEDI, we convert it back to percent (0-100) and in integer type for a new
        #         variable (cloudFree).
@@ -210,13 +210,13 @@
            name: VarAssignCloudFree
          assignments:
          - name: DerivedMetaData/cloudFree
-           type: int 
+           type: int
            function:
              name: ObsFunction/Arithmetic
              options:
                variables:
-               - name: MetaData/fractionOfClearPixelsInFOV 
-               coefs: [100] 
+               - name: MetaData/fractionOfClearPixelsInFOV
+               coefs: [100]
 
        # -----------------------------------------------------------------------
        # Step 8: Remove (reduce obs space) Observations from the Edge of the Scan
@@ -224,7 +224,7 @@
        # ------------------------------------------------------------------------
        - filter: Domain Check
          identifier:
-           name: ScanEdgeCheck 
+           name: ScanEdgeCheck
            logging: true
          filter variables:
          - name: brightnessTemperature
@@ -234,10 +234,10 @@
              name: MetaData/sensorScanPosition
            is_in: 5-56
          action:
-           name: reduce obs space 
+           name: reduce obs space
 
        # ------------------------------------------------------------------------------------------------------------
-       # Step 9: Observation Range Sanity Check: remove (reduce obs space) outside of range (50, 500) 
+       # Step 9: Observation Range Sanity Check: remove (reduce obs space) outside of range (50, 500)
        #         note: Sometimes,these observations may be removed already by JEDI under the "missing values" categary
        # --------------------------------------------------------------------------------------------------------------
        - filter: Bounds Check
@@ -278,13 +278,13 @@
        # ----------------------------------------
        obs post filters:
        # -----------------------------------------------------------------------------------------------------------------------------
-       # Step 11: online geo-domain Check, reject observations outside of regional MPAS domain after the Polygon Check (which removes 
-       #          most outside domain observations. 
-       #          Note: for minvalue: 0.0 and maxvalue: 0.5, the observations outside of domain are already rejected/flagged  
-       #          by the JEDI internal filter "H(x) failed" due to the unavailability of the background fields (due to out of domain) 
+       # Step 11: online geo-domain Check, reject observations outside of regional MPAS domain after the Polygon Check (which removes
+       #          most outside domain observations.
+       #          Note: for minvalue: 0.0 and maxvalue: 0.5, the observations outside of domain are already rejected/flagged
+       #          by the JEDI internal filter "H(x) failed" due to the unavailability of the background fields (due to out of domain)
        #          so the newly flagged observations from this filtler may be 0 by using a new JEDI.
        #          In other words, the filter may be turned off now.
-       #          But we still keep it here for possible additional safeguard. 
+       #          But we still keep it here for possible additional safeguard.
        # -------------------------------------------------------------------------------------------------------------------------------
        - filter: Bounds Check
          apply at iterations: 0,1
@@ -305,7 +305,7 @@
            name: reject
 
        # -------------------------------------------------------------------------------------------------------------------------------------
-       # Step 12: wavenumber Check, reject observations with wavenumber > 2400 cm-1 if solarzenith angle > 88.999 (night time) and containing 
+       # Step 12: wavenumber Check, reject observations with wavenumber > 2400 cm-1 if solarzenith angle > 88.999 (night time) and containing
        #          water fraction (i.e., GeoVaLs/water_area_fraction > 1.0e-12) in the field of view
        #          Note, currenlty, wavenumber > 2000 cm-1 are not assimilated, this is for future refernce
        # ------------------------------------------------------------------------------------------------------------------------------------
@@ -335,7 +335,7 @@
 
        # -----------------------------------------------------------------------------------------------------------------------------------------------
        # Step 13: Observation Error Inflation: based on Wavenumber/solza/water_fac
-       #          Error Inflation Factor (EIF) for channels with wavenumber in the range of [2000, 2400] cm-1 during daytime (sun zenith angle < 89) 
+       #          Error Inflation Factor (EIF) for channels with wavenumber in the range of [2000, 2400] cm-1 during daytime (sun zenith angle < 89)
        #          and containing water fraction in the filed of view
        #          Note, currenlty, wavenumber in the range of [2000  2400] cm-1 are not assimilated, this is for future refernce
        # -----------------------------------------------------------------------------------------------------------------------------------------------
@@ -360,13 +360,13 @@
                channels: *iasi_metop-b_channels
 
        # ------------------------------------------------------------------------------------
-       # Step 13b: Save ObsErrorFactorWavenumIR into DerivedData (for testing/debug purpose) 
+       # Step 13b: Save ObsErrorFactorWavenumIR into DerivedData (for testing/debug purpose)
        #           for the first outer loop
        # -----------------------------------------------------------------------------------
        - filter: Variable Assignment
          apply at iterations: 0
          identifier:
-           name: CreateObsErrorFactorWavenumIR0 
+           name: CreateObsErrorFactorWavenumIR0
            logging: true
          assignments:
          - name: DerivedData/obsErrorFactorWavenumIR0
@@ -379,13 +379,13 @@
                channels: *iasi_metop-b_channels
 
        # ------------------------------------------------------------------------------------
-       # Setp 13c: Save ObsErrorFactorWavenumIR into DerivedData (for testing/debug purpose) 
+       # Setp 13c: Save ObsErrorFactorWavenumIR into DerivedData (for testing/debug purpose)
        #           for the second outer loop
        # -------------------------------------------------------------------------------------
        - filter: Variable Assignment
          apply at iterations: 1
          identifier:
-           name: CreateObsErrorFactorWavenumIR1 
+           name: CreateObsErrorFactorWavenumIR1
            logging: true
          assignments:
          - name: DerivedData/obsErrorFactorWavenumIR1
@@ -398,7 +398,7 @@
                channels: *iasi_metop-b_channels
 
        # --------------------------------------------------------------------------------------------------------------------
-       # Step 14:  Observation Error inflation: Topography Check (H> 2000m), ObsFunction/ObsErrorFactorTopoRad 
+       # Step 14:  Observation Error inflation: Topography Check (H> 2000m), ObsFunction/ObsErrorFactorTopoRad
        #           Error Inflation Factor (EIF) as a function of terrain height, channel, and surface-to-space transmittance.
        # --------------------------------------------------------------------------------------------------------------------
        # Step 14a: Observation Error inflation: Topography Check (H> 2000m)
@@ -423,13 +423,13 @@
                channels: *iasi_metop-b_channels
 
        # ---------------------------------------------------------------
-       # Step 14b: Save ObsErrorFactorTopoRad (for testing/debug purpose) 
+       # Step 14b: Save ObsErrorFactorTopoRad (for testing/debug purpose)
        #           for the first outer loop
        # ---------------------------------------------------------------
        - filter: Variable Assignment
          apply at iterations: 0
          identifier:
-           name: CreateObsErrorFactorTopoRad0 
+           name: CreateObsErrorFactorTopoRad0
            logging: true
          assignments:
          - name: DerivedData/obsErrorFactorTopoRad0
@@ -439,17 +439,17 @@
              name: ObsFunction/ObsErrorFactorTopoRad
              channels: *iasi_metop-b_channels
              options:
-               sensor: iasi_metop-b  
+               sensor: iasi_metop-b
                channels: *iasi_metop-b_channels
 
        # -----------------------------------------------------------------
-       # Step 14c: Save ObsErrorFactorTopoRad (for testing/debug purpose) 
+       # Step 14c: Save ObsErrorFactorTopoRad (for testing/debug purpose)
        #           for the second outer loop
        # ------------------------------------------------------------------
        - filter: Variable Assignment
          apply at iterations: 1
          identifier:
-           name: CreateObsErrorFactorTopoRad1 
+           name: CreateObsErrorFactorTopoRad1
            logging: true
          assignments:
          - name: DerivedData/obsErrorFactorTopoRad1
@@ -459,7 +459,7 @@
              name: ObsFunction/ObsErrorFactorTopoRad
              channels: *iasi_metop-b_channels
              options:
-               sensor: iasi_metop-b  
+               sensor: iasi_metop-b
                channels: *iasi_metop-b_channels
 
        # -----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -487,13 +487,13 @@
                channels: *iasi_metop-b_channels
 
        # -----------------------------------------------------------------------------------------
-       # Step 15b: Save ObsErrorFactorTransmitTopRad into DerivedData (for testing/debug purpose) 
+       # Step 15b: Save ObsErrorFactorTransmitTopRad into DerivedData (for testing/debug purpose)
        #           for the first outer loop
        # ------------------------------------------------------------------------------------------
        - filter: Variable Assignment
          apply at iterations: 0
          identifier:
-           name: CreateObsErrorFactorTransmitTopRad0  
+           name: CreateObsErrorFactorTransmitTopRad0
            logging: true
          assignments:
          - name: DerivedData/obsErrorFactorTransmitTopRad0
@@ -506,13 +506,13 @@
                channels: *iasi_metop-b_channels
 
        # ----------------------------------------------------------------------------------------
-       # Setp 15c: Save ObsErrorFactorTransmitTopRad into DerivedData (for testing/debug purpose) 
+       # Setp 15c: Save ObsErrorFactorTransmitTopRad into DerivedData (for testing/debug purpose)
        #           for the second outer loop
        # -----------------------------------------------------------------------------------------
        - filter: Variable Assignment
          apply at iterations: 1
          identifier:
-           name: CreateObsErrorFactorTransmitTopRad1  
+           name: CreateObsErrorFactorTransmitTopRad1
            logging: true
          assignments:
          - name: DerivedData/obsErrorFactorTransmitTopRad1
@@ -551,13 +551,13 @@
              use_flag: *iasi_metop-b_use_flag
              use_flag_clddet: *iasi_metop-b_use_flag_clddet
              obserr_dtempf: [0.50, 2.00, 4.00, 2.00, 4.00]
-             error parameter vector: *iasi_metop-b_error
+             error parameter vector: *iasi_metop-b_error0
          maxvalue: 1.0e-12
          action:
            name: reject
 
        # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-       # Step 17: Surface Temperature Jacobian Check over Land, reduce influence of land pionts on window channels, reject surface temperaure jacobian 
+       # Step 17: Surface Temperature Jacobian Check over Land, reduce influence of land pionts on window channels, reject surface temperaure jacobian
        #          over land (water_area_fraction < 0.99) larger than 0.2
        # ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
        - filter: Bounds Check
@@ -638,13 +638,13 @@
                sensor: iasi_metop-b
 
        # ------------------------------------------------------------------------------------------
-       # Step 19b: Save ObsErrorFactorSurfJacobianRad into DerivedData (for testing/debug purpose) 
+       # Step 19b: Save ObsErrorFactorSurfJacobianRad into DerivedData (for testing/debug purpose)
        #           for the first outer loop
        # -------------------------------------------------------------------------------------------
        - filter: Variable Assignment
          apply at iterations: 0
          identifier:
-           name: CreateObsErrorFactorSurfJacobianRad0 
+           name: CreateObsErrorFactorSurfJacobianRad0
            logging: true
          assignments:
          - name: DerivedData/obsErrorFactorSurfJacobianRad0
@@ -660,13 +660,13 @@
                sensor: iasi_metop-b
 
        # -----------------------------------------------------------------------------------------
-       # Step 19c: Save ObsErrorFactorSurfJacobianRad into DerivedData (for testing/debug purpose) 
+       # Step 19c: Save ObsErrorFactorSurfJacobianRad into DerivedData (for testing/debug purpose)
        #           for the second outer loop
        # ------------------------------------------------------------------------------------------
        - filter: Variable Assignment
          apply at iterations: 1
          identifier:
-           name: CreateObsErrorFactorSurfJacobianRad1 
+           name: CreateObsErrorFactorSurfJacobianRad1
            logging: true
          assignments:
          - name: DerivedData/obsErrorFactorSurfJacobianRad1
@@ -714,18 +714,18 @@
                  channels: *iasi_metop-b_channels
              threshold : 3
              obserr_bound_max: *iasi_metop-b_obserr_bound_max
-             error parameter vector: *iasi_metop-b_error
+             error parameter vector: *iasi_metop-b_error0
          action:
            name: reject
 
        # -----------------------------------------------------------------------------------------
-       # Step 20b: Save ObsErrorBoundIR into DerivedData (for testing/debug/verfication purpose) 
+       # Step 20b: Save ObsErrorBoundIR into DerivedData (for testing/debug/verfication purpose)
        #           for the first outer loop
        # ------------------------------------------------------------------------------------------
        - filter: Variable Assignment
          apply at iterations: 0
          identifier:
-           name: CreateObsErrorBoundIR0 
+           name: CreateObsErrorBoundIR0
            logging: true
          assignments:
          - name: DerivedData/obsErrorBoundIR0
@@ -747,16 +747,16 @@
                    channels: *iasi_metop-b_channels
                threshold : 3
                obserr_bound_max: *iasi_metop-b_obserr_bound_max
-               error parameter vector: *iasi_metop-b_error
+               error parameter vector: *iasi_metop-b_error0
 
        # -----------------------------------------------------------------------------------------
-       # Step 20c: Save ObsErrorBoundIR into DerivedData (for testing/debug/verfication purpose) 
+       # Step 20c: Save ObsErrorBoundIR into DerivedData (for testing/debug/verfication purpose)
        #           for the second outerloop
        # ------------------------------------------------------------------------------------------
        - filter: Variable Assignment
          apply at iterations: 1
          identifier:
-           name: CreateObsErrorBoundIR1 
+           name: CreateObsErrorBoundIR1
            logging: true
          assignments:
          - name: DerivedData/obsErrorBoundIR1
@@ -766,7 +766,7 @@
              name: ObsFunction/ObsErrorBoundIR
              channels: *iasi_metop-b_channels
              options:
-               #sensor: iasi_metop-b  
+               #sensor: iasi_metop-b
                channels: *iasi_metop-b_channels
                obserr_bound_latitude:
                  name: ObsFunction/ObsErrorFactorLatRad
@@ -779,7 +779,7 @@
                    channels: *iasi_metop-b_channels
                threshold : 3
                obserr_bound_max: *iasi_metop-b_obserr_bound_max
-               error parameter vector: *iasi_metop-b_error
+               error parameter vector: *iasi_metop-b_error0
 
        # -------------------------------------------------------------------------------------------------------------------
        # Step 21: Useflag Check
