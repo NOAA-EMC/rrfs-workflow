@@ -474,7 +474,7 @@
              channels: *atms_n21_channels
              options:
                channels: *atms_n21_channels
-               obserr_clearsky: *atms_n21_error
+               obserr_clearsky: *atms_n21_error0
                clwret_function:
                  name: CLWRetFromObs@DerivedMetaData
                obserr_function:
@@ -629,7 +629,7 @@
                obserr_function:
                  name: InitialObsError@DerivedMetaData
                  channels: *atms_n21_channels
-               obserr_clearsky: *atms_n21_error
+               obserr_clearsky: *atms_n21_error0
 
        - filter: Perform Action
          apply at iterations: 0,1

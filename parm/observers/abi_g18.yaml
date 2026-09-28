@@ -321,7 +321,7 @@
            channels: *abi_g18_channels
          action:
            name: assign error
-           error parameter vector: *abi_g18_error
+           error parameter vector: *abi_g18_error0
 
        # --------------------------------------------------------
        # Step 8 : Create surface flag assignment from Geovals
@@ -578,7 +578,7 @@
              use_flag: *abi_g18_use_flag
              use_flag_clddet: *abi_g18_use_flag_clddet
              obserr_dtempf: [0.5, 2.0, 4.0, 2.0, 4.0]
-             error parameter vector: *abi_g18_error
+             error parameter vector: *abi_g18_error0
          maxvalue: 1.0e-12
          actions:
            - name: set
@@ -859,7 +859,7 @@
                options:
                  channels: *abi_g18_channels
              obserr_bound_max: *abi_g18_obserr_bound_max
-             error parameter vector: *abi_g18_error
+             error parameter vector: *abi_g18_error0
          actions:
            - name: set
              flag: GrossCheck

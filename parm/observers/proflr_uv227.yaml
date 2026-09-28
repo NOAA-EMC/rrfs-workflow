@@ -309,7 +309,6 @@
              name: ObsValueBoundsCheck
              logging: true
              diagnostic flag new: false
-           apply at iterations: 0,1
            filter variables:
            - name: windEastward
            - name: windNorthward
