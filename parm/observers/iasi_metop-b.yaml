@@ -101,7 +101,7 @@
          identifier:
            name: PolygonCheck
            logging: true
-         <<: *polygonConfig
+         <<: *polygonConfig  # yamllint disable-line rule:anchors
 
        # ----------------------------------------------------------------------
        # Step 2: Convert dateTime to timeOffset (seconds since analysis time)

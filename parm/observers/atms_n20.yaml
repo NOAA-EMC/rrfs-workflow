@@ -96,7 +96,7 @@
          identifier:
            name: PolygonCheck
            logging: true
-         <<: *polygonConfig
+         <<: *polygonConfig  # yamllint disable-line rule:anchors
 
        - filter: Create Diagnostic Flags
          apply at iterations: 0,1
