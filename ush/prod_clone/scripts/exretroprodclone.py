@@ -104,6 +104,14 @@ def set_variable(ci, path, name, value):
         ci.alter(path, "add", "variable", name, value)
 
 
+def nodes_under(node):
+    """Every family and task below node."""
+    for child in node.nodes:
+        yield child
+        if not isinstance(child, ecflow.Task):
+            yield from nodes_under(child)
+
+
 def tasks_under(node):
     for child in node.nodes:
         if isinstance(child, ecflow.Task):
@@ -143,13 +151,110 @@ def release(ci, fam, pdy):
     for path in (clone, rrfs):
         set_variable(ci, path, "PDY", pdy)
     fam_path = rrfs_family(fam)
+    if pdy != RETRO_START:
+        restore_triggers(ci, fam_path)
+    # requeue clears the suspended flag on every node below, which would undo anything held
+    # on purpose (e.g. the EnKF during a deterministic-only test); remember it and put it back
+    ci.sync_local()
+    below = list(nodes_under(ci.get_defs().find_abs_node(fam_path)))
+    held = [n.get_abs_node_path() for n in below if n.is_suspended()]
+    # tasks tagged RETRO_SET_ASIDE were skipped on purpose (e.g. a component left out of a test) and
+    # must come back complete, or anything waiting on them waits forever. They are tagged rather
+    # than suspended because a suspended task never counts as complete in a trigger.
+    set_aside = [n.get_abs_node_path() for n in below
+                 if isinstance(n, ecflow.Task) and any(v.name() == "RETRO_SET_ASIDE" for v in n.variables)]
     ci.suspend(fam_path)
     ci.requeue(clone)
     # requeue resets a node to its default status, and the RRFS families are defined with
     # "defstatus complete" (NCO releases them); make them default to queued so they run
     ci.alter(fam_path, "change", "defstatus", "queued")
     ci.requeue(fam_path)
+    for path in held:
+        ci.suspend(path)
+    for path in set_aside:
+        ci.force_state(path, COMPLETE)
+    if held:
+        print(f"kept {len(held)} held node(s) suspended across the requeue"
+              + (f", {len(set_aside)} set-aside task(s) complete" if set_aside else ""))
     print(f"released primary/{fam} for {pdy} (held suspended while states are set)")
+
+
+def first_day_skipped(path):
+    """True if skip_first_day() completes the node at path (a task, or a family inside a cycle)."""
+    m = re.search(rf"/primary/\d\d/rrfs/{re.escape(RRFS_VER)}/(\d\d)z/", path + "/")
+    if not m:
+        return False
+    name = path.rsplit("/", 1)[-1]
+    if "spinup" in name or any(k in name for k in COLD_START_TASKS):
+        return False
+    limit = DET_COLD_HR if "/det/" in path else ENKF_COLD_HR if "/enkf/" in path else 0
+    return int(m.group(1)) < limit
+
+
+def parse_expr(text):
+    """Trigger expression -> ("or"|"and", [children]) or ("atom", text); enough for pruning."""
+    tokens = [t.strip() for t in re.split(r"(\(|\)|\band\b|\bor\b)", text) if t.strip()]
+    pos = 0
+
+    def group(op, sub):
+        items = [sub()]
+        nonlocal pos
+        while pos < len(tokens) and tokens[pos] == op:
+            pos += 1
+            items.append(sub())
+        return items[0] if len(items) == 1 else (op, items)
+
+    def primary():
+        nonlocal pos
+        tok = tokens[pos]
+        pos += 1
+        if tok == "(":
+            node = group("or", lambda: group("and", primary))
+            pos += 1                        # the closing ")"
+            return node
+        return ("atom", tok)
+
+    node = group("or", lambda: group("and", primary))
+    if pos != len(tokens):
+        raise ValueError(f"could not parse trigger: {text}")
+    return node
+
+
+def show_expr(node):
+    if node[0] == "atom":
+        return node[1]
+    return f" {node[0]} ".join(show_expr(c) if c[0] == "atom" else f"({show_expr(c)})" for c in node[1])
+
+
+def prune_fallbacks(node):
+    """Drop OR alternatives that wait on a first-day skipped node, if a live alternative remains.
+
+    Returns (node, dead): dead means node can only be satisfied through skipped nodes.
+    """
+    if node[0] == "atom":
+        m = re.match(r"(\S+)\s*==\s*complete$", node[1])
+        return node, bool(m and first_day_skipped(m.group(1)))
+    kids = [prune_fallbacks(c) for c in node[1]]
+    if node[0] == "and":
+        return (node[0], [k for k, _ in kids]), any(d for _, d in kids)
+    live = [k for k, d in kids if not d]
+    if not live:
+        return (node[0], [k for k, _ in kids]), True
+    return (live[0] if len(live) == 1 else ("or", live)), False
+
+
+def restore_triggers(ci, fam_path):
+    """Put back the triggers skip_first_day() pruned, saved in RETRO_FIRST_DAY_TRIGGER."""
+    ci.sync_local()
+    restored = 0
+    for node in nodes_under(ci.get_defs().find_abs_node(fam_path)):
+        saved = [v.value() for v in node.variables if v.name() == "RETRO_FIRST_DAY_TRIGGER"]
+        if saved:
+            ci.alter(node.get_abs_node_path(), "change", "trigger", saved[0])
+            ci.alter(node.get_abs_node_path(), "delete", "variable", "RETRO_FIRST_DAY_TRIGGER")
+            restored += 1
+    if restored:
+        print(f"restored {restored} trigger(s) pruned on the first retro day")
 
 
 def skip_first_day(ci, defs, fam, pdy):
@@ -159,27 +264,44 @@ def skip_first_day(ci, defs, fam, pdy):
     production cycles pick up from those. On the first retro day the earlier cycles would look for
     restarts nothing has written yet, so they are completed without running. Cold-start, boundary
     and spinup tasks are left alone, because those are what get the retro going.
+
+    The skipped tasks count as complete in the "previous hour or older restart" fallbacks too
+    (e.g. 10z det prep: 09z f1 or 08z f2 or 07z f3), which would start the later hours before the
+    hour ahead has saved its restart. Those fallback terms are pruned for the day; the original
+    trigger is kept in RETRO_FIRST_DAY_TRIGGER and restored when the family is next released.
     """
     if not (SKIP_FIRST_DAY and pdy == RETRO_START):
         return
-    skipped = 0
+    skipped = pruned = 0
     for cyc_node in defs.find_abs_node(f"/{RRFS_SUITE}/primary/{fam}/rrfs/{RRFS_VER}").nodes:
-        cyc = cyc_node.name()               # e.g. "02z"
-        if not re.fullmatch(r"\d\dz", cyc):
+        if not re.fullmatch(r"\d\dz", cyc_node.name()):
             continue
-        hour = int(cyc[:2])
-        for task in tasks_under(cyc_node):
-            path = task.get_abs_node_path()
-            name = task.name()
-            if "spinup" in name or any(k in name for k in COLD_START_TASKS):
+        for node in nodes_under(cyc_node):
+            path = node.get_abs_node_path()
+            if isinstance(node, ecflow.Task) and first_day_skipped(path) and node.get_state() != COMPLETE:
+                ci.force_state(path, COMPLETE)
+                skipped += 1
+            trigger = node.get_trigger()
+            if trigger is None or first_day_skipped(path):
                 continue
-            limit = DET_COLD_HR if "/det/" in path else ENKF_COLD_HR if "/enkf/" in path else 0
-            if hour >= limit or task.get_state() == COMPLETE:
-                continue
-            ci.force_state(path, COMPLETE)
-            skipped += 1
+            old = trigger.get_expression()
+            parsed = parse_expr(old)
+            kept, dead = prune_fallbacks(parsed)
+            # The first production cycle (DET_COLD_HR) has nothing but skipped cycles to wait for,
+            # so it would start the moment the family is released, before the spinup chain has
+            # written the restart it warm starts from. Point it at that spinup save instead.
+            if dead and node.name() == "jrrfs_det_prep_cyc" and int(cyc_node.name()[:2]) == DET_COLD_HR:
+                spinup = (f"/{RRFS_SUITE}/primary/{fam}/rrfs/{RRFS_VER}/{DET_COLD_HR - 1:02d}z"
+                          "/det/forecast/jrrfs_det_save_restart_spinup_f001")
+                kept = ("atom", f"{spinup} == complete")
+            if kept != parsed:
+                set_variable(ci, path, "RETRO_FIRST_DAY_TRIGGER", old)
+                ci.alter(path, "change", "trigger", show_expr(kept))
+                pruned += 1
     if skipped:
         print(f"first retro day: completed {skipped} warm-start tasks in primary/{fam} without running them")
+    if pruned:
+        print(f"first retro day: pruned skipped-cycle fallbacks from {pruned} trigger(s) in primary/{fam}")
 
 
 def write_status():
@@ -197,6 +319,12 @@ def write_status():
                            check=False, timeout=120)
         except (OSError, subprocess.SubprocessError) as err:
             print(f"WARNING: could not write {name}: {err}")
+    # and the three files the Rocoto workflow's stat script writes: stat, RUN and DEAD
+    try:
+        subprocess.run(common + ["--report", STATUS_DIR], check=False, timeout=180,
+                       stdout=subprocess.DEVNULL)
+    except (OSError, subprocess.SubprocessError) as err:
+        print(f"WARNING: could not write stat/RUN/DEAD: {err}")
 
 
 def prime_clone_history(ci, pdy):

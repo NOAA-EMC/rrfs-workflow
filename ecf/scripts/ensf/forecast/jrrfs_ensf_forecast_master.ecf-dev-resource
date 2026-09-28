@@ -12,7 +12,7 @@
 #SBATCH --qos=%QUEUE%
 #SBATCH --partition=%PARTITION:u1-compute%
 #SBATCH --time=04:45:00
-#SBATCH --nodes=52
+#SBATCH --nodes=75  # Ursa: 3424 ranks at 48 per node for the larger members, with headroom
 #SBATCH --exclusive
 #SBATCH --mem=0
 #SBATCH --output=%ECF_JOBOUT%

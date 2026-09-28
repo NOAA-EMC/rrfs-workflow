@@ -11,7 +11,7 @@
 #SBATCH --account=%PROJ%
 #SBATCH --qos=%QUEUE%
 #SBATCH --partition=%PARTITION:u1-compute%
-#SBATCH --time=00:15:00
+#SBATCH --time=00:30:00  # Ursa: restart copies are slower than on WCOSS2
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --mem=50G
