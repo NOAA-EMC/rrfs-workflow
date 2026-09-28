@@ -184,7 +184,7 @@
        - filter: Domain Check
          apply at iterations: 0,1
          identifier:
-           name: CloudFractionCheck
+           name: CloudFractionCheck0_
            logging: true
            diagnostic flag new: true
          filter variables:
@@ -209,7 +209,7 @@
        - filter: Bounds Check
          apply at iterations: 0,1
          identifier:
-           name: ClearSkyStdCheck
+           name: ClearSkyStdCheck0_
            logging: true
            diagnostic flag new: true
          filter variables:
@@ -254,7 +254,7 @@
        - filter: Variable Assignment
          apply at iterations: 0,1
          identifier:
-           name: ClearSkyStdCheck
+           name: ClearSkyStdCheck1_
            logging: true
            diagnostic flag new: true
          assignments:
@@ -595,7 +595,7 @@
        - filter: Domain Check
          apply at iterations: 0,1
          identifier:
-           name: ClearSkyStdCheck
+           name: ClearSkyStdCheck2_
            logging: true
            diagnostic flag new: true
          filter variables:
@@ -761,7 +761,7 @@
        - filter: Domain Check
          apply at iterations: 0,1
          identifier:
-           name: CloudFractionCheck
+           name: CloudFractionCheck1_
            logging: true
            diagnostic flag new: true
          filter variables:
@@ -784,7 +784,7 @@
        - filter: Variable Assignment
          apply at iterations: 0,1
          identifier:
-           name: SplitWindowCheck
+           name: SplitWindowCheck0_
            logging: true
            diagnostic flag new: true
          assignments:
@@ -816,7 +816,7 @@
        - filter: Bounds Check
          apply at iterations: 0,1
          identifier:
-           name: SplitWindowCheck
+           name: SplitWindowCheck1_
            logging: true
            diagnostic flag new: true
          filter variables:
