@@ -75,7 +75,7 @@
          identifier:
            name: PolygonCheck
            logging: false
-         <<: *polygonConfig
+         <<: *polygonConfig  # yamllint disable-line rule:anchors
 
        # Use PreQC filter to remove bad data
        - filter: Bounds Check
@@ -505,7 +505,7 @@
        - filter: RejectList
          apply at iterations: 0,1
          identifier:
-           name: ObsModelCloudSignalCheck
+           name: ObsModelCloudSignalCheckA
            logging: true
            diagnostic flag new: true
          filter variables:
@@ -528,7 +528,7 @@
        - filter: RejectList
          apply at iterations: 0,1
          identifier:
-           name: ObsModelCloudSignalCheck
+           name: ObsModelCloudSignalCheckB
            logging: true
            diagnostic flag new: true
          filter variables:
@@ -551,7 +551,7 @@
        - filter: Background Check
          apply at iterations: 0,1
          identifier:
-           name: GrossCheckCh1
+           name: GrossCheckA
            logging: true
            diagnostic flag new: true
          filter variables:
@@ -565,7 +565,7 @@
        - filter: Background Check
          apply at iterations: 0,1
          identifier:
-           name: GrossCheckCh2_9_12
+           name: GrossCheckB
            logging: true
            diagnostic flag new: true
          filter variables:
@@ -579,7 +579,7 @@
        - filter: Background Check
          apply at iterations: 0,1
          identifier:
-           name: GrossCheckCh_3
+           name: GrossCheckC
            logging: true
            diagnostic flag new: true
          filter variables:
@@ -593,7 +593,7 @@
        - filter: Background Check
          apply at iterations: 0,1
          identifier:
-           name: GrossCheckCh_4_5_6_10_11
+           name: GrossCheckD
            logging: true
            diagnostic flag new: true
          filter variables:
@@ -607,7 +607,7 @@
        - filter: Background Check
          apply at iterations: 0,1
          identifier:
-           name: GrossCheckAll
+           name: GrossCheckE
            logging: true
            diagnostic flag new: true
          filter variables:
