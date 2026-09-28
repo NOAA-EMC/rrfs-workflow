@@ -90,6 +90,15 @@ RUN_BUFRSND=${RUN_BUFRSND:-FALSE}
 # them, so the safe cut needs the forecast length rather than the task name.
 DO_LONG_FORECAST=${DO_LONG_FORECAST:-TRUE}
 
+# Whether each job keeps its working directory under stmp. The base NCO definition sets YES at all
+# eight places, which on Ursa filled a 244 TiB project quota in ten days and stopped all three
+# suites: with YES, exrrfs_clean.sh does not delete the shared umbrella directories but *renames*
+# them (rrfs_forecast_12_v1.0 -> rrfs_forecast_<pid>_12_v1.0), so nothing is ever reclaimed.
+# NO costs no debugging, because head.h traps ERR and EXIT and exits before the J-job reaches its
+# cleanup line, so a job that fails keeps its working directory either way. Set YES only when you
+# want the directories of jobs that *succeeded*.
+KEEPDATA=${KEEPDATA:-NO}
+
 # suite definition to copy, relative to ecf/defs
 BASE_DEF=${BASE_DEF:-nco_para/rrfs_nco_para.def}
 RRFS_SUITE=${RRFS_SUITE:-para}            # suite name in the generated definition

@@ -150,6 +150,14 @@ EOF
     echo "  ${tsk}: ${ntsk} task(s) set to defstatus complete (${run_var}=FALSE)"
   done
 
+  # Whether jobs keep their stmp working directories (KEEPDATA). The base definition sets YES at
+  # every place it appears; rewrite the value rather than the lines so the count does not matter.
+  if [ -n "${KEEPDATA:-}" ]; then
+    nkeep=$(grep -cE "^ *edit KEEPDATA " "${out_def}")
+    sed -i -E "s/^( *)edit KEEPDATA '[A-Za-z]+'/\1edit KEEPDATA '${KEEPDATA}'/" "${out_def}"
+    echo "  KEEPDATA: ${nkeep} setting(s) rewritten to '${KEEPDATA}'"
+  fi
+
   # The whole 84 h forecast chain (DO_LONG_FORECAST): the forecast, its restarts, and the post and
   # product generation that read its output. Every one of those task names ends in _long, or in
   # _long_<hour> for the restarts. Nothing outside fire weather triggers on them, and fire weather
