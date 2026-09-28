@@ -142,7 +142,7 @@
        - filter: Variable Assignment
          apply at iterations: 0,1
          identifier:
-           name: VarAssign
+           name: VarAssign0_
            logging: true
            diagnostic flag new: true
          assignments:
@@ -289,7 +289,7 @@
        - filter: Variable Assignment
          apply at iterations: 0,1
          identifier:
-           name: VarAssign
+           name: VarAssign1_
            logging: true
            diagnostic flag new: true
          assignments:
@@ -397,7 +397,7 @@
        - filter: Perform Action
          apply at iterations: 0,1
          identifier:
-           name: ZenithAngleCheck
+           name: ZenithAngleCheck0_
            logging: true
            diagnostic flag new: true
          filter variables:
@@ -423,7 +423,7 @@
        - filter: Perform Action
          apply at iterations: 0,1
          identifier:
-           name: ZenithAngleCheck
+           name: ZenithAngleCheck1_
            logging: true
            diagnostic flag new: true
          filter variables:
