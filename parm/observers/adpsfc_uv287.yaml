@@ -77,6 +77,9 @@
              name: reduce obs space
 
          - filter: Perform Action
+           identifier:
+             name: ObsInvalidCheck
+             logging: true
            where:
            - variable: ObsValue/windEastward
              value: is_not_valid
