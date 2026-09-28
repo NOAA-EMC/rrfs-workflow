@@ -123,6 +123,15 @@ EOF
   # here. defstatus complete keeps it from ever running, including after a family is requeued.
   sed -i -E 's/^( *)task cycle_end$/&\n\1  defstatus complete/' "${out_def}"
 
+  # Fire weather reads the long forecast's post for its initial and boundary conditions, so the two
+  # settings cannot disagree. Say so here rather than let 464 fire weather tasks a day fail on a
+  # natlev file the suite was told not to make.
+  if [ "${DO_LONG_FORECAST:-TRUE}" = "FALSE" ] && [ "${RUN_FIREWX:-TRUE}" != "FALSE" ]; then
+    echo "ERROR: DO_LONG_FORECAST=FALSE needs RUN_FIREWX=FALSE." >&2
+    echo "       Fire weather takes its ICs and LBCs from the 84 h forecast's post." >&2
+    exit 1
+  fi
+
   # Workflow groups switched off in ursa_config.sh (RUN_ENKF, RUN_ENSF, RUN_FIREWX): the same
   # mechanism as cycle_end above, applied to the whole family.
   for wgf in enkf ensf firewx; do
@@ -140,6 +149,25 @@ EOF
     sed -i -E "s/^( *)task (jrrfs_[a-z]+_${tsk}[a-z0-9_]*)\$/&\n\1  defstatus complete/" "${out_def}"
     echo "  ${tsk}: ${ntsk} task(s) set to defstatus complete (${run_var}=FALSE)"
   done
+
+  # The whole 84 h forecast chain (DO_LONG_FORECAST): the forecast, its restarts, and the post and
+  # product generation that read its output. Every one of those task names ends in _long, or in
+  # _long_<hour> for the restarts. Nothing outside fire weather triggers on them, and fire weather
+  # is refused above when this is off, so completing them blocks nothing.
+  if [ "${DO_LONG_FORECAST:-TRUE}" = "FALSE" ]; then
+    long_re="jrrfs_det_[a-z0-9_]*_long(_[0-9]+)?"
+    nlong=$(grep -cE "^ *task ${long_re}\$" "${out_def}")
+    # Append the defstatus only where the task does not already carry one. jrrfs_det_bufrsnd_long is
+    # in both this set and RUN_BUFRSND's, and two defstatus lines on one task make ecflow reject the
+    # whole definition ("already has a default status"), so look at the next line before writing.
+    awk -v re="^ *task (${long_re})\$" '
+      pend { if ($0 !~ /^ *defstatus /) print indent "  defstatus complete"; pend = 0 }
+      { print }
+      $0 ~ re { indent = $0; sub(/[^ ].*/, "", indent); pend = 1 }
+      END { if (pend) print indent "  defstatus complete" }
+    ' "${out_def}" > "${out_def}.stamped" && mv "${out_def}.stamped" "${out_def}"
+    echo "  long forecast: ${nlong} task(s) set to defstatus complete (DO_LONG_FORECAST=FALSE)"
+  fi
   # A manager task that waits on the whole forecast family is fragile once anything is requeued:
   # the family reads active while other tasks in it run, so the manager can start before the
   # forecast does, and it reads queued while the saves it releases wait, which deadlocks it.

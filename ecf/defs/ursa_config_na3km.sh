@@ -79,6 +79,17 @@ RUN_FIREWX=${RUN_FIREWX:-TRUE}
 #            and on RRFS_NA_3km the 84 h sounding job runs past its 3 h card limit
 RUN_GEMPAK=${RUN_GEMPAK:-FALSE}
 RUN_BUFRSND=${RUN_BUFRSND:-FALSE}
+
+# The 84 h deterministic forecast at 00z, 06z, 12z and 18z, with its post, product generation and
+# restarts. FALSE leaves the hourly 18 h forecasts alone and is the one setting that shortens a
+# retro noticeably: the long forecast is 67 of the 81 minutes on each 6-hourly family's critical
+# path, so a 13 km week goes from about 38 h to about 13 h. Operations needs it; a cycling or DA
+# retro usually does not. Fire weather takes its initial and boundary conditions from the long
+# forecast's post, so RUN_FIREWX must be FALSE as well, and the generator says so if it is not.
+# The 85 boundary jobs at each long cycle are left alone: the hourly cycles in the family share
+# them, so the safe cut needs the forecast length rather than the task name.
+DO_LONG_FORECAST=${DO_LONG_FORECAST:-TRUE}
+
 # suite definition to copy, relative to ecf/defs
 BASE_DEF=${BASE_DEF:-nco_para/rrfs_nco_para.def}
 RRFS_SUITE=${RRFS_SUITE:-para}            # suite name in the generated definition
