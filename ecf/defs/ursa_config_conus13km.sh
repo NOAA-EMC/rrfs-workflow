@@ -1,0 +1,112 @@
+#!/bin/bash
+#
+# Sample settings for an RRFS_CONUS_13km retro on Ursa.
+#
+# This is the configuration the CONUS 13 km retro day on this branch was tested with. It
+# differs from ursa_config_na3km.sh only in DOMAIN.
+# Copy it over ecf/defs/ursa_config.sh and change the paths in the first two blocks to
+# your own; everything below them is what the tested run used.
+#
+# This is the ecflow equivalent of the Rocoto workflow's ush/config.sh, for the parts we control.
+# It is sourced by ecf/setup_ecf_links.sh, ecf/defs/make_ursa_def.sh and ush/prod_clone/make_retro_def.sh,
+# so edit values here instead of passing them on every command line. Anything already set in the
+# environment wins, so one-off runs can still say e.g.
+#
+#   RETRO_START=20240510 ./make_ursa_def.sh
+#
+# What is NOT here, because the suite reads it at run time rather than at generation time:
+#   fix/workflow/<WGF>/workflow.conf   job resources (NNODES_*, PPN_*, TPP_*) and science switches;
+#                                      setup_ecf_links.sh copies the _prod or _dev version per
+#                                      RESOURCE_CONFIG and applies the Ursa overrides
+#   versions/run.ver                   software versions used by the job cards
+#
+# ---------------------------------------------------------------------------------------------
+# Where the workflow writes
+# ---------------------------------------------------------------------------------------------
+# Everything this run produces hangs off one base directory.
+URSA_WORK_BASE=${URSA_WORK_BASE:-/scratch4/NCEPDEV/fv3-cam/${USER}/ecflow_rrfs}
+
+# ecflow job files and their output (the server creates the task directories underneath)
+ECF_HOME=${ECF_HOME:-${URSA_WORK_BASE}/submit}
+OUTPUTDIR=${OUTPUTDIR:-${URSA_WORK_BASE}/output}
+# COM output. envir-p1.h builds COMROOT as ${DEV_PTMP}/${USER}/ecflow_rrfs/para/com, so this is a
+# base directory and the user and suite names are appended to it.
+DEV_PTMP=${DEV_PTMP:-${URSA_WORK_BASE}/ptmp}
+# job working directories (DATAROOT)
+DEV_DATAROOT=${DEV_DATAROOT:-${URSA_WORK_BASE}/stmp}
+
+# ---------------------------------------------------------------------------------------------
+# Slurm
+# ---------------------------------------------------------------------------------------------
+PROJ=${PROJ:-fv3-cam}                     # account
+QUEUE=${QUEUE:-batch}                     # QOS
+PARTITION=${PARTITION:-u1-compute}
+# NCO keeps the production job sizes; EMC selects the smaller dev resources and the 52-node
+# forecast layouts, which is what fits Ursa's 75-node per-job limit.
+RESOURCE_CONFIG=${RESOURCE_CONFIG:-EMC}
+
+# ---------------------------------------------------------------------------------------------
+# ecflow
+# ---------------------------------------------------------------------------------------------
+ECFLOW_VER=${ECFLOW_VER:-5.11.4}
+ECFLOW_HOST=${ECFLOW_HOST:-uecflow01}     # host running the server (head.h reads it as ECF_LOGHOST)
+
+# ---------------------------------------------------------------------------------------------
+# Input data
+# ---------------------------------------------------------------------------------------------
+# fix tree; setup_ecf_links.sh links <repo>/fix to it
+FIX_RRFS_DIR=${FIX_RRFS_DIR:-/scratch4/NCEPDEV/fv3-cam/Shun.Liu/fix_nco_wcoss}
+# staged upstream data in NCO COM/DCOM layout (see make_links.sh in that directory)
+RETRO_DATA_ROOT=${RETRO_DATA_ROOT:-/scratch4/BMC/zrtrr/Samuel.Degelia/RRFS_RETRO_DATA_NCO}
+# Ursa, coarser domains (strip when merging to the nco branch): the model domain. RRFS_NA_3km
+# is the operational v1 domain and changes nothing; any other value needs
+# ecf/defs/domains/<DOMAIN>.sh with its grid, fix files and job sizes.
+DOMAIN=${DOMAIN:-RRFS_CONUS_13km}
+
+# ---------------------------------------------------------------------------------------------
+# Retro period and suite
+# ---------------------------------------------------------------------------------------------
+RETRO_START=${RETRO_START:-20240506}      # first retro day, and the day that cold starts
+RETRO_END=${RETRO_END:-20240512}          # last retro day
+# YES relaxes the suite's 399 clock-time triggers so cycles are not gated on the wall clock
+RETRO=${RETRO:-YES}
+
+# Which workflow groups to run. FALSE gives that group's families defstatus complete, so they
+# never run and nothing waiting on them blocks. Operations runs all of them.
+RUN_ENKF=${RUN_ENKF:-TRUE}
+RUN_ENSF=${RUN_ENSF:-TRUE}
+RUN_FIREWX=${RUN_FIREWX:-TRUE}
+
+# Two task types no retro needs, off by default on Ursa because neither works here:
+#   gempak   exrrfs_gempak.sh launches "mpiexec -configfile", the WCOSS2 cfp idiom, and has no
+#            srun arm, so every task exits 255
+#   bufrsnd  the station list fix/bufrsnd/<grid>/rrfs_profdat.<NSTAT> exists only for some grids,
+#            and on RRFS_NA_3km the 84 h sounding job runs past its 3 h card limit
+RUN_GEMPAK=${RUN_GEMPAK:-FALSE}
+RUN_BUFRSND=${RUN_BUFRSND:-FALSE}
+
+# The 84 h deterministic forecast at 00z, 06z, 12z and 18z, with its post, product generation and
+# restarts. FALSE leaves the hourly 18 h forecasts alone and is the one setting that shortens a
+# retro noticeably: the long forecast is 67 of the 81 minutes on each 6-hourly family's critical
+# path, so a 13 km week goes from about 38 h to about 13 h. Operations needs it; a cycling or DA
+# retro usually does not. Fire weather takes its initial and boundary conditions from the long
+# forecast's post, so RUN_FIREWX must be FALSE as well, and the generator says so if it is not.
+# The 85 boundary jobs at each long cycle are left alone: the hourly cycles in the family share
+# them, so the safe cut needs the forecast length rather than the task name.
+DO_LONG_FORECAST=${DO_LONG_FORECAST:-TRUE}
+
+# Whether each job keeps its working directory under stmp. The base NCO definition sets YES at all
+# eight places, which on Ursa filled a 244 TiB project quota in ten days and stopped all three
+# suites: with YES, exrrfs_clean.sh does not delete the shared umbrella directories but *renames*
+# them (rrfs_forecast_12_v1.0 -> rrfs_forecast_<pid>_12_v1.0), so nothing is ever reclaimed.
+# NO costs no debugging, because head.h traps ERR and EXIT and exits before the J-job reaches its
+# cleanup line, so a job that fails keeps its working directory either way. Set YES only when you
+# want the directories of jobs that *succeeded*.
+KEEPDATA=${KEEPDATA:-NO}
+
+# suite definition to copy, relative to ecf/defs
+BASE_DEF=${BASE_DEF:-nco_para/rrfs_nco_para.def}
+RRFS_SUITE=${RRFS_SUITE:-para}            # suite name in the generated definition
+RRFS_VER=${RRFS_VER:-v1.0}
+ENVIR=${ENVIR:-prod}
+MACHINE_SITE=${MACHINE_SITE:-development}
