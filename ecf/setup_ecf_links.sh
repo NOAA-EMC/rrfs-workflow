@@ -699,6 +699,36 @@ if [ ${resource_config} == "EMC" ]; then
   done
 fi
 
+# Ursa, coarser domains (strip when merging to the nco branch): a domain other than the operational
+# NA 3 km one (DOMAIN in ursa_config.sh). This runs after the EMC namelist edits above, whose
+# blanket number substitutions would otherwise hit its values.
+domain=${DOMAIN:-RRFS_NA_3km}
+if [[ "$(hostname -f)" == *"ufe"* ]] && [ "${domain}" != "RRFS_NA_3km" ]; then
+  domain_file=${ECF_DIR}/defs/domains/${domain}.sh
+  [ -f "${domain_file}" ] || { echo "FATAL: no ${domain_file} for DOMAIN=${domain}"; exit 1; }
+  # shellcheck source=/dev/null
+  . "${domain_file}"
+  echo "Ursa: domain ${domain}"
+  # its fix directories go in beside the NA ones, so fix/<subdir> becomes a directory of links
+  for entry in "${DOMAIN_FIX_LINKS[@]}"; do
+    sub=${entry%%:*}
+    [ -L "${fix_dir}/${sub}" ] && rm -f "${fix_dir}/${sub}"
+    mkdir -p "${fix_dir}/${sub}"
+    for src in "${fix_src}/${sub}"/*; do
+      ln -snf "${src}" "${fix_dir}/${sub}/$(basename "${src}")"
+    done
+    ln -snf "${entry#*:}" "${fix_dir}/${sub}/${domain}"
+  done
+  for wgf in det enkf ensf; do
+    domain_workflow_conf >> "${ECF_DIR}/../fix/workflow/${wgf}/workflow.conf"
+    for fl in "${ECF_DIR}"/../parm/config/${wgf}/input.nml*; do
+      sed -i -E "s/^( *npx *= *).*/\1${NML_NPX}/; s/^( *npy *= *).*/\1${NML_NPY}/; \
+        s/^( *target_lat *= *).*/\1${NML_TARGET_LAT}/; s/^( *target_lon *= *).*/\1${NML_TARGET_LON}/; \
+        s/^( *layout *= *).*/\1${NML_LAYOUT}/; ${NML_SED_EXTRA:-}" "${fl}"
+    done
+  done
+fi
+
 # add created files/links to git info exclude
 cd $ECF_DIR
 exclude_path="${ECF_DIR}/../.git/info/exclude"

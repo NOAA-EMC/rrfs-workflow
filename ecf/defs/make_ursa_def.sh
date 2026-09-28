@@ -57,8 +57,11 @@ awk -v q="'" -v ph="${PACKAGEHOME}" -v eh="${ECF_HOME}" -v od="${OUTPUTDIR}" \
     ed("OUTPUTDIR", od)
     ed("ECF_HOME", eh)
     ed("ECF_INCLUDE", ph "/ecf/include")
-    # sbatch would otherwise also read the #PBS lines (e.g. "-q" as the partition)
-    ed("ECF_JOB_CMD", "sbatch --ignore-pbs %ECF_JOB% 1> %ECF_JOB%.sub 2>&1")
+    # sbatch would otherwise also read the #PBS lines (e.g. "-q" as the partition).
+    # Ursa, coarser domains (strip when merging to the nco branch): SBATCH_OVERRIDES carries
+    # per-task job sizes for other domains, since sbatch options win over the #SBATCH lines in cards.
+    ed("SBATCH_OVERRIDES", "")
+    ed("ECF_JOB_CMD", "sbatch --ignore-pbs %SBATCH_OVERRIDES% %ECF_JOB% 1> %ECF_JOB%.sub 2>&1")
     ed("ECF_KILL_CMD", "scancel %ECF_RID% 1> %ECF_JOB%.kill 2>&1")
     ed("ECF_STATUS_CMD", "squeue -j %ECF_RID% 1> %ECF_JOB%.stat 2>&1")
     next
@@ -234,6 +237,32 @@ open(path, "w").write("\n".join(lines))
 EOF
 fi
 
+# Ursa, coarser domains (strip when merging to the nco branch): give the tasks the domain's table
+# names their job sizes through SBATCH_OVERRIDES
+# default here as well as in the config, so an unset DOMAIN cannot send it looking for a
+# domain file that does not exist
+DOMAIN=${DOMAIN:-RRFS_NA_3km}
+if [ "${DOMAIN}" != "RRFS_NA_3km" ]; then
+  # shellcheck source=/dev/null
+  . "${defs_dir}/domains/${DOMAIN}.sh"
+  python3 - "${out_def}" "${DOMAIN_SBATCH[@]}" <<'EOF'
+import fnmatch, sys
+path = sys.argv[1]
+table = [a.split(":", 1) for a in sys.argv[2:]]
+out, n = [], 0
+for line in open(path).read().split("\n"):
+    out.append(line)
+    t = line.split()
+    if len(t) >= 2 and t[0] == "task":
+        opts = next((o for pat, o in table if fnmatch.fnmatch(t[1], pat)), None)
+        if opts:
+            out.append(line[:len(line) - len(line.lstrip())] + f"  edit SBATCH_OVERRIDES '{opts}'")
+            n += 1
+open(path, "w").write("\n".join(out))
+print(f"{n} tasks given job sizes for the domain")
+EOF
+fi
+
 echo "Wrote ${out_def} from ${BASE_DEF}"
 echo "  PACKAGEHOME=${PACKAGEHOME}"
 echo "  ECF_HOME=${ECF_HOME}  (create it before loading the suite)"
@@ -241,3 +270,4 @@ echo "  PROJ=${PROJ} QUEUE=${QUEUE} PARTITION=${PARTITION}"
 echo "  DEV_PTMP=${DEV_PTMP}"
 echo "  DEV_DATAROOT=${DEV_DATAROOT}"
 echo "  RETRO_DATA_ROOT=${RETRO_DATA_ROOT}"
+echo "  DOMAIN=${DOMAIN}"
