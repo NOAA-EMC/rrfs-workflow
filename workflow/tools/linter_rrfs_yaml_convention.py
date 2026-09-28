@@ -115,9 +115,9 @@ def _identifier_name(lines: list[str], block: range, entry_indent: int) -> tuple
 
 def _check_obs_name(filepath: str, line_no: int, name: str, source: str) -> Violation | None:
     valid = (
-        name in SPECIAL_OBS_NAMES
-        or CONVENTIONAL_OBS_NAME_RE.fullmatch(name)
-        or SIS_OBS_NAME_RE.fullmatch(name)
+        name in SPECIAL_OBS_NAMES or
+        CONVENTIONAL_OBS_NAME_RE.fullmatch(name) or
+        SIS_OBS_NAME_RE.fullmatch(name)
     )
     if valid:
         return None
@@ -158,8 +158,8 @@ def lint_lines(filepath: str, lines: list[str]) -> list[Violation]:
                 _key_at_indent(lines[index], first_indent + 2) == "apply at iterations"
                 for index in first_block
             )
-            if (first_filter != "AcceptList" or first_identifier != "NewLoopReset"
-                    or not has_apply_at_iterations):
+            if (first_filter != "AcceptList" or first_identifier != "NewLoopReset" or
+                    not has_apply_at_iterations):
                 violations.append(Violation(
                     filepath, first_index + 1, "YAML002",
                     "The first filter must be AcceptList with apply at iterations and identifier NewLoopReset.",
@@ -218,8 +218,8 @@ def lint_lines(filepath: str, lines: list[str]) -> list[Violation]:
             ]
             has_action_block = any(key in {"action", "actions"} for key in key_names)
             is_perform_action_exception = filter_name == "Perform Action" and has_action_block
-            if (terminal_positions and max(terminal_positions) != len(key_names) - 1
-                    and not is_perform_action_exception):
+            if (terminal_positions and max(terminal_positions) != len(key_names) - 1 and
+                    not is_perform_action_exception):
                 terminal_line = direct_keys[terminal_positions[-1]][1]
                 violations.append(Violation(
                     filepath, terminal_line + 1, "YAML004",
