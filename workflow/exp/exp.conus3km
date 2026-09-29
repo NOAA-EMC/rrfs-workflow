@@ -61,7 +61,7 @@ export LBC_INTERVAL=1
 export LBC_UNGRIB_GROUP_TOTAL_NUM=2
 export LBC_GROUP_TOTAL_NUM=2
 
-export RETRO_PERIOD="2024050700-2024050800"
+export RETRO_PERIOD="2024050600-2024050700"
 export LBC_CYCS="00 12"  # evenly divide 24 hours, e.g., "00 12", "00 06 12 18", etc
 export COLDSTART_CYCS="03 15"   # cycles to cold start from external models
 export DO_SPINUP=true
