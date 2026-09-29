@@ -388,6 +388,8 @@ if [[ $BUILD_WORKAROUND = true ]]; then
   # Configuration files for GSI and JEDI
   cp _workaround_/ush/config_det_c13_3dvar_gsi_baseline005.sh ../ush/config_det_c13_3dvar_gsi_baseline005.sh
   cp _workaround_/ush/config_det_c13_3dvar_jedi_baseline005.sh ../ush/config_det_c13_3dvar_jedi_baseline005.sh
+  cp _workaround_/ush/config_det_c13_3dvar_gsi_baseline005_ursa.sh ../ush/config_det_c13_3dvar_gsi_baseline005_ursa.sh
+  cp _workaround_/ush/config_det_c13_3dvar_jedi_baseline005_ursa.sh ../ush/config_det_c13_3dvar_jedi_baseline005_ursa.sh
 
 fi
 
