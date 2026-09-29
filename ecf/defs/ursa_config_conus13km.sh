@@ -84,6 +84,11 @@ RUN_FIREWX=${RUN_FIREWX:-TRUE}
 #            and on RRFS_NA_3km the 84 h sounding job runs past its 3 h card limit
 RUN_GEMPAK=${RUN_GEMPAK:-FALSE}
 RUN_BUFRSND=${RUN_BUFRSND:-FALSE}
+# Ursa, coarser domains (strip when merging to the nco branch): smoke and dust need
+# fix/smoke_dust/<grid>/grid_in.nc, which dev-sci provides for the 3 km grids but not for
+# RRFS_CONUS_13km, where process_smoke fails with FileNotFoundError on that file. The default is
+# TRUE, so the NA sample is unaffected.
+RUN_SMOKE=${RUN_SMOKE:-FALSE}
 
 # The 84 h deterministic forecast at 00z, 06z, 12z and 18z, with its post, product generation and
 # restarts. FALSE leaves the hourly 18 h forecasts alone and is the one setting that shortens a

@@ -145,11 +145,13 @@ EOF
   done
 
   # Same idea for individual task types rather than whole families (RUN_GEMPAK, RUN_BUFRSND).
-  for tsk in gempak bufrsnd; do
+  # The pattern allows words between the workflow group and the task name, so process_smoke matches
+  # as well as gempak and bufrsnd; it still matches exactly the same gempak and bufrsnd tasks.
+  for tsk in gempak bufrsnd smoke; do
     run_var=RUN_$(echo "${tsk}" | tr '[:lower:]' '[:upper:]')
     [ "${!run_var:-TRUE}" = "FALSE" ] || continue
-    ntsk=$(grep -cE "^ *task jrrfs_[a-z]+_${tsk}[a-z0-9_]*\$" "${out_def}")
-    sed -i -E "s/^( *)task (jrrfs_[a-z]+_${tsk}[a-z0-9_]*)\$/&\n\1  defstatus complete/" "${out_def}"
+    ntsk=$(grep -cE "^ *task jrrfs_[a-z]+_[a-z_]*${tsk}[a-z0-9_]*\$" "${out_def}")
+    sed -i -E "s/^( *)task (jrrfs_[a-z]+_[a-z_]*${tsk}[a-z0-9_]*)\$/&\n\1  defstatus complete/" "${out_def}"
     echo "  ${tsk}: ${ntsk} task(s) set to defstatus complete (${run_var}=FALSE)"
   done
 
