@@ -61,6 +61,11 @@ for index in "${mem_list[@]}"; do # loop through all the members
     if [[ -s ${thisfile} ]]; then
       echo "${cpreq} ${thisfile} ${umbrella_prep_ic_mem}/init.nc" >> "${CMDFILE}"
       echo "cold start from ${thisfile}"
+      # Add/update chemistry species for init.nc
+      if [[ "${DO_CHEMISTRY^^}" == "TRUE" ]] && [[ "${CYCLE_CHEMISTRY^^}" == "TRUE" ]]; then
+        echo "Cycling chemistry fields"
+        source "${USHrrfs}/chem_ic_update.sh"
+      fi
     else
       echo "FATAL ERROR: PREP_IC failed, cannot find cold start file: ${thisfile}"
       err_exit
