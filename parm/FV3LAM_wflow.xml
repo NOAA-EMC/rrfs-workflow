@@ -257,6 +257,7 @@ define resources used for each tasks
 <!ENTITY RESOURCES_MAKE_ICS     "<nodes>{{ nnodes_make_ics }}:ppn={{ ppn_make_ics }}:tpp={{ tpp_make_ics }}</nodes>">
 <!ENTITY RESOURCES_BLEND_ICS    "<nodes>{{ nnodes_blend_ics }}:ppn={{ ppn_blend_ics }}</nodes>">
 <!ENTITY RESOURCES_MAKE_LBCS    "<nodes>{{ nnodes_make_lbcs }}:ppn={{ ppn_make_lbcs }}:tpp={{ tpp_make_lbcs }}</nodes>">
+<!ENTITY RESOURCES_ARCHIVE_RETRO "<nodes>{{ nnodes_run_archive_retro }}:ppn={{ ppn_run_archive_retro }}:tpp={{ tpp_run_archive_retro }}</nodes>">
 <!ENTITY RESOURCES_ANALYSIS_JEDI "<nodes>{{ nnodes_run_analysis_jedi }}:ppn={{ ppn_run_analysis_jedi }}:tpp={{ tpp_run_analysis_jedi }}</nodes>">
 <!ENTITY RESOURCES_HYBRID_RADAR_REF_JEDI "<nodes>{{ nnodes_hybrid_radar_ref_jedi }}:ppn={{ ppn_hybrid_radar_ref_jedi }}:tpp={{ tpp_hybrid_radar_ref_jedi }}</nodes>">
 <!ENTITY RESOURCES_ANALYSIS_GSI "<nodes>{{ nnodes_run_analysis }}:ppn={{ ppn_run_analysis }}:tpp={{ tpp_run_analysis }}</nodes>">
@@ -4335,7 +4336,7 @@ MODULES_RUN_TASK_FP script.
 {%- endif %}
 {%- endif %}
 
-{%- if machine in ["WCOSS2"]  %}
+{%- if machine in ["WCOSS2", "URSA"]  %}
 {%- if do_archive_retro and do_retro %}
 <!--
 ************************************************************************
