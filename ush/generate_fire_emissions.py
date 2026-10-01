@@ -80,7 +80,7 @@ def generate_emiss_workflow(staticdir, ravedir, newges_dir, predef_grid):
        cyc = os.environ.get('cyc')
        cycle_type = os.environ.get('CYCLE_TYPE')
        wgf = os.environ.get('WGF')
-       sendmail = os.engiron.get('SENDMAIL')
+       sendmail = os.environ.get('SENDMAIL')
        if sendmail == "YES":
            if cyc == "13" or cyc == "19":
                if wgf == "det" and cycle_type == "prod":
