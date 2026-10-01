@@ -41,6 +41,18 @@ elif [[ ${MACHINE} == "gaeac6" ]]; then
   export PARTITION_ARCHIVE=${PARTITION_ARCHIVE:-dtn_f5_f6}
   export ARCHIVE_MODULE="module use /usw/hpss/modulefiles;module load hsi"
 
+elif [[ ${MACHINE} == "gaeac7" ]]; then
+  export ACCOUNT=${ACCOUNT:-wrfruc}
+  export QUEUE=${QUEUE:-normal}
+  export PARTITION=${PARTITION:-batch}
+  export RESERVATION=${RESERVATION:-""}
+  export CLUSTER=${CLUSTER:-c7}
+  export NATIVE_UPP="--exclusive"
+  export QUEUE_ARCHIVE="hpss"
+  export CLUSTER_ARCHIVE=""
+  export PARTITION_ARCHIVE=${PARTITION_ARCHIVE:-dtn_f5_f6}
+  export ARCHIVE_MODULE="module use /usw/hpss/modulefiles;module load hsi"
+
 elif [[ ${MACHINE} == "derecho" ]]; then
   export ACCOUNT=${ACCOUNT:-test}
   export QUEUE=${QUEUE:-main}

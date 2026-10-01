@@ -229,12 +229,12 @@ def setup_xml(HOMErrfs, expdir):
         extra = "\nmodule use /work/noaa/zrtrr/gge/hercules/rocoto/modulefiles"
     elif machine in ['gaeac6']:
         extra = "\nmodule use /gpfs/f6/arfs-gsl/world-shared/gge/rocoto/modulefiles"
+    elif machine in ['gaeac7']:
+        extra = "\nmodule use /gpfs/f7/arfs-gsl/world-shared/gge/rocoto/modulefiles"
     elif machine in ['ursa']:
         extra = "\nmodule use /scratch4/BMC/zrtrr/gge/rocoto/modulefiles"
     elif machine in ['hera']:
         extra = "\nmodule use /scratch4/BMC/zrtrr/gge/rocoto_hera/modulefiles"
-    elif machine in ['jet']:
-        extra = "\nmodule use /lfs5/BMC/nrtrr/gge/rocoto/modulefiles"
     elif machine in ['wcoss2']:
         extra = "\nmodule use /apps/ops/test/nco/modulefiles/core"
     elif machine in ['derecho']:
@@ -243,16 +243,16 @@ def setup_xml(HOMErrfs, expdir):
     example = f'''## Example crontab entry (use "crontab -e" to modify crontab):
 ## */5 * * * * {fPath}'''
     tail = ""
-    if machine in ['gaeac6']:
-        example = f'''## Example scrontab entry (remove the first "#" and use "scrontab -e" to modify scrontab):
-##SCRON --partition=cron_c6
-##SCRON --account=@your_account@
-##SCRON --time=00:05:00
-##SCRON --mem=8G
-##SCRON --mail-user=@your_email@
-##SCRON --dependency=singleton
-##SCRON --job-name=scron_rocoto
-##SCRON --output={expdir}/log.runrocoto
+    if machine in ['gaeac6', 'gaeac7']:
+        example = f'''## Example scrontab entry (use "scrontab -e" to modify scrontab and uncomment the last line):
+#SCRON --partition={"cron_c6" if machine == "gaeac6" else "cron_c7"}
+#SCRON --account=@your_account@
+#SCRON --time=00:05:00
+#SCRON --mem=8G
+#SCRON --mail-user=@your_email@
+#SCRON --dependency=singleton
+#SCRON --job-name=scron_rocoto
+#SCRON --output={expdir}/log.runrocoto
 #*/5 * * * * {fPath} foreground
 opt=""
 [[ "$1" == "foreground" ]] && opt="--foreground"'''
