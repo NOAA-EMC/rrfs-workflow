@@ -29,6 +29,9 @@ Settings (environment):
                           start from restarts nothing has produced yet; see skip_first_day() below
   DET_COLD_HR             first deterministic production cycle with a spinup behind it (default 09)
   ENKF_COLD_HR            first EnKF cycle with a cold start behind it (default 07)
+  ENSF_COLD_HR            first ensemble-forecast cycle with EnKF DA_OUTPUT behind it (default 12)
+  FIREWX_COLD_HR          first fire-weather cycle with a deterministic long post behind it
+                          (default: the first multiple of 6 at or after DET_COLD_HR)
 """
 
 import datetime
@@ -54,6 +57,12 @@ STATUS_DIR = os.getenv("RRFS_STATUS_DIR", os.path.dirname(os.path.abspath(STATE_
 SKIP_FIRST_DAY = os.getenv("SKIP_FIRST_DAY", "YES").upper() == "YES"
 DET_COLD_HR = int(os.getenv("DET_COLD_HR", "9"))
 ENKF_COLD_HR = int(os.getenv("ENKF_COLD_HR", "7"))
+# The ensemble forecast recenters on EnKF output, so it cannot run until a member has written
+# DA_OUTPUT, which is the EnKF's first production cycle rather than its cold start.
+ENSF_COLD_HR = int(os.getenv("ENSF_COLD_HR", "12"))
+# Fire weather takes its ICs and LBCs from the deterministic long forecast's post, so it needs the
+# first long cycle (a multiple of 6) that has deterministic production behind it.
+FIREWX_COLD_HR = int(os.getenv("FIREWX_COLD_HR", str(-(-DET_COLD_HR // 6) * 6)))
 # the suite cold-starts through these, so they run on the first day like any other day
 COLD_START_TASKS = ("make_ics", "blend_ics", "make_lbcs")
 
@@ -185,10 +194,18 @@ def first_day_skipped(path):
     if not m:
         return False
     name = path.rsplit("/", 1)[-1]
+    hh = int(m.group(1))
+    # Whole families, tested before the cold-start exemption below. An ensemble-forecast member has
+    # no DA_OUTPUT to prepare from, and fire weather's make_ics and make_lbcs read the parent
+    # deterministic post rather than cold-starting, so neither is exempt the way det and enkf are.
+    if "/ensf/" in path:
+        return hh < ENSF_COLD_HR
+    if "/firewx/" in path:
+        return hh < FIREWX_COLD_HR
     if "spinup" in name or any(k in name for k in COLD_START_TASKS):
         return False
     limit = DET_COLD_HR if "/det/" in path else ENKF_COLD_HR if "/enkf/" in path else 0
-    return int(m.group(1)) < limit
+    return hh < limit
 
 
 def parse_expr(text):

@@ -106,6 +106,23 @@ hh_m1="${cdate_crnt_fhr_m1:8:2}"
 hh_m3="${cdate_crnt_fhr_m3:8:2}"
 
 DO_ENS_BLENDING=${DO_ENS_BLENDING:-"TRUE"}
+
+# Ursa, coarser domains (strip when merging to the nco branch): touch the ensinit marker when there
+# is no member restart to warm start from. The blending branch below is the only thing that sets it,
+# so with blending off a cold start skips the one-timestep init and leaves the next cycle's prep_cyc
+# with no background.
+if [[ $DO_ENS_BLENDING == "FALSE" ]]; then
+  # This script only runs at 07z and 19z, the cycles that re-initialize the ensemble, and with
+  # blending off the one-timestep ensinit forecast is the only thing that can give them a warm
+  # start, so ask for it every time rather than only when no previous restart exists.
+  mkdir -p ${COMrrfs}/${RUN}.${yyyymmdd}/${hh}_spinup/${mem_num}
+  touch ${COMrrfs}/${RUN}.${yyyymmdd}/${hh}_spinup/${mem_num}/run_ensinit
+  if [ ${mem_num} == "m001" ]; then
+    mkdir -p ${COMrrfs}/${RUN}.${yyyymmdd}/${hh}_spinup/ensmean
+    touch ${COMrrfs}/${RUN}.${yyyymmdd}/${hh}_spinup/ensmean/run_ensinit
+  fi
+  echo "Blending off: do ensinit!"
+fi
 # Check for 1h RRFS EnKF files, if at least one missing then use 1tstep initialization
 if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
 
