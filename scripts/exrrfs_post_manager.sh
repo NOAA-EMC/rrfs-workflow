@@ -13,6 +13,15 @@ set -x
 # Configure cycle dependency switch
 #-----------------------------------------------------------------------
 
+# FV3 writes the hour-0 entry of output_fh at its first time step, named by that step's valid
+# time, so the array key for it follows DT_ATMOS rather than the 36 s the NA 3 km grid uses.
+# Set before the branches below, because each needs it; defaulting to 36 leaves existing
+# configurations byte-for-byte unchanged.
+# Unlike the other ex-scripts, neither this one nor its J-job sources workflow.conf, so DT_ATMOS
+# is not in the environment at all and the default below would silently win. Source it here.
+source ${FIXrrfs}/workflow/${WGF}/workflow.conf
+first_subh=$( printf "%02d%02d" $(( ${DT_ATMOS:-36} / 60 )) $(( ${DT_ATMOS:-36} % 60 )) )
+
 # scan switches
 if [ ${WGF} == "det" ]; then
   scan_release_ensf_post="NO"
@@ -27,7 +36,12 @@ if [ ${WGF} == "det" ]; then
       if [ $(($fhr)) -le 17 ]; then
         for sub_fhr in 00 15 30 45; do
           if [ ${fhr_2d} == "00" ] && [ ${sub_fhr} == "00" ]; then
-            array_element_scan_release_det_post_long[${fhr}0036]="NO"
+            # FV3 writes the hour-0 entry of output_fh at its first time step, named by valid time,
+            # and only does so at the 36 s NA step; with a longer step it writes no hour-0 file at
+            # all. Registering one then would leave this manager waiting 900 s for a file that is
+            # never produced, so skip it and let the matching post task be completed in the def.
+            if [ "${DT_ATMOS:-36}" != "36" ]; then continue; fi
+            array_element_scan_release_det_post_long[${fhr}${first_subh}]="NO"
           else
             array_element_scan_release_det_post_long[${fhr}${sub_fhr}00]="NO"
           fi
@@ -46,7 +60,12 @@ if [ ${WGF} == "det" ]; then
       if [ $(($fhr)) -le 17 ]; then
         for sub_fhr in 00 15 30 45; do
           if [ ${fhr_2d} == "00" ] && [ ${sub_fhr} == "00" ]; then
-            array_element_scan_release_det_post[${fhr}0036]="NO"
+            # FV3 writes the hour-0 entry of output_fh at its first time step, named by valid time,
+            # and only does so at the 36 s NA step; with a longer step it writes no hour-0 file at
+            # all. Registering one then would leave this manager waiting 900 s for a file that is
+            # never produced, so skip it and let the matching post task be completed in the def.
+            if [ "${DT_ATMOS:-36}" != "36" ]; then continue; fi
+            array_element_scan_release_det_post[${fhr}${first_subh}]="NO"
           else
             array_element_scan_release_det_post[${fhr}${sub_fhr}00]="NO"
           fi
@@ -108,9 +127,9 @@ while [ $proceed_trigger_scan == "YES" ]; do
         for sub_fhr in 00 15 30 45; do
           # check for f000-00-36
           if [ $fhr -eq 0 ] && [ $sub_fhr == "00" ] && \
-             [ ${array_element_scan_release_det_post_long[${fhr}0036]} == "NO" ]; then
+             [ ${array_element_scan_release_det_post_long[${fhr}${first_subh}]} == "NO" ]; then
             if [ -s "${umbrella_forecast_data}/log.atm.f${fhr_3d}-${sub_fhr}-36" ]; then
-              array_element_scan_release_det_post_long[${fhr}0036]="found"
+              array_element_scan_release_det_post_long[${fhr}${first_subh}]="found"
               ecflow_client --event release_det_post_f${fhr_3d}_00_36_long
               ic=1
             else
@@ -166,9 +185,9 @@ while [ $proceed_trigger_scan == "YES" ]; do
         for sub_fhr in 00 15 30 45; do
           # check for f000-00-36
           if [ $fhr -eq 0 ] && [ $sub_fhr == "00" ] && \
-             [ ${array_element_scan_release_det_post[${fhr}0036]} == "NO" ]; then
+             [ ${array_element_scan_release_det_post[${fhr}${first_subh}]} == "NO" ]; then
             if [ -s "${umbrella_forecast_data}/log.atm.f${fhr_3d}-${sub_fhr}-36" ]; then
-              array_element_scan_release_det_post[${fhr}0036]="found"
+              array_element_scan_release_det_post[${fhr}${first_subh}]="found"
               ecflow_client --event release_det_post_f${fhr_3d}_00_36
               ic=1
             else

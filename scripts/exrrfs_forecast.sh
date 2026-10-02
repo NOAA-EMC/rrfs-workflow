@@ -3,6 +3,11 @@ set -x
 
 source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 
+# The restart written one time step after initialization is named by its valid time, so DT_ATMOS
+# has to carry into minutes: "00${DT_ATMOS}" is only correct while the step is under 60 s. Gives
+# 0036 for the 36 s NA step, exactly as before, and 0115 for a 75 s step rather than an invalid 0075.
+dt_mmss=$( printf "%02d%02d" $(( ${DT_ATMOS:-36} / 60 )) $(( ${DT_ATMOS:-36} % 60 )) )
+
 # def NEED
 export FIXam=${FIXam:-${HOMErrfs}/fix/am}
 export FIXLAM=${FIXLAM:-${HOMErrfs}/fix/lam/RRFS_NA_3km}
@@ -822,7 +827,7 @@ if [ $FCST_LEN_HRS -gt 0 ]; then
     rst_hh="${cdate_restart_hr:8:2}"
     if [ "${CYCLE_SUBTYPE}" = "ensinit" ]; then
       for file_id in "${file_ids[@]}"; do
-        eval $NLN ${shared_forecast_restart_data}/${rst_yyyymmdd}.${rst_hh}00${DT_ATMOS}.${file_id} ${rst_yyyymmdd}.${rst_hh}00${DT_ATMOS}.${file_id}
+        eval $NLN ${shared_forecast_restart_data}/${rst_yyyymmdd}.${rst_hh}${dt_mmss}.${file_id} ${rst_yyyymmdd}.${rst_hh}${dt_mmss}.${file_id}
       done
     else
       for file_id in "${file_ids[@]}"; do
