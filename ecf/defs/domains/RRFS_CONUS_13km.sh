@@ -24,11 +24,6 @@ NML_NPY=253
 NML_TARGET_LAT=38.5
 NML_TARGET_LON=-97.5
 NML_LAYOUT="7, 8"
-# No smoke/dust fix files (dust12m_data.nc, emi_data.nc) exist for this grid, so turn the package
-# off in the namelists; the model reads those files whenever rrfs_sd is on. dev-sci also runs its
-# 13 km configurations with smoke and dust off.
-NML_SED_EXTRA="s/^( *rrfs_sd *= *).*/\\1.false./; s/^( *mix_chem *= *).*/\\1.false./; s/^( *do_smoke_transport *= *).*/\\1.false./; s/^( *aero_dir_fdb *= *).*/\\1.false./; s/^( *dust_opt *= *).*/\\10/; s/^( *drydep_opt *= *).*/\\10/; s/^( *addsmoke_flag *= *).*/\\10/"
-
 # Appended to fix/workflow/<wgf>/workflow.conf for det and enkf; the jobs source that file, so
 # these later exports win over the NA values above them.
 domain_workflow_conf() {
@@ -52,11 +47,10 @@ export LON_CTR='-97.5'
 export LAT_CTR='38.5'
 export NX='420'
 export NY='252'
-# 36 s, not the 120 s dev-sci uses. The suite hardcodes the name of the model's first output,
-# f000-00-36, which is one 36 s step: the post manager waits for it and setup_ecf_links.sh
-# generates post and prdgen tasks with that name. Another step size writes a differently named
-# file and those tasks wait forever. 36 s also divides the 900 s output interval.
-export DT_ATMOS='36'
+# Model time step. It must divide the 900 s sub-hourly post and 3600 s hourly output intervals
+# exactly; 90 s does, and runs 1.8x faster than 36 s. sppint in NML_SED_EXTRA at the bottom of
+# this file must match.
+export DT_ATMOS='90'
 export BLOCKSIZE='32'
 # 7 x 8 compute ranks and one write group of 8: 64 ranks, one node
 export LAYOUT_X='7'
@@ -150,3 +144,10 @@ DOMAIN_SBATCH=(
   "jrrfs_enkf_calc_ensmean*:--nodes=1"
   "jrrfs_enkf_make_ics*:--nodes=1"
 )
+
+# ---- Fixed namelist overrides (not configuration options) ----
+# Applied by setup_ecf_links.sh to parm/config/{det,enkf}/input.nml* along with the grid values above.
+# Smoke/dust is off because no smoke/dust fix files (dust12m_data.nc, emi_data.nc) exist for this
+# grid; dev-sci also runs 13 km with it off. sppint is set to DT_ATMOS because it must be a whole
+# multiple of the step, and the shipped 36 is not; otherwise ensf aborts "SPP interval is invalid".
+NML_SED_EXTRA="s/^( *rrfs_sd *= *).*/\\1.false./; s/^( *mix_chem *= *).*/\\1.false./; s/^( *do_smoke_transport *= *).*/\\1.false./; s/^( *aero_dir_fdb *= *).*/\\1.false./; s/^( *dust_opt *= *).*/\\10/; s/^( *drydep_opt *= *).*/\\10/; s/^( *addsmoke_flag *= *).*/\\10/; s/^( *sppint *= *).*/\\190/"
