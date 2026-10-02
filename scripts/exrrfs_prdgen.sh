@@ -672,7 +672,9 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
   #-- Generate RAP smoke and HYSPLIT dust products for RRFS
   #-- 06Z and 12Z deterministic cycles only
   #-- Smoke/dust products are not generated for ensemble member forecasts
-  if [ ${DO_ENSFCST} = "FALSE" ]; then
+  # Ursa, coarser domains (strip when merging to the nco branch): skip them when the domain runs
+  # without smoke/dust (DO_SMOKE_DUST=FALSE), else the f072 combine waits on files never written.
+  if [ ${DO_ENSFCST} = "FALSE" ] && [ "${DO_SMOKE_DUST:-TRUE}" = "TRUE" ]; then
     if [ $cyc -eq 06 ] || [ $cyc -eq 12 ]; then
       if (( 10#$fhr <= 72 )); then
         $USHrrfs/prdgen/rrfs_smokedust.sh $fhr 227
