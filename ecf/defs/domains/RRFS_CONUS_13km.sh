@@ -47,9 +47,9 @@ export LON_CTR='-97.5'
 export LAT_CTR='38.5'
 export NX='420'
 export NY='252'
-# Model time step. Every output and stochastic interval must divide it exactly (900 s sub-hourly
-# post, 3600 s hourly output, 180 s lndpint), which admits only 36, 45, 60, 90 and 180 s; 90 s
-# runs 1.8x faster than 36 s. sppint in NML_SED_EXTRA at the bottom of this file must match.
+# Model time step. It must divide the 900 s sub-hourly post and 3600 s hourly output intervals
+# exactly; 90 s does, and runs 1.8x faster than 36 s. sppint in NML_SED_EXTRA at the bottom of
+# this file must match.
 export DT_ATMOS='90'
 export BLOCKSIZE='32'
 # 7 x 8 compute ranks and one write group of 8: 64 ranks, one node
