@@ -251,30 +251,6 @@ def getkf_observer_tweak(data, getkf_type):
     spaces = hy.strip_indentations(data[pos])[1]
     data[pos] = f"{spaces}obsfile: data/jdiag/{diagfile}"
 
-    # if post, remove the "reduce obs space" actions and "temporal thinning" filters
-    if getkf_type == "post":
-        i = 0
-        while i < len(data) - 1:
-            if (data[i].strip().startswith("action:") and data[i + 1].strip().startswith("name: reduce obs space")):
-                del data[i:i + 2]  # delete and move to the next line
-            else:
-                i += 1  # if no deletion, move to the next line
-
-        # remove the "- filter: Temporal Thinning" block
-        # assume only one of this filter in each observer
-        pos, errmsg = hy.get_start_pos(data, linestr="- filter: Temporal Thinning", stop_on_error=False)
-        if errmsg is None and not data[pos].strip().startswith("#"):  # do nothing if not found or commented out
-            next_one = hy.next_pos(data, pos)
-            # check if there are comment lines immediately before this YAML block and with less or the same indentations
-            nspace = hy.strip_indentations(data[pos])[0]
-            for i in range(pos - 1, -1, -1):
-                nspace2 = hy.strip_indentations(data[i])[0]
-                if data[i].strip().startswith('#') and nspace2 <= nspace:
-                    pos = i
-                else:
-                    break  # exit the loop if non-comment
-            del data[pos:next_one]
-
 
 # get all filters given a line range(pos1, pos2)
 def get_all_filters(data, pos1, pos2):
