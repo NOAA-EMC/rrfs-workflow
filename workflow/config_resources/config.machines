@@ -47,11 +47,16 @@ elif [[ ${MACHINE} == "gaeac7" ]]; then
   export PARTITION=${PARTITION:-batch}
   export RESERVATION=${RESERVATION:-""}
   export CLUSTER=${CLUSTER:-c7}
-  export NATIVE_UPP="--exclusive"
   export QUEUE_ARCHIVE="hpss"
   export CLUSTER_ARCHIVE=""
   export PARTITION_ARCHIVE=${PARTITION_ARCHIVE:-dtn_f5_f6}
   export ARCHIVE_MODULE="module use /usw/hpss/modulefiles;module load hsi"
+  export NATIVE="--exclusive"
+  export NATIVE_IODA_BUFR=""
+  export NATIVE_UNGRIB=""
+  export NATIVE_SAVE=""
+  export NATIVE_CLEAN=""
+  export NATIVE_ARCHIVE=""
 
 elif [[ ${MACHINE} == "derecho" ]]; then
   export ACCOUNT=${ACCOUNT:-test}

@@ -266,6 +266,7 @@ opt=""
 source /etc/profile{extra}
 module load rocoto/1.3.7g
 cd {expdir}
+unset SLURM_MEM_PER_NODE SLURM_MEM_PER_CPU SLURM_MEM_PER_GPU
 rocotorun -w {NET}.xml -d {NET}.db{tail}
 '''
         rocotoFile.write(text)
