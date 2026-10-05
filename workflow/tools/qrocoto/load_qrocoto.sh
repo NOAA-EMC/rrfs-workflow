@@ -26,9 +26,6 @@ case ${MACHINE} in
   derecho)
     ROCOTOMODULE=/glade/work/geguo/rocoto/modulefiles
     ;;
-  jet)
-    ROCOTOMODULE=/lfs5/BMC/nrtrr/gge/rocoto/modulefiles
-    ;;
   orion)
     ROCOTOMODULE=/work/noaa/zrtrr/gge/rocoto/modulefiles
     ;;
@@ -40,6 +37,8 @@ case ${MACHINE} in
       ROCOTOMODULE=/to/be/added
     elif [[ -d /gpfs/f6 ]]; then
       ROCOTOMODULE=/gpfs/f6/arfs-gsl/world-shared/gge/rocoto/modulefiles
+    elif [[ -d /gpfs/f7 ]]; then
+      ROCOTOMODULE=/gpfs/f7/arfs-gsl/world-shared/gge/rocoto/modulefiles
     else
       echo "unsupported gaea cluster: ${MACHINE}"
     fi

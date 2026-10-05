@@ -15,8 +15,10 @@ case $(hostname -f) in
 
   gaea|gaea5[1-8])     MACHINE=gaeac5 ;;
   gaea6[1-8])          MACHINE=gaeac6 ;;
+  gaea7[1-8])          MACHINE=gaeac7 ;;
   gaea.ncrc.gov|gaea5[1-8].ncrc.gov) MACHINE=gaeac5 ;;
   gaea6[1-8].ncrc.gov)               MACHINE=gaeac6 ;;
+  gaea7[1-8].ncrc.gov)               MACHINE=gaeac7 ;;
 
   hfe0[1-9]) MACHINE=hera ;; ### hera01-09
   hfe1[0-2]) MACHINE=hera ;; ### hera10-12
@@ -89,6 +91,9 @@ if [[ "${MACHINE}" == "UNKNOWN" ]]; then
   elif [[ -d /gpfs/f6 && -d /ncrc ]]; then
     # We are on GAEA C6
     MACHINE=gaeac6
+  elif [[ -d /gpfs/f7 && -d /ncrc ]]; then
+    # We are on GAEA C7
+    MACHINE=gaeac7
   elif [[ -d /data/prod ]]; then
     # We are on SSEC's S4
     MACHINE=s4

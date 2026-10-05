@@ -48,6 +48,8 @@ if [[ ${MACHINE,,} == "ursa" ]]; then # special needs at ursa
   export I_MPI_ADJUST_SCATTER=2
   export I_MPI_ADJUST_SCATTERV=2
 #  export I_MPI_COLL_INTRANODE=pt2pt
+elif [[ ${MACHINE,,} == "gaeac7" ]]; then # special needs at gaeac7
+  export LD_PRELOAD="/gpfs/f7/arfs-gsl/world-shared/gge/world/noCopyFileRange/nocfr.so:${LD_PRELOAD}"
 fi
 #
 echo "load rrfs-workflow modules by default"
