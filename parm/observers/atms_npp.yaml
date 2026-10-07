@@ -147,7 +147,7 @@
            name: reduce obs space
 
        # --------------------------------------------------------------------------
-       # Step 5 : Data Thinnig
+       # Step 5 : Data Thinning
        #          Remove (reduce obs space) observations through Gaussian thinning
        # ---------------------------------------------------------------------------
        - filter: Gaussian Thinning
@@ -718,7 +718,6 @@
                obserr_clearsky: *atms_npp_error0
                clwret_function:
                  name: DerivedData/CLWRetFromObs0
-                 channels: *atms_npp_channels
                obserr_function:
                  name: DerivedData/symmetricObsError0
                  channels: *atms_npp_channels
@@ -742,7 +741,6 @@
                obserr_clearsky: *atms_npp_error0
                clwret_function:
                  name: DerivedData/CLWRetFromObs1
-                 channels: *atms_npp_channels
                obserr_function:
                  name: DerivedData/symmetricObsError1
                  channels: *atms_npp_channels
@@ -1005,13 +1003,10 @@
                channels: *atms_npp_channels
                clwbkg_function:
                  name: DerivedData/CLWRetFromBkg0
-                 channels: *atms_npp_channels
                clwobs_function:
                  name: DerivedData/CLWRetFromObs0
-                 channels: *atms_npp_channels
                scatobs_function:
                  name: DerivedData/SIRetFromObs0
-                 channels: *atms_npp_channels
                clwmatchidx_function:
                  name: DerivedData/CLWMatchIndex0
                  channels: *atms_npp_channels
@@ -1041,13 +1036,10 @@
                channels: *atms_npp_channels
                clwbkg_function:
                  name: DerivedData/CLWRetFromBkg1
-                 channels: *atms_npp_channels
                clwobs_function:
                  name: DerivedData/CLWRetFromObs1
-                 channels: *atms_npp_channels
                scatobs_function:
                  name: DerivedData/SIRetFromObs1
-                 channels: *atms_npp_channels
                clwmatchidx_function:
                  name: DerivedData/CLWMatchIndex1
                  channels: *atms_npp_channels
@@ -1111,10 +1103,8 @@
            type: float
            function:
              name: ObsFunction/ObsErrorFactorLatRad
-             channels: *atms_npp_channels
              options:
                latitude_parameters: [25.0, 0.25, 0.04, 3.0]
-               channels: *atms_npp_channels
 
        # ------------------------------------------------------------------------------
        # Step 24b : Calculate ObsErrorFactorLat1 using ObsFunction/ObsErrorFactorLatRad
@@ -1129,10 +1119,8 @@
            type: float
            function:
              name: ObsFunction/ObsErrorFactorLatRad
-             channels: *atms_npp_channels
              options:
                latitude_parameters: [25.0, 0.25, 0.04, 3.0]
-               channels: *atms_npp_channels
 
        # ---------------------------------------------------------------------------------------------------------------------------------------
        # Step 25 : Calculate the absolute threshold: DerivedData/ObsErrorBound
@@ -1163,7 +1151,6 @@
                channels: *atms_npp_channels
                obserr_bound_latitude:
                  name: DerivedData/obsErrorFactorLat0
-                 channels: *atms_npp_channels
                obserr_bound_transmittop:
                  name: DerivedData/obsErrorFactorTransmitTop0
                  channels: *atms_npp_channels
@@ -1195,7 +1182,6 @@
                channels: *atms_npp_channels
                obserr_bound_latitude:
                  name: DerivedData/obsErrorFactorLat1
-                 channels: *atms_npp_channels
                obserr_bound_transmittop:
                  name: DerivedData/obsErrorFactorTransmitTop1
                  channels: *atms_npp_channels
