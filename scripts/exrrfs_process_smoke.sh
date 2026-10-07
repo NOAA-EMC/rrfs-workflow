@@ -76,9 +76,9 @@ done
 
 if [ -d ${FIRE_RAVE_DIR}/${PDYm1}/rave ]; then
    fire_rave_dir_work=${DATA}
-   ${LN} -snf ${FIRE_RAVE_DIR}/${PDY}/rave/RAVE-HrlyEmiss-3km_* ${fire_rave_dir_work}/.
-   ${LN} -snf ${FIRE_RAVE_DIR}/${PDYm1}/rave/RAVE-HrlyEmiss-3km_* ${fire_rave_dir_work}/.
-   ${LN} -snf ${FIRE_RAVE_DIR}/${PDYm2}/rave/RAVE-HrlyEmiss-3km_* ${fire_rave_dir_work}/.
+   ${LN} -snf ${FIRE_RAVE_DIR}/${PDY}/rave/RAVE-HrlyEmiss-3km_*.nc ${fire_rave_dir_work}/.
+   ${LN} -snf ${FIRE_RAVE_DIR}/${PDYm1}/rave/RAVE-HrlyEmiss-3km_*.nc ${fire_rave_dir_work}/.
+   ${LN} -snf ${FIRE_RAVE_DIR}/${PDYm2}/rave/RAVE-HrlyEmiss-3km_*.nc ${fire_rave_dir_work}/.
 else
    fire_rave_dir_work=${FIRE_RAVE_DIR}
 fi
