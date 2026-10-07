@@ -155,6 +155,29 @@ EOF
     echo "  ${tsk}: ${ntsk} task(s) set to defstatus complete (${run_var}=FALSE)"
   done
 
+  # FV3 writes the hour-0 entry of output_fh at its first time step only at the 36 s NA step; with a
+  # longer step it writes no hour-0 file, so the f000_00_36 post and prdgen tasks have nothing to work
+  # on. Complete them rather than renaming their FHR: the file is absent, not differently named. The
+  # 15, 30 and 45 minute sub-hourly outputs are unaffected and still run. DT_ATMOS lives inside the
+  # domain file's domain_workflow_conf(), so read the value out of the file rather than sourcing it.
+  domain_dt=36
+  if [ -f "${defs_dir}/domains/${DOMAIN}.sh" ]; then
+    domain_dt=$(grep -oE "^ *export DT_ATMOS='[0-9]+'" "${defs_dir}/domains/${DOMAIN}.sh" \
+                  | grep -oE "[0-9]+" | tail -1)
+    domain_dt=${domain_dt:-36}
+  fi
+  if [ "${domain_dt}" != "36" ]; then
+    n0=$(grep -cE "^ *task jrrfs_det_(post|prdgen)_f000_00_36[a-z_]*\$" "${out_def}")
+    awk '
+      pend { if ($0 !~ /^ *defstatus /) print indent "  defstatus complete"; pend = 0 }
+      { print }
+      /^ *task jrrfs_det_(post|prdgen)_f000_00_36[a-z_]*$/ {
+        indent = $0; sub(/[^ ].*/, "", indent); pend = 1 }
+      END { if (pend) print indent "  defstatus complete" }
+    ' "${out_def}" > "${out_def}.dt0" && mv "${out_def}.dt0" "${out_def}"
+    echo "  hour-0 sub-hourly: ${n0} task(s) set to defstatus complete (DT_ATMOS=${domain_dt}, no hour-0 output)"
+  fi
+
   # Whether jobs keep their stmp working directories (KEEPDATA). The base definition sets YES at
   # every place it appears; rewrite the value rather than the lines so the count does not matter.
   if [ -n "${KEEPDATA:-}" ]; then

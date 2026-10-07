@@ -3,6 +3,11 @@ set -x
 
 source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 
+# The restart written one time step after initialization is named by its valid time, so DT_ATMOS
+# has to carry into minutes: "00${DT_ATMOS}" is only correct while the step is under 60 s. Gives
+# 0036 for the 36 s NA step, exactly as before, and 0115 for a 75 s step rather than an invalid 0075.
+dt_mmss=$( printf "%02d%02d" $(( ${DT_ATMOS:-36} / 60 )) $(( ${DT_ATMOS:-36} % 60 )) )
+
 export FIXam=${FIXam:-${HOMErrfs}/fix/am}
 export FIXLAM=${FIXLAM:-${HOMErrfs}/fix/lam/RRFS_NA_3km}
 export FIX_GSI="${FIXrrfs}/gsi"
@@ -335,7 +340,7 @@ else
   #   So the defination of restart_prefix needs a "." at the end.
   #
   if [ "${CYCLE_SUBTYPE}" = "spinup" ] ; then
-    restart_prefix="${YYYYMMDD}.${HH}00${DT_ATMOS}."
+    restart_prefix="${YYYYMMDD}.${HH}${dt_mmss}."
   else
     restart_prefix="${YYYYMMDD}.${HH}0000."
   fi
