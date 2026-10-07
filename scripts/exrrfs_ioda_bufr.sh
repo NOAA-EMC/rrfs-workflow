@@ -165,6 +165,7 @@ cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.crisf4.tm00.bufr_d" crisfsbufr
 cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.1bamua.tm00.bufr_d" 1bamsuabufr
 cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.esamua.tm00.bufr_d" esamsuabufr
 cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.nexrad.tm00.bufr_d" l2rwbufr
+cp "${OBSPATH}/${CDATE}.rap.t${cyc}z.mtiasi.tm00.bufr_d" iasibufr 
 #
 #-----------------------------------------------------------------------
 #
@@ -318,6 +319,21 @@ if [[ -f "$input_file" ]]; then
 else
   echo "Input file $input_file does not exist."
 fi
+
+#5 IASI
+# --------------------------------------------------
+# run  bufr2netcdf tool for iasi bufr obs
+# --------------------------------------------------
+cp "${PARM_IODACONV}/bufr2netcdf_mtiasi.yaml" .
+input_file="iasibufr"
+output_file="ioda_mtiasi_{splits/satId}.nc"
+yaml="bufr2netcdf_mtiasi.yaml"
+if [[ -s "${input_file}" ]]; then
+  ${EXECdir}/bin/bufr2netcdf.x "${input_file}" "${yaml}" "${output_file}"
+else
+  echo "Input file ${input_file} does not exist."
+fi
+
 #
 #-----------------------------------------------------------------------
 #
@@ -385,7 +401,8 @@ for ioda_file in ioda*.nc; do
     export err=$?; err_chk
     base_name=$(basename "$ioda_file" .nc)
     mv  "${base_name}_dc.nc" "${base_name}.nc"
-  elif [[ "${ioda_file}" == *atms* || "${ioda_file}" == *cris* || "${ioda_file}" == *amsua* ]]; then
+  elif [[ "${ioda_file}" == *atms* || "${ioda_file}" == *cris* || "${ioda_file}" == *amsua* \
+       || "${ioda_file}" == *iasi* ]]; then
     echo " ${ioda_file} ioda file detected: temporarily skipping offline domain check"
   else
     export pgm="offline_domain_check.py"
