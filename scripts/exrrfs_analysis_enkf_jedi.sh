@@ -75,6 +75,8 @@ case $MACHINE in
   export MPICH_MPIIO_HINTS='*.tile1.nc:romio_cb_read=disable,*.sfc_data.nc:romio_cb_read=disable,*.phy_data.nc:romio_cb_read=disable,*.fv_*.res.nc:romio_cb_write=enable,*.sfc_data.nc:romio_cb_write=enable'
   export OMP_STACKSIZE=500M
   export OMP_NUM_THREADS=1 #${TPP_RUN_ANALYSIS}
+  export MALLOC_MMAP_THRESHOLD_=1048576
+  export MALLOC_TRIM_THRESHOLD_=1048576
   ncores=$((NNODES_RUN_ENKF_JEDI*PPN_RUN_ENKF_JEDI))
   ppn=${PPN_RUN_ENKF_JEDI}
   APRUN="mpirun -n ${ncores} -ppn ${ppn} --cpu-bind core --depth 1"
