@@ -1,24 +1,17 @@
      - obs space:
          name: atms_n21
-         _anchor_channels: &atms_n21_channels 1-22
-         _anchor_use_flag: &atms_n21_use_flag
-             [ 1,  1,  1,  1,  1,
-               1,  1,  1,  1,  1,
-               1,  1,  1, -1, -1,
-               1,  1,  1,  1,  1,
-               1,  1]
-         _anchor_obserr_bound_max: &atms_n21_obserr_bound_max
-             [4.5, 4.5, 3.0, 3.0, 1.0,
-              1.0, 1.0, 1.0, 1.0, 1.0,
-              1.0, 1.0, 1.0, 2.0, 4.5,
-              4.5, 2.0, 2.0, 2.0, 2.0,
-              2.0, 2.0]
-         _anchor_error0: &atms_n21_error0
-             [ 4.500,  4.500,  4.500,  2.500,  0.550,
-               0.300,  0.300,  0.400,  0.400,  0.400,
-               0.450,  0.450,  0.550,  0.800,  4.000,
-               4.000,  4.000,  3.500,  3.000,  3.000,
-               3.000,  3.000]
+         _anchor_channels: &atms_n21_channels 1
+         _anchor_use_flag: &atms_n21_use_flag [1]
+         _anchor_use_flag_clddet: &atms_n21_use_flag_clddet [1]
+         _anchor_error0: &atms_n21_error0 [1]
+         _anchor_error1: &atms_n21_error1 [1]
+         _anchor_obserr_bound_max: &atms_n21_obserr_bound_max [1]
+         _anchor_cldamt_x0: &atms_n21_cldamt_x0 [
+             0.030, 0.030, 0.030, 0.020, 0.030, 0.080, 0.150, 0.000, 0.000, 0.000, 0.000,
+             0.000, 0.000, 0.000, 0.000, 0.020, 0.030, 0.030, 0.030, 0.030, 0.050, 0.100]
+         _anchor_cldamt_x1: &atms_n21_cldamt_x1 [
+             0.350, 0.380, 0.400, 0.450, 0.500, 1.000, 1.000, 0.000, 0.000, 0.000, 0.000,
+             0.000, 0.000, 0.000, 0.000, 0.350, 0.500, 0.500, 0.500, 0.500, 0.500, 0.500]
          distribution:
            name: "RoundRobin"
            halo size: 500e3
@@ -36,22 +29,23 @@
          observed variables: [brightnessTemperature]
          channels: *atms_n21_channels
        obs operator:
-           name: CRTM
-           Absorbers: [H2O,O3,CO2]
-           Clouds: [Water, Ice]
-           Cloud_Fraction: 1.0
-           Cloud_Seeding: true
-           SurfaceWindGeoVars: uv
-           obs options:
-             Sensor_ID: atms_n21
-             EndianType: little_endian
-             CoefficientPath: data/crtm/
-             IRVISlandCoeff: IGBP
-           linear obs operator:
-             Absorbers: [H2O, O3]
+         name: CRTM
+         Absorbers: [H2O,O3,CO2]
+         Clouds: [Water, Ice]
+         Cloud_Fraction: 1.0
+         Cloud_Seeding: true
+         SurfaceWindGeoVars: uv
+         obs options:
+           Sensor_ID: atms_n21
+           EndianType: little_endian
+           CoefficientPath: data/crtm/
+           IRVISlandCoeff: IGBP
+         linear obs operator:
+           Absorbers: [H2O, O3]
        obs localizations:
          - localization method: Horizontal Gaspari-Cohn
            lengthscale: 200e3 # orig
+
        obs bias:
          input file:  data/satbias_in/atms_n21.satbias.nc
          output file: data/satbias_out/atms_n21.satbias.nc
@@ -83,222 +77,472 @@
                ratio for small dataset: 2.0
            output file: data/satbias_out/atms_n21.satbias_cov.nc
 
+       # ----------------------------------------
+       # Observation Filters npp atms (QC)
+       # ----------------------------------------
+       # Observation Pre Filters (QC): Steps 0-5
+       # -----------------------------------------
        obs pre filters:
-       # Step 0-A: Create Diagnostic Flags
-       # Reset the QCflags at the beginning of a new outer loop
+       # ----------------------------------------------
+       # Step 0: reset QC flag for the second outer loop
+       # -----------------------------------------------
        - filter: AcceptList
          apply at iterations: 1
          identifier:
            name: NewLoopReset
+           logging: true
 
-       # Remove all obs outside the regional domain polygon
+       # ----------------------------------------------------------------------
+       # Step 1: Polygon Check: Remove observations outside the regional domain
+       # ----------------------------------------------------------------------
        - filter: Polygon Check
          identifier:
            name: PolygonCheck
            logging: true
          <<: *polygonConfig  # yamllint disable-line rule:anchors
 
-       - filter: Create Diagnostic Flags
+       # ----------------------------------------------------------------------
+       # Step 2: Convert dateTime to timeOffset (seconds since analysis time)
+       # -----------------------------------------------------------------------
+       - filter: Variable Assignment
+         identifier:
+           name: TimeConvert
+         assignments:
+         - name: MetaData/timeOffset
+           type: float
+           source variable: MetaData/dateTime
+           epoch: "@ANALYSIS_DATE@"    # your analysis time
+
+       # ----------------------------------------------------------------------------------------------------
+       # Step 3: Time window filter: Remove (reduce obs space) observations oustide of time window defined by
+       #         minvalue/maxvalue: seconds relative to analysis time
+       # -----------------------------------------------------------------------------------------------------
+       - filter: Domain Check
+         identifier:
+           name: TimeWindowCheck
+           logging: true
+         where:
+             - variable:
+                 name: MetaData/timeOffset # units: s
+               minvalue: -5400
+               maxvalue:  5400
+         action:
+           name: reduce obs space
+
+       # -------------------------------------------------------------------------
+       # Step 4 : Remove (reduce obs space) observations from the Edge of the Scan
+       # -------------------------------------------------------------------------
+       - filter: Domain Check
+         identifier:
+           name: ScanEdgeCheck
+           logging: true
+         filter variables:
+         - name: brightnessTemperature
+           channels: *atms_n21_channels
+         where:
+         - variable:
+             name: MetaData/sensorScanPosition
+           is_in: 7-90
+         action:
+           name: reduce obs space
+
+       # --------------------------------------------------------------------------
+       # Step 5 : Data Thinning
+       #          Remove (reduce obs space) observations through Gaussian thinning
+       # ---------------------------------------------------------------------------
+       - filter: Gaussian Thinning
+         identifier:
+           name: GaussianThinning
+           logging: true
+         #horizontal_mesh: 145
+         horizontal_mesh: 60
+         use_reduced_horizontal_grid: true
+         distance_norm: geodesic
+       #  round_horizontal_bin_count_to_nearest: true
+       #  partition_longitude_bins_using_mesh: true
+         action:
+            name: reduce obs space
+
+       # ---------------------------------------
+       # Observation prior filters (Step 6 )
+       # ----------------------------------------
+       obs prior filters:
+       # -----------------------------------------------------------------------------------------------------------------------------
+       # Step 6: Online geo-domain check, reject observations outside of regional MPAS domain after the Polygon Check (which removes
+       #         most outside domain observations)
+       # --------------------------------------------------------------------------------------------------------------------------------
+       - filter: Bounds Check
          apply at iterations: 0,1
          identifier:
-           name: CreateDiagnosticFlags
+           name: RegionalDomainCheck
            logging: true
+           diagnostic flag: true
            diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *atms_n21_channels
-         flags:
-         - name: ScanEdgeRemoval
-           initial value: false
-           force reinitialization: false
-         - name: Thinning
-           initial value: false
-           force reinitialization: false
-         - name: CLWRetrievalCheck
-           initial value: false
-           force reinitialization: false
-         - name: WindowChannelExtremeResidual
-           initial value: false
-           force reinitialization: false
-         - name: HydrometeorCheck
-           initial value: false
-           force reinitialization: false
-         - name: GrossErrorCheck
-           initial value: false
-           force reinitialization: false
-         - name: InterChannelConsistency
-           initial value: false
-           force reinitialization: false
-         - name: UseflagCheck
-           initial value: false
-           force reinitialization: false
+         test variables:
+         - name: GeoVaLs/observable_domain_mask
+           flag all filter variables if any test variable is out of bounds: true
+           minvalue: 0.0
+           maxvalue: 0.5
+         action:
+           name: reject
 
+       # ---------------------------------------
+       # Observation post flters (Steps 7-28)
+       # ----------------------------------------
        obs post filters:
-       # Step 0-B: Calculate derived variables
-       # Calculate CLW retrieved from observation
+       # -----------------------------------------------------------------------------------------
+       # Step 7 : Calculate retrieved CLW from observation and background
+       #          Create variables, calculate CLW retrieved from observation/background,
+       #          using ObsFunction/CLWRetMW, and then save to the newly created variables
+       #          DerivedData/CLWRetFromObs and DerivedData/CLWRetFromBkg. The default bad value is
+       #          1000.0 (set in the code: # static constexpr float bad_clwret_value_ = 1000.f)
+       # -----------------------------------------------------------------------------------------
+       # Setp 7a: Calculate retrieved CLW from observation and background for the first outer loop
+       # ------------------------------------------------------------------------------------------
        - filter: Variable Assignment
-         apply at iterations: 0,1
+         apply at iterations: 0
          identifier:
-           name: CLWRetFromObs0_
-           logging: true
-           diagnostic flag new: true
+           name: CreateCLWRetFromObsBkgA
          assignments:
-         - name: CLWRetFromObs@DerivedMetaData
+         - name: DerivedData/CLWRetFromObs0
            type: float
            function:
-             name: CLWRetMW@ObsFunction
+             name: ObsFunction/CLWRetMW
              options:
                clwret_ch238: 1
                clwret_ch314: 2
                clwret_types: [ObsValue]
-       # Calculate CLW retrieved from observation
-       - filter: Variable Assignment
-         apply at iterations: 0,1
-         identifier:
-           name: CLWRetFromObs1_
-           logging: true
-           diagnostic flag new: true
-         assignments:
-         - name: CLWRetFromBkg@DerivedMetaData
+         - name: DerivedData/CLWRetFromBkg0
            type: float
            function:
-             name: CLWRetMW@ObsFunction
+             name: ObsFunction/CLWRetMW
              options:
                clwret_ch238: 1
                clwret_ch314: 2
                clwret_types: [HofX]
 
-       # Calculate symmetric retrieved CLW
+       # --------------------------------------------------------------------------------------------
+       # Setp 7b: Calculate retrieved CLW from observation and background for the second outer loop
+       # --------------------------------------------------------------------------------------------
        - filter: Variable Assignment
-         apply at iterations: 0,1
+         apply at iterations: 1
          identifier:
-           name: CLWRetSymmetric
-           logging: true
-           diagnostic flag new: true
+           name: CreateCLWRetFromObsBkgB
          assignments:
-         - name: CLWRetSymmetric@DerivedMetaData
+         - name: DerivedData/CLWRetFromObs1
+           type: float
+           function:
+             name: ObsFunction/CLWRetMW
+             options:
+               clwret_ch238: 1
+               clwret_ch314: 2
+               clwret_types: [ObsValue]
+         - name: DerivedData/CLWRetFromBkg1
+           type: float
+           function:
+             name: ObsFunction/CLWRetMW
+             options:
+               clwret_ch238: 1
+               clwret_ch314: 2
+               clwret_types: [HofX]
+
+       # ------------------------------------------------------------------------------
+       # Step 8 : Create symmetric retrieved CLW variables and initialize them
+       #          Firstly, create a variable DerivedData/CLWRetSymmetric for
+       #          symmetric retrieved CLW and initialize it (initial values to be 1000.)
+       #          1000.0 is bad value (if not updated in step 9, this observation is
+       #          to be rejected later)
+       # -------------------------------------------------------------------------------
+       # Step 8a : Create a variable DerivedData/CLWRetSymmetric0 and initialize it
+       #           for the first outer loop
+       # -------------------------------------------------------------------------------
+       - filter: Variable Assignment
+         apply at iterations: 0
+         identifier:
+           name: CreateCLWRetSymmetricA
+         assignments:
+         - name: DerivedData/CLWRetSymmetric0
            type: float
            value: 1000.0
 
+       # -------------------------------------------------------------------------------
+       # Step 8b : Create a variable DerivedData/CLWRetSymmetric1 and initialize it
+       #           for the second outer loop
+       # -------------------------------------------------------------------------------
        - filter: Variable Assignment
-         apply at iterations: 0,1
+         apply at iterations: 1
          identifier:
-           name: VarAssign0_
-           logging: true
-           diagnostic flag new: true
+           name: CreateCLWRetSymmetricB
+         assignments:
+         - name: DerivedData/CLWRetSymmetric1
+           type: float
+           value: 1000.0
+
+       # ------------------------------------------------------------------------------------------
+       # Step 9 : Calculate symmetric retrieved CLW
+       #          from CLWRetFromObs and CLWRetFromBkg
+       #          CLWRetSymmetric=0.5*(CLWRetFromObs+CLWRetFromBkg)
+       #          and update/save to DerivedData/CLWRetSymmetric
+       #          The condition (where operator: and) is both CLWRetFromObs and CLWRetFromBkg have
+       #          valid values (0<= valid <= 999.0)
+       #          If DerivedData/CLWRetSymmetric is not updated, it would keep the initial
+       #          values (1000.0) and would be rejected later.
+       # --------------------------------------------------------------------------------------------
+       # Step 9a: calcualte symmetric retrieved CLW for the first outer loop
+       # --------------------------------------------------------------------------------------------
+       - filter: Variable Assignment
+         apply at iterations: 0
+         identifier:
+           name: CalculateCLWRetSymmetricA
          where:
          - variable:
-             name: CLWRetFromObs@DerivedMetaData
-           minvalue:   0.
+             name: DerivedData/CLWRetFromObs0
+           minvalue: 0.
            maxvalue: 999.
          - variable:
-             name: CLWRetFromBkg@DerivedMetaData
-           minvalue:   0.
+             name: DerivedData/CLWRetFromBkg0
+           minvalue: 0.
            maxvalue: 999.
          where operator: and
          assignments:
-         - name: CLWRetSymmetric@DerivedMetaData
+         - name: DerivedData/CLWRetSymmetric0
            type: float
            function:
-             name: Arithmetic@ObsFunction
+             name: ObsFunction/Arithmetic
              options:
                variables:
-               - name: CLWRetFromObs@DerivedMetaData
-               - name: CLWRetFromBkg@DerivedMetaData
+               - name: DerivedData/CLWRetFromObs0
+               - name: DerivedData/CLWRetFromBkg0
                total coefficient: 0.5
 
-       # Calculate scattering index from observation
+       # -----------------------------------------------------------------------------
+       # Step 9b: Calcualte symmetric retrieved CLW for the second outer loop
+       # -----------------------------------------------------------------------------
        - filter: Variable Assignment
-         apply at iterations: 0,1
+         apply at iterations: 1
          identifier:
-           name: SIRetFromObs
-           logging: true
-           diagnostic flag new: true
+           name: CalculateCLWRetSymmetricB
+         where:
+         - variable:
+             name: DerivedData/CLWRetFromObs1
+           minvalue: 0.
+           maxvalue: 999.
+         - variable:
+             name: DerivedData/CLWRetFromBkg1
+           minvalue: 0.
+           maxvalue: 999.
+         where operator: and
          assignments:
-         - name: SIRetFromObs@DerivedMetaData
+         - name: DerivedData/CLWRetSymmetric1
            type: float
            function:
-             name: SCATRetMW@ObsFunction
+             name: ObsFunction/Arithmetic
+             options:
+               variables:
+               - name: DerivedData/CLWRetFromObs1
+               - name: DerivedData/CLWRetFromBkg1
+               total coefficient: 0.5
+
+       # ------------------------------------------------------------------------------------
+       # Step 10: Calculate scattering index from observations (using channels 1,2,16) using
+       #          ObsFunction/SCATRetMW and save to
+       #          DerivedData/SIRetFromObs0 and DerivedData/SIRetFromObs1
+       # -------------------------------------------------------------------------------------
+       # Step 10a: Cacluate scattering index for the first outer loop
+       # ------------------------------------------------------------------------------------
+       - filter: Variable Assignment
+         apply at iterations: 0
+         identifier:
+           name: CalculateSIRetFromObsA
+         assignments:
+         - name: DerivedData/SIRetFromObs0
+           type: float
+           function:
+             name: ObsFunction/SCATRetMW
              options:
                scatret_ch238: 1
                scatret_ch314: 2
                scatret_ch890: 16
                scatret_types: [ObsValue]
 
-       # Calculate CLW obs/bkg match index
+       # --------------------------------------------------------------------------------
+       # Step 10b: Cacluate scattering index for the second outer loop
+       # --------------------------------------------------------------------------------
        - filter: Variable Assignment
-         apply at iterations: 0,1
+         apply at iterations: 1
          identifier:
-           name: CLWRetFromObs2_
-           logging: true
-           diagnostic flag new: true
+           name: CalculateSIRetFromObsB
          assignments:
-         - name: CLWMatchIndex@DerivedMetaData
+         - name: DerivedData/SIRetFromObs1
+           type: float
+           function:
+             name: ObsFunction/SCATRetMW
+             options:
+               scatret_ch238: 1
+               scatret_ch314: 2
+               scatret_ch890: 16
+               scatret_types: [ObsValue]
+
+       # -----------------------------------------------------------------------
+       # Step 11: Calculate the the cloud match index (CLWMatchIndex) using
+       #          ObsFunction/CLWMatchIndexMW
+       #          CLWRetFromObs and CLWRetFromBkg are used
+       # -------------------------------------------------------------------------
+       # Step 11a: Cacluate cloud match index for the first outer loop
+       # -------------------------------------------------------------------------
+       - filter: Variable Assignment
+         apply at iterations: 0
+         identifier:
+           name: CalculateCLWMatchIndexA
+         assignments:
+         - name: DerivedData/CLWMatchIndex0
            channels: *atms_n21_channels
            type: float
            function:
-             name: CLWMatchIndexMW@ObsFunction
+             name: ObsFunction/CLWMatchIndexMW
              channels: *atms_n21_channels
              options:
                channels: *atms_n21_channels
                clwobs_function:
-                 name: CLWRetFromObs@DerivedMetaData
+                 name: DerivedData/CLWRetFromObs0
                clwbkg_function:
-                 name: CLWRetFromBkg@DerivedMetaData
-               clwret_clearsky: [ 0.030,  0.030,  0.030,  0.020,  0.030,
-                                  0.080,  0.150,  0.000,  0.000,  0.000,
-                                  0.000,  0.000,  0.000,  0.000,  0.000,
-                                  0.020,  0.030,  0.030,  0.030,  0.030,
-                                  0.050,  0.100]
+                 name: DerivedData/CLWRetFromBkg0
+               clwret_clearsky: *atms_n21_cldamt_x0
 
-       # Calculate symmetric observation error
+       # -------------------------------------------------------------------------
+       # Step 11b: Cacluate cloud match index for the second outer loop
+       # -------------------------------------------------------------------------
        - filter: Variable Assignment
-         apply at iterations: 0,1
+         apply at iterations: 1
          identifier:
-           name: InitialObsError
-           logging: true
-           diagnostic flag new: true
+           name: CalculateCLWMatchIndexB
          assignments:
-         - name: InitialObsError@DerivedMetaData
+         - name: DerivedData/CLWMatchIndex1
            channels: *atms_n21_channels
            type: float
            function:
-             name: ObsErrorModelRamp@ObsFunction
+             name: ObsFunction/CLWMatchIndexMW
+             channels: *atms_n21_channels
+             options:
+               channels: *atms_n21_channels
+               clwobs_function:
+                 name: DerivedData/CLWRetFromObs1
+               clwbkg_function:
+                 name: DerivedData/CLWRetFromBkg1
+               clwret_clearsky: *atms_n21_cldamt_x0
+
+       # ---------------------------------------------------------------------------------------------------------------------------------
+       # Step 12 : Calculate symmetric observation error
+       #           from ObsFunction/ObsErrorModelRamp, a piecewise linear ramp model
+       #           1) For window/moisture channels(1-7, 16-22): sensitiveto cloud liquid water
+       #              clear-sky (x<= x0): The error is set to a constant baseline error(err0)
+       #              Transition Zone (x0 < x < x1): The error increase linearly from erro0 to err1 as cloud content increase
+       #              Heavy cloud (x>= x1):  The error caps out at a constant maximum value err1
+       #           2) For temperature Sounding Channels (8-15): These are set to be zero for both x0 and x1, constant clear-sky erro0 is used
+       # ------------------------------------------------------------------------------------------------------------------------------------
+       # Step 12a : Calculate symmetric observation error for the first outer loop, the symmetric errors are saved to
+       #            DerivedData/symmetricObsError0
+       # --------------------------------------------------------------------------------------------------------------------------------------
+       - filter: Variable Assignment
+         apply at iterations: 0
+         identifier:
+           name: SymmetricObsErrorA
+         assignments:
+         - name: DerivedData/symmetricObsError0
+           channels: *atms_n21_channels
+           type: float
+           function:
+             name: ObsFunction/ObsErrorModelRamp
              channels: *atms_n21_channels
              options:
                channels: *atms_n21_channels
                xvar:
-                 name: CLWRetSymmetric@DerivedMetaData
-               x0:    [ 0.030,  0.030,  0.030,  0.020,  0.030,
-                        0.080,  0.150,  0.000,  0.000,  0.000,
-                        0.000,  0.000,  0.000,  0.000,  0.000,
-                        0.020,  0.030,  0.030,  0.030,  0.030,
-                        0.050,  0.100]
-               x1:    [ 0.350,  0.380,  0.400,  0.450,  0.500,
-                        1.000,  1.000,  0.000,  0.000,  0.000,
-                        0.000,  0.000,  0.000,  0.000,  0.000,
-                        0.350,  0.500,  0.500,  0.500,  0.500,
-                        0.500,  0.500]
-               err0:  [ 4.500,  4.500,  4.500,  2.500,  0.550,
-                        0.300,  0.300,  0.400,  0.400,  0.400,
-                        0.450,  0.450,  0.550,  0.800,  4.000,
-                        4.000,  4.000,  3.500,  3.000,  3.000,
-                        3.000,  3.000]
-               err1:  [20.000, 25.000, 12.000,  7.000,  3.500,
-                        3.000,  0.800,  0.400,  0.400,  0.400,
-                        0.450,  0.450,  0.550,  0.800,  4.000,
-                       19.000, 30.000, 25.000, 16.500, 12.000,
-                        9.000,  6.500]
+                 name: DerivedData/CLWRetSymmetric0
+               x0: *atms_n21_cldamt_x0
+               x1: *atms_n21_cldamt_x1
+               err0: *atms_n21_error0
+               err1: *atms_n21_error1
 
-       # Calculate Innovation@DerivedMetaData
+       # ---------------------------------------------------------------------------------------------------------------------
+       # Step 12b : Calculate symmetric observation error for the second outer loop, the symmeric error values are saved to
+       #            DerivedData/symmetricObsError1
+       # -----------------------------------------------------------------------------------------------------------------------
+       - filter: Variable Assignment
+         apply at iterations: 1
+         identifier:
+           name: SymmetricObsErrorB
+         assignments:
+         - name: DerivedData/symmetricObsError1
+           channels: *atms_n21_channels
+           type: float
+           function:
+             name: ObsFunction/ObsErrorModelRamp
+             channels: *atms_n21_channels
+             options:
+               channels: *atms_n21_channels
+               xvar:
+                 name: DerivedData/CLWRetSymmetric1
+               x0: *atms_n21_cldamt_x0
+               x1: *atms_n21_cldamt_x1
+               err0: *atms_n21_error0
+               err1: *atms_n21_error1
+
+       # ---------------------------------------------------------------------------------------
+       # Step 13 : Initial Error assignment: Assign Initial All-Sky Observation Errors from
+       #           the symmetric observation errors calculated in the prevous step (step 12)
+       # ----------------------------------------------------------------------------------------
+       # Step 13a : Initial all-sky Error assignemnt for the first outer loop
+       # -----------------------------------------------------------------------------------------
+       - filter: Perform Action
+         apply at iterations: 0
+         identifier:
+           name: AssignInitErrorA
+           logging: true
+           diagnostic flag: true
+           diagnostic flag new: true
+         filter variables:
+         - name: brightnessTemperature
+           channels: *atms_n21_channels
+         action:
+           name: assign error
+           error function:
+             name: DerivedData/symmetricObsError0
+             channels: *atms_n21_channels
+
+       # --------------------------------------------------------------------------
+       # Step 13b : Initial all-sky Error assignemnt for the second outer loop
+       # ---------------------------------------------------------------------------
+       - filter: Perform Action
+         apply at iterations: 1
+         identifier:
+           name: AssignInitErrorB
+           logging: true
+           diagnostic flag: true
+           diagnostic flag new: true
+         filter variables:
+         - name: brightnessTemperature
+           channels: *atms_n21_channels
+         action:
+           name: assign error
+           error function:
+             name: DerivedData/symmetricObsError1
+             channels: *atms_n21_channels
+
+       # -------------------------------------------------------------------------
+       # Step 14  : Window Channel Sanity Check
+       # --------------------------------------------------------------------------
+       # Step 14a : Calculate Innovation (O-B with bias correction: obs-hofx) and
+       #            save to DerivedData/innovation
+       # --------------------------------------------------------------------------
        - filter: Variable Assignment
          apply at iterations: 0,1
          identifier:
-           name: Innovation
-           logging: true
-           diagnostic flag new: true
+           name: CalculateInnovation
          assignments:
-         - name: Innovation@DerivedMetaData
+         - name: DerivedData/innovation
            channels: *atms_n21_channels
            type: float
            function:
@@ -306,18 +550,48 @@
              channels: *atms_n21_channels
              options:
                variables:
-               - name: brightnessTemperature@ObsValue
+               - name: ObsValue/brightnessTemperature
                  channels: *atms_n21_channels
-               - name: brightnessTemperature@HofX
+               - name: HofX/brightnessTemperature
                  channels: *atms_n21_channels
                coefs: [1, -1]
 
-       # Toss the data if the hofx is missing or outside of range
+       # -------------------------------------------------------------------------------------
+       # Step 14b : Window Channel Sanity Check based on DerivedData/innovation
+       #            test variables: channels 1-2, 5-7, 16 (logic: or, any channel from channels
+       #            1-2, 5-7, 16 has extreme larger residual)
+       #            filter variables (applied channels): channels 1-7, 16-22
+       # ---------------------------------------------------------------------------------------
+       - filter: Bounds Check
+         apply at iterations: 0,1
+         identifier:
+           name: WindowChannelExtremeResidualCheck
+           logging: true
+           diagnostic flag: true
+           diagnostic flag new: true
+         filter variables:
+         - name: brightnessTemperature
+           channels: 1-7, 16-22
+         test variables:
+         - name: DerivedData/innovation
+           channels: 1, 2, 5-7, 16
+         maxvalue: 200.0
+         minvalue: -200.0
+         flag all filter variables if any test variable is out of bounds: true
+         action:
+           name: reject
+
+       # -----------------------------------------------------------------------------------------
+       # Step 15 : Hofx range check : reject the data if the hofx is missing or outside of range
+       #           For a lot of cases, these observations are already rejeted by the online
+       #           RegionalDomainCheck and/or the JEDI internal hofx check
+       # ------------------------------------------------------------------------------------------
        - filter: Domain Check
          apply at iterations: 0,1
          identifier:
-           name: HofXValidCheck
+           name: HofxRangeCheck
            logging: true
+           diagnostic flag: true
            diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
@@ -332,229 +606,259 @@
          action:
            name: reject
 
-       # Regional Domain Check
+       # ----------------------------------------------------------------------------------
+       # Step 16 : CLW Retrieval Check based on observation using DeriveData/CLWRetFromObs
+       #           For window/moisture channels (1-7, 16-22)
+       #           CLWRetFromObs larger than 999.0 (i.e,, 1000.0) are rejected
+       #           the default bad value of CLWRetFromObs is 1000.0
+       # ----------------------------------------------------------------------------------
+       # Step 16a : CLW Retrieval Check based on observation for the first outer loop
+       # ----------------------------------------------------------------------------------
        - filter: Bounds Check
-         apply at iterations: 0,1
+         apply at iterations: 0
          identifier:
-           name: RegionalDomainCheck
+           name: ClwRetFromObsCheckA
            logging: true
+           diagnostic flag: true
            diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
-           channels: *atms_n21_channels
+           channels: 1-7, 16-22
          test variables:
-         - name: GeoVaLs/observable_domain_mask
-           flag all filter variables if any test variable is out of bounds: true
-           minvalue: 0.0
-           maxvalue: 0.5
-
-       # Step 0-C: Assign Initial All-Sky Observation Error
-       - filter: Perform Action
-         apply at iterations: 0,1
-         identifier:
-           name: ObsErrorInit
-           logging: true
-           diagnostic flag new: true
-         filter variables:
-         - name: brightnessTemperature
-           channels: *atms_n21_channels
+         - name: DerivedData/CLWRetFromObs0
+         maxvalue: 999.0
          action:
-           name: assign error
-           error function:
-             name: InitialObsError@DerivedMetaData
-             channels: *atms_n21_channels
+           name: reject
 
-       # Step 1: Remove Observations from the Edge of the Scan
-       - filter: Domain Check
-         apply at iterations: 0,1
-         identifier:
-           name: ScanEdgeRemoval
-           logging: true
-           diagnostic flag new: true
-         filter variables:
-         - name: brightnessTemperature
-           channels: 1-22
-         where:
-         - variable:
-             name: MetaData/sensorScanPosition
-           is_in: 7-90
-         actions:
-           - name: set
-             flag: ScanEdgeRemoval
-           - name: reject
-
-       # Step 2: data Thinning
-       - filter: Gaussian Thinning
-         apply at iterations: 0,1
-         identifier:
-           name: Thinning
-           logging: true
-           diagnostic flag new: true
-         #horizontal_mesh: 145
-         horizontal_mesh: 60
-         use_reduced_horizontal_grid: true
-         distance_norm: geodesic
-       #  round_horizontal_bin_count_to_nearest: true
-       #  partition_longitude_bins_using_mesh: true
-         actions:
-           - name: set
-             flag: Thinning
-           - name: reject
-
-       # Step 3A: CLW Retrieval Check (observation_based)
+       # --------------------------------------------------------------------------------
+       # Step 16b : CLW Retrieval Check based on observation for the second outer loop
+       # --------------------------------------------------------------------------------
        - filter: Bounds Check
-         apply at iterations: 0,1
+         apply at iterations: 1
          identifier:
-           name: CLWRetCheckObs
+           name: ClwRetFromObsCheckB
            logging: true
+           diagnostic flag: true
            diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: 1-7, 16-22
          test variables:
-         - name: CLWRetFromObs@DerivedMetaData
+         - name: DerivedData/CLWRetFromObs1
          maxvalue: 999.0
-         actions:
-           - name: set
-             flag: CLWRetrievalCheck
-           - name: reject
+         action:
+           name: reject
 
-       # Step 3B: CLW Retrieval Check (background_based)
+       # ---------------------------------------------------------------------------------------
+       # Step 17  : CLW Retrieval Check based on background using DerivedData/CLWRetFromBkg
+       #            For window/moisture channels (1-7, 16-22)
+       #            CLWRetFromObs larger than 999.0 (i.e., 1000,0) are rejected
+       #            the default bad value of CLWRetFromBkg is 1000.0
+       # --------------------------------------------------------------------------------------
+       # Step 17a : CLW Retrieval Check based on background for the first outer loop
+       # ---------------------------------------------------------------------------------------
        - filter: Bounds Check
-         apply at iterations: 0,1
+         apply at iterations: 0
          identifier:
-           name: CLWRetCheckBkg
+           name: ClwRetFromBkgCheckA
            logging: true
+           diagnostic flag: true
            diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: 1-7, 16-22
          test variables:
-         - name: CLWRetFromBkg@DerivedMetaData
+         - name: DerivedData/CLWRetFromBkg0
          maxvalue: 999.0
-         actions:
-           - name: set
-             flag: CLWRetrievalCheck
-           - name: reject
+         action:
+            name: reject
 
-       # Step 4: Window Channel Sanity Check
+       # --------------------------------------------------------------------------------
+       # Step 17b : CLW Retrieval Check based on background for the second outer loop
+       # ---------------------------------------------------------------------------------
        - filter: Bounds Check
-         apply at iterations: 0,1
+         apply at iterations: 1
          identifier:
-           name: WindowChannelExtremeResidual
+           name: ClwRetFromBkgCheckB
            logging: true
+           diagnostic flag: true
            diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
-           channels: 1-7, 16, 17-22
+           channels: 1-7, 16-22
          test variables:
-         - name: Innovation@DerivedMetaData
-           channels: 1, 2, 5-7, 16
-         maxvalue: 200.0
-         minvalue: -200.0
-         flag all filter variables if any test variable is out of bounds: true
-         actions:
-           - name: set
-             flag: WindowChannelExtremeResidual
-           - name: reject
+         - name: DerivedData/CLWRetFromBkg1
+         maxvalue: 999.0
+         action:
+            name: reject
 
-       # Step 5: Hydrometeor Check (cloud/precipitation affected chanels)
+       # --------------------------------------------------------------------------
+       # Step 18 : Hydrometeor Check (thick cloud/precipitation affected chanels)
+       #           Calculate DerivedData/HydrometeorCheckATMS from
+       #           ObsFunction/HydrometeorCheckATMS and save it
+       #           Output of this function:
+       #           0 = channel is not affected by thick clouds and precipitation
+       #           1 = channel is affected by thick clouds and precipitataion
+       # ---------------------------------------------------------------------------
+       # Step 18a : Calculate hydrometeorCheckATMS0 for the first outer loop
+       # ----------------------------------------------------------------------------
        - filter: Variable Assignment
-         apply at iterations: 0,1
+         apply at iterations: 0
          identifier:
-           name: HydrometeorCheck0_
-           logging: true
-           diagnostic flag new: true
+           name: CalculateHydrometeoCheckATMS0
          assignments:
-         - name: DerivedMetaData/HydrometeorCheckATMS
+         - name: DerivedData/hydrometeorCheckATMS0
            channels: *atms_n21_channels
            type: float
            function:
-             name: HydrometeorCheckATMS@ObsFunction
+             name: ObsFunction/HydrometeorCheckATMS
              channels: *atms_n21_channels
              options:
                channels: *atms_n21_channels
                obserr_clearsky: *atms_n21_error0
                clwret_function:
-                 name: CLWRetFromObs@DerivedMetaData
+                 name: DerivedData/CLWRetFromObs0
                obserr_function:
-                 name: InitialObsError@DerivedMetaData
+                 name: DerivedData/symmetricObsError0
                  channels: *atms_n21_channels
 
-       - filter: Bounds Check
-         apply at iterations: 0,1
+       # -----------------------------------------------------------------------------
+       # Step 18b : Calculate hydrometeorCheckATMS1 for the second outer loop
+       # -----------------------------------------------------------------------------
+       - filter: Variable Assignment
+         apply at iterations: 1
          identifier:
-           name: HydrometeorCheck1_
+           name: CalculateHydrometeorCheckATMS1
+         assignments:
+         - name: DerivedData/hydrometeorCheckATMS1
+           channels: *atms_n21_channels
+           type: float
+           function:
+             name: ObsFunction/HydrometeorCheckATMS
+             channels: *atms_n21_channels
+             options:
+               channels: *atms_n21_channels
+               obserr_clearsky: *atms_n21_error0
+               clwret_function:
+                 name: DerivedData/CLWRetFromObs1
+               obserr_function:
+                 name: DerivedData/symmetricObsError1
+                 channels: *atms_n21_channels
+
+       # ---------------------------------------------------------------------------------
+       # Step 19  : HydrometeorCheck: reject observations when HydrometeorCheckATMS > 0.0
+       # ---------------------------------------------------------------------------------
+       # Step 19a : hydrometeorcheck for the first outer loop
+       # ----------------------------------------------------------------------------------
+       - filter: Bounds Check
+         apply at iterations: 0
+         identifier:
+           name: HydrometeorCheckA
            logging: true
+           diagnostic flag: true
            diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *atms_n21_channels
          test variables:
-         - name: DerivedMetaData/HydrometeorCheckATMS
+         - name: DerivedData/hydrometeorCheckATMS0
            channels: *atms_n21_channels
          maxvalue: 0.0
-         actions:
-           - name: set
-             flag: HydrometeorCheck
-             ignore: rejected observations
-           - name: reject
+         action:
+           name: reject
 
-       # Step 6: Observation Error Inflation based on Topography Check
-       - filter: Variable Assignment
+       # -----------------------------------------------------------------------------
+       # Step 19b  : hydrometeorcheck for the second outer loop
+       # -----------------------------------------------------------------------------
+       - filter: Bounds Check
+         apply at iterations: 1
+         identifier:
+           name: HydrometeorCheckB
+           logging: true
+           diagnostic flag: true
+           diagnostic flag new: true
+         filter variables:
+         - name: brightnessTemperature
+           channels: *atms_n21_channels
+         test variables:
+         - name: DerivedData/hydrometeorCheckATMS1
+           channels: *atms_n21_channels
+         maxvalue: 0.0
+         action:
+           name: reject
+
+       # -----------------------------------------------------------------------------------
+       # Step 20  :  Observation Error Inflation based on Topography Check
+       #             Calculate ObsErrorFactorTopo using ObsFunction/ObsErrorFactorTopoRad
+       # -----------------------------------------------------------------------------------
+       # Step 20a :  Error inflation: Inflation factor based on Topography Check
+       # -----------------------------------------------------------------------------------
+       - filter: Perform Action
          apply at iterations: 0,1
          identifier:
-           name: TopographyCheck0_
+           name: ObsErrorInflationFactorTopo
            logging: true
+           diagnostic flag: true
            diagnostic flag new: true
-         assignments:
-         - name: ObsErrorFactorTopo@DerivedMetaData
+         filter variables:
+         - name: brightnessTemperature
            channels: *atms_n21_channels
-           type: float
-           function:
-             name: ObsErrorFactorTopoRad@ObsFunction
+         action:
+           name: inflate error
+           inflation variable:
+             name: ObsFunction/ObsErrorFactorTopoRad
              channels: *atms_n21_channels
              options:
                sensor: atms_n21
                channels: *atms_n21_channels
 
-       - filter: Perform Action
-         apply at iterations: 0,1
-         identifier:
-           name: TopographyCheck1_
-           logging: true
-           diagnostic flag new: true
-         filter variables:
-         - name: brightnessTemperature
-           channels: *atms_n21_channels
-         action:
-           name: inflate error
-           inflation variable:
-             name: ObsErrorFactorTopo@DerivedMetaData
-             channels: *atms_n21_channels
-
-       # Step 7: Obs Error Inflation based on TOA Transmittancec Check
+       # -------------------------------------------------------------------------------
+       # Step 20b : Save ObsErrorFactorTopo into DerivedData for the first outer loop
+       # --------------------------------------------------------------------------------
        - filter: Variable Assignment
-         apply at iterations: 0,1
+         apply at iterations: 0
          identifier:
-           name: ObsErrorFactorTransmitTop
-           logging: true
-           diagnostic flag new: true
+           name: CreateObsErrorFactorTopoA
          assignments:
-         - name: ObsErrorFactorTransmitTop@DerivedMetaData
+         - name: DerivedData/obsErrorFactorTopo0
            channels: *atms_n21_channels
            type: float
            function:
-             name: ObsErrorFactorTransmitTopRad@ObsFunction
+             name: ObsFunction/ObsErrorFactorTopoRad
              channels: *atms_n21_channels
              options:
+               sensor: atms_n21
                channels: *atms_n21_channels
 
+       # ----------------------------------------------------------------------------------
+       # Step 20c : Save ObsErrorFactorTopo into DerivedData for the second outer loop
+       # -----------------------------------------------------------------------------------
+       - filter: Variable Assignment
+         apply at iterations: 1
+         identifier:
+           name: CreateObsErrorFactorTopoB
+         assignments:
+         - name: DerivedData/obsErrorFactorTopo1
+           channels: *atms_n21_channels
+           type: float
+           function:
+             name: ObsFunction/ObsErrorFactorTopoRad
+             channels: *atms_n21_channels
+             options:
+               sensor: atms_n21
+               channels: *atms_n21_channels
+
+       # --------------------------------------------------------------------------
+       # Step 21  : Obs Error Inflation based on TOA Transmittance Check
+       # --------------------------------------------------------------------------
+       # Step 21a : Inflate error based on ObsFunction/ObsErrorFactorTransmitTopRad
+       # --------------------------------------------------------------------------
        - filter: Perform Action
          apply at iterations: 0,1
          identifier:
-           name: TransmitTopCheck
+           name: ObsErrorInflationTransmitTop
            logging: true
+           diagnostic flag: true
            diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
@@ -562,22 +866,67 @@
          action:
            name: inflate error
            inflation variable:
-             name: ObsErrorFactorTransmitTop@DerivedMetaData
+             name: ObsFunction/ObsErrorFactorTransmitTopRad
              channels: *atms_n21_channels
+             options:
+               sensor: atms_n21
+               channels: *atms_n21_channels
 
-       # Step 8: Observation Error Inflation based on Surface Jacobian Check
+       # ------------------------------------------------------------------------------------
+       # Step 21b : Save obsErrorFactorTransmitTop0 into DerivedData for the first outer loop
+       # -------------------------------------------------------------------------------------
        - filter: Variable Assignment
-         apply at iterations: 0,1
+         apply at iterations: 0
          identifier:
-           name: SurfJacobianCheck0_
-           logging: true
-           diagnostic flag new: true
+           name: ObsErrorFactorTransmitTopA
          assignments:
-         - name: ObsErrorFactorSurfJacobian@DerivedMetaData
+         - name: DerivedData/obsErrorFactorTransmitTop0
            channels: *atms_n21_channels
            type: float
            function:
-             name: ObsErrorFactorSurfJacobianRad@ObsFunction
+             name: ObsFunction/ObsErrorFactorTransmitTopRad
+             channels: *atms_n21_channels
+             options:
+               sensor: atms_n21
+               channels: *atms_n21_channels
+
+       # ------------------------------------------------------------------------------------
+       # Step 21c : Save obsErrorFactorTransmitTop1 into DerivedData for the second outer loop
+       # -------------------------------------------------------------------------------------
+       - filter: Variable Assignment
+         apply at iterations: 1
+         identifier:
+           name: ObsErrorFactorTransmitTopB
+         assignments:
+         - name: DerivedData/obsErrorFactorTransmitTop1
+           channels: *atms_n21_channels
+           type: float
+           function:
+             name: ObsFunction/ObsErrorFactorTransmitTopRad
+             channels: *atms_n21_channels
+             options:
+               sensor: atms_n21
+               channels: *atms_n21_channels
+
+       # ----------------------------------------------------------------------------
+       # Step 22  : Obs Error Inflation based on Surface Jacobian Check
+       # ----------------------------------------------------------------------------
+       # Step 22a : Inflate error based on ObsFunction/ObsErrorFactorSurfJacobianRad
+       # -----------------------------------------------------------------------------
+       - filter: Perform Action
+         apply at iterations: 0,1
+         identifier:
+           name: ObsErrorInflationSurfJacobian
+           logging: true
+           diagnostic flag: true
+           diagnostic flag new: true
+         filter variables:
+         - name: brightnessTemperature
+           channels: *atms_n21_channels
+         action:
+           name: inflate error
+           inflation variable:
+             name: ObsFunction/ObsErrorFactorSurfJacobianRad
              channels: *atms_n21_channels
              options:
                sensor: atms_n21
@@ -585,57 +934,130 @@
                obserr_demisf: [0.010, 0.020, 0.015, 0.020, 0.200]
                obserr_dtempf: [0.500, 2.000, 1.000, 2.000, 4.500]
 
-       - filter: Perform Action
-         apply at iterations: 0,1
-         identifier:
-           name: SurfJacobianCheck1_
-           logging: true
-           diagnostic flag new: true
-         filter variables:
-         - name: brightnessTemperature
-           channels: *atms_n21_channels
-         action:
-           name: inflate error
-           inflation variable:
-             name: ObsErrorFactorSurfJacobian@DerivedMetaData
-             channels: *atms_n21_channels
-
-       # Step 9: Situation Dependent Check
+       # -------------------------------------------------------------------------------------
+       # Step 22b : Save obsErrorFactorSurfJacobian0 into DerivedData for the first outer loop
+       # --------------------------------------------------------------------------------------
        - filter: Variable Assignment
-         apply at iterations: 0,1
+         apply at iterations: 0
          identifier:
-           name: SituDependCheck0_
-           logging: true
-           diagnostic flag new: true
+           name: ObsErrorFactorSurfJacobianA
          assignments:
-         - name: ObsErrorFactorSituDepend@DerivedMetaData
+         - name: DerivedData/obsErrorFactorSurfJacobian0
            channels: *atms_n21_channels
            type: float
            function:
-             name: ObsErrorFactorSituDependMW@ObsFunction
+             name: ObsFunction/ObsErrorFactorSurfJacobianRad
+             channels: *atms_n21_channels
+             options:
+               sensor: atms_n21
+               channels: *atms_n21_channels
+               obserr_demisf: [0.010, 0.020, 0.015, 0.020, 0.200]
+               obserr_dtempf: [0.500, 2.000, 1.000, 2.000, 4.500]
+
+       # ---------------------------------------------------------------------------------------
+       # Step 22c : Save obsErrorFactorSurfJacobian1 into DerivedData for the second outer loop
+       # ----------------------------------------------------------------------------------------
+       - filter: Variable Assignment
+         apply at iterations: 1
+         identifier:
+           name: ObsErrorFactorSurfJacobianB
+         assignments:
+         - name: DerivedData/obsErrorFactorSurfJacobian1
+           channels: *atms_n21_channels
+           type: float
+           function:
+             name: ObsFunction/ObsErrorFactorSurfJacobianRad
+             channels: *atms_n21_channels
+             options:
+               sensor: atms_n21
+               channels: *atms_n21_channels
+               obserr_demisf: [0.010, 0.020, 0.015, 0.020, 0.200]
+               obserr_dtempf: [0.500, 2.000, 1.000, 2.000, 4.500]
+
+       # -----------------------------------------------------------------------------
+       # Step 23  : Obs Error inflation based on Situation Dependent Check
+       #            This function is designed to compute situation-depedent error
+       #            inflation factors based on retrieved cloud liquid water
+       #            from background (CLWRetFromBkg) and observation(CLWRetFromObs),
+       #            scatering index from observation (SIRetFromObs), cloud information
+       #            matched index (CLWMatchIndex) over ocean
+       #            For ATMS data, only channels 1-6, 16-22 are applied.
+       # ----------------------------------------------------------------------------
+       # Step 23a : Calculate DerivedData/ObsErrorFactorSituDepend
+       #            using ObsFunction/ObsErrorFactorSituDependMW
+       #            for the first outer loop
+       # ----------------------------------------------------------------------------
+       - filter: Variable Assignment
+         apply at iterations: 0
+         identifier:
+           name: ObsErrorFactorSituDependA
+         assignments:
+         - name: DerivedData/obsErrorFactorSituDepend0
+           channels: *atms_n21_channels
+           type: float
+           function:
+             name: ObsFunction/ObsErrorFactorSituDependMW
              channels: *atms_n21_channels
              options:
                sensor: atms_n21
                channels: *atms_n21_channels
                clwbkg_function:
-                 name: CLWRetFromBkg@DerivedMetaData
+                 name: DerivedData/CLWRetFromBkg0
                clwobs_function:
-                 name: CLWRetFromObs@DerivedMetaData
+                 name: DerivedData/CLWRetFromObs0
                scatobs_function:
-                 name: SIRetFromObs@DerivedMetaData
+                 name: DerivedData/SIRetFromObs0
                clwmatchidx_function:
-                 name: CLWMatchIndex@DerivedMetaData
+                 name: DerivedData/CLWMatchIndex0
                  channels: *atms_n21_channels
                obserr_function:
-                 name: InitialObsError@DerivedMetaData
+                 name: DerivedData/symmetricObsError0
                  channels: *atms_n21_channels
                obserr_clearsky: *atms_n21_error0
 
-       - filter: Perform Action
-         apply at iterations: 0,1
+       # ----------------------------------------------------------------------------
+       # Step 23b : Calculate DerivedData/ObsErrorFactorSituDepend
+       #            using ObsFunction/ObsErrorFactorSituDependMW
+       #            for the second outer loop
+       # ------------------------------------------------------------------------------
+       - filter: Variable Assignment
+         apply at iterations: 1
          identifier:
-           name: SituDependCheck1_
+           name: ObsErrorFactorSituDependB
+         assignments:
+         - name: DerivedData/obsErrorFactorSituDepend1
+           channels: *atms_n21_channels
+           type: float
+           function:
+             name: ObsFunction/ObsErrorFactorSituDependMW
+             channels: *atms_n21_channels
+             options:
+               sensor: atms_n21
+               channels: *atms_n21_channels
+               clwbkg_function:
+                 name: DerivedData/CLWRetFromBkg1
+               clwobs_function:
+                 name: DerivedData/CLWRetFromObs1
+               scatobs_function:
+                 name: DerivedData/SIRetFromObs1
+               clwmatchidx_function:
+                 name: DerivedData/CLWMatchIndex1
+                 channels: *atms_n21_channels
+               obserr_function:
+                 name: DerivedData/symmetricObsError1
+                 channels: *atms_n21_channels
+               obserr_clearsky: *atms_n21_error0
+
+       # --------------------------------------------------------------------------------
+       # Step 23c : Inflate error based on DerivedData/ObsErrorFactorSituDepend0 for the
+       #            first outer loop
+       # ----------------------------------------------------------------------------------
+       - filter: Perform Action
+         apply at iterations: 0
+         identifier:
+           name: ObsErrorInflationSituDependCheckA
            logging: true
+           diagnostic flag: true
            diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
@@ -643,87 +1065,194 @@
          action:
            name: inflate error
            inflation variable:
-             name: ObsErrorFactorSituDepend@DerivedMetaData
+             name: DerivedData/obsErrorFactorSituDepend0
              channels: *atms_n21_channels
 
-       # Step 10: Gross check
-       # Remove data if abs(Obs-HofX) > absolute threhold
-       - filter: Variable Assignment
-         apply at iterations: 0,1
+       # --------------------------------------------------------------------------------
+       # Step 23d : Inflate error based on DerivedData/ObsErrorFactorSituDepend1 for the
+       #            second outer loop
+       # ----------------------------------------------------------------------------------
+       - filter: Perform Action
+         apply at iterations: 1
          identifier:
-           name: GrossErrorCheck0_
+           name: ObsErrorInflationSituDependCheckB
            logging: true
+           diagnostic flag: true
            diagnostic flag new: true
+         filter variables:
+         - name: brightnessTemperature
+           channels: *atms_n21_channels
+         action:
+           name: inflate error
+           inflation variable:
+             name: DerivedData/obsErrorFactorSituDepend1
+             channels: *atms_n21_channels
+
+       # ----------------------------------------------------------------------------
+       # Setp 24:  Calcualte ObsErrorFactorLat from ObsFunction/ObsErrorFactorLatRad
+       # ----------------------------------------------------------------------------
+       # Step 24a: Calculate ObsErrorFactorLat0 using ObsFunction/ObsErrorFactorLatRad
+       #           for the first outer loop
+       # -----------------------------------------------------------------------------
+       - filter: Variable Assignment
+         apply at iterations: 0
+         identifier:
+           name: ObsErrorFactorLatA
          assignments:
-         - name: ObsErrorFactorLat@DerivedMetaData
+         - name: DerivedData/obsErrorFactorLat0
            type: float
            function:
-             name: ObsErrorFactorLatRad@ObsFunction
+             name: ObsFunction/ObsErrorFactorLatRad
              options:
                latitude_parameters: [25.0, 0.25, 0.04, 3.0]
 
+       # ------------------------------------------------------------------------------
+       # Step 24b : Calculate ObsErrorFactorLat1 using ObsFunction/ObsErrorFactorLatRad
+       #            for the second outer loop
+       # -------------------------------------------------------------------------------
        - filter: Variable Assignment
-         apply at iterations: 0,1
+         apply at iterations: 1
          identifier:
-           name: VarAssign1_
-           logging: true
-           diagnostic flag new: true
+           name: ObsErrorFactorLatB
          assignments:
-         - name: ObsErrorBound@DerivedMetaData
+         - name: DerivedData/obsErrorFactorLat1
+           type: float
+           function:
+             name: ObsFunction/ObsErrorFactorLatRad
+             options:
+               latitude_parameters: [25.0, 0.25, 0.04, 3.0]
+
+       # ---------------------------------------------------------------------------------------------------------------------------------------
+       # Step 25 : Calculate the absolute threshold: DerivedData/ObsErrorBound
+       #           using ObsFunction/ObsErrorBoundMW
+       #           In this function, three error inflate factors are used : obsErrorFactorLat,
+       #           obsErrorFactorTransmitTop, and obsErrorFactorTopo to reduce QC bounds.
+       #           These three error inflate factors are already calcuated and saved in previous steps.
+       #           Residual Threshold = MIN( (3.0 * Initial_error * ( 1 / Errflat )^2 * ( 1 / Errftaotop )^2 * (1 / Errftotop )^2), ErrobsMax )
+       #           threshold = 3 is the default factor and could be tuned.
+       #           For atms channels 1-6, 16-22, ErrorobsMax = 10.0, for other channels (channels 7-15), ErrorobsMax = obserr_bound_max.
+       #           The absolute threshold (ObsErrorBound) will be used in the next step (GrossErrorCheck)
+       # -----------------------------------------------------------------------------------------------------------------------------------------
+       # Step 25a : Calcualte ObsErrorBound0 for the first outer loop
+       # ------------------------------------------------------------------------------------------------------------------------------------------
+       - filter: Variable Assignment
+         apply at iterations: 0
+         identifier:
+           name: ObsErrorBoundA
+         assignments:
+         - name: DerivedData/obsErrorBound0
            channels: *atms_n21_channels
            type: float
            function:
-             name: ObsErrorBoundMW@ObsFunction
+             name: ObsFunction/ObsErrorBoundMW
              channels: *atms_n21_channels
              options:
                sensor: atms_n21
                channels: *atms_n21_channels
                obserr_bound_latitude:
-                 name: ObsErrorFactorLat@DerivedMetaData
+                 name: DerivedData/obsErrorFactorLat0
                obserr_bound_transmittop:
-                 name: ObsErrorFactorTransmitTop@DerivedMetaData
+                 name: DerivedData/obsErrorFactorTransmitTop0
                  channels: *atms_n21_channels
-                 options:
-                   channels: *atms_n21_channels
                obserr_bound_topo:
-                 name: ObsErrorFactorTopo@DerivedMetaData
+                 name: DerivedData/obsErrorFactorTopo0
                  channels: *atms_n21_channels
                obserr_function:
-                 name: InitialObsError@DerivedMetaData
+                 name: DerivedData/symmetricObsError0
                  channels: *atms_n21_channels
-                 threhold: 3
+               threshold : 3
                obserr_bound_max: *atms_n21_obserr_bound_max
 
-       - filter: Background Check
-         apply at iterations: 0,1
+       # ----------------------------------------------------------------
+       # Step 25b : Calcualte ObsErrorBound1 for the second outer loop
+       # ----------------------------------------------------------------
+       - filter: Variable Assignment
+         apply at iterations: 1
          identifier:
-           name: GrossErrorCheck1_
+           name: ObsErrorBoundB
+         assignments:
+         - name: DerivedData/obsErrorBound1
+           channels: *atms_n21_channels
+           type: float
+           function:
+             name: ObsFunction/ObsErrorBoundMW
+             channels: *atms_n21_channels
+             options:
+               sensor: atms_n21
+               channels: *atms_n21_channels
+               obserr_bound_latitude:
+                 name: DerivedData/obsErrorFactorLat1
+               obserr_bound_transmittop:
+                 name: DerivedData/obsErrorFactorTransmitTop1
+                 channels: *atms_n21_channels
+               obserr_bound_topo:
+                 name: DerivedData/obsErrorFactorTopo1
+                 channels: *atms_n21_channels
+               obserr_function:
+                 name: DerivedData/symmetricObsError1
+                 channels: *atms_n21_channels
+               threshold : 3
+               obserr_bound_max: *atms_n21_obserr_bound_max
+
+       # -------------------------------------------------------------------------------------
+       # Step 26 : Gross/Background check: Reject data if abs(Obs-HofX) > absolute threshold
+       #           i.e, if abs(Obs-HofX) > ObsErrorBound, rejected
+       # -------------------------------------------------------------------------------------
+       # Step 26a : Gross Error Check for the first outerloop
+       # --------------------------------------------------------------------------------------
+       - filter: Background Check
+         apply at iterations: 0
+         identifier:
+           name: GrossErrorCheckA
            logging: true
+           diagnostic flag: true
            diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *atms_n21_channels
          function absolute threshold:
-         - name: ObsErrorBound@DerivedMetaData
+         - name: DerivedData/obsErrorBound0
            channels: *atms_n21_channels
-         actions:
-           - name: set
-             flag: GrossCheck
-             ignore: rejected observations
-           - name: reject
+         action:
+           name: reject
 
-       # Step 11: Inter-Channel Check
+       # -------------------------------------------------------
+       # Step 26b : Gross Error Check for the second outerloop
+       # --------------------------------------------------------
+       - filter: Background Check
+         apply at iterations: 1
+         identifier:
+           name: GrossErrorCheckB
+           logging: true
+           diagnostic flag: true
+           diagnostic flag new: true
+         filter variables:
+         - name: brightnessTemperature
+           channels: *atms_n21_channels
+         function absolute threshold:
+         - name: DerivedData/obsErrorBound1
+           channels: *atms_n21_channels
+         action:
+           name: reject
+
+       # -----------------------------------------------------------------------------------
+       # Step 27 : Inter-Channel Check using ObsFunction/InterChannelConsistencyCheck
+       #           Only applying for ATMS channels 1-7, 16-18
+       #           If one of the above channels is being rejected, all channels in the group
+       #           are rejected for a given location
+       # ------------------------------------------------------------------------------------
        - filter: Bounds Check
          apply at iterations: 0,1
          identifier:
            name: InterChannelCheck
            logging: true
+           diagnostic flag: true
            diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *atms_n21_channels
          test variables:
-         - name: InterChannelConsistencyCheck@ObsFunction
+         - name: ObsFunction/InterChannelConsistencyCheck
            channels: *atms_n21_channels
            options:
              channels: *atms_n21_channels
@@ -731,18 +1260,18 @@
              sensor: atms_n21
              use_flag: *atms_n21_use_flag
          maxvalue: 1.0e-12
-         actions:
-           - name: set
-             flag: InterChannelConsistency
-             ignore: rejected observations
-           - name: reject
+         action:
+           name: reject
 
-       # Step 12: Useflag Check
+       # -----------------------------------------------
+       # Step 28 : Useflag check
+       # ------------------------------------------------
        - filter: Bounds Check
          apply at iterations: 0,1
          identifier:
-           name: UseflagCheck
+           name: ChannelUseflagCheckRad
            logging: true
+           diagnostic flag: true
            diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
@@ -754,9 +1283,6 @@
              channels: *atms_n21_channels
              use_flag: *atms_n21_use_flag
          minvalue: 1.0e-12
-         actions:
-           - name: set
-             flag: UseflagCheck
-             ignore: rejected observations
-           - name: reject
+         action:
+           name: reject
 
