@@ -114,8 +114,12 @@ def smart_cycledefs():
                 print(f'24 cannot be divided by ARCHIVE_INTERVAL={archive_interval}, stop...')
                 sys.exit()
             # determine the archive cycledef
-            valid_list = list(range(archive_interval - 1, 25, archive_interval))
-            valid_str = " ".join(f"{i}" for i in valid_list)
-            dcCycledef['archive'] = {'valid_hours': f'{valid_str}', "cycledef": f'{cycledef_prod}'}
+            if archive_interval <= int(cyc_interval):
+                dcCycledef['archive'] = cycledef_prod
+            else:
+                step = int(cyc_interval)
+                valid_list = [hr for hr in range(0, 24, step) if (hr + step) % archive_interval == 0]
+                valid_str = " ".join(f"{i}" for i in valid_list)
+                dcCycledef['archive'] = {'valid_hours': f'{valid_str}', "cycledef": f'{cycledef_prod}'}
     # ~~~~~~~~
     return dcCycledef

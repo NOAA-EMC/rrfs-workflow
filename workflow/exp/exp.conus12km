@@ -59,7 +59,7 @@ export LBC_INTERVAL=1
 export LBC_UNGRIB_GROUP_TOTAL_NUM=1
 export LBC_GROUP_TOTAL_NUM=1
 
-export RETRO_PERIOD="2024052700-2024052800"
+export RETRO_PERIOD="2024050600-2024050700"
 export LBC_CYCS="00 12"  # evenly divide 24 hours, e.g., "00 12", "00 06 12 18", etc
 export COLDSTART_CYCS="00 12"   # cycles to cold start from external models
 #export DO_SPINUP=true
@@ -163,6 +163,24 @@ case ${MACHINE} in
     export QUEUE="normal"
     export PARTITION="batch"
     export CLUSTER="c6"
+    export NODES_IC="<nodes>1:ppn=160</nodes>"
+    export NODES_LBC="<nodes>1:ppn=160</nodes>"
+    export NODES_FCST="<nodes>1:ppn=160</nodes>"
+    export NODES_MPASSIT="<nodes>1:ppn=40</nodes>"
+    export NODES_UPP="<nodes>1:ppn=80</nodes>"
+    export NODES_JEDIVAR="<nodes>1:ppn=80</nodes>"
+    export NODES_IODA_MRMS_REFL="<nodes>1:ppn=80</nodes>"
+    ;;
+  "gaeac7")
+    export IC_EXTRN_MDL_BASEDIR="/gpfs/f7/wrfruc/world-shared/RRFS2_RETRO_DATA/May2024/GFS"
+    export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
+    export OBSPATH="/gpfs/f7/wrfruc/world-shared/RRFS2_RETRO_DATA/May2024/obs_rap"
+    export OBSPATH_NSSLMOSAIC="/gpfs/f7/wrfruc/world-shared/RRFS2_RETRO_DATA/May2024/reflectivity"
+    export OBSPATH_AIRNOW="/gpfs/f7/wrfruc/world-shared/RRFS2_RETRO_DATA/May2024/airnow"
+    export ACCOUNT="bil-fire10-oar"
+    export QUEUE="normal"
+    export PARTITION="batch"
+    export CLUSTER="c7"
     export NODES_IC="<nodes>1:ppn=160</nodes>"
     export NODES_LBC="<nodes>1:ppn=160</nodes>"
     export NODES_FCST="<nodes>1:ppn=160</nodes>"

@@ -53,6 +53,13 @@ case ${MACHINE} in
     export NODES_PREP_CHEM="<nodes>1:ppn=1</nodes>"
     export MEMORY_PREP_CHEM="200G"
     ;;
+  "gaeac7")
+    export CHEM_INPUT="/gpfs/f7/drsa-fire3/world-shared/cheMPAS-Fire/input"
+    export FIRE_DATASET="RAVE" #  e.g., or NGFS
+    export FIRE_INPUT="${CHEM_INPUT}/emissions/${FIRE_DATASET}/raw"
+    export NODES_PREP_CHEM="<nodes>1:ppn=1</nodes>"
+    export MEMORY_PREP_CHEM="200G"
+    ;;
   *)
     echo "!!! unsupported platform:'${MACHINE}'!!!"
     ;;
