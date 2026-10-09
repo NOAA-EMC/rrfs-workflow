@@ -17,6 +17,7 @@ export CONFIG_MIE_AOD_OPT=0
 #
 export USE_EXTERNAL_CHEM_LBCS=false
 export USE_EXTERNAL_CHEM_ICS=false
+export CYCLE_CHEMISTRY=true
 #
 export WALLTIME_PREP_CHEM="00:45:00"
 #
