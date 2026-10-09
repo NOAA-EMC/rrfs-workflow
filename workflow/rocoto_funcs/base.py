@@ -10,7 +10,7 @@ def source(bash_file, optional=False):
     """
     Source a Bash file and capture the environment variables
     """
-    command = f"source {bash_file} && env -0"
+    command = f"source {bash_file} >/dev/null && env -0"
     proc = subprocess.Popen(
         ['bash', '-c', command],
         stdout=subprocess.PIPE,
