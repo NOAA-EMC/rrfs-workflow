@@ -70,8 +70,8 @@
            where:
              - variable:
                  name: MetaData/timeOffset # units: s
-               minvalue: -5400
-               maxvalue:  5400
+               minvalue: -2700
+               maxvalue:  2700
            action:
              name: reduce obs space
 
@@ -114,26 +114,26 @@
              name: reduce obs space
 
          # Duplicate Check
-#         - filter: DuplicateThinning
-#           identifier:
-#             name: DuplicateThinning
-#             logging: true
-#           filter variables:
-#           - name: airTemperature
-#           analysis_time: "@ANALYSIS_DATE@"
-#           analysis_time_tolerance: PT0M
-#           min_spacing: PT90M
-#           equidistant_time_selection: after
-#           variable names:
-#           - MetaData/longitude
-#           - MetaData/latitude
-#           - MetaData/pressure
-#           tolerance:
-#           - 1.0e-6
-#           - 1.0e-6
-#           - 1.0e-6
-#           action:
-#             name: reduce obs space
+         - filter: DuplicateThinning
+           identifier:
+             name: DuplicateThinning
+             logging: true
+           filter variables:
+           - name: airTemperature
+           analysis_time: "@ANALYSIS_DATE@"
+           analysis_time_tolerance: PT0S
+           min_spacing: PT90M
+           equidistant_time_selection: after
+           variable names:
+           - MetaData/longitude
+           - MetaData/latitude
+           - MetaData/pressure
+           tolerance:
+           - 1.0e-6
+           - 1.0e-6
+           - 1.0e-6
+           action:
+             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
@@ -189,6 +189,8 @@
                name: ObsFunction/ObsErrorFactorPressureCheck
                options:
                  variable: airTemperature
+                 surface observation error ramp: true
+                 max levels below surface: 15
                  inflation factor: 8.0
 
 #         # Error inflation based on errormod (qcmod.f90)
