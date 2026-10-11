@@ -55,6 +55,10 @@ awk -v q="'" -v machine="${MACHINE}" -v ph="${PACKAGEHOME}" -v eh="${ECF_HOME}" 
     ed("QUEUE", queue)
     ed("QUEUE_ARCH", queue)
     ed("OUTPUTDIR", od)
+    # no product alerts from a retro; the WCOSS2 fake dbn_alert fails on any file it cannot find,
+    # such as the NA subset that prdgen alerts on but a CONUS domain never writes
+    ed("SENDDBN", "NO")
+    ed("SENDDBN_NTC", "NO")
     ed("ECF_HOME", eh)
     # job logs next to the job files; the NCO dev ecflow servers set ECF_OUT to ~/ecflow, where the
     # per-family log directories do not exist, so no job could write its output
