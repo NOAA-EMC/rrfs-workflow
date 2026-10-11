@@ -24,6 +24,7 @@ ecf/defs/retro_config.sh and port 1500 + your uid on Ursa (what the ecflow modul
 
 States are ecflow's: queued, submitted, active, complete, aborted, suspended, unknown.
 "aborted" is the one to look at; it means the job failed. "suspended" is a node someone held.
+Task listings give the job log of each aborted or running task on the line below it.
 --workflow prints them in the words rocotostat uses (RUNNING, DONE, FAILED and so on) and marks
 a task the retro set aside on purpose, which is complete but never ran, as SET-ASIDE.
 """
@@ -49,6 +50,8 @@ STATE_ORDER = ["aborted", "active", "submitted", "queued", "unknown", "complete"
 STATE_WORD = {"aborted": "FAILED", "active": "RUNNING", "submitted": "SUBMITTED",
               "queued": "QUEUED", "complete": "DONE", "suspended": "HELD", "unknown": "UNKNOWN"}
 DEFAULT_SUITE = "para"
+# task listings give the job log path of tasks in these states, on a line below the task
+LOG_STATES = ("aborted", "active")
 
 
 def settings_from_config():
@@ -88,6 +91,15 @@ def suspended_ancestor(defs, path):
         if node is not None and node.is_suspended():
             return True
     return False
+
+
+def job_log(task):
+    """The job output file of the task's current try (ECF_JOBOUT), or "" if it has not run."""
+    if int(task.get_try_no()) < 1:
+        return ""
+    gen = ecflow.VariableList()
+    task.get_generated_variables(gen)
+    return next((v.value() for v in gen if v.name() == "ECF_JOBOUT"), "")
 
 
 def family_pdy(node):
@@ -131,6 +143,8 @@ def collect(defs, suite, cycle_filter, state_filter, show_all=False):
                 "state": state,
                 "try": task.get_try_no(),
                 "changed": str(task.get_state_change_time()).replace("T", " ")[5:],
+                # only where someone would open it, since the driver lists the suite every minute
+                "log": job_log(task) if state in LOG_STATES else "",
             })
     return rows
 
@@ -192,6 +206,8 @@ def print_tasks(rows, jobs, out):
         task = r["task"] if len(r["task"]) <= 57 else "…" + r["task"][-56:]
         print(f"{r['pdy'] + ' ' + r['cycle']:<16}{task:<58}{r['state']:<11}{r['try']:>4}  "
               f"{r['changed']:<16}{sj:<20}", file=out)
+        if r["log"]:
+            print(f"{'':<16}log: {r['log']}", file=out)
     print(f"\n{len(rows)} task(s)", file=out)
 
 
@@ -245,6 +261,8 @@ def write_report(rows, jobs, directory):
             for r in rows:
                 if word_for(r) == w:
                     print(line(r), file=f)
+                    if r["log"]:
+                        print(f"  log: {r['log']}", file=f)
         print(f"#Failed:  {counts.get('FAILED', 0)}", file=f)
         print(f"#Unknown: {counts.get('UNKNOWN', 0)}", file=f)
     return counts
