@@ -267,9 +267,10 @@ for line in lines:
 open(path, "w").write("\n".join(out))
 print(f"{n} manager trigger(s) pointed at the forecast task")
 EOF
-  # The cold-start prep (03z/15z prep_cyc_spinup) waits only for its own initial conditions; in real
-  # time the family's boundaries (made at 00z/12z) finish hours earlier. Without the clock a fast
-  # make_ics beats them, and on the first day there are no older boundaries to fall back on.
+  # The prep_cyc tasks wait only for the previous forecast (or, at 03z/15z cold starts, their own
+  # initial conditions), then copy boundaries from the family's 00/06/12/18z make_lbcs; in real time
+  # those finish hours earlier. Without the clock the preps start alongside the make_lbcs jobs and
+  # can copy a half-written set (2024050801 enkf mem023 found f002 but not f001).
   python3 - "${out_def}" <<'EOF'
 import re, sys
 path = sys.argv[1]
@@ -278,9 +279,11 @@ fam = None
 for i, line in enumerate(lines):
     m = re.match(r"\s*family (\d\d)\s*$", line)
     if m: fam = m.group(1)
-    if line.strip() == "task jrrfs_det_prep_cyc_spinup" and fam and i + 1 < len(lines) \
-            and lines[i + 1].strip() == "trigger ../ics==complete":
-        lines[i + 1] += f" and ../../../{fam}z/det/ics==complete"
+    m = re.fullmatch(r"task jrrfs_(det|enkf)_prep_cyc(_spinup|_mem\d+)?", line.strip())
+    if m and fam and i + 1 < len(lines) and lines[i + 1].strip().startswith("trigger "):
+        indent = lines[i + 1][:len(lines[i + 1]) - len(lines[i + 1].lstrip())]
+        expr = lines[i + 1].strip()[len("trigger "):]
+        lines[i + 1] = indent + f"trigger ( {expr} ) and ../../../{fam}z/{m.group(1)}/ics==complete"
 open(path, "w").write("\n".join(lines))
 EOF
 fi
