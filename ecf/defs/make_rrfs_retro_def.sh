@@ -184,6 +184,11 @@ EOF
                   | grep -oE "[0-9]+" | tail -1)
     domain_dt=${domain_dt:-36}
   fi
+  if [ "${domain_dt}" != "36" ] && [ "${RUN_FIREWX:-TRUE}" != "FALSE" ]; then
+    echo "ERROR: DT_ATMOS=${domain_dt} (${DOMAIN}) needs RUN_FIREWX=FALSE." >&2
+    echo "       Fire weather starts from the parent's hour-0 natlev file, which only the 36 s step writes." >&2
+    exit 1
+  fi
   if [ "${domain_dt}" != "36" ]; then
     n0=$(grep -cE "^ *task jrrfs_det_(post|prdgen)_f000_00_36[a-z_]*\$" "${out_def}")
     awk '

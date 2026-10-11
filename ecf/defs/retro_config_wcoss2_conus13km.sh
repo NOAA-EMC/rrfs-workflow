@@ -92,7 +92,9 @@ RETRO=${RETRO:-YES}
 # never run and nothing waiting on them blocks. Operations runs all of them.
 RUN_ENKF=${RUN_ENKF:-TRUE}
 RUN_ENSF=${RUN_ENSF:-TRUE}
-RUN_FIREWX=${RUN_FIREWX:-TRUE}
+# Fire weather starts from the parent forecast's hour-0 natlev file, which this domain's 90 s
+# step never writes, so it cannot run here; the generator refuses TRUE.
+RUN_FIREWX=${RUN_FIREWX:-FALSE}
 
 # Two task types no retro needs; off as on Ursa. Both may work on WCOSS2, where operations runs them.
 RUN_GEMPAK=${RUN_GEMPAK:-FALSE}
