@@ -198,6 +198,14 @@ if (( err != 0 )); then
   err_exit
 else
 
+# Add/update chemistry species for init.nc
+if [[ "${START_TYPE}" == "cold" ]]; then
+  if [[ "${DO_CHEMISTRY^^}" == "TRUE" ]] && [[ "${CYCLE_CHEMISTRY^^}" == "TRUE" ]]; then
+    echo "Cycling chemistry fields..."
+    source "${USHrrfs}/chem_ic_update.sh"
+  fi
+fi
+
 # update SST
 if (( "${ENS_SIZE:-0}" < 2 )); then
   for hr in ${SST_UPDATE_CYCS:-"99"}; do
