@@ -59,8 +59,8 @@ fi
 step "B: links and suite definitions"
 log=${ECF_HOME}/start_retro.setup.log
 mkdir -p "${ECF_HOME}" "${OUTPUTDIR}" "${DEV_PTMP}" "${DEV_DATAROOT}"
-# setup_ecf_links.sh must run from ecf/ and is verbose; keep its output in a log
-(cd "${repo}/ecf" && ./setup_ecf_links.sh > "${log}" 2>&1) || die "setup_ecf_links.sh failed; see ${log}"
+# setup_retro_links.sh runs ecf/setup_ecf_links.sh and is verbose; keep its output in a log
+"${repo}/ush/retro/setup_retro_links.sh" > "${log}" 2>&1 || die "setup_retro_links.sh failed; see ${log}"
 echo "links and generated job cards: done (log: ${log})"
 # Do not pipe these into head: the generators print several progress lines, and head closing the
 # pipe after the first one SIGPIPEs them part way through, which silently drops later steps (the

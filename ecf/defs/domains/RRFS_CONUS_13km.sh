@@ -6,12 +6,12 @@
 # RRFS_CONUS_13km: ESG grid C775, 420 x 252 points at 13 km, centred on 38.5N 97.5W.
 # Grid and write-component values come from dev-sci's ush/set_predef_grid_params.sh; job sizes
 # and science settings from its ush/set_rrfs_config_general.sh (WCOSS2/Ursa block) and the
-# RRFS_v1.2 13 km retro sample configs. Sourced by ecf/setup_ecf_links.sh and
+# RRFS_v1.2 13 km retro sample configs. Sourced by ush/retro/setup_retro_links.sh and
 # ecf/defs/make_rrfs_retro_def.sh when DOMAIN=RRFS_CONUS_13km in retro_config.sh.
 #
 
 # Fix files for this grid, from dev-sci's shared fix tree (FIX_RRFS_SHARED in retro_config.sh).
-# setup_ecf_links.sh links each one in as fix/<subdir>/RRFS_CONUS_13km beside the NA files. lam/
+# setup_retro_links.sh links each one in as fix/<subdir>/RRFS_CONUS_13km beside the NA files. lam/
 # uses RRFS_CONUS_13km_Lake_fracSV (420 x 252); FIX_RRFS lam/RRFS_CONUS_13km is an older 396 x 232
 # grid that does not match.
 DOMAIN_FIX_LINKS=(
@@ -30,7 +30,7 @@ NML_LAYOUT="7, 8"
 domain_workflow_conf() {
   cat <<'EOF'
 
-# ---- RRFS_CONUS_13km (appended by setup_ecf_links.sh from ecf/defs/domains/RRFS_CONUS_13km.sh)
+# ---- RRFS_CONUS_13km (appended by setup_retro_links.sh from ecf/defs/domains/RRFS_CONUS_13km.sh)
 export PREDEF_GRID_NAME='RRFS_CONUS_13km'
   # how exrrfs_prdgen.sh names this domain's products
   export PRDGEN_GRIDNAME='conus'
@@ -150,7 +150,7 @@ DOMAIN_SBATCH=(
 )
 
 # ---- Fixed namelist overrides (not configuration options) ----
-# Applied by setup_ecf_links.sh to parm/config/{det,enkf}/input.nml* along with the grid values above.
+# Applied by setup_retro_links.sh to parm/config/{det,enkf}/input.nml* along with the grid values above.
 # Smoke/dust is off because no smoke/dust fix files (dust12m_data.nc, emi_data.nc) exist for this
 # grid; dev-sci also runs 13 km with it off. sppint is set to DT_ATMOS because it must be a whole
 # multiple of the step, and the shipped 36 is not; otherwise ensf aborts "SPP interval is invalid".

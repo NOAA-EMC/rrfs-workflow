@@ -1,12 +1,10 @@
 #!/bin/bash
 #
 # Source the retro settings, ecf/defs/retro_config.sh, into the calling script. It is sourced by
-# setup_ecf_links.sh, make_rrfs_retro_def.sh, ush/prod_clone/make_retro_def.sh and
+# ush/retro/setup_retro_links.sh, make_rrfs_retro_def.sh, ush/prod_clone/make_retro_def.sh and
 # ush/retro/start_retro.sh, so they agree on where the file is and what happens when it is missing.
 #
-# Usage: . load_retro_config.sh [--optional]
-#   --optional  return 1 quietly when there is no settings file instead of exiting; for
-#               setup_ecf_links.sh, which also runs outside retros
+# Usage: . load_retro_config.sh
 #
 # retro_config.sh is git-ignored; link or copy one of the retro_config_<machine>_<domain>.sh samples
 # to it.
@@ -15,9 +13,6 @@ _retro_defs_dir=$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)
 if [ -f "${_retro_defs_dir}/retro_config.sh" ]; then
   # shellcheck source=/dev/null
   . "${_retro_defs_dir}/retro_config.sh"
-elif [ "${1:-}" = "--optional" ]; then
-  unset _retro_defs_dir
-  return 1
 else
   echo "ecf/defs/retro_config.sh not found." >&2
   # the file's name before the retros ran outside Ursa

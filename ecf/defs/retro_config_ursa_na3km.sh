@@ -7,7 +7,7 @@
 # blocks to your own; everything below them is what the tested run used.
 #
 # This is the ecflow equivalent of the Rocoto workflow's ush/config.sh, for the parts we control.
-# It is sourced by ecf/setup_ecf_links.sh, ecf/defs/make_rrfs_retro_def.sh,
+# It is sourced by ush/retro/setup_retro_links.sh, ecf/defs/make_rrfs_retro_def.sh,
 # ush/prod_clone/make_retro_def.sh and ush/retro/start_retro.sh, so edit values here instead of
 # passing them on every command line. Anything already set in the environment wins, so one-off runs
 # can still say e.g.
@@ -23,7 +23,7 @@
 # ---------------------------------------------------------------------------------------------
 # Machine
 # ---------------------------------------------------------------------------------------------
-# Sets how jobs are submitted and which machine-specific job settings setup_ecf_links.sh applies.
+# Sets how jobs are submitted and which machine-specific job settings setup_retro_links.sh applies.
 # URSA or WCOSS2.
 MACHINE=${MACHINE:-URSA}
 
@@ -61,7 +61,7 @@ ECFLOW_HOST=${ECFLOW_HOST:-uecflow01}     # host running the server (head.h read
 # ---------------------------------------------------------------------------------------------
 # Input data
 # ---------------------------------------------------------------------------------------------
-# fix tree; setup_ecf_links.sh links <repo>/fix to it
+# fix tree; setup_retro_links.sh links <repo>/fix to it
 FIX_RRFS_DIR=${FIX_RRFS_DIR:-/scratch4/NCEPDEV/fv3-cam/Shun.Liu/fix_nco_wcoss}
 # dev-sci's shared fix tree; the domain files (ecf/defs/domains) link other grids' fix files
 # from it

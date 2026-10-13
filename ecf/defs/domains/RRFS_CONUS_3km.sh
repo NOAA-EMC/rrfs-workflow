@@ -7,11 +7,11 @@
 # spacing as the operational NA domain over about a fifth of the area. Grid and write-component
 # values come from dev-sci's ush/set_predef_grid_params.sh; job sizes from the WCOSS2 block of its
 # ush/set_rrfs_config_general.sh, adjusted for Ursa's smaller per-node memory. Sourced by
-# ecf/setup_ecf_links.sh and ecf/defs/make_rrfs_retro_def.sh when DOMAIN=RRFS_CONUS_3km.
+# ush/retro/setup_retro_links.sh and ecf/defs/make_rrfs_retro_def.sh when DOMAIN=RRFS_CONUS_3km.
 #
 
 # Fix files for this grid, from dev-sci's shared fix tree (FIX_RRFS_SHARED in retro_config.sh).
-# setup_ecf_links.sh links each one in as fix/<subdir>/RRFS_CONUS_3km beside the NA files. Use the
+# setup_retro_links.sh links each one in as fix/<subdir>/RRFS_CONUS_3km beside the NA files. Use the
 # C3359 directories: dev-sci's plain lam/RRFS_CONUS_3km and gsi/RRFS_CONUS_3km are an older
 # 1748 x 1038 grid that does not match.
 DOMAIN_FIX_LINKS=(
@@ -32,7 +32,7 @@ NML_LAYOUT="31, 32"
 domain_workflow_conf() {
   cat <<'EOF'
 
-# ---- RRFS_CONUS_3km (appended by setup_ecf_links.sh from ecf/defs/domains/RRFS_CONUS_3km.sh)
+# ---- RRFS_CONUS_3km (appended by setup_retro_links.sh from ecf/defs/domains/RRFS_CONUS_3km.sh)
 export PREDEF_GRID_NAME='RRFS_CONUS_3km'
   # how exrrfs_prdgen.sh names this domain's products
   export PRDGEN_GRIDNAME='conus'

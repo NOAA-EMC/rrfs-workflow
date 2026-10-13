@@ -8,7 +8,7 @@
 # ecf/defs/retro_config.sh and change the paths and server in the first blocks to your own.
 #
 # This is the ecflow equivalent of the Rocoto workflow's ush/config.sh, for the parts we control.
-# It is sourced by ecf/setup_ecf_links.sh, ecf/defs/make_rrfs_retro_def.sh,
+# It is sourced by ush/retro/setup_retro_links.sh, ecf/defs/make_rrfs_retro_def.sh,
 # ush/prod_clone/make_retro_def.sh and ush/retro/start_retro.sh, so edit values here instead of
 # passing them on every command line. Anything already set in the environment wins, so one-off runs
 # can still say e.g.
@@ -24,7 +24,7 @@
 # ---------------------------------------------------------------------------------------------
 # Machine
 # ---------------------------------------------------------------------------------------------
-# Sets how jobs are submitted and which machine-specific job settings setup_ecf_links.sh applies.
+# Sets how jobs are submitted and which machine-specific job settings setup_retro_links.sh applies.
 # URSA or WCOSS2.
 MACHINE=${MACHINE:-WCOSS2}
 
@@ -66,7 +66,7 @@ ECFLOW_HOST=${ECFLOW_HOST:-cdecflow01}    # host running the server (head.h read
 # ---------------------------------------------------------------------------------------------
 # Input data
 # ---------------------------------------------------------------------------------------------
-# fix tree; setup_ecf_links.sh links <repo>/fix to it. The production package's tree has the
+# fix tree; setup_retro_links.sh links <repo>/fix to it. The production package's tree has the
 # workflow.conf_dev and _prod files the retro needs; NCO may remove a version once the next is
 # installed, so update the version here (or link a copy of your own) when the links break.
 FIX_RRFS_DIR=${FIX_RRFS_DIR:-/lfs/h1/ops/prod/packages/rrfs.v1.0.26/fix}
