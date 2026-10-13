@@ -161,11 +161,11 @@ case "${extrn_mdl_name}" in
     fcst_hhh=( $( printf "%03d " "${lbc_spec_fhrs[@]}" ) )
     prefix="rrfs.t${hh}z.natlev.3km.f"
     suffix=".na.grib2"
-    # Ursa, coarser domains (strip when merging to the nco branch): fire weather takes its boundaries
+    # Coarser domains (strip when merging to the nco branch): fire weather takes its boundaries
     # from the parent deterministic post, whose products carry that domain's own grid spacing and
     # name rather than the NA ones. This task runs as the 1.5 km fire weather grid, so the parent
     # domain is not in its environment; read the spacing and name off a file the parent wrote.
-    if [ "${MACHINE}" = "URSA" ] && [ ! -e "${sysdir}/${prefix}${fcst_hhh[0]}${suffix}" ]; then
+    if [ "${RETRO:-NO}" = "YES" ] && [ ! -e "${sysdir}/${prefix}${fcst_hhh[0]}${suffix}" ]; then
       fn_parent=$( ls -1 ${sysdir}/rrfs.t${hh}z.natlev.*.f???.*.grib2 2>/dev/null | head -1 )
       if [ -n "${fn_parent}" ]; then
         fn_parent=$( basename "${fn_parent}" )

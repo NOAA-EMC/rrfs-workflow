@@ -38,6 +38,8 @@ export RUN_ENVIR=${RUN_ENVIR:-nco}
 export SENDECF=${SENDECF:-YES}
 export SENDCOM=${SENDCOM:-YES}
 if [ -n "%PDY:%" ]; then export PDY=${PDY:-%PDY:%}; fi
+# Developer retros (make_rrfs_retro_def.sh) set RETRO=YES, which turns on their workarounds in the ex-scripts
+if [ -n "%RETRO:%" ]; then export RETRO=%RETRO:%; fi
 if [ -n "%PARATEST:%" ]; then export PARATEST=${PARATEST:-%PARATEST:%}; fi
 if [ -n "%COMPATH:%" ]; then export COMPATH=${COMPATH:-%COMPATH:%}; fi
 if [ -n "%MAILTO:%" ]; then export MAILTO=${MAILTO:-%MAILTO:%}; fi
@@ -59,6 +61,8 @@ if [ -d /apps/ops/prod ]; then # On WCOSS2
   set +x
   module load prod_util/${prod_util_ver}
   module load prod_envir/${prod_envir_ver}
+  # Developer retros (make_rrfs_retro_def.sh) read staged DCOM data instead of prod_envir's
+  if [ -n "%DCOMROOT:%" ]; then export DCOMROOT=%DCOMROOT:%; fi
   echo "Listing modules from head.h:"
   module list
   set -x

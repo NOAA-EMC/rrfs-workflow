@@ -113,10 +113,10 @@ if [[ ${copy_gfs_ctrl} = TRUE ]]; then
   fi
 fi
 
-# Ursa (strip when merging to the nco branch): the forecast writes this hour's restart files one at
+# Retros (strip when merging to the nco branch): the forecast writes this hour's restart files one at
 # a time, and a retro rerun can start this job before any of them land, so the check below would
 # miss a restart that is seconds away. Wait for the whole set when this hour is due one.
-if [ "${MACHINE}" = "URSA" ] && [[ " ${RESTART_HRS:-} " == *" $((10#${fhr})) "* ]]; then
+if [ "${RETRO:-NO}" = "YES" ] && [[ " ${RESTART_HRS:-} " == *" $((10#${fhr})) "* ]]; then
   restart_source_files="phy_data.nc fv_tracer.res.tile1.nc fv_core.res.tile1.nc fv_diag.res.tile1.nc sfc_data.nc fv_srf_wnd.res.tile1.nc fv_core.res.nc coupler.res"
   ic=0
   while [ ${ic} -lt 60 ]; do

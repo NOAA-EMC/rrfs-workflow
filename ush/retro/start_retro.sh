@@ -1,18 +1,19 @@
 #!/bin/bash
 #
-# Start an RRFS retro on Ursa in one go: steps B-D of the run instructions (links and suite
-# definitions, the ecflow server, loading and beginning both suites). Settings come from
-# ecf/defs/ursa_config.sh; edit that first (step A).
+# Start an RRFS retro in one go: steps B-D of the run instructions (links and suite definitions,
+# the ecflow server, loading and beginning both suites). Settings come from
+# ecf/defs/retro_config.sh; edit that first (step A).
 #
-# Usage: ush/ursa/start_retro.sh [--hold] [--reload]
+# Usage: ush/retro/start_retro.sh [--hold] [--reload]
 #   --hold    start everything with the RRFS suite suspended, so nothing is submitted until you
 #             run "ecflow_client --resume /para"; use the pause to suspend what you want to skip
 #             (see "Run less than the whole retro" in the instructions)
 #   --reload  the suites are already loaded: delete and reload them. Their state is lost, so the
 #             retro starts over from RETRO_START.
 #
-# Run from any Ursa login node. The server runs on uecflow01 at the port the ecflow module gives
-# you (1500 + uid) unless ECF_PORT is already set.
+# Run from any login node. On Ursa the server runs on uecflow01 at the port the ecflow module gives
+# you (1500 + uid), and this script starts it. On WCOSS2 start it yourself first with NCO's
+# server_check.sh on ECFLOW_HOST; its port is uid + 2000. Either way an ECF_PORT already set wins.
 #
 set -eu
 
@@ -31,19 +32,18 @@ step() { printf '\n=== %s\n' "$*"; }
 die() { echo "ERROR: $*" >&2; exit 1; }
 
 # shellcheck source=/dev/null
-if [ ! -f "${repo}/ecf/defs/ursa_config.sh" ]; then
-  echo "ecf/defs/ursa_config.sh not found." >&2
-  echo "Link or copy the sample for your domain, e.g." >&2
-  echo "  ln -s ursa_config_na3km.sh ecf/defs/ursa_config.sh" >&2
-  exit 1
-fi
-. "${repo}/ecf/defs/ursa_config.sh"
+. "${repo}/ecf/defs/load_retro_config.sh"
+case ${MACHINE} in
+  URSA)   default_port=$((1500 + $(id -u))) ;;
+  WCOSS2) default_port=$((2000 + $(id -u))) ;;
+  *) die "MACHINE=${MACHINE} is not supported; start_retro.sh runs on URSA and WCOSS2" ;;
+esac
 if ! type module >/dev/null 2>&1; then source /etc/profile; fi
-# the module sets ECF_PORT to the user's default (1500 + uid), so keep a port chosen beforehand
+# the module may set ECF_PORT (Ursa: to 1500 + uid), so keep a port chosen beforehand
 port_requested=${ECF_PORT:-}
 module load "ecflow/${ECFLOW_VER}" >/dev/null 2>&1 || die "cannot load ecflow/${ECFLOW_VER}"
 export ECF_HOST=${ECFLOW_HOST}
-export ECF_PORT=${port_requested:-$((1500 + $(id -u)))}
+export ECF_PORT=${port_requested:-${default_port}}
 echo "repo:   ${repo}"
 echo "server: ${ECF_HOST}:${ECF_PORT}   ECF_HOME: ${ECF_HOME}"
 echo "retro:  ${RETRO_START} to ${RETRO_END}"
@@ -59,13 +59,13 @@ fi
 step "B: links and suite definitions"
 log=${ECF_HOME}/start_retro.setup.log
 mkdir -p "${ECF_HOME}" "${OUTPUTDIR}" "${DEV_PTMP}" "${DEV_DATAROOT}"
-# setup_ecf_links.sh must run from ecf/ and is verbose; keep its output in a log
-(cd "${repo}/ecf" && ./setup_ecf_links.sh > "${log}" 2>&1) || die "setup_ecf_links.sh failed; see ${log}"
+# setup_retro_links.sh runs ecf/setup_ecf_links.sh and is verbose; keep its output in a log
+"${repo}/ush/retro/setup_retro_links.sh" > "${log}" 2>&1 || die "setup_retro_links.sh failed; see ${log}"
 echo "links and generated job cards: done (log: ${log})"
 # Do not pipe these into head: the generators print several progress lines, and head closing the
 # pipe after the first one SIGPIPEs them part way through, which silently drops later steps (the
 # per-domain job sizes, for one). Capture the output instead, then show the first line.
-gen_out=$(cd "${repo}/ecf" && ./defs/make_ursa_def.sh) || die "make_ursa_def.sh failed"
+gen_out=$(cd "${repo}/ecf" && ./defs/make_rrfs_retro_def.sh) || die "make_rrfs_retro_def.sh failed"
 printf '%s\n' "${gen_out}" | grep -E "^(Wrote|  [a-z]+:|[0-9]+ )" || true
 gen_out=$("${repo}/ush/prod_clone/make_retro_def.sh") || die "make_retro_def.sh failed"
 printf '%s\n' "${gen_out}" | head -1
@@ -73,6 +73,12 @@ printf '%s\n' "${gen_out}" | head -1
 step "C: ecflow server"
 if ping_ok; then
   echo "a server is already running on ${ECF_HOST}:${ECF_PORT}; using it"
+elif [ "${MACHINE}" = "WCOSS2" ]; then
+  # NCO's development servers are started through their own script, which also registers them
+  die "no server answers on ${ECF_HOST}:${ECF_PORT}. Start it first: ssh ${ECF_HOST}, then
+       export ECF_ROOT=\$HOME/ecflow ECF_OUTPUTDIR=\$HOME/ecflow LFS_OUTPUTDIR=\$HOME/ecflow ECF_COMDIR=\$HOME/ecflow
+       mkdir -p \$ECF_ROOT; /apps/ops/prod/nco/core/ecflow.v5.6.0.14/scripts/server_check.sh
+       and answer yes. Then re-run this script; the steps before this one are safe to repeat."
 else
   # setsid gives the server its own session: a plain "nohup ... &" keeps the ssh session open for
   # as long as the server runs. The timeout is a backstop; whether the server answers is what counts.
@@ -94,7 +100,7 @@ if [ "${reload}" = YES ]; then
 fi
 # a state file left from an earlier retro would make the driver think it had already started
 rm -f "${ECF_HOME}/retro_prod_clone_state.json"
-ecflow_client --load "${repo}/ecf/defs/rrfs_ursa.def"
+ecflow_client --load "${repo}/ecf/defs/rrfs_retro.def"
 ecflow_client --load "${repo}/ush/prod_clone/ecf/defs_retro.def"
 # --begin clears ordinary suspensions and submits whatever is already free (e.g. the cleanup
 # tasks), but a suite with "defstatus suspended" comes up suspended, so nothing in it can submit.
@@ -114,7 +120,7 @@ cat <<EOF
 Suites /${RRFS_SUITE} and /prod_clone are loaded and begun on ${ECF_HOST}:${ECF_PORT}.
 $( [ "${hold}" = YES ] && echo "/${RRFS_SUITE} is suspended (--hold); resume it to start submitting." || echo "The retro driver releases the first family within a minute." )
 
-Watch it:  ${repo}/ush/ursa/rrfsstat          (or ${ECF_HOME}/rrfs_status.txt)
+Watch it:  ${repo}/ush/retro/rrfsstat          (or ${ECF_HOME}/rrfs_status.txt)
      GUI:  ecflow_ui, server ${ECF_HOST} port ${ECF_PORT}
     Logs:  ${ECF_HOME}/${RRFS_SUITE}/primary/<DD>/rrfs/v1.0/<cyc>/<wgf>/<family>/<task>.1
     Stop:  ecflow_client --suspend /${RRFS_SUITE}      (pause everything, keep state)
