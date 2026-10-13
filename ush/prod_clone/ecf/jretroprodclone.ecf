@@ -1,7 +1,7 @@
 #!/bin/bash
-# Retro version of jupdateprodclonestatuses for Ursa (see scripts/exretroprodclone.py).
-# Runs every minute on the ecflow server host rather than through Slurm, so it only needs the
-# ecflow client and its python module.
+# Retro version of jupdateprodclonestatuses (see scripts/exretroprodclone.py).
+# Runs every minute on the ecflow server host rather than through the batch system, so it only
+# needs the ecflow client and its python module.
 set -xe
 
 export ECF_NAME=%ECF_NAME%
@@ -18,12 +18,25 @@ set -xe
 # the module points these at the site server; this suite runs its own
 export ECF_HOST=%ECF_HOST%
 export ECF_PORT=%ECF_PORT%
-# ecflow's python module is built for the system python3
+# ecflow's python module is built for one python3 version: Ursa's system python3, or on WCOSS2 a
+# python module of that version, since the system python3 there is older
 ecflow_site=$(ls -d $(dirname $(command -v ecflow_client))/../lib/python3*/site-packages | head -1)
 export PYTHONPATH=${ecflow_site}${PYTHONPATH:+:${PYTHONPATH}}
+pyexe=/usr/bin/python3
+if [ -d /apps/ops/prod ]; then
+  pyver=$(basename $(dirname ${ecflow_site}))   # e.g. python3.8
+  # the python modules sit under the intel compiler in the module tree, as in jupdateprodclonestatuses
+  set +xe
+  module load intel
+  module load $(module -t avail python/${pyver#python} 2>&1 | grep "^python/" | tail -1)
+  set -xe
+  pyexe=python3
+fi
 
 ecflow_client --init=${ECF_RID}
 trap 'ecflow_client --abort="exretroprodclone.py failed"; trap 0; exit 1' ERR
+# aborts the task (rather than a later traceback) when no python matches ecflow's bindings
+${pyexe} -c "import ecflow"
 
 export RETRO_COMROOT=%RETRO_COMROOT%
 export RETRO_START=%RETRO_START%
@@ -33,7 +46,7 @@ export RRFS_SUITE=%RRFS_SUITE:para%
 export RRFS_VER=%rrfs_ver:v1.0%
 export ALWAYS_COMPLETE=%ALWAYS_COMPLETE:nosofs%
 
-/usr/bin/python3 %PACKAGEHOME%/ush/prod_clone/scripts/exretroprodclone.py
+${pyexe} %PACKAGEHOME%/ush/prod_clone/scripts/exretroprodclone.py
 
 ecflow_client --complete
 trap 0

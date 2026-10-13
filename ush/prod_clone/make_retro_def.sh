@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Make an Ursa retro copy of the prod_clone suite (ecf/defs.def). The upstream mirror tasks become
+# Make a retro copy of the prod_clone suite (ecf/defs.def). The upstream mirror tasks become
 # ecflow dummy tasks (never submitted), and jupdateprodclonestatuses is replaced by jretroprodclone,
 # which completes them from staged files and steps the RRFS suite through the retro period.
 #
@@ -12,16 +12,10 @@ set -eu
 clone_dir=$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)
 out_def=${1:-${clone_dir}/ecf/defs_retro.def}
 
-# Settings live in ecf/defs/ursa_config.sh; environment variables still win.
+# Settings live in ecf/defs/retro_config.sh; environment variables still win.
 PACKAGEHOME=${PACKAGEHOME:-$(cd "${clone_dir}/../.." && pwd)}
 # shellcheck source=/dev/null
-if [ ! -f "${PACKAGEHOME}/ecf/defs/ursa_config.sh" ]; then
-  echo "ecf/defs/ursa_config.sh not found." >&2
-  echo "Link or copy the sample for your domain, e.g." >&2
-  echo "  ln -s ursa_config_na3km.sh ecf/defs/ursa_config.sh" >&2
-  exit 1
-fi
-. "${PACKAGEHOME}/ecf/defs/ursa_config.sh"
+. "${PACKAGEHOME}/ecf/defs/load_retro_config.sh"
 
 awk -v q="'" -v ph="${PACKAGEHOME}" -v eh="${ECF_HOME}" -v com="${RETRO_DATA_ROOT}/com" \
     -v start="${RETRO_START}" -v end="${RETRO_END}" -v suite="${RRFS_SUITE}" -v ev="${ECFLOW_VER}" '
@@ -29,6 +23,9 @@ awk -v q="'" -v ph="${PACKAGEHOME}" -v eh="${ECF_HOME}" -v com="${RETRO_DATA_ROO
   $1 == "suite" {
     print
     ed("ECF_HOME", eh)
+    # job logs next to the job files; the NCO dev ecflow servers set ECF_OUT to ~/ecflow, where the
+    # per-family log directories do not exist, so no job could write its output
+    ed("ECF_OUT", eh)
     ed("PACKAGEHOME", ph)
     ed("ECF_FILES", ph "/ush/prod_clone/ecf")
     ed("ENVIR", "prod")

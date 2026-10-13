@@ -1,25 +1,24 @@
 #!/bin/bash
 #
-# Make an Ursa copy of an RRFS suite definition that submits jobs with Slurm.
-# The task tree is unchanged; only suite-wide variables are replaced or added.
+# Make a developer copy of an RRFS suite definition for the machine in retro_config.sh (MACHINE):
+# its locations, its job submission commands, and, for a retro (RETRO=YES), triggers that step
+# through past dates instead of following the clock. The task tree is unchanged.
 #
-# Usage: [VAR=value ...] ./make_ursa_def.sh [output_def]
-# Any of the settings below can be overridden from the environment.
+# Usage: [VAR=value ...] ./make_rrfs_retro_def.sh [output_def]
+# Any of the settings in retro_config.sh can be overridden from the environment.
 #
 set -eu
 
 defs_dir=$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)
-out_def=${1:-${defs_dir}/rrfs_ursa.def}
+out_def=${1:-${defs_dir}/rrfs_retro.def}
 
-# Settings live in ursa_config.sh next to this script; environment variables still win.
+# Settings live in retro_config.sh next to this script; environment variables still win.
 # shellcheck source=/dev/null
-if [ ! -f "${defs_dir}/ursa_config.sh" ]; then
-  echo "ecf/defs/ursa_config.sh not found." >&2
-  echo "Link or copy the sample for your domain, e.g." >&2
-  echo "  ln -s ursa_config_na3km.sh ecf/defs/ursa_config.sh" >&2
-  exit 1
-fi
-. "${defs_dir}/ursa_config.sh"
+. "${defs_dir}/load_retro_config.sh"
+case ${MACHINE} in
+  URSA|WCOSS2) ;;
+  *) echo "MACHINE=${MACHINE} is not supported; the retro suite runs on URSA and WCOSS2" >&2; exit 1 ;;
+esac
 
 # Derived from the settings above
 PACKAGEHOME=${PACKAGEHOME:-$(cd "${defs_dir}/../.." && pwd)}
@@ -27,21 +26,22 @@ c=${RETRO_DATA_ROOT}/com
 DEV_COMPATH=${DEV_COMPATH:-$c/gfs:$c/gefs:$c/obsproc:$c/nsst:$c/nosofs:$c/hrrr:$c/rap}
 DCOMROOT=${DCOMROOT:-${RETRO_DATA_ROOT}/dcom}
 
-awk -v q="'" -v ph="${PACKAGEHOME}" -v eh="${ECF_HOME}" -v od="${OUTPUTDIR}" \
-    -v proj="${PROJ}" -v queue="${QUEUE}" -v part="${PARTITION}" \
+awk -v q="'" -v machine="${MACHINE}" -v ph="${PACKAGEHOME}" -v eh="${ECF_HOME}" -v od="${OUTPUTDIR}" \
+    -v proj="${PROJ}" -v queue="${QUEUE}" -v part="${PARTITION:-}" \
     -v ptmp="${DEV_PTMP}" -v droot="${DEV_DATAROOT}" -v ev="${ECFLOW_VER}" \
     -v envir="${ENVIR}" -v rver="${RRFS_VER}" -v site="${MACHINE_SITE}" -v eh_host="${ECFLOW_HOST}" \
-    -v compath="${DEV_COMPATH}" -v dcom="${DCOMROOT}" '
+    -v compath="${DEV_COMPATH}" -v dcom="${DCOMROOT}" -v retro="${RETRO}" '
   function ed(name, value) { print ind "edit " name " " q value q }
   # suite-wide settings go right after the suite line
   $1 == "suite" && !done {
     print; ind = "  "; done = 1
-    ed("MACHINE", "URSA")
-    ed("PARTITION", part)
+    ed("MACHINE", machine)
+    if (machine == "URSA") ed("PARTITION", part)
     ed("DEV_PTMP", ptmp)
     ed("DEV_DATAROOT", droot)
     ed("DEV_COMPATH", compath)
     ed("DCOMROOT", dcom)
+    ed("RETRO", retro)
     ed("ecflow_ver", ev)
     ed("ECF_LOGHOST", eh_host)
     ed("ENVIR", envir)
@@ -55,15 +55,33 @@ awk -v q="'" -v ph="${PACKAGEHOME}" -v eh="${ECF_HOME}" -v od="${OUTPUTDIR}" \
     ed("QUEUE", queue)
     ed("QUEUE_ARCH", queue)
     ed("OUTPUTDIR", od)
+    # no product alerts from a retro; the WCOSS2 fake dbn_alert fails on any file it cannot find,
+    # such as the NA subset that prdgen alerts on but a CONUS domain never writes
+    ed("SENDDBN", "NO")
+    ed("SENDDBN_NTC", "NO")
     ed("ECF_HOME", eh)
+    # job logs next to the job files; the NCO dev ecflow servers set ECF_OUT to ~/ecflow, where the
+    # per-family log directories do not exist, so no job could write its output
+    ed("ECF_OUT", eh)
     ed("ECF_INCLUDE", ph "/ecf/include")
-    # sbatch would otherwise also read the #PBS lines (e.g. "-q" as the partition).
-    # Ursa, coarser domains (strip when merging to the nco branch): SBATCH_OVERRIDES carries
-    # per-task job sizes for other domains, since sbatch options win over the #SBATCH lines in cards.
-    ed("SBATCH_OVERRIDES", "")
-    ed("ECF_JOB_CMD", "sbatch --ignore-pbs %SBATCH_OVERRIDES% %ECF_JOB% 1> %ECF_JOB%.sub 2>&1")
-    ed("ECF_KILL_CMD", "scancel %ECF_RID% 1> %ECF_JOB%.kill 2>&1")
-    ed("ECF_STATUS_CMD", "squeue -j %ECF_RID% 1> %ECF_JOB%.stat 2>&1")
+    if (machine == "WCOSS2") {
+      # The cards carry the #PBS job sizes. -o puts the output where ecflow looks for it, since the
+      # cards only say -j oe. Coarser domains (strip when merging to the nco branch): QSUB_OVERRIDES
+      # carries per-task job sizes for other domains; qsub options win over the #PBS lines too.
+      ed("QSUB_OVERRIDES", "")
+      ed("ECF_JOB_CMD", "qsub -o %ECF_JOBOUT% %QSUB_OVERRIDES% %ECF_JOB% 1> %ECF_JOB%.sub 2>&1")
+      ed("ECF_KILL_CMD", "qdel %ECF_RID% 1> %ECF_JOB%.kill 2>&1")
+      ed("ECF_STATUS_CMD", "qstat -f %ECF_RID% 1> %ECF_JOB%.stat 2>&1")
+    }
+    if (machine == "URSA") {
+      # sbatch would otherwise also read the #PBS lines (e.g. "-q" as the partition).
+      # Coarser domains (strip when merging to the nco branch): SBATCH_OVERRIDES carries
+      # per-task job sizes for other domains, since sbatch options win over the #SBATCH lines in cards.
+      ed("SBATCH_OVERRIDES", "")
+      ed("ECF_JOB_CMD", "sbatch --ignore-pbs %SBATCH_OVERRIDES% %ECF_JOB% 1> %ECF_JOB%.sub 2>&1")
+      ed("ECF_KILL_CMD", "scancel %ECF_RID% 1> %ECF_JOB%.kill 2>&1")
+      ed("ECF_STATUS_CMD", "squeue -j %ECF_RID% 1> %ECF_JOB%.stat 2>&1")
+    }
     next
   }
   # WCOSS2 locations and queues set further down would override the suite-level values
@@ -135,7 +153,7 @@ EOF
     exit 1
   fi
 
-  # Workflow groups switched off in ursa_config.sh (RUN_ENKF, RUN_ENSF, RUN_FIREWX): the same
+  # Workflow groups switched off in retro_config.sh (RUN_ENKF, RUN_ENSF, RUN_FIREWX): the same
   # mechanism as cycle_end above, applied to the whole family.
   for wgf in enkf ensf firewx; do
     run_var=RUN_$(echo "${wgf}" | tr '[:lower:]' '[:upper:]')
@@ -165,6 +183,11 @@ EOF
     domain_dt=$(grep -oE "^ *export DT_ATMOS='[0-9]+'" "${defs_dir}/domains/${DOMAIN}.sh" \
                   | grep -oE "[0-9]+" | tail -1)
     domain_dt=${domain_dt:-36}
+  fi
+  if [ "${domain_dt}" != "36" ] && [ "${RUN_FIREWX:-TRUE}" != "FALSE" ]; then
+    echo "ERROR: DT_ATMOS=${domain_dt} (${DOMAIN}) needs RUN_FIREWX=FALSE." >&2
+    echo "       Fire weather starts from the parent's hour-0 natlev file, which only the 36 s step writes." >&2
+    exit 1
   fi
   if [ "${domain_dt}" != "36" ]; then
     n0=$(grep -cE "^ *task jrrfs_det_(post|prdgen)_f000_00_36[a-z_]*\$" "${out_def}")
@@ -244,9 +267,10 @@ for line in lines:
 open(path, "w").write("\n".join(out))
 print(f"{n} manager trigger(s) pointed at the forecast task")
 EOF
-  # The cold-start prep (03z/15z prep_cyc_spinup) waits only for its own initial conditions; in real
-  # time the family's boundaries (made at 00z/12z) finish hours earlier. Without the clock a fast
-  # make_ics beats them, and on the first day there are no older boundaries to fall back on.
+  # The prep_cyc tasks wait only for the previous forecast (or, at 03z/15z cold starts, their own
+  # initial conditions), then copy boundaries from the family's 00/06/12/18z make_lbcs; in real time
+  # those finish hours earlier. Without the clock the preps start alongside the make_lbcs jobs and
+  # can copy a half-written set (2024050801 enkf mem023 found f002 but not f001).
   python3 - "${out_def}" <<'EOF'
 import re, sys
 path = sys.argv[1]
@@ -255,25 +279,43 @@ fam = None
 for i, line in enumerate(lines):
     m = re.match(r"\s*family (\d\d)\s*$", line)
     if m: fam = m.group(1)
-    if line.strip() == "task jrrfs_det_prep_cyc_spinup" and fam and i + 1 < len(lines) \
-            and lines[i + 1].strip() == "trigger ../ics==complete":
-        lines[i + 1] += f" and ../../../{fam}z/det/ics==complete"
+    m = re.fullmatch(r"task jrrfs_(det|enkf)_prep_cyc(_spinup|_mem\d+)?", line.strip())
+    if m and fam and i + 1 < len(lines) and lines[i + 1].strip().startswith("trigger "):
+        indent = lines[i + 1][:len(lines[i + 1]) - len(lines[i + 1].lstrip())]
+        expr = lines[i + 1].strip()[len("trigger "):]
+        lines[i + 1] = indent + f"trigger ( {expr} ) and ../../../{fam}z/{m.group(1)}/ics==complete"
 open(path, "w").write("\n".join(lines))
 EOF
 fi
 
-# Ursa, coarser domains (strip when merging to the nco branch): give the tasks the domain's table
-# names their job sizes through SBATCH_OVERRIDES
-# default here as well as in the config, so an unset DOMAIN cannot send it looking for a
-# domain file that does not exist
-DOMAIN=${DOMAIN:-RRFS_NA_3km}
+# Coarser domains (strip when merging to the nco branch): give the tasks the domain's table
+# names their job sizes through SBATCH_OVERRIDES on Ursa, or QSUB_OVERRIDES on WCOSS2. The table
+# is in sbatch terms; on WCOSS2 --nodes=N becomes N whole 128-core nodes and --time the walltime.
+# The node counts carry over because ranks per node come from the domain's PPN_* settings, which
+# all fit in a WCOSS2 node.
 if [ "${DOMAIN}" != "RRFS_NA_3km" ]; then
   # shellcheck source=/dev/null
   . "${defs_dir}/domains/${DOMAIN}.sh"
-  python3 - "${out_def}" "${DOMAIN_SBATCH[@]}" <<'EOF'
-import fnmatch, sys
-path = sys.argv[1]
-table = [a.split(":", 1) for a in sys.argv[2:]]
+  python3 - "${out_def}" "${MACHINE}" "${DOMAIN_SBATCH[@]}" <<'EOF'
+import fnmatch, re, sys
+path, machine = sys.argv[1], sys.argv[2]
+table = [a.split(":", 1) for a in sys.argv[3:]]
+
+def qsub_opts(sbatch):
+    out = []
+    for opt in sbatch.split():
+        m = re.fullmatch(r"--nodes=(\d+)", opt)
+        if m:
+            out.append(f"-l select={m.group(1)}:ncpus=128:mem=500G -l place=vscatter:excl")
+            continue
+        m = re.fullmatch(r"--time=([\d:]+)", opt)
+        if m:
+            out.append(f"-l walltime={m.group(1)}")
+            continue
+        sys.exit(f"no WCOSS2 equivalent for the domain job option {opt}")
+    return " ".join(out)
+
+var = "QSUB_OVERRIDES" if machine == "WCOSS2" else "SBATCH_OVERRIDES"
 out, n = [], 0
 for line in open(path).read().split("\n"):
     out.append(line)
@@ -281,7 +323,9 @@ for line in open(path).read().split("\n"):
     if len(t) >= 2 and t[0] == "task":
         opts = next((o for pat, o in table if fnmatch.fnmatch(t[1], pat)), None)
         if opts:
-            out.append(line[:len(line) - len(line.lstrip())] + f"  edit SBATCH_OVERRIDES '{opts}'")
+            if machine == "WCOSS2":
+                opts = qsub_opts(opts)
+            out.append(line[:len(line) - len(line.lstrip())] + f"  edit {var} '{opts}'")
             n += 1
 open(path, "w").write("\n".join(out))
 print(f"{n} tasks given job sizes for the domain")
@@ -291,7 +335,7 @@ fi
 echo "Wrote ${out_def} from ${BASE_DEF}"
 echo "  PACKAGEHOME=${PACKAGEHOME}"
 echo "  ECF_HOME=${ECF_HOME}  (create it before loading the suite)"
-echo "  PROJ=${PROJ} QUEUE=${QUEUE} PARTITION=${PARTITION}"
+echo "  MACHINE=${MACHINE} PROJ=${PROJ} QUEUE=${QUEUE} PARTITION=${PARTITION:-}"
 echo "  DEV_PTMP=${DEV_PTMP}"
 echo "  DEV_DATAROOT=${DEV_DATAROOT}"
 echo "  RETRO_DATA_ROOT=${RETRO_DATA_ROOT}"

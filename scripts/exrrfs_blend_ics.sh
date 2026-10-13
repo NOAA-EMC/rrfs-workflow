@@ -107,7 +107,7 @@ hh_m3="${cdate_crnt_fhr_m3:8:2}"
 
 DO_ENS_BLENDING=${DO_ENS_BLENDING:-"TRUE"}
 
-# Ursa, coarser domains (strip when merging to the nco branch): touch the ensinit marker when there
+# Coarser domains (strip when merging to the nco branch): touch the ensinit marker when there
 # is no member restart to warm start from. The blending branch below is the only thing that sets it,
 # so with blending off a cold start skips the one-timestep init and leaves the next cycle's prep_cyc
 # with no background.

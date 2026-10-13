@@ -60,16 +60,19 @@ setenv("CMAKE_CXX_COMPILER","CC")
 setenv("CMAKE_Fortran_COMPILER","ftn")
 setenv("CMAKE_Platform","wcoss2")
 -- Use the Python executable selected by the loaded Python modules.
-local blending_python = capture("command -v python 2>/dev/null"):gsub("%s+$", "")
+-- Check only on load since RDASApp runs module purge later
+if mode() == "load" then
+  local blending_python = capture("command -v python 2>/dev/null"):gsub("%s+$", "")
 
-if blending_python == "" or blending_python == "/usr/bin/python" then
-  LmodError(
-    "The RRFS Python environment was not loaded correctly. " ..
-    "Resolved Python: " .. blending_python
-  )
+  if blending_python == "" or blending_python == "/usr/bin/python" then
+    LmodError(
+      "The RRFS Python environment was not loaded correctly. " ..
+      "Resolved Python: " .. blending_python
+    )
+  end
+
+  setenv("BLENDINGPYTHON", blending_python)
 end
-
-setenv("BLENDINGPYTHON", blending_python)
 
 -- Prevent user-installed packages from overriding the RRFS environment.
 setenv("PYTHONNOUSERSITE", "1")
