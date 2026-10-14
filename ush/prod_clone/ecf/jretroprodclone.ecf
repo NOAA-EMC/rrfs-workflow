@@ -45,6 +45,7 @@ export RETRO_STATE=%ECF_HOME%/retro_prod_clone_state.json
 export RRFS_SUITE=%RRFS_SUITE:para%
 export RRFS_VER=%rrfs_ver:v1.0%
 export ALWAYS_COMPLETE=%ALWAYS_COMPLETE:nosofs%
+export DET_COLD_HR=%DET_COLD_HR:9%
 
 ${pyexe} %PACKAGEHOME%/ush/prod_clone/scripts/exretroprodclone.py
 
