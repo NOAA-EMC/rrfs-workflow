@@ -12,6 +12,12 @@ if [[ -d "${meshdir}" ]]; then
   ln -snf "${meshdir}"/*km "${HOMErrfs}/fix"
 fi
 
+# gaeac7
+meshdir="/gpfs/f7/wrfruc/world-shared/FIX_MESHES"
+if [[ -d "${meshdir}" ]]; then
+  ln -snf "${meshdir}"/*km "${HOMErrfs}/fix"
+fi
+
 # ursa
 meshdir="/scratch3/BMC/wrfruc/FIX_MESHES"
 if [[ -d "${meshdir}" ]]; then

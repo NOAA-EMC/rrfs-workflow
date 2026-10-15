@@ -2,7 +2,6 @@
 # Aloha! This file is to setup some top level experiment options
 #
 # shellcheck disable=all
-#
 export NET=rrfs
 export MESH_NAME="conus3km"
 export WGF=enkf
@@ -109,7 +108,7 @@ case ${MACHINE} in
     export IC_EXTRN_MDL_BASEDIR="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/GEFS"
     export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
     export OBSPATH="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/obs_rap"
-    export OBSPATH_NSSLMOSIAC="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/reflectivity"
+    export OBSPATH_NSSLMOSAIC="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/reflectivity"
     export OBSPATH_AIRNOW="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/airnow"
     export ACCOUNT="wrfruc"
     export QUEUE="batch"
@@ -119,7 +118,7 @@ case ${MACHINE} in
     export IC_EXTRN_MDL_BASEDIR="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/GEFS"
     export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
     export OBSPATH="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/obs_rap"
-    export OBSPATH_NSSLMOSIAC="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/reflectivity"
+    export OBSPATH_NSSLMOSAIC="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/reflectivity"
     export OBSPATH_AIRNOW="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/airnow"
     export ACCOUNT="wrfruc"
     export QUEUE="batch"
@@ -136,7 +135,7 @@ case ${MACHINE} in
     export IC_EXTRN_MDL_BASEDIR="/work2/noaa/wrfruc/RRFS2_RETRO_DATA/May2024/GEFS"
     export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
     export OBSPATH="/work2/noaa/wrfruc/RRFS2_RETRO_DATA/May2024/obs_rap"
-    export OBSPATH_NSSLMOSIAC="/work2/noaa/wrfruc/RRFS2_RETRO_DATA/May2024/reflectivity"
+    export OBSPATH_NSSLMOSAIC="/work2/noaa/wrfruc/RRFS2_RETRO_DATA/May2024/reflectivity"
     export OBSPATH_AIRNOW="/work2/noaa/wrfruc/RRFS2_RETRO_DATA/May2024/airnow"
     export ACCOUNT="wrfruc"
     export QUEUE="batch"
@@ -156,12 +155,30 @@ case ${MACHINE} in
     export IC_EXTRN_MDL_BASEDIR="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/May2024/GEFS"
     export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
     export OBSPATH="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/May2024/obs_rap"
-    export OBSPATH_NSSLMOSIAC="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/May2024/reflectivity"
+    export OBSPATH_NSSLMOSAIC="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/May2024/reflectivity"
     export OBSPATH_AIRNOW="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/May2024/airnow"
     export ACCOUNT="bil-fire10-oar"
     export QUEUE="normal"
     export PARTITION="batch"
     export CLUSTER="c6"
+    export NODES_IC="<nodes>10:ppn=160</nodes>"
+    export NODES_LBC="<nodes>10:ppn=160</nodes>"
+    export NODES_FCST="<nodes>10:ppn=160</nodes>"
+    export NODES_MPASSIT="<nodes>1:ppn=160</nodes>"
+    export NODES_UPP="<nodes>1:ppn=80</nodes>"
+    export NODES_RECENTER="<nodes>1:ppn=32</nodes>"
+    export NODES_GETKF="<nodes>20:ppn=40</nodes>"
+    ;;
+  "gaeac7")
+    export IC_EXTRN_MDL_BASEDIR="/gpfs/f7/wrfruc/world-shared/RRFS2_RETRO_DATA/May2024/GEFS"
+    export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
+    export OBSPATH="/gpfs/f7/wrfruc/world-shared/RRFS2_RETRO_DATA/May2024/obs_rap"
+    export OBSPATH_NSSLMOSAIC="/gpfs/f7/wrfruc/world-shared/RRFS2_RETRO_DATA/May2024/reflectivity"
+    export OBSPATH_AIRNOW="/gpfs/f7/wrfruc/world-shared/RRFS2_RETRO_DATA/May2024/airnow"
+    export ACCOUNT="bil-fire10-oar"
+    export QUEUE="normal"
+    export PARTITION="batch"
+    export CLUSTER="c7"
     export NODES_IC="<nodes>10:ppn=160</nodes>"
     export NODES_LBC="<nodes>10:ppn=160</nodes>"
     export NODES_FCST="<nodes>10:ppn=160</nodes>"

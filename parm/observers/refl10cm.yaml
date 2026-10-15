@@ -40,7 +40,7 @@
          identifier:
            name: PolygonCheck
            logging: true
-         <<: *polygonConfig
+         <<: *polygonConfig  # yamllint disable-line rule:anchors
 
        - filter: Background Check
          apply at iterations: 0,1

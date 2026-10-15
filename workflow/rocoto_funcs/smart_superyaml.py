@@ -44,14 +44,13 @@ def smart_superyaml(HOMErrfs, ytype, mesh, getkf_onestep=False):
                     if line.strip() == "distribution:":
                         if i + 1 < len(tmp) and 'name: "RoundRobin"' in tmp[i + 1]:
                             indent = line[:len(line) - len(line.lstrip())]
-
                             absolute_pos = observer["pos1"] + i
-
                             data[absolute_pos:absolute_pos + 2] = [
                                 f"{indent}use data frame container: true",
                                 f"{indent}redistribution:",
                                 f"{indent}  name: Halo",
                             ]
+
     elif ytype == "jedivar" and mesh in {"conus12km", "na12km"}:  # temporary fix until GSIBEC is updated
         hy.modify(data, 'regional nn fill distance in km', 'regional nn fill distance in km: 5000')
     #
@@ -60,6 +59,9 @@ def smart_superyaml(HOMErrfs, ytype, mesh, getkf_onestep=False):
         fpolygon = f'{HOMErrfs}/fix/{mesh}/{mesh}.polygon.yaml'
         polygon = hy.load(fpolygon)
         data[0:0] = polygon  # insert at the beginning
+    else:
+        # remove polyogn filters from all observers
+        yj.removefilter(data, "PolygonCheck")
     # ------------------------------------------------------------------------
     # dump out the final yaml file
     hy.dump(data, fpath=fpacked)

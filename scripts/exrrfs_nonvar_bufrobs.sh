@@ -61,7 +61,7 @@ if [[ -s ${lgycld_bufr} ]]; then
   bufrfile='NASALaRCCloudInGSI_bufr.bufr',
   npts_rad=${NONVAR_LARC_NPTS},
   ioption=2,
-  userDX=${NONVAR_USER_DX},
+  userDX=${NONVAR_USERDX},
   proj_name="${NONVAR_PROJ_NAME}",
   satidgoeswest=${satidgoeswest},
   satidgoeseast=${satidgoeseast},

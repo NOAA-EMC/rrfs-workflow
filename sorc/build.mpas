@@ -24,7 +24,7 @@ case "${MACHINE}" in
   ursa|orion|hercules|jet|hera)
     compiler_str="intel-mpi-ursa"
     ;;
-  gaeac6|derecho)
+  gaeac?|derecho)
     compiler_str="ifort_icx"
     ;;
 esac

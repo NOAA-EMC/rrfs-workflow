@@ -3,7 +3,7 @@
          _anchor_channels: &abi_g18_channels 7-16
          _anchor_use_flag: &abi_g18_use_flag [-1, 1, 1, 1, -1, -1, -1, -1, -1, -1]
          _anchor_use_flag_clddet: &abi_g18_use_flag_clddet [-2, -2, -2, -2, -2, -2, -2, -2, -2, -2]
-         _anchor_error: &abi_g18_error [ 2.2, 1.756, 1.587, 1.185, 2.2, 2.2, 2.2, 2.2, 2.2, 2.2 ]
+         _anchor_error0: &abi_g18_error0 [ 2.2, 1.756, 1.587, 1.185, 2.2, 2.2, 2.2, 2.2, 2.2, 2.2 ]
          _anchor_obserr_bound_max: &abi_g18_obserr_bound_max [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
          distribution:
            name: "RoundRobin"
@@ -100,14 +100,14 @@
          identifier:
            name: PolygonCheck
            logging: true
-         <<: *polygonConfig
+         <<: *polygonConfig  # yamllint disable-line rule:anchors
 
        - filter: Create Diagnostic Flags
          apply at iterations: 0,1
          identifier:
            name: CreateDiagnosticFlags
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *abi_g18_channels
@@ -162,7 +162,7 @@
          identifier:
            name: ZenithAngleCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *abi_g18_channels
@@ -182,9 +182,9 @@
        - filter: Domain Check
          apply at iterations: 0,1
          identifier:
-           name: CloudFractionCheck
+           name: CloudFractionCheck0_
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *abi_g18_channels
@@ -207,9 +207,9 @@
        - filter: Bounds Check
          apply at iterations: 0,1
          identifier:
-           name: ClearSkyStdCheck
+           name: ClearSkyStdCheck0_
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *abi_g18_channels
@@ -233,7 +233,7 @@
          identifier:
            name: BTrangeCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *abi_g18_channels
@@ -252,9 +252,9 @@
        - filter: Variable Assignment
          apply at iterations: 0,1
          identifier:
-           name: ClearSkyStdCheck
+           name: ClearSkyStdCheck1_
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          assignments:
          - name: DerivedMetaData/thinning_priority
            type: float
@@ -277,7 +277,7 @@
          identifier:
            name: Thinning
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *abi_g18_channels
@@ -315,13 +315,13 @@
          identifier:
            name: ObsErrorInit
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *abi_g18_channels
          action:
            name: assign error
-           error parameter vector: *abi_g18_error
+           error parameter vector: *abi_g18_error0
 
        # --------------------------------------------------------
        # Step 8 : Create surface flag assignment from Geovals
@@ -336,7 +336,7 @@
          identifier:
            name: SurfaceFlag
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          assignments:
          - name: DerivedMetaData/surfaceFlag
            type: int
@@ -375,7 +375,7 @@
          identifier:
            name: VarAssign
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          assignments:
          - name: DerivedMetaData/surfaceParam
            type: int
@@ -418,7 +418,7 @@
          identifier:
            name: RegionalDomainCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *abi_g18_channels
@@ -441,7 +441,7 @@
          identifier:
            name: HofXValidCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *abi_g18_channels
@@ -464,7 +464,7 @@
          identifier:
            name: SurfaceCheckLand
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: 7, 11-16
@@ -481,7 +481,7 @@
          identifier:
            name: SurfaceCheckSnow
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *abi_g18_channels
@@ -498,7 +498,7 @@
          identifier:
            name: SurfaceCheckIce
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *abi_g18_channels
@@ -515,7 +515,7 @@
          identifier:
            name: SurfaceCheckMixed
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *abi_g18_channels
@@ -546,7 +546,7 @@
          identifier:
            name: TransmitTopCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *abi_g18_channels
@@ -566,7 +566,7 @@
          identifier:
            name: CloudDetect
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *abi_g18_channels
@@ -578,7 +578,7 @@
              use_flag: *abi_g18_use_flag
              use_flag_clddet: *abi_g18_use_flag_clddet
              obserr_dtempf: [0.5, 2.0, 4.0, 2.0, 4.0]
-             error parameter vector: *abi_g18_error
+             error parameter vector: *abi_g18_error0
          maxvalue: 1.0e-12
          actions:
            - name: set
@@ -593,9 +593,9 @@
        - filter: Domain Check
          apply at iterations: 0,1
          identifier:
-           name: ClearSkyStdCheck
+           name: ClearSkyStdCheck2_
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: 7, 10-16
@@ -619,7 +619,7 @@
          identifier:
            name: ObsErrorInflationStd1
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: 8-10
@@ -639,7 +639,7 @@
          identifier:
            name: ObsErrorInflationStd2
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: 8-10
@@ -660,7 +660,7 @@
          identifier:
            name: ObsErrorInflationStd3
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: 8-10
@@ -681,7 +681,7 @@
          identifier:
            name: ObsErrorInflationStd4
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: 8-10
@@ -706,7 +706,7 @@
          identifier:
            name: NearSSTRetCheckIR
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *abi_g18_channels
@@ -736,7 +736,7 @@
          identifier:
            name: SurfJacobianCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *abi_g18_channels
@@ -759,9 +759,9 @@
        - filter: Domain Check
          apply at iterations: 0,1
          identifier:
-           name: CloudFractionCheck
+           name: CloudFractionCheck1_
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: 7, 10-16
@@ -782,9 +782,9 @@
        - filter: Variable Assignment
          apply at iterations: 0,1
          identifier:
-           name: SplitWindowCheck
+           name: SplitWindowCheck0_
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          assignments:
          - name: DerivedMetaData/OmFNBC
            type: float
@@ -814,9 +814,9 @@
        - filter: Bounds Check
          apply at iterations: 0,1
          identifier:
-           name: SplitWindowCheck
+           name: SplitWindowCheck1_
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: 7, 10-16
@@ -838,7 +838,7 @@
          identifier:
            name: GrossErrorCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *abi_g18_channels
@@ -859,7 +859,7 @@
                options:
                  channels: *abi_g18_channels
              obserr_bound_max: *abi_g18_obserr_bound_max
-             error parameter vector: *abi_g18_error
+             error parameter vector: *abi_g18_error0
          actions:
            - name: set
              flag: GrossCheck
@@ -874,7 +874,7 @@
          identifier:
            name: UseflagCheck
            logging: true
-           diagnostic flag new: false
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *abi_g18_channels

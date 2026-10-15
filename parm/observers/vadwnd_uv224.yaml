@@ -61,7 +61,7 @@
            identifier:
              name: PolygonCheck
              logging: true
-           <<: *polygonConfig
+           <<: *polygonConfig  # yamllint disable-line rule:anchors
 
          # Time window filter
          - filter: Domain Check
@@ -336,7 +336,7 @@
          - filter: Variable Assignment
            apply at iterations: 0,1
            identifier:
-             name: VarAssign
+             name: VarAssignU
              logging: true
              diagnostic flag new: false
            assignments:
@@ -353,7 +353,7 @@
          - filter: Variable Assignment
            apply at iterations: 0,1
            identifier:
-             name: VarAssign
+             name: VarAssignV
              logging: true
              diagnostic flag new: false
            assignments:
