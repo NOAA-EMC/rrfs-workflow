@@ -29,10 +29,14 @@ _COMROOT_/rrfs/_SHORTVER_/rrfs._PDY_/
 + /11/forecast/
 + /11/forecast/RESTART/
 + /11/forecast/RESTART/*.120000.*
++ /11/forecast/INPUT/
++ /11/forecast/INPUT/gfs_ctrl.nc
 + /10/
 + /10/forecast/
 + /10/forecast/RESTART/
 + /10/forecast/RESTART/*.120000.*
++ /10/forecast/INPUT/
++ /10/forecast/INPUT/gfs_ctrl.nc
 - *
 B 1000000
 
