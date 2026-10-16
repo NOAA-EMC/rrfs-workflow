@@ -37,11 +37,22 @@ for src in "${fix_src}"/*; do
   ln -snf "${src}" "${fix_dir}/${name}"
 done
 
-# The IODA fix files (ioda_empty.nc, atms_beamwidth.txt) are not in the NCO
-# fix tree, so they come from dev-sci's shared one. The loop above already linked them if
-# FIX_RRFS_DIR ever grows a jedi directory of its own.
-if [ ! -e "${fix_dir}/jedi" ] && [ -d "${FIX_RRFS_SHARED}/jedi" ]; then
-  ln -snf "${FIX_RRFS_SHARED}/jedi" "${fix_dir}/jedi"
+# The JEDI and IODA fix files are not in the NCO fix tree, so fix/jedi is built the way dev-sci
+# lays it out: the large files from its shared tree (berror_stats is the 13 km one, which dev-sci
+# uses for every grid) and the per-grid namelists from parm/jedi/<grid>, kept in this repository
+# beside the JCB templates that have to match them. Skipped if FIX_RRFS_DIR grows a jedi directory.
+if [ ! -d "${fix_src}/jedi" ] && [ -d "${FIX_RRFS_SHARED}/jedi" ]; then
+  rm -rf "${fix_dir}/jedi"
+  mkdir -p "${fix_dir}/jedi"
+  for src in "${FIX_RRFS_SHARED}/jedi"/*; do
+    case $(basename "${src}") in RRFS_*) continue ;; esac
+    ln -snf "${src}" "${fix_dir}/jedi/$(basename "${src}")"
+  done
+  [ -e "${fix_dir}/jedi/berror_stats" ] || \
+    ln -snf "${FIX_RRFS_SHARED}/jedi/RRFS_CONUS_13km/berror_stats" "${fix_dir}/jedi/berror_stats"
+  for grid in "${repo}"/parm/jedi/RRFS_*; do
+    ln -snf "${grid}" "${fix_dir}/jedi/$(basename "${grid}")"
+  done
 fi
 for wgf in det enkf ensf firewx; do
   mkdir -p "${fix_dir}/workflow/${wgf}"
