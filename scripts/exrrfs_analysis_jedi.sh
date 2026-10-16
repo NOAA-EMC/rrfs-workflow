@@ -13,11 +13,11 @@ export PARM_JCB="${PARMrrfs}/jedi"
 export RDASAPP_DIR="${RDASAPP_DIR:-${HOMErrfs}/sorc/RDASApp}"
 export FIX_CRTM_JEDI="${FIX_CRTM_JEDI:-${RDASAPP_DIR}/fix/expr_data/fv3_2024052700/data/crtm}"
 
-# Switches the Rocoto workflow carries in config.sh but the NCO workflow.conf does not. The
-# defaults match ush/config_defaults.sh in the Rocoto workflow; a retro overrides them by
-# appending to workflow.conf.
-export JCB_CONFIG_CONV=${JCB_CONFIG_CONV:-"rdas-atmosphere-templates-fv3_c13.yaml"}
-export JCB_CONFIG_DBZ=${JCB_CONFIG_DBZ:-"rdas-atmosphere-templates-fv3_c13_dbz.yaml"}
+# Switches the Rocoto workflow carries in config.sh but the NCO workflow.conf does not; a retro
+# overrides them by appending to workflow.conf. The JCB templates default to the NA 3 km grid the
+# base definition runs, which has no reflectivity template yet.
+export JCB_CONFIG_CONV=${JCB_CONFIG_CONV:-"rdas-atmosphere-templates-fv3_na3km.yaml"}
+export JCB_CONFIG_DBZ=${JCB_CONFIG_DBZ:-""}
 export DO_DACOLD=${DO_DACOLD:-"FALSE"}
 export EXT_SONDE=${EXT_SONDE:-"FALSE"}
 export DO_RADDA=${DO_RADDA:-"FALSE"}
@@ -82,10 +82,10 @@ ulimit -a
 export OOPS_TRACE=0
 export LD_LIBRARY_PATH="${RDASAPP_DIR}/build/lib64:${LD_LIBRARY_PATH}"
 
-# Job size. workflow.conf does not carry these yet, so the defaults match
-# NNODES/PPN/TPP_RUN_ANALYSIS_JEDI in the Rocoto workflow's ush/config_defaults.sh.
-NNODES_ANALYSIS_JEDI=${NNODES_ANALYSIS_JEDI:-10}
-PPN_ANALYSIS_JEDI=${PPN_ANALYSIS_JEDI:-24}
+# Job size. workflow.conf does not carry these yet, so the defaults are for the NA 3 km grid,
+# whose JCB template and input_lam_C3463_NP40X40.nml fix the layout at 40x40 = 1600 tasks.
+NNODES_ANALYSIS_JEDI=${NNODES_ANALYSIS_JEDI:-16}
+PPN_ANALYSIS_JEDI=${PPN_ANALYSIS_JEDI:-100}
 TPP_ANALYSIS_JEDI=${TPP_ANALYSIS_JEDI:-1}
 
 case $MACHINE in
