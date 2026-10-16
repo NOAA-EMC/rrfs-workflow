@@ -2,12 +2,12 @@
 #
 # Sample settings for an RRFS_NA_3km retro on WCOSS2.
 #
-# It is the Ursa sample (retro_config_ursa_na3km.sh) with WCOSS2 locations, account and server; the
+# It is the Ursa sample (config_ursa_na3km.sh) with WCOSS2 locations, account and server; the
 # retro period and suite settings below the input data block are the same. Link or copy it to
-# ecf/defs/retro_config.sh and change the paths and server in the first blocks to your own.
+# ecf/defs/retro/config.sh and change the paths and server in the first blocks to your own.
 #
 # This is the ecflow equivalent of the Rocoto workflow's ush/config.sh, for the parts we control.
-# It is sourced by ush/retro/setup_retro_links.sh, ecf/defs/make_rrfs_retro_def.sh,
+# It is sourced by ush/retro/setup_retro_links.sh, ecf/defs/retro/make_rrfs_retro_def.sh,
 # ush/prod_clone/make_retro_def.sh and ush/retro/start_retro.sh, so edit values here instead of
 # passing them on every command line. Anything already set in the environment wins, so one-off runs
 # can still say e.g.
@@ -40,8 +40,11 @@ OUTPUTDIR=${OUTPUTDIR:-${RETRO_WORK_BASE}/output}
 # COM output. envir-p1.h builds COMROOT as ${DEV_PTMP}/${USER}/ecflow_rrfs/para/com, so this is a
 # base directory and the user and suite names are appended to it.
 DEV_PTMP=${DEV_PTMP:-${RETRO_WORK_BASE}/ptmp}
-# job working directories (DATAROOT)
-DEV_DATAROOT=${DEV_DATAROOT:-${RETRO_WORK_BASE}/stmp}
+# job working directories (DATAROOT). In stmp rather than under RETRO_WORK_BASE, which is in
+# ptmp: a job's working directory is scratch for as long as that job runs, which is what stmp is
+# for, and it keeps the COM output and the working directories on separate filesystems the way
+# the Rocoto retros do (their STMP and PTMP).
+DEV_DATAROOT=${DEV_DATAROOT:-/lfs/h2/emc/stmp/${USER}/ecflow_rrfs}
 
 # ---------------------------------------------------------------------------------------------
 # PBS
@@ -69,7 +72,7 @@ ECFLOW_HOST=${ECFLOW_HOST:-cdecflow01}    # host running the server (head.h read
 # workflow.conf_dev and _prod files the retro needs; NCO may remove a version once the next is
 # installed, so update the version here (or link a copy of your own) when the links break.
 FIX_RRFS_DIR=${FIX_RRFS_DIR:-/lfs/h1/ops/prod/packages/rrfs.v1.0.26/fix}
-# dev-sci's shared fix tree; the domain files (ecf/defs/domains) link other grids' fix files
+# dev-sci's shared fix tree; the domain files (ecf/defs/retro/domains) link other grids' fix files
 # from it
 FIX_RRFS_SHARED=${FIX_RRFS_SHARED:-/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS}
 # staged upstream data in NCO COM/DCOM layout (see make_links.sh in that directory)
@@ -99,8 +102,9 @@ RUN_BUFRSND=${RUN_BUFRSND:-FALSE}
 # path, so a 13 km week goes from about 38 h to about 13 h. Operations needs it; a cycling or DA
 # retro usually does not. Fire weather takes its initial and boundary conditions from the long
 # forecast's post, so RUN_FIREWX must be FALSE as well, and the generator says so if it is not.
-# The 85 boundary jobs at each long cycle are left alone: the hourly cycles in the family share
-# them, so the safe cut needs the forecast length rather than the task name.
+# The 85 boundary jobs at each long cycle are left alone, because the hourly cycles in the family
+# share them; to cut those as well, shorten the forecast itself with FCST_LEN_HRS and
+# FCST_LEN_HRS_LONG (see the simplified samples, config_*_simple.sh).
 DO_LONG_FORECAST=${DO_LONG_FORECAST:-TRUE}
 
 # Whether each job keeps its working directory under stmp. The base NCO definition sets YES at all

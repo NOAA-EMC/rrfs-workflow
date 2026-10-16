@@ -539,7 +539,12 @@ if [ ${BKTYPE} -eq 0 ]; then
        cpreq -p ${FV3_NML_RESTART_FP} ${DATA}/${FV3_NML_FN}
       else
         FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$((10#$cyc))]}
-        if [ $FCST_LEN_HRS -eq '18' ]; then
+        # The hourly cycles and the longer ones at 00, 06, 12 and 18z take different
+        # namelists, so which cycle it is decides. A forecast length of 18 or 84 hours
+        # picks out the same two in operations, but matches neither once the forecasts
+        # are shortened, and then nothing is copied and the model stops on a missing
+        # input.nml.
+        if [ $(( 10#$cyc % 6 )) -ne 0 ]; then
 
           if [ -e ${FIXLAM}/115_nodes_det/routehandle_fb01 ]; then
            files=`ls ${FIXLAM}/115_nodes_det/routehandle_fb??`
@@ -555,7 +560,7 @@ if [ ${BKTYPE} -eq 0 ]; then
 
 
           cpreq -p ${FV3_NML_RESTART_18H_FP} ${DATA}/${FV3_NML_FN}
-        elif [ $FCST_LEN_HRS -eq '84' ]; then
+        else
 
           if [ -e ${FIXLAM}/154_nodes_det/routehandle_fb01 ]; then
 	   files=`ls ${FIXLAM}/154_nodes_det/routehandle_fb??`
@@ -590,7 +595,8 @@ else # not cycling
          cpreq -p ${FV3_NML_FP} ${DATA}/${FV3_NML_FN}
        else
          FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$((10#$cyc))]}
-         if [ $FCST_LEN_HRS -eq '18' ]; then
+         # as above: the cycle, not the forecast length, chooses the namelist
+         if [ $(( 10#$cyc % 6 )) -ne 0 ]; then
           if [ -e ${FIXLAM}/115_nodes_det/routehandle_fb01 ]; then
            files=`ls ${FIXLAM}/115_nodes_det/routehandle_fb??`
 	   echo "#! /bin/sh" > ./para_copy.sh
@@ -604,7 +610,7 @@ else # not cycling
 	  fi
 
            cpreq -p ${FV3_NML_18H_FP} ${DATA}/${FV3_NML_FN}
-         elif [ $FCST_LEN_HRS -eq '84' ]; then
+         else
 
           if [ -e ${FIXLAM}/154_nodes_det/routehandle_fb01 ]; then
 	   files=`ls ${FIXLAM}/154_nodes_det/routehandle_fb??`
@@ -677,24 +683,29 @@ if [ ${CYCLE_TYPE} = "spinup" ]; then
 else
   if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ] ; then
     FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$((10#$cyc))]}
-    if [ $FCST_LEN_HRS -eq '18' ]; then
-      LAYOUT_X="${LAYOUT_X_18H}" 
-      LAYOUT_Y="${LAYOUT_Y_18H}" 
-      WRITE_GRP="${WRTCMP_write_groups_18H}"
-      WRITE_TSK="${WRTCMP_write_tasks_per_group_18H}"
-    elif [ $FCST_LEN_HRS -eq '84' ] ; then
-      LAYOUT_X="${LAYOUT_X_LONG}" 
-      LAYOUT_Y="${LAYOUT_Y_LONG}" 
-      WRITE_GRP="${WRTCMP_write_groups_LONG}"
-      WRITE_TSK="${WRTCMP_write_tasks_per_group_LONG}"
-    elif [ $FCST_LEN_HRS -eq '60' ] ; then
-      LAYOUT_X="${LAYOUT_X_ENSF}" 
+    # There are three sets of layout and write-task settings: the hourly deterministic cycle
+    # (_18H), the longer deterministic cycle at 00, 06, 12 and 18z (_LONG) and the ensemble
+    # forecast (_ENSF). Which cycle it is decides the set. Lengths of 18, 84 and 60 hours would
+    # pick out the same three in operations, but leave every setting empty for a run with
+    # shorter forecasts, and the model is then launched with no rank count at all.
+    if [ ${WGF} = "ensf" ]; then
+      LAYOUT_X="${LAYOUT_X_ENSF}"
       if [ $ensmem_num = "2" ] || [ $ensmem_num = "3" ] || [ $ensmem_num = "5" ]; then
         LAYOUT_X="${LAYOUT_X_ENSF_LARGER}"
       fi
-      LAYOUT_Y="${LAYOUT_Y_ENSF}" 
+      LAYOUT_Y="${LAYOUT_Y_ENSF}"
       WRITE_GRP="${WRTCMP_write_groups_ENSF}"
       WRITE_TSK="${WRTCMP_write_tasks_per_group_ENSF}"
+    elif [ $(( 10#$cyc % 6 )) -eq 0 ]; then
+      LAYOUT_X="${LAYOUT_X_LONG}"
+      LAYOUT_Y="${LAYOUT_Y_LONG}"
+      WRITE_GRP="${WRTCMP_write_groups_LONG}"
+      WRITE_TSK="${WRTCMP_write_tasks_per_group_LONG}"
+    else
+      LAYOUT_X="${LAYOUT_X_18H}"
+      LAYOUT_Y="${LAYOUT_Y_18H}"
+      WRITE_GRP="${WRTCMP_write_groups_18H}"
+      WRITE_TSK="${WRTCMP_write_tasks_per_group_18H}"
     fi
   elif [ ${WGF} = "enkf" ] || [ ${WGF} = "firewx" ]; then
 # should already have LAYOUT_X and LAYOUT_Y
@@ -727,7 +738,12 @@ NLN=${NLN:-"/bin/ln -sf"}
 
 #if [ ${DO_ENSFCST} == "FALSE" ]; then
 if [ ${DO_ENSFCST} == "FALSE" ] && [ ${WGF} != "firewx" ]; then
-  if [ $FCST_LEN_HRS -gt 6 ]; then
+  # These links are what makes the model write into the shared output directory the post tasks
+  # read, and are only wanted for the deterministic production forecast: the EnKF and the
+  # spin-up cycle are not posted. Operations tells them apart by a length over 6 hours, which
+  # leaves a shortened deterministic forecast writing into its own working directory, where
+  # nothing looks for it.
+  if [ "${WGF}" = "det" ] && [ "${CYCLE_TYPE}" != "spinup" ]; then
     for fhr in $(seq 0 $FCST_LEN_HRS); do
       fhr_2d=$( printf "%02d" ${fhr} )
       fhr_3d=$( printf "%03d" ${fhr} )

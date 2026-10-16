@@ -2,7 +2,7 @@
 #
 # Start an RRFS retro in one go: steps B-D of the run instructions (links and suite definitions,
 # the ecflow server, loading and beginning both suites). Settings come from
-# ecf/defs/retro_config.sh; edit that first (step A).
+# ecf/defs/retro/config.sh; edit that first (step A).
 #
 # Usage: ush/retro/start_retro.sh [--hold] [--reload]
 #   --hold    start everything with the RRFS suite suspended, so nothing is submitted until you
@@ -32,7 +32,7 @@ step() { printf '\n=== %s\n' "$*"; }
 die() { echo "ERROR: $*" >&2; exit 1; }
 
 # shellcheck source=/dev/null
-. "${repo}/ecf/defs/load_retro_config.sh"
+. "${repo}/ecf/defs/retro/load_config.sh"
 case ${MACHINE} in
   URSA)   default_port=$((1500 + $(id -u))) ;;
   WCOSS2) default_port=$((2000 + $(id -u))) ;;
@@ -62,10 +62,17 @@ mkdir -p "${ECF_HOME}" "${OUTPUTDIR}" "${DEV_PTMP}" "${DEV_DATAROOT}"
 # setup_retro_links.sh runs ecf/setup_ecf_links.sh and is verbose; keep its output in a log
 "${repo}/ush/retro/setup_retro_links.sh" > "${log}" 2>&1 || die "setup_retro_links.sh failed; see ${log}"
 echo "links and generated job cards: done (log: ${log})"
+# A retro running 3DVar without the EnKF takes the ensemble for the hybrid analysis from a staged
+# one; link it into COM before the first analysis asks for it (RRFSE_NWGES in retro/config.sh).
+if [ -n "${RRFSE_NWGES:-}" ] && [ "${RUN_ENKF:-TRUE}" = "FALSE" ]; then
+  "${repo}/ush/retro/link_staged_enkf.sh" >> "${log}" 2>&1 \
+    || die "link_staged_enkf.sh failed; see ${log}"
+  echo "staged ensemble linked into COM (log: ${log})"
+fi
 # Do not pipe these into head: the generators print several progress lines, and head closing the
 # pipe after the first one SIGPIPEs them part way through, which silently drops later steps (the
 # per-domain job sizes, for one). Capture the output instead, then show the first line.
-gen_out=$(cd "${repo}/ecf" && ./defs/make_rrfs_retro_def.sh) || die "make_rrfs_retro_def.sh failed"
+gen_out=$(cd "${repo}/ecf" && ./defs/retro/make_rrfs_retro_def.sh) || die "make_rrfs_retro_def.sh failed"
 printf '%s\n' "${gen_out}" | grep -E "^(Wrote|  [a-z]+:|[0-9]+ )" || true
 gen_out=$("${repo}/ush/prod_clone/make_retro_def.sh") || die "make_retro_def.sh failed"
 printf '%s\n' "${gen_out}" | head -1
@@ -100,7 +107,7 @@ if [ "${reload}" = YES ]; then
 fi
 # a state file left from an earlier retro would make the driver think it had already started
 rm -f "${ECF_HOME}/retro_prod_clone_state.json"
-ecflow_client --load "${repo}/ecf/defs/rrfs_retro.def"
+ecflow_client --load "${repo}/ecf/defs/retro/rrfs_retro.def"
 ecflow_client --load "${repo}/ush/prod_clone/ecf/defs_retro.def"
 # --begin clears ordinary suspensions and submits whatever is already free (e.g. the cleanup
 # tasks), but a suite with "defstatus suspended" comes up suspended, so nothing in it can submit.

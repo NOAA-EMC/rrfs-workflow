@@ -3,12 +3,12 @@
 # Sample settings for an RRFS_CONUS_3km retro on Ursa.
 #
 # This is the configuration the CONUS 3 km retro day on this branch was tested with. It
-# differs from retro_config_ursa_na3km.sh only in DOMAIN.
-# Link or copy it to ecf/defs/retro_config.sh and change the paths and account in the first three
+# differs from config_ursa_na3km.sh only in DOMAIN.
+# Link or copy it to ecf/defs/retro/config.sh and change the paths and account in the first three
 # blocks to your own; everything below them is what the tested run used.
 #
 # This is the ecflow equivalent of the Rocoto workflow's ush/config.sh, for the parts we control.
-# It is sourced by ush/retro/setup_retro_links.sh, ecf/defs/make_rrfs_retro_def.sh,
+# It is sourced by ush/retro/setup_retro_links.sh, ecf/defs/retro/make_rrfs_retro_def.sh,
 # ush/prod_clone/make_retro_def.sh and ush/retro/start_retro.sh, so edit values here instead of
 # passing them on every command line. Anything already set in the environment wins, so one-off runs
 # can still say e.g.
@@ -64,14 +64,14 @@ ECFLOW_HOST=${ECFLOW_HOST:-uecflow01}     # host running the server (head.h read
 # ---------------------------------------------------------------------------------------------
 # fix tree; setup_retro_links.sh links <repo>/fix to it
 FIX_RRFS_DIR=${FIX_RRFS_DIR:-/scratch4/NCEPDEV/fv3-cam/Shun.Liu/fix_nco_wcoss}
-# dev-sci's shared fix tree; the domain files (ecf/defs/domains) link other grids' fix files
+# dev-sci's shared fix tree; the domain files (ecf/defs/retro/domains) link other grids' fix files
 # from it
 FIX_RRFS_SHARED=${FIX_RRFS_SHARED:-/scratch4/BMC/rtrr/FIX_RRFS}
 # staged upstream data in NCO COM/DCOM layout (see make_links.sh in that directory)
 RETRO_DATA_ROOT=${RETRO_DATA_ROOT:-/scratch4/BMC/zrtrr/Samuel.Degelia/RRFS_RETRO_DATA_NCO}
 # Coarser domains (strip when merging to the nco branch): the model domain. RRFS_NA_3km
 # is the operational v1 domain and changes nothing; any other value needs
-# ecf/defs/domains/<DOMAIN>.sh with its grid, fix files and job sizes.
+# ecf/defs/retro/domains/<DOMAIN>.sh with its grid, fix files and job sizes.
 DOMAIN=${DOMAIN:-RRFS_CONUS_3km}
 
 # ---------------------------------------------------------------------------------------------
@@ -105,8 +105,9 @@ RUN_SMOKE=${RUN_SMOKE:-TRUE}
 # path, so a 13 km week goes from about 38 h to about 13 h. Operations needs it; a cycling or DA
 # retro usually does not. Fire weather takes its initial and boundary conditions from the long
 # forecast's post, so RUN_FIREWX must be FALSE as well, and the generator says so if it is not.
-# The 85 boundary jobs at each long cycle are left alone: the hourly cycles in the family share
-# them, so the safe cut needs the forecast length rather than the task name.
+# The 85 boundary jobs at each long cycle are left alone, because the hourly cycles in the family
+# share them; to cut those as well, shorten the forecast itself with FCST_LEN_HRS and
+# FCST_LEN_HRS_LONG (see the simplified samples, config_*_simple.sh).
 DO_LONG_FORECAST=${DO_LONG_FORECAST:-TRUE}
 
 # Whether each job keeps its working directory under stmp. The base NCO definition sets YES at all

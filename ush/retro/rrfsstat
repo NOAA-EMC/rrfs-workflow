@@ -11,22 +11,29 @@ it prints one line per cycle (a rollup); --tasks prints one line per task, like 
   rrfsstat                          rollup of every released cycle
   rrfsstat -t                       every task, most interesting states first
   rrfsstat -w                       every task in workflow order, grouped by cycle
-  rrfsstat --report                 write stat, RUN and DEAD files, like the Rocoto stat script
+  rrfsstat -p                       every task the configuration will run, and its state
+  rrfsstat --set-aside              also list the tasks the configuration switched off
+  rrfsstat --report                 write stat, RUN, DEAD and TASKS, like the Rocoto stat script
   rrfsstat -t -s aborted,active     only these states
   rrfsstat -c 03z                   only the 03z cycle
   rrfsstat -t -o status.txt         write to a file instead of the terminal
   rrfsstat -l 60                    refresh every 60 seconds until interrupted
 
 The server to talk to comes from --host/--port, else ECF_HOST/ECF_PORT, else the host in
-ecf/defs/retro_config.sh and port 1500 + your uid on Ursa (what the ecflow module sets) or
+ecf/defs/retro/config.sh and port 1500 + your uid on Ursa (what the ecflow module sets) or
 2000 + your uid on WCOSS2 (what NCO assigns). So it works with or without the module loaded; pass
 --port only if your server runs on another port.
 
 States are ecflow's: queued, submitted, active, complete, aborted, suspended, unknown.
 "aborted" is the one to look at; it means the job failed. "suspended" is a node someone held.
 Task listings give the job log of each aborted or running task on the line below it.
---workflow prints them in the words rocotostat uses (RUNNING, DONE, FAILED and so on) and marks
-a task the retro set aside on purpose, which is complete but never ran, as SET-ASIDE.
+--workflow prints them in the words rocotostat uses (RUNNING, DONE, FAILED and so on).
+
+Tasks the configuration switched off are left out of every listing: they are in the definition
+only so that ecflow has something to call complete, and a simplified retro has thousands of them.
+--set-aside puts them back, marked SET-ASIDE. --plan adds a census by task type to the listing,
+and covers the days the retro has not reached yet, which is how to tell whether a simplified
+retro has been cut down the way it was meant to be.
 """
 
 import argparse
@@ -55,12 +62,12 @@ LOG_STATES = ("aborted", "active")
 
 
 def settings_from_config():
-    """Fall back to ecf/defs/retro_config.sh so this works without any environment set up."""
+    """Fall back to ecf/defs/retro/config.sh so this works without any environment set up."""
     here = os.path.dirname(os.path.realpath(__file__))
     defs = os.path.join(here, "..", "..", "ecf", "defs")
     host = port = None
     try:
-        with open(os.path.join(defs, "retro_config.sh")) as f:
+        with open(os.path.join(defs, "retro/config.sh")) as f:
             text = f.read()
     except OSError:
         return host, port
@@ -134,7 +141,10 @@ def collect(defs, suite, cycle_filter, state_filter, show_all=False):
             if state_filter and state not in state_filter:
                 continue
             short = path.split("/rrfs/", 1)[-1].split("/", 1)[-1] if "/rrfs/" in path else path
-            aside = any(v.name() == "RETRO_SET_ASIDE" for v in task.variables)
+            # a task the definition starts complete never runs: either switched off by the
+            # generator (defstatus complete) or held complete by hand (RETRO_SET_ASIDE)
+            aside = (str(task.get_defstatus()) == "complete"
+                     or any(v.name() == "RETRO_SET_ASIDE" for v in task.variables))
             rows.append({
                 "aside": aside,
                 "pdy": pdy,
@@ -229,12 +239,13 @@ def word_for(r):
     return STATE_WORD.get(r["state"], r["state"].upper())
 
 
-def write_report(rows, jobs, directory):
+def write_report(rows, jobs, directory, total):
     """Write stat, RUN and DEAD, the way the Rocoto workflow's stat script does.
 
     stat  the full per-cycle listing (what --workflow prints)
     RUN   what is moving: running, submitted and queued tasks, then a count of every state
     DEAD  what needs a look: failed and unknown tasks, with their counts
+    TASKS what this configuration runs at all, by type and by cycle (what --plan prints)
     """
     counts = {}
     for r in rows:
@@ -244,6 +255,9 @@ def write_report(rows, jobs, directory):
 
     with open(os.path.join(directory, "stat"), "w") as f:
         print_workflow(rows, jobs, f)
+
+    with open(os.path.join(directory, "TASKS"), "w") as f:
+        print_plan(rows, jobs, f, total)
 
     with open(os.path.join(directory, "RUN"), "w") as f:
         print("----------", file=f)
@@ -268,13 +282,48 @@ def write_report(rows, jobs, directory):
     return counts
 
 
+def task_type(name):
+    """Collapse the member and forecast-hour parts of a task name, so a census stays readable."""
+    name = re.sub(r"_mem\d+", "_mem*", name)
+    name = re.sub(r"_f\d{3}_\d\d_\d\d", "_f*", name)
+    name = re.sub(r"_f\d+(?![\w])", "_f*", name)
+    name = re.sub(r"_(make_lbcs|save_restart_long)_\d+", r"_\1_*", name)
+    return name
+
+
+def print_plan(rows, jobs, out, total):
+    """Every task this configuration runs, by type and then by cycle, with each one's state.
+
+    What is printed is the work a retro day actually does.
+    """
+    print(f"{len(rows)} task(s) run per day, {total - len(rows)} of the {total} in the "
+          "definition set aside by this configuration\n", file=out)
+
+    census = {}
+    for r in rows:
+        key = task_type(r["task"].rsplit("/", 1)[-1])
+        census.setdefault(key, {"n": 0, "cycles": set()})
+        census[key]["n"] += 1
+        census[key]["cycles"].add(r["cycle"])
+    head = f"{'COUNT':>6}  {'TASK':<44}CYCLES"
+    print(head, file=out)
+    print("-" * (len(head) + 20), file=out)
+    for name, c in sorted(census.items(), key=lambda kv: (-kv[1]["n"], kv[0])):
+        cycles = sorted(c["cycles"])
+        shown = " ".join(cycles) if len(cycles) <= 8 else f"{cycles[0]}-{cycles[-1]} ({len(cycles)})"
+        print(f"{c['n']:>6}  {name:<44}{shown}", file=out)
+    print("", file=out)
+    print_workflow(rows, jobs, out)
+
+
 def print_workflow(rows, jobs, out):
     """Every task in the order the workflow defines them, grouped by cycle, like rocotostat."""
     cycles = {}
     for r in rows:
         cycles.setdefault((r["pdy"], r["cycle"]), []).append(r)
     print("STATE: DONE complete, RUNNING active, SUBMITTED in the batch queue, QUEUED waiting on a "
-          "trigger,\n       FAILED aborted, HELD suspended, SET-ASIDE completed without running\n", file=out)
+          "trigger,\n       FAILED aborted, HELD suspended, SET-ASIDE switched off by the "
+          "configuration\n", file=out)
     for (pdy, cyc), items in cycles.items():
         counts = {}
         for r in items:
@@ -291,16 +340,20 @@ def print_workflow(rows, jobs, out):
 
 def main():
     p = argparse.ArgumentParser(description="state of the RRFS ecflow suite, rocotostat style")
-    p.add_argument("--host", help="ecflow server host (default: ECF_HOST, then retro_config.sh)")
+    p.add_argument("--host", help="ecflow server host (default: ECF_HOST, then retro/config.sh)")
     p.add_argument("--port", help="ecflow server port (default: ECF_PORT)")
     p.add_argument("--suite", default=os.getenv("RRFS_SUITE", DEFAULT_SUITE))
     p.add_argument("-t", "--tasks", action="store_true", help="one line per task, not a rollup")
     p.add_argument("-w", "--workflow", action="store_true",
                    help="every task in workflow order, grouped by cycle (like rocotostat -c all)")
+    p.add_argument("-p", "--plan", action="store_true",
+                   help="every task this configuration runs, and its state (set-aside left out)")
     p.add_argument("-c", "--cycle", help="only these cycles, e.g. 03z or 00z,03z")
     p.add_argument("-s", "--state", help="only these states, e.g. aborted,active")
     p.add_argument("-a", "--all", action="store_true",
                    help="include day families the retro has not released yet")
+    p.add_argument("--set-aside", action="store_true",
+                   help="also list the tasks the configuration switched off")
     p.add_argument("-o", "--out", help="write to this file instead of the terminal")
     p.add_argument("--report", nargs="?", const=".", metavar="DIR",
                    help="write stat, RUN and DEAD files into DIR (default: here)")
@@ -330,10 +383,17 @@ def main():
         if defs is None or defs.find_suite(a.suite) is None:
             sys.exit(f"rrfsstat: the server on {host}:{port} is running but has no /{a.suite} suite loaded "
                      "yet (step D on the run instructions).")
-        rows = collect(defs, a.suite, cycles, states, a.all)
+        # the plan is about the configuration rather than today's progress, so it covers the
+        # day families the retro has not reached yet as well
+        rows = collect(defs, a.suite, cycles, states, a.all or a.plan)
+        total = len(rows)
+        if not a.set_aside:
+            # a task the configuration switched off is complete before the retro starts and stays
+            # that way; listing thousands of them buries the handful that do run
+            rows = [r for r in rows if not r["aside"]]
         jobs = slurm_jobs()
         if a.report:
-            counts = write_report(rows, jobs, a.report)
+            counts = write_report(rows, jobs, a.report, total)
             print(f"wrote stat, RUN and DEAD in {os.path.abspath(a.report)}: "
                   + ", ".join(f"{n} {w.lower()}" for w, n in sorted(counts.items(), key=lambda kv: -kv[1])))
             if not a.loop:
@@ -343,7 +403,9 @@ def main():
         out = open(a.out, "w") if a.out else sys.stdout
         try:
             print(f"suite /{a.suite} on {host}:{port}   {time.strftime('%Y-%m-%d %H:%M:%S')}\n", file=out)
-            if a.workflow:
+            if a.plan:
+                print_plan(rows, jobs, out, total)
+            elif a.workflow:
                 print_workflow(rows, jobs, out)
             elif a.tasks:
                 print_tasks(rows, jobs, out)
