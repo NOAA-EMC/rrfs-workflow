@@ -28,6 +28,8 @@ suite prod
                   trigger :TIME >= 0015 and :TIME < 0615
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 0035 and :TIME < 0635
+                task jrrfs_det_ioda_bufr
+                  trigger :TIME >= 0035 and :TIME < 0635
               endfamily
               family ics
                 trigger :TIME >= 0010 and :TIME < 0610 and /prod/primary/18/gfs/v16.3/gfs/atmos/post/jgfs_atmos_post_f102 == complete
@@ -1357,6 +1359,8 @@ suite prod
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 0015 and :TIME < 0615
                 task jrrfs_enkf_process_bufr
+                  trigger :TIME >= 0035 and :TIME < 0635
+                task jrrfs_enkf_ioda_bufr
                   trigger :TIME >= 0035 and :TIME < 0635
               endfamily
               family ics
@@ -6723,6 +6727,8 @@ suite prod
                   trigger :TIME >= 0115 and :TIME < 0715
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 0135 and :TIME < 0735
+                task jrrfs_det_ioda_bufr
+                  trigger :TIME >= 0135 and :TIME < 0735
               endfamily
               family prep
                 trigger :TIME >= 0145 and :TIME < 0745 and /prod/primary/12/nsst/v1.2/jnsst==complete and /prod/primary/00/obsproc/v1.2/rrfs/01z/dump/jobsproc_rrfs_dump==complete
@@ -7119,6 +7125,8 @@ suite prod
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 0115 and :TIME < 0715
                 task jrrfs_enkf_process_bufr
+                  trigger :TIME >= 0135 and :TIME < 0735
+                task jrrfs_enkf_ioda_bufr
                   trigger :TIME >= 0135 and :TIME < 0735
               endfamily
               family prep
@@ -7679,6 +7687,8 @@ suite prod
                   trigger :TIME >= 0215 and :TIME < 0815
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 0235 and :TIME < 0835
+                task jrrfs_det_ioda_bufr
+                  trigger :TIME >= 0235 and :TIME < 0835
               endfamily
               family prep
                 trigger :TIME >= 0235 and :TIME < 0835
@@ -8075,6 +8085,8 @@ suite prod
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 0215 and :TIME < 0815
                 task jrrfs_enkf_process_bufr
+                  trigger :TIME >= 0235 and :TIME < 0835
+                task jrrfs_enkf_ioda_bufr
                   trigger :TIME >= 0235 and :TIME < 0835
               endfamily
               family prep
@@ -8975,6 +8987,8 @@ suite prod
                   trigger :TIME >= 0315 and :TIME < 0915
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 0335 and :TIME < 0935
+                task jrrfs_det_ioda_bufr
+                  trigger :TIME >= 0335 and :TIME < 0935
                 task jrrfs_det_process_smoke_spinup
                   trigger ( :TIME >= 0335 and :TIME < 0935 ) and jrrfs_det_process_smoke==complete
                   edit CYCLE_TYPE 'spinup'
@@ -8985,6 +8999,8 @@ suite prod
                   trigger :TIME >= 0315 and :TIME < 0915
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_bufr_spinup
+                  trigger :TIME >= 0335 and :TIME < 0935
+                task jrrfs_det_ioda_bufr_spinup
                   trigger :TIME >= 0335 and :TIME < 0935
                   edit CYCLE_TYPE 'spinup'
               endfamily
@@ -9409,6 +9425,8 @@ suite prod
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 0315 and :TIME < 0915
                 task jrrfs_enkf_process_bufr
+                  trigger :TIME >= 0335 and :TIME < 0935
+                task jrrfs_enkf_ioda_bufr
                   trigger :TIME >= 0335 and :TIME < 0935
               endfamily
               family prep
@@ -9968,6 +9986,8 @@ suite prod
                   trigger :TIME >= 0415 and :TIME < 1015
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 0435 and :TIME < 1035
+                task jrrfs_det_ioda_bufr
+                  trigger :TIME >= 0435 and :TIME < 1035
                 task jrrfs_det_process_smoke_spinup
                   trigger ( :TIME >= 0435 and :TIME < 1035 ) and jrrfs_det_process_smoke==complete
                   edit CYCLE_TYPE 'spinup'
@@ -9978,6 +9998,8 @@ suite prod
                   trigger :TIME >= 0415 and :TIME < 1015
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_bufr_spinup
+                  trigger :TIME >= 0435 and :TIME < 1035
+                task jrrfs_det_ioda_bufr_spinup
                   trigger :TIME >= 0435 and :TIME < 1035
                   edit CYCLE_TYPE 'spinup'
               endfamily
@@ -10398,6 +10420,8 @@ suite prod
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 0415 and :TIME < 1015
                 task jrrfs_enkf_process_bufr
+                  trigger :TIME >= 0435 and :TIME < 1035
+                task jrrfs_enkf_ioda_bufr
                   trigger :TIME >= 0435 and :TIME < 1035
               endfamily
               family prep
@@ -11298,6 +11322,8 @@ suite prod
                   trigger :TIME >= 0515 and :TIME < 1115
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 0535 and :TIME < 1135
+                task jrrfs_det_ioda_bufr
+                  trigger :TIME >= 0535 and :TIME < 1135
                 task jrrfs_det_process_smoke_spinup
                   trigger ( :TIME >= 0535 and :TIME < 1135 ) and jrrfs_det_process_smoke==complete
                   edit CYCLE_TYPE 'spinup'
@@ -11308,6 +11334,8 @@ suite prod
                   trigger :TIME >= 0515 and :TIME < 1115
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_bufr_spinup
+                  trigger :TIME >= 0535 and :TIME < 1135
+                task jrrfs_det_ioda_bufr_spinup
                   trigger :TIME >= 0535 and :TIME < 1135
                   edit CYCLE_TYPE 'spinup'
               endfamily
@@ -11728,6 +11756,8 @@ suite prod
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 0515 and :TIME < 1115
                 task jrrfs_enkf_process_bufr
+                  trigger :TIME >= 0535 and :TIME < 1135
+                task jrrfs_enkf_ioda_bufr
                   trigger :TIME >= 0535 and :TIME < 1135
               endfamily
               family prep
@@ -12399,6 +12429,8 @@ suite prod
                   trigger :TIME >= 0615 and :TIME < 1215
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 0635 and :TIME < 1235
+                task jrrfs_det_ioda_bufr
+                  trigger :TIME >= 0635 and :TIME < 1235
                 task jrrfs_det_process_smoke_spinup
                   trigger ( :TIME >= 0635 and :TIME < 1235 ) and jrrfs_det_process_smoke==complete
                   edit CYCLE_TYPE 'spinup'
@@ -12409,6 +12441,8 @@ suite prod
                   trigger :TIME >= 0615 and :TIME < 1215
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_bufr_spinup
+                  trigger :TIME >= 0635 and :TIME < 1235
+                task jrrfs_det_ioda_bufr_spinup
                   trigger :TIME >= 0635 and :TIME < 1235
                   edit CYCLE_TYPE 'spinup'
               endfamily
@@ -13762,6 +13796,8 @@ suite prod
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 0615 and :TIME < 1215
                 task jrrfs_enkf_process_bufr
+                  trigger :TIME >= 0635 and :TIME < 1235
+                task jrrfs_enkf_ioda_bufr
                   trigger :TIME >= 0635 and :TIME < 1235
               endfamily
               family ics
@@ -19128,6 +19164,8 @@ suite prod
                   trigger :TIME >= 0715 and :TIME < 1315
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 0735 and :TIME < 1335
+                task jrrfs_det_ioda_bufr
+                  trigger :TIME >= 0735 and :TIME < 1335
                 task jrrfs_det_process_smoke_spinup
                   trigger ( :TIME >= 0735 and :TIME < 1335 ) and jrrfs_det_process_smoke==complete
                   edit CYCLE_TYPE 'spinup'
@@ -19138,6 +19176,8 @@ suite prod
                   trigger :TIME >= 0715 and :TIME < 1315
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_bufr_spinup
+                  trigger :TIME >= 0735 and :TIME < 1335
+                task jrrfs_det_ioda_bufr_spinup
                   trigger :TIME >= 0735 and :TIME < 1335
                   edit CYCLE_TYPE 'spinup'
               endfamily
@@ -19560,6 +19600,8 @@ suite prod
                 task jrrfs_enkf_process_lightning_spinup
                   trigger :TIME >= 0715 and :TIME < 1315
                 task jrrfs_enkf_process_bufr_spinup
+                  trigger :TIME >= 0735 and :TIME < 1335
+                task jrrfs_enkf_ioda_bufr_spinup
                   trigger :TIME >= 0735 and :TIME < 1335
               endfamily
               family ics
@@ -20664,6 +20706,8 @@ suite prod
                   trigger :TIME >= 0815 and :TIME < 1415
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 0835 and :TIME < 1435
+                task jrrfs_det_ioda_bufr
+                  trigger :TIME >= 0835 and :TIME < 1435
                 task jrrfs_det_process_smoke_spinup
                   trigger ( :TIME >= 0835 and :TIME < 1435 ) and jrrfs_det_process_smoke==complete
                   edit CYCLE_TYPE 'spinup'
@@ -20674,6 +20718,8 @@ suite prod
                   trigger :TIME >= 0815 and :TIME < 1415
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_bufr_spinup
+                  trigger :TIME >= 0835 and :TIME < 1435
+                task jrrfs_det_ioda_bufr_spinup
                   trigger :TIME >= 0835 and :TIME < 1435
                   edit CYCLE_TYPE 'spinup'
               endfamily
@@ -21094,6 +21140,8 @@ suite prod
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 0815 and :TIME < 1415
                 task jrrfs_enkf_process_bufr
+                  trigger :TIME >= 0835 and :TIME < 1435
+                task jrrfs_enkf_ioda_bufr
                   trigger :TIME >= 0835 and :TIME < 1435
               endfamily
               family prep
@@ -21994,6 +22042,8 @@ suite prod
                   trigger :TIME >= 0915 and :TIME < 1515
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 0935 and :TIME < 1535
+                task jrrfs_det_ioda_bufr
+                  trigger :TIME >= 0935 and :TIME < 1535
               endfamily
               family prep
                 trigger :TIME >= 0920 and :TIME < 1520
@@ -22390,6 +22440,8 @@ suite prod
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 0915 and :TIME < 1515
                 task jrrfs_enkf_process_bufr
+                  trigger :TIME >= 0935 and :TIME < 1535
+                task jrrfs_enkf_ioda_bufr
                   trigger :TIME >= 0935 and :TIME < 1535
               endfamily
               family prep
@@ -22948,6 +23000,8 @@ suite prod
                   trigger :TIME >= 1015 and :TIME < 1615
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 1035 and :TIME < 1635
+                task jrrfs_det_ioda_bufr
+                  trigger :TIME >= 1035 and :TIME < 1635
               endfamily
               family prep
                 trigger :TIME >= 1020 and :TIME < 1620
@@ -23344,6 +23398,8 @@ suite prod
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 1015 and :TIME < 1615
                 task jrrfs_enkf_process_bufr
+                  trigger :TIME >= 1035 and :TIME < 1635
+                task jrrfs_enkf_ioda_bufr
                   trigger :TIME >= 1035 and :TIME < 1635
               endfamily
               family prep
@@ -24244,6 +24300,8 @@ suite prod
                   trigger :TIME >= 1115 and :TIME < 1715
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 1135 and :TIME < 1735
+                task jrrfs_det_ioda_bufr
+                  trigger :TIME >= 1135 and :TIME < 1735
               endfamily
               family prep
                 trigger :TIME >= 1120 and :TIME < 1720
@@ -24640,6 +24698,8 @@ suite prod
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 1115 and :TIME < 1715
                 task jrrfs_enkf_process_bufr
+                  trigger :TIME >= 1135 and :TIME < 1735
+                task jrrfs_enkf_ioda_bufr
                   trigger :TIME >= 1135 and :TIME < 1735
               endfamily
               family prep
@@ -25288,6 +25348,8 @@ suite prod
                 task jrrfs_det_process_lightning
                   trigger :TIME >= 1220 and :TIME < 1820
                 task jrrfs_det_process_bufr
+                  trigger :TIME >= 1235 and :TIME < 1835
+                task jrrfs_det_ioda_bufr
                   trigger :TIME >= 1235 and :TIME < 1835
               endfamily
               family ics
@@ -26618,6 +26680,8 @@ suite prod
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 1220 and :TIME < 1820
                 task jrrfs_enkf_process_bufr
+                  trigger :TIME >= 1235 and :TIME < 1835
+                task jrrfs_enkf_ioda_bufr
                   trigger :TIME >= 1235 and :TIME < 1835
               endfamily
               family ics
@@ -31983,6 +32047,8 @@ suite prod
                   trigger :TIME >= 1315 and :TIME < 1915
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 1335 and :TIME < 1935
+                task jrrfs_det_ioda_bufr
+                  trigger :TIME >= 1335 and :TIME < 1935
               endfamily
               family prep
                 trigger :TIME >= 1345 and :TIME < 1945
@@ -32379,6 +32445,8 @@ suite prod
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 1315 and :TIME < 1915
                 task jrrfs_enkf_process_bufr
+                  trigger :TIME >= 1335 and :TIME < 1935
+                task jrrfs_enkf_ioda_bufr
                   trigger :TIME >= 1335 and :TIME < 1935
               endfamily
               family prep
@@ -32938,6 +33006,8 @@ suite prod
                   trigger :TIME >= 1415 and :TIME < 2015
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 1435 and :TIME < 2035
+                task jrrfs_det_ioda_bufr
+                  trigger :TIME >= 1435 and :TIME < 2035
               endfamily
               family prep
                 trigger :TIME >= 1435 and :TIME < 2035
@@ -33334,6 +33404,8 @@ suite prod
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 1415 and :TIME < 2015
                 task jrrfs_enkf_process_bufr
+                  trigger :TIME >= 1435 and :TIME < 2035
+                task jrrfs_enkf_ioda_bufr
                   trigger :TIME >= 1435 and :TIME < 2035
               endfamily
               family prep
@@ -34234,6 +34306,8 @@ suite prod
                   trigger :TIME >= 1515 and :TIME < 2115
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 1535 and :TIME < 2135
+                task jrrfs_det_ioda_bufr
+                  trigger :TIME >= 1535 and :TIME < 2135
                 task jrrfs_det_process_smoke_spinup
                   trigger ( :TIME >= 1535 and :TIME < 2135 ) and jrrfs_det_process_smoke==complete
                   edit CYCLE_TYPE 'spinup'
@@ -34244,6 +34318,8 @@ suite prod
                   trigger :TIME >= 1515 and :TIME < 2115
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_bufr_spinup
+                  trigger :TIME >= 1535 and :TIME < 2135
+                task jrrfs_det_ioda_bufr_spinup
                   trigger :TIME >= 1535 and :TIME < 2135
                   edit CYCLE_TYPE 'spinup'
               endfamily
@@ -34668,6 +34744,8 @@ suite prod
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 1515 and :TIME < 2115
                 task jrrfs_enkf_process_bufr
+                  trigger :TIME >= 1535 and :TIME < 2135
+                task jrrfs_enkf_ioda_bufr
                   trigger :TIME >= 1535 and :TIME < 2135
               endfamily
               family prep
@@ -35226,6 +35304,8 @@ suite prod
                   trigger :TIME >= 1615 and :TIME < 2215
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 1635 and :TIME < 2235
+                task jrrfs_det_ioda_bufr
+                  trigger :TIME >= 1635 and :TIME < 2235
                 task jrrfs_det_process_smoke_spinup
                   trigger ( :TIME >= 1635 and :TIME < 2235 ) and jrrfs_det_process_smoke==complete
                   edit CYCLE_TYPE 'spinup'
@@ -35236,6 +35316,8 @@ suite prod
                   trigger :TIME >= 1615 and :TIME < 2215
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_bufr_spinup
+                  trigger :TIME >= 1635 and :TIME < 2235
+                task jrrfs_det_ioda_bufr_spinup
                   trigger :TIME >= 1635 and :TIME < 2235
                   edit CYCLE_TYPE 'spinup'
               endfamily
@@ -35656,6 +35738,8 @@ suite prod
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 1615 and :TIME < 2215
                 task jrrfs_enkf_process_bufr
+                  trigger :TIME >= 1635 and :TIME < 2235
+                task jrrfs_enkf_ioda_bufr
                   trigger :TIME >= 1635 and :TIME < 2235
               endfamily
               family prep
@@ -36556,6 +36640,8 @@ suite prod
                   trigger :TIME >= 1715 and :TIME < 2315
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 1735 and :TIME < 2335
+                task jrrfs_det_ioda_bufr
+                  trigger :TIME >= 1735 and :TIME < 2335
                 task jrrfs_det_process_smoke_spinup
                   trigger ( :TIME >= 1735 and :TIME < 2335 ) and jrrfs_det_process_smoke==complete
                   edit CYCLE_TYPE 'spinup'
@@ -36566,6 +36652,8 @@ suite prod
                   trigger :TIME >= 1715 and :TIME < 2315
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_bufr_spinup
+                  trigger :TIME >= 1735 and :TIME < 2335
+                task jrrfs_det_ioda_bufr_spinup
                   trigger :TIME >= 1735 and :TIME < 2335
                   edit CYCLE_TYPE 'spinup'
               endfamily
@@ -36986,6 +37074,8 @@ suite prod
                 task jrrfs_enkf_process_lightning
                   trigger :TIME >= 1715 and :TIME < 2315
                 task jrrfs_enkf_process_bufr
+                  trigger :TIME >= 1735 and :TIME < 2335
+                task jrrfs_enkf_ioda_bufr
                   trigger :TIME >= 1735 and :TIME < 2335
               endfamily
               family prep
@@ -37645,6 +37735,8 @@ suite prod
                   trigger :TIME >= 1815 or :TIME < 0015
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 1835 or :TIME < 0035
+                task jrrfs_det_ioda_bufr
+                  trigger :TIME >= 1835 or :TIME < 0035
                 task jrrfs_det_process_smoke_spinup
                   trigger ( :TIME >= 1835 or :TIME < 0035 ) and jrrfs_det_process_smoke==complete
                   edit CYCLE_TYPE 'spinup'
@@ -37655,6 +37747,8 @@ suite prod
                   trigger :TIME >= 1815 or :TIME < 0015
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_bufr_spinup
+                  trigger :TIME >= 1835 or :TIME < 0035
+                task jrrfs_det_ioda_bufr_spinup
                   trigger :TIME >= 1835 or :TIME < 0035
                   edit CYCLE_TYPE 'spinup'
               endfamily
@@ -39008,6 +39102,8 @@ suite prod
                 task jrrfs_enkf_process_lightning
                   trigger ( :TIME >= 1815 or :TIME < 0015 )
                 task jrrfs_enkf_process_bufr
+                  trigger ( :TIME >= 1835 or :TIME < 0035 )
+                task jrrfs_enkf_ioda_bufr
                   trigger ( :TIME >= 1835 or :TIME < 0035 )
               endfamily
               family ics
@@ -44373,6 +44469,8 @@ suite prod
                   trigger :TIME >= 1915 or :TIME < 0115
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 1935 or :TIME < 0135
+                task jrrfs_det_ioda_bufr
+                  trigger :TIME >= 1935 or :TIME < 0135
                 task jrrfs_det_process_smoke_spinup
                   trigger ( :TIME >= 1935 or :TIME < 0135 ) and jrrfs_det_process_smoke==complete
                   edit CYCLE_TYPE 'spinup'
@@ -44383,6 +44481,8 @@ suite prod
                   trigger :TIME >= 1915 or :TIME < 0115
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_bufr_spinup
+                  trigger :TIME >= 1935 or :TIME < 0135
+                task jrrfs_det_ioda_bufr_spinup
                   trigger :TIME >= 1935 or :TIME < 0135
                   edit CYCLE_TYPE 'spinup'
               endfamily
@@ -44804,6 +44904,8 @@ suite prod
                 task jrrfs_enkf_process_lightning_spinup
                   trigger ( :TIME >= 1915 or :TIME < 0115 )
                 task jrrfs_enkf_process_bufr_spinup
+                  trigger ( :TIME >= 1935 or :TIME < 0135 )
+                task jrrfs_enkf_ioda_bufr_spinup
                   trigger ( :TIME >= 1935 or :TIME < 0135 )
               endfamily
               family ics
@@ -45908,6 +46010,8 @@ suite prod
                   trigger :TIME >= 2015 or :TIME < 0215
                 task jrrfs_det_process_bufr
                   trigger :TIME >= 2035 or :TIME < 0235
+                task jrrfs_det_ioda_bufr
+                  trigger :TIME >= 2035 or :TIME < 0235
                 task jrrfs_det_process_smoke_spinup
                   trigger ( :TIME >= 2035 or :TIME < 0235 ) and jrrfs_det_process_smoke==complete
                   edit CYCLE_TYPE 'spinup'
@@ -45918,6 +46022,8 @@ suite prod
                   trigger :TIME >= 2015 or :TIME < 0215
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_process_bufr_spinup
+                  trigger :TIME >= 2035 or :TIME < 0235
+                task jrrfs_det_ioda_bufr_spinup
                   trigger :TIME >= 2035 or :TIME < 0235
                   edit CYCLE_TYPE 'spinup'
               endfamily
@@ -46338,6 +46444,8 @@ suite prod
                 task jrrfs_enkf_process_lightning
                   trigger ( :TIME >= 2015 or :TIME < 0215 )
                 task jrrfs_enkf_process_bufr
+                  trigger ( :TIME >= 2035 or :TIME < 0235 )
+                task jrrfs_enkf_ioda_bufr
                   trigger ( :TIME >= 2035 or :TIME < 0235 )
               endfamily
               family prep
@@ -47238,6 +47346,8 @@ suite prod
                   trigger (:TIME >= 2115 and :TIME < 2359 ) or :TIME < 0315
                 task jrrfs_det_process_bufr
                   trigger (:TIME >= 2135 and :TIME < 2359 ) or :TIME < 0335
+                task jrrfs_det_ioda_bufr
+                  trigger (:TIME >= 2135 and :TIME < 2359 ) or :TIME < 0335
               endfamily
               family prep
                 trigger (:TIME >= 2120 and :TIME < 2359 ) or :TIME < 0320
@@ -47634,6 +47744,8 @@ suite prod
                 task jrrfs_enkf_process_lightning
                   trigger ((:TIME >= 2115 and :TIME < 2359 ) or :TIME < 0315)
                 task jrrfs_enkf_process_bufr
+                  trigger ((:TIME >= 2135 and :TIME < 2359 ) or :TIME < 0335)
+                task jrrfs_enkf_ioda_bufr
                   trigger ((:TIME >= 2135 and :TIME < 2359 ) or :TIME < 0335)
               endfamily
               family prep
@@ -48192,6 +48304,8 @@ suite prod
                   trigger (:TIME >= 2215 and :TIME < 2359 ) or :TIME < 0415
                 task jrrfs_det_process_bufr
                   trigger (:TIME >= 2235 and :TIME < 2359 ) or :TIME < 0435
+                task jrrfs_det_ioda_bufr
+                  trigger (:TIME >= 2235 and :TIME < 2359 ) or :TIME < 0435
               endfamily
               family prep
                 trigger (:TIME >= 2220 and :TIME < 2359 ) or :TIME < 0420
@@ -48588,6 +48702,8 @@ suite prod
                 task jrrfs_enkf_process_lightning
                   trigger ((:TIME >= 2215 and :TIME < 2359 ) or :TIME < 0415)
                 task jrrfs_enkf_process_bufr
+                  trigger ((:TIME >= 2235 and :TIME < 2359 ) or :TIME < 0435)
+                task jrrfs_enkf_ioda_bufr
                   trigger ((:TIME >= 2235 and :TIME < 2359 ) or :TIME < 0435)
               endfamily
               family prep
@@ -49488,6 +49604,8 @@ suite prod
                   trigger (:TIME >= 2315 and :TIME < 2359 ) or :TIME < 0515
                 task jrrfs_det_process_bufr
                   trigger (:TIME >= 2335 and :TIME < 2359 ) or :TIME < 0535
+                task jrrfs_det_ioda_bufr
+                  trigger (:TIME >= 2335 and :TIME < 2359 ) or :TIME < 0535
               endfamily
               family prep
                 trigger (:TIME >= 2320 and :TIME < 2359 ) or :TIME < 0520
@@ -49884,6 +50002,8 @@ suite prod
                 task jrrfs_enkf_process_lightning
                   trigger ((:TIME >= 2315 and :TIME < 2359 ) or :TIME < 0515)
                 task jrrfs_enkf_process_bufr
+                  trigger ((:TIME >= 2335 and :TIME < 2359 ) or :TIME < 0535)
+                task jrrfs_enkf_ioda_bufr
                   trigger ((:TIME >= 2335 and :TIME < 2359 ) or :TIME < 0535)
               endfamily
               family prep
