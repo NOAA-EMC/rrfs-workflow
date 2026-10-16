@@ -5,10 +5,11 @@ source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 
 export FIX_GSI="${FIXrrfs}/gsi"
 export FIX_JEDI="${FIXrrfs}/jedi"
-export PARM_IODACONV="${PARMrrfs}/iodaconv"
-# RDASApp ships the python converters and their auxiliary data in its source tree, so the
-# ex-script needs the clone itself and not only the executables installed into exec/.
+# RDASApp ships the python converters, the bufr2ioda yamls and their auxiliary data in its
+# source tree, so the ex-script needs the clone itself and not only the executables installed
+# into exec/. Reading the yamls from there keeps them at the version RDASApp maintains.
 export RDASAPP_DIR="${RDASAPP_DIR:-${HOMErrfs}/sorc/RDASApp}"
+export PARM_IODACONV="${RDASAPP_DIR}/rrfs-test/IODA/yaml"
 
 #
 #-----------------------------------------------------------------------
@@ -194,7 +195,8 @@ for yamlfile in "${yaml_list[@]}"; do
   message_type=$(basename "$yamlfile" .yaml | awk -F'_' '{print $NF}')
 
   cpreq -p ${PARM_IODACONV}/${yamlfile} .
-  sed -i "s/@referenceTime@/${formatted_time}/" "${yamlfile}"
+  # the RDASApp templates read the prepbufr from ./bufr/, but it is staged in the run directory
+  sed -i -e "s/@REFERENCETIME@/${formatted_time}/" -e "s|\./bufr/prepbufr|./prepbufr|" "${yamlfile}"
 
   cpreq -p ${FIX_JEDI}/ioda_empty.nc ioda_${message_type}.nc
 

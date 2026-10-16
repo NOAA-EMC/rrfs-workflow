@@ -38,7 +38,7 @@ for src in "${fix_src}"/*; do
   ln -snf "${src}" "${fix_dir}/${name}"
 done
 
-# The JEDI/IODA fix files (ioda_empty.nc, atms_beamwidth.txt, satbias_init) are not in the NCO
+# The IODA fix files (ioda_empty.nc, atms_beamwidth.txt) are not in the NCO
 # fix tree, so they come from dev-sci's shared one. The loop above already linked them if
 # FIX_RRFS_DIR ever grows a jedi directory of its own.
 if [ ! -e "${fix_dir}/jedi" ] && [ -d "${FIX_RRFS_SHARED}/jedi" ]; then
