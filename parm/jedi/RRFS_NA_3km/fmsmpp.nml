@@ -1,0 +1,25 @@
+&fms_io_nml
+       checksum_required       = F
+/
+
+&fms_nml
+       print_memory_usage=.false.
+       domains_stack_size = 24000000
+/
+
+&mpp_io_nml
+       header_buffer_val       = 16384
+       global_field_on_root_pe = F
+       io_clocks_on            = F
+       shuffle                 = 0
+       deflate_level           = 0
+       cf_compliance           = F
+/
+
+&fms2_io_nml
+       ncchksz                 = 65536
+       netcdf_default_format   = "netcdf4"
+       header_buffer_val       = 16384
+       deflate_level           = 0
+       shuffle                 = .false.
+/
