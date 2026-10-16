@@ -438,13 +438,14 @@ ln -snf ${FIXLAM}/${CRES}_grid.tile7.halo3.nc INPUT/${CRES}_grid.tile7.nc
 ln -snf ${FIXLAM}/${CRES}_mosaic.halo3.nc INPUT/grid_spec.nc
 cpreq -p ${FIX_JEDI}/dynamics_lam_cmaq.yaml .
 cpreq -p ${FIX_JEDI}/field_table .
-cpreq -p ${FIX_JEDI}/fmsmpp.nml .
-# berror_stats is per-domain in the NCO fix tree; the Rocoto workflow takes it from the top of
-# FIX_JEDI and fmsmpp.nml from the domain directory, which is the other way round here.
-cpreq -p ${FIX_JEDI}/${PREDEF_GRID_NAME}/berror_stats .
+cpreq -p ${FIX_JEDI}/berror_stats .
+cpreq -p ${FIX_JEDI}/${PREDEF_GRID_NAME}/fmsmpp.nml .
 cpreq -p ${FIX_JEDI}/${PREDEF_GRID_NAME}/gsiparm_regional.anl .
 cpreq -p ${FIX_JEDI}/${PREDEF_GRID_NAME}/input_lam* .
-cpreq -p ${FIX_JEDI}/${PREDEF_GRID_NAME}/mgbf* .
+# only the 13 km grid has the MGBF namelists, which the hybrid background error alone reads
+for f in ${FIX_JEDI}/${PREDEF_GRID_NAME}/mgbf*; do
+  [ -e "${f}" ] && cpreq -p "${f}" .
+done
 ln -snf ${RDASAPP_DIR}/fix/expr_data/fv3_2024052700/DataFix .
 #
 #-----------------------------------------------------------------------
