@@ -94,20 +94,16 @@ def create_model_configure_file(
 
 
 
-    OUTPUT_FH_thiscycle = OUTPUT_FH
-
-    if FCST_LEN_HRS_thiscycle == 18:
+    # The deterministic and ensemble production forecasts are posted every 15 minutes, and the
+    # post tasks are named for those files (dynf001-00-00.nc and so on), which the model writes
+    # only when it is given the sub-hourly output list. Forecast lengths of 18, 60 and 84 hours
+    # select the same forecasts in operations, but match none of them once the lengths are
+    # shortened, and the model then writes hourly files that the post cannot open. The EnKF and
+    # the spin-up cycle keep the plain list: neither is posted, and the EnKF has 30 members.
+    if os.environ.get("WGF", "") in ("det", "ensf") and not stoch and cycle_type != "spinup":
         OUTPUT_FH_thiscycle = OUTPUT_FH_15min
-    if FCST_LEN_HRS_thiscycle == 60:
-      if stoch:
+    else:
         OUTPUT_FH_thiscycle = OUTPUT_FH
-      else:
-        OUTPUT_FH_thiscycle = OUTPUT_FH_15min
-    if FCST_LEN_HRS_thiscycle == 84:
-      if stoch:
-        OUTPUT_FH_thiscycle = OUTPUT_FH
-      else:
-        OUTPUT_FH_thiscycle = OUTPUT_FH_15min
 
     print_info_msg(
         f"""

@@ -1,27 +1,27 @@
 #!/bin/bash
 #
-# Make a developer copy of an RRFS suite definition for the machine in retro_config.sh (MACHINE):
+# Make a developer copy of an RRFS suite definition for the machine in retro/config.sh (MACHINE):
 # its locations, its job submission commands, and, for a retro (RETRO=YES), triggers that step
 # through past dates instead of following the clock. The task tree is unchanged.
 #
 # Usage: [VAR=value ...] ./make_rrfs_retro_def.sh [output_def]
-# Any of the settings in retro_config.sh can be overridden from the environment.
+# Any of the settings in retro/config.sh can be overridden from the environment.
 #
 set -eu
 
 defs_dir=$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)
 out_def=${1:-${defs_dir}/rrfs_retro.def}
 
-# Settings live in retro_config.sh next to this script; environment variables still win.
+# Settings live in retro/config.sh next to this script; environment variables still win.
 # shellcheck source=/dev/null
-. "${defs_dir}/load_retro_config.sh"
+. "${defs_dir}/load_config.sh"
 case ${MACHINE} in
   URSA|WCOSS2) ;;
   *) echo "MACHINE=${MACHINE} is not supported; the retro suite runs on URSA and WCOSS2" >&2; exit 1 ;;
 esac
 
 # Derived from the settings above
-PACKAGEHOME=${PACKAGEHOME:-$(cd "${defs_dir}/../.." && pwd)}
+PACKAGEHOME=${PACKAGEHOME:-$(cd "${defs_dir}/../../.." && pwd)}
 c=${RETRO_DATA_ROOT}/com
 DEV_COMPATH=${DEV_COMPATH:-$c/gfs:$c/gefs:$c/obsproc:$c/nsst:$c/nosofs:$c/hrrr:$c/rap}
 DCOMROOT=${DCOMROOT:-${RETRO_DATA_ROOT}/dcom}
@@ -95,7 +95,7 @@ awk -v q="'" -v machine="${MACHINE}" -v ph="${PACKAGEHOME}" -v eh="${ECF_HOME}" 
     next
   }
   { print }
-' "${defs_dir}/${BASE_DEF}" > "${out_def}"
+' "${defs_dir}/../${BASE_DEF}" > "${out_def}"
 
 # For retros, make every clock-time condition in the triggers always true; the dependencies on other
 # tasks and on /prod_clone stay, and the retro prod_clone steps the dates (ush/prod_clone/make_retro_def.sh)
@@ -153,26 +153,6 @@ EOF
     exit 1
   fi
 
-  # Workflow groups switched off in retro_config.sh (RUN_ENKF, RUN_ENSF, RUN_FIREWX): the same
-  # mechanism as cycle_end above, applied to the whole family.
-  for wgf in enkf ensf firewx; do
-    run_var=RUN_$(echo "${wgf}" | tr '[:lower:]' '[:upper:]')
-    [ "${!run_var:-TRUE}" = "FALSE" ] || continue
-    sed -i -E "s/^( *)family ${wgf}\$/&\n\1  defstatus complete/" "${out_def}"
-    echo "  ${wgf}: families set to defstatus complete (${run_var}=FALSE)"
-  done
-
-  # Same idea for individual task types rather than whole families (RUN_GEMPAK, RUN_BUFRSND).
-  # The pattern allows words between the workflow group and the task name, so process_smoke matches
-  # as well as gempak and bufrsnd; it still matches exactly the same gempak and bufrsnd tasks.
-  for tsk in gempak bufrsnd smoke; do
-    run_var=RUN_$(echo "${tsk}" | tr '[:lower:]' '[:upper:]')
-    [ "${!run_var:-TRUE}" = "FALSE" ] || continue
-    ntsk=$(grep -cE "^ *task jrrfs_[a-z]+_[a-z_]*${tsk}[a-z0-9_]*\$" "${out_def}")
-    sed -i -E "s/^( *)task (jrrfs_[a-z]+_[a-z_]*${tsk}[a-z0-9_]*)\$/&\n\1  defstatus complete/" "${out_def}"
-    echo "  ${tsk}: ${ntsk} task(s) set to defstatus complete (${run_var}=FALSE)"
-  done
-
   # FV3 writes the hour-0 entry of output_fh at its first time step only at the 36 s NA step; with a
   # longer step it writes no hour-0 file, so the f000_00_36 post and prdgen tasks have nothing to work
   # on. Complete them rather than renaming their FHR: the file is absent, not differently named. The
@@ -189,18 +169,6 @@ EOF
     echo "       Fire weather starts from the parent's hour-0 natlev file, which only the 36 s step writes." >&2
     exit 1
   fi
-  if [ "${domain_dt}" != "36" ]; then
-    n0=$(grep -cE "^ *task jrrfs_det_(post|prdgen)_f000_00_36[a-z_]*\$" "${out_def}")
-    awk '
-      pend { if ($0 !~ /^ *defstatus /) print indent "  defstatus complete"; pend = 0 }
-      { print }
-      /^ *task jrrfs_det_(post|prdgen)_f000_00_36[a-z_]*$/ {
-        indent = $0; sub(/[^ ].*/, "", indent); pend = 1 }
-      END { if (pend) print indent "  defstatus complete" }
-    ' "${out_def}" > "${out_def}.dt0" && mv "${out_def}.dt0" "${out_def}"
-    echo "  hour-0 sub-hourly: ${n0} task(s) set to defstatus complete (DT_ATMOS=${domain_dt}, no hour-0 output)"
-  fi
-
   # Whether jobs keep their stmp working directories (KEEPDATA). The base definition sets YES at
   # every place it appears; rewrite the value rather than the lines so the count does not matter.
   if [ -n "${KEEPDATA:-}" ]; then
@@ -209,24 +177,6 @@ EOF
     echo "  KEEPDATA: ${nkeep} setting(s) rewritten to '${KEEPDATA}'"
   fi
 
-  # The whole 84 h forecast chain (DO_LONG_FORECAST): the forecast, its restarts, and the post and
-  # product generation that read its output. Every one of those task names ends in _long, or in
-  # _long_<hour> for the restarts. Nothing outside fire weather triggers on them, and fire weather
-  # is refused above when this is off, so completing them blocks nothing.
-  if [ "${DO_LONG_FORECAST:-TRUE}" = "FALSE" ]; then
-    long_re="jrrfs_det_[a-z0-9_]*_long(_[0-9]+)?"
-    nlong=$(grep -cE "^ *task ${long_re}\$" "${out_def}")
-    # Append the defstatus only where the task does not already carry one. jrrfs_det_bufrsnd_long is
-    # in both this set and RUN_BUFRSND's, and two defstatus lines on one task make ecflow reject the
-    # whole definition ("already has a default status"), so look at the next line before writing.
-    awk -v re="^ *task (${long_re})\$" '
-      pend { if ($0 !~ /^ *defstatus /) print indent "  defstatus complete"; pend = 0 }
-      { print }
-      $0 ~ re { indent = $0; sub(/[^ ].*/, "", indent); pend = 1 }
-      END { if (pend) print indent "  defstatus complete" }
-    ' "${out_def}" > "${out_def}.stamped" && mv "${out_def}.stamped" "${out_def}"
-    echo "  long forecast: ${nlong} task(s) set to defstatus complete (DO_LONG_FORECAST=FALSE)"
-  fi
   # A manager task that waits on the whole forecast family is fragile once anything is requeued:
   # the family reads active while other tasks in it run, so the manager can start before the
   # forecast does, and it reads queued while the saves it releases wait, which deadlocks it.
@@ -286,6 +236,170 @@ for i, line in enumerate(lines):
         lines[i + 1] = indent + f"trigger ( {expr} ) and ../../../{fam}z/{m.group(1)}/ics==complete"
 open(path, "w").write("\n".join(lines))
 EOF
+
+  # ------------------------------------------------------------------------------------------
+  # Tasks this retro does not run. Each is given "defstatus complete", which ecflow treats as
+  # finished without submitting it, and every trigger that named it is rewritten so the order of
+  # what is left is unchanged. ecf/defs/retro/skip_tasks.py does both; its header explains the
+  # two ways a reference can be rewritten and when each applies.
+  # ------------------------------------------------------------------------------------------
+  skip="python3 ${defs_dir}/skip_tasks.py ${out_def} --post-manager"
+
+  # Whole workflow groups (RUN_ENKF, RUN_ENSF, RUN_FIREWX). The group's tasks are completed
+  # rather than its family, because a family's defstatus does not reach its children: with only
+  # the family stamped, the det analysis trigger that names
+  # <cycle>/enkf/forecast/jrrfs_enkf_save_restart_f1_done would wait for a task that never runs.
+  # Their references are dropped rather than inlined, since the det cycle should not inherit the
+  # dependencies of a group that is not running at all.
+  for wgf in enkf ensf firewx; do
+    run_var=RUN_$(echo "${wgf}" | tr '[:lower:]' '[:upper:]')
+    [ "${!run_var:-TRUE}" = "FALSE" ] || continue
+    ${skip} --mode ignore --label "${wgf} (${run_var}=FALSE)" --path "/${wgf}/"
+  done
+
+  # Task types rather than whole groups (RUN_GEMPAK, RUN_BUFRSND, RUN_SMOKE). The pattern allows
+  # words between the workflow group and the task name, so process_smoke matches as well as
+  # gempak and bufrsnd; it still matches exactly the same gempak and bufrsnd tasks.
+  for tsk in gempak bufrsnd smoke; do
+    run_var=RUN_$(echo "${tsk}" | tr '[:lower:]' '[:upper:]')
+    [ "${!run_var:-TRUE}" = "FALSE" ] || continue
+    ${skip} --label "${tsk} (${run_var}=FALSE)" --name "jrrfs_[a-z]+_[a-z_]*${tsk}[a-z0-9_]*"
+  done
+
+  # Steps inside a cycle that a simplified retro leaves out (the FALSE switches in the Rocoto
+  # workflow's ush/config.sh). setup_retro_links.sh turns the matching workflow.conf switch off
+  # at the same time, so the job that is skipped here is also told not to expect its output.
+  # Each sits in the middle of a chain, so whatever waited on it is given its dependencies
+  # instead: without that, completing the cloud analysis would let the forecast start as soon as
+  # the cycle opened, since that analysis is the only thing its trigger names.
+  skip_step() {  # $1 the RUN_ variable in retro/config.sh, $2 the task names it covers
+    [ "${!1:-TRUE}" = "FALSE" ] || return 0
+    ${skip} --label "$1=FALSE" --name "$2"
+  }
+  skip_step RUN_NONVARCLD 'jrrfs_(det|enkf)_analysis_nonvarcld[a-z0-9_]*'
+  skip_step RUN_UPDATE_BC 'jrrfs_det_update_lbc_soil[a-z0-9_]*'
+  skip_step RUN_GSIDIAG   'jrrfs_det_analysis_gsi_diag[a-z0-9_]*'
+  skip_step RUN_LIGHTNING 'jrrfs_(det|enkf)_process_lightning[a-z0-9_]*'
+  skip_step RUN_RADAR     'jrrfs_(det|enkf)_process_radar[a-z0-9_]*'
+  skip_step RUN_POST      'jrrfs_det_(post|prdgen)[a-z0-9_]*'
+
+  # FV3 writes the hour-0 entry of output_fh at its first time step only at the 36 s NA step; with
+  # a longer step it writes no hour-0 file, so the f000_00_36 post and prdgen tasks have nothing to
+  # work on. Complete them rather than renaming their FHR: the file is absent, not differently
+  # named. The 15, 30 and 45 minute sub-hourly outputs are unaffected and still run.
+  # Dropped rather than inlined: the hour-0 file is absent, so the product generation that reads
+  # it must not be made to wait on the post manager event that would have released it.
+  if [ "${domain_dt}" != "36" ]; then
+    ${skip} --mode ignore --label "hour-0 sub-hourly (DT_ATMOS=${domain_dt})" \
+            --name 'jrrfs_det_(post|prdgen)_f000_00_36(_long)?'
+  fi
+
+  # The whole 84 h forecast chain (DO_LONG_FORECAST): the forecast, its restarts, and the post and
+  # product generation that read its output. Every one of those task names ends in _long, or in
+  # _long_<hour> for the restarts.
+  if [ "${DO_LONG_FORECAST:-TRUE}" = "FALSE" ]; then
+    ${skip} --label "long forecast (DO_LONG_FORECAST=FALSE)" \
+            --name 'jrrfs_det_[a-z0-9_]*_long(_[0-9]+)?'
+  fi
+
+  # Shorter forecasts (FCST_LEN_HRS for the hourly cycles, FCST_LEN_HRS_LONG for 00, 06, 12 and
+  # 18z). setup_retro_links.sh puts the same two numbers in workflow.conf; here everything past
+  # the end of the forecast comes out of the definition. That includes the post manager, which
+  # scans a list of output files fixed at 0-84 (or 0-18) hours and err_exits 900 s after the last
+  # one it finds: an aborted task would leave the cycle short of complete, which is what the retro
+  # driver waits for before stepping to the next date. With the manager gone, --post-manager
+  # points the surviving post tasks at the forecast task instead of at its events.
+  fcst_len=${FCST_LEN_HRS:-18}
+  fcst_len_long=${FCST_LEN_HRS_LONG:-84}
+  if [ "${fcst_len}" -lt 3 ] || [ "${fcst_len_long}" -lt 3 ]; then
+    echo "ERROR: FCST_LEN_HRS and FCST_LEN_HRS_LONG must be at least 3." >&2
+    echo "       Each cycle warm starts from the hour 1, 2 or 3 restart of one of the three before it." >&2
+    exit 1
+  fi
+  trunc=()
+  trunc_hours() {  # $1 the forecast length, $2 the last hour in the definition, $3 name suffix
+    local h
+    for (( h = $1 + 1; h <= $2; h++ )); do
+      trunc+=(--name "jrrfs_det_(post|prdgen)_f$(printf '%03d' ${h})_(00|15|30|45)_(00|36)$3")
+    done
+    # the sub-hourly output of the last hour is past the end of the forecast as well
+    trunc+=(--name "jrrfs_det_(post|prdgen)_f$(printf '%03d' $1)_(15|30|45)_00$3")
+  }
+  if [ "${fcst_len}" != 18 ] || [ "${fcst_len_long}" != 84 ]; then
+    trunc_hours "${fcst_len}" 18 ''
+    trunc_hours "${fcst_len_long}" 84 '_long'
+    # restart hours past the end of the long forecast; the hourly cycles save 1, 2 and 3, which
+    # the minimum length above keeps
+    for h in 1 2 3 6; do
+      [ "${h}" -gt "${fcst_len_long}" ] && trunc+=(--name "jrrfs_det_save_restart_long_${h}")
+    done
+    trunc+=(--name 'jrrfs_det_post_manager')
+  fi
+  if [ ${#trunc[@]} -gt 0 ]; then
+    ${skip} --label "past the end of the forecast (${fcst_len} h, ${fcst_len_long} h at 00/06/12/18z)" \
+            "${trunc[@]}"
+  fi
+
+  # Boundary conditions past the last hour any cycle in the family reaches. The 00, 06, 12 and 18z
+  # ics families make one file per hour for the whole family, so the last one needed is the end of
+  # the long forecast, or of the 05z cycle's forecast if that reaches further. Group N of the
+  # BCGRPNUM groups makes hour N, so the groups above that hour have nothing left to make. The
+  # first group stays whatever happens: it is the one that stages the external model files the
+  # others read, and it still makes hour N + BCGRPNUM for each surviving group, since BOUNDARY_LEN
+  # is left at its operational value (see setup_retro_links.sh for why).
+  lbc_last=$(( fcst_len + 5 ))
+  [ "${fcst_len_long}" -gt "${lbc_last}" ] && lbc_last=${fcst_len_long}
+  if [ "${lbc_last}" -lt 84 ]; then
+    lbc_args=()
+    for (( h = lbc_last + 1; h <= 84; h++ )); do
+      lbc_args+=(--name "jrrfs_det_make_lbcs_$(printf '%02d' ${h})")
+    done
+    ${skip} --label "boundaries past hour ${lbc_last}" "${lbc_args[@]}"
+  fi
+
+  # Anything else this retro leaves out, as a space-separated list of task-name patterns
+  if [ -n "${SKIP_TASKS:-}" ]; then
+    extra=()
+    for pat in ${SKIP_TASKS}; do extra+=(--name "${pat}"); done
+    ${skip} --label "SKIP_TASKS" "${extra[@]}"
+  fi
+
+  # The deterministic spin-up cycles (DO_SPINUP). Operations cold starts at 03z and 15z into a
+  # 1 h spin-up forecast and runs spin-up alongside production until 09z and 21z; a retro that
+  # only wants a cycling deterministic run can drop all of it. Nothing in the production chain
+  # waits on a spin-up task, so their references are dropped rather than inlined. The production
+  # cycle at the cold-start hour then has to cold start itself, which exrrfs_prep_cyc.sh already
+  # does when DO_SPINUP is FALSE and the hour is in CYCL_HRS_PRODSTART: the trigger below points
+  # it at the make_ics task in its own ics family instead of at the cycle before it.
+  if [ "${DO_SPINUP:-TRUE}" = "FALSE" ]; then
+    ${skip} --mode ignore --label "spin-up cycles (DO_SPINUP=FALSE)" \
+            --name 'jrrfs_det_[a-z0-9_]*spinup[a-z0-9_]*'
+    python3 - "${out_def}" ${DET_COLD_START_HRS:-03 15} <<'EOF'
+import re, sys
+path, hours = sys.argv[1], [f"{int(h):02d}z" for h in sys.argv[2:]]
+lines = open(path).read().split("\n")
+fam, cyc, n = None, None, 0
+for i, line in enumerate(lines):
+    m = re.fullmatch(r"family (\d\d)", line.strip())
+    if m:
+        fam = m.group(1)
+    m = re.fullmatch(r"family (\d\dz)", line.strip())
+    if m:
+        cyc = m.group(1)
+    if line.strip() == "task jrrfs_det_prep_cyc" and cyc in hours:
+        for j in range(i + 1, i + 5):
+            if lines[j].strip().startswith("trigger "):
+                indent = lines[j][:len(lines[j]) - len(lines[j].lstrip())]
+                # its own ics family for the cold start fields, and the family's 00, 06, 12 or
+                # 18z one for the boundaries, which the replaced trigger also waited on
+                lines[j] = (indent + "trigger ../ics==complete and "
+                            f"../../../{fam}z/det/ics==complete")
+                n += 1
+                break
+open(path, "w").write("\n".join(lines))
+print(f"  cold start: {n} prep_cyc task(s) pointed at their own ics family")
+EOF
+  fi
 fi
 
 # Coarser domains (strip when merging to the nco branch): give the tasks the domain's table

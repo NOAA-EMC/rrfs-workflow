@@ -386,8 +386,11 @@ if [ ${extrn_mdl_name} != GEFS ] ; then
      # case for firewx
      t_file_ct=36
    else
-     # case for det
-     t_file_ct=97
+     # case for det: one file per boundary hour, which is what the first group staged. The count
+     # follows BOUNDARY_LEN and LBC_SPEC_INTVL_HRS, and is 97 for the operational 96 h at 1 h; a
+     # run that shortens the boundaries has a shorter list, and a fixed count would abort every
+     # group but the first.
+     t_file_ct=${#extrn_mdl_fps_on_disk[@]}
    fi
    if [ $(ls ${umbrella_lbcops_data} |grep -v cptmp| wc -l) -lt ${t_file_ct} ]; then
        err_exit "\

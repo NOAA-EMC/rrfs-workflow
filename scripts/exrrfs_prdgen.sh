@@ -166,7 +166,7 @@ elif [ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]; then
   gridname="na"
   gridspacing="3km"
 # Coarser domains (strip when merging to the nco branch): a development domain names its own
-# products, via PRDGEN_GRIDNAME and PRDGEN_GRIDSPACING in ecf/defs/domains/<DOMAIN>.sh, so adding a
+# products, via PRDGEN_GRIDNAME and PRDGEN_GRIDSPACING in ecf/defs/retro/domains/<DOMAIN>.sh, so adding a
 # domain needs no change here. Last of the three, so the fire weather and NA grids keep their names.
 elif [ -n "${PRDGEN_GRIDNAME:-}" ]; then
   gridname="${PRDGEN_GRIDNAME}"
