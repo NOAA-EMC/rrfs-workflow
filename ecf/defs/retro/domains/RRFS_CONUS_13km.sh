@@ -97,6 +97,14 @@ export grid_ratio_fv3='1.0'
 export NNODES_ANALYSIS_GSI='1'
 export PPN_ANALYSIS_GSI='64'
 export TPP_ANALYSIS_GSI='2'
+# fv3jedi_var.x when DA_SYSTEM=JEDI; same size the Rocoto workflow gives it on this grid
+# (NNODES/PPN/TPP_RUN_ANALYSIS_JEDI in ush/set_rrfs_config_general.sh for wcoss2 and ursa)
+export NNODES_ANALYSIS_JEDI='2'
+export PPN_ANALYSIS_JEDI='98'
+export TPP_ANALYSIS_JEDI='1'
+# JCB template for this grid; the variational analysis renders jedivar.yaml from it
+export JCB_CONFIG_CONV='rdas-atmosphere-templates-fv3_c13.yaml'
+export JCB_CONFIG_DBZ='rdas-atmosphere-templates-fv3_c13_dbz.yaml'
 export NNODES_POST='1'
 export PPN_POST='64'
 export TPP_POST='1'
@@ -141,6 +149,7 @@ DOMAIN_SBATCH=(
   # WCOSS2 those reads (10-30 s each) ran past 40 min
   "jrrfs_det_analysis_gsi_spinup:--nodes=1 --time=01:30:00"
   "jrrfs_det_analysis_gsi*:--nodes=1 --time=00:40:00"
+  "jrrfs_det_analysis_jedi*:--nodes=2 --time=00:50:00"
   "jrrfs_det_post_f*:--nodes=1"
   "jrrfs_det_make_ics:--nodes=1"
   "jrrfs_enkf_forecast*:--nodes=1 --time=00:30:00"

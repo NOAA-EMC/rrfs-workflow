@@ -98,6 +98,14 @@ export WRTCMP_dy='3000.0'
 export NNODES_ANALYSIS_GSI='10'
 export PPN_ANALYSIS_GSI='32'
 export TPP_ANALYSIS_GSI='4'
+# fv3jedi_var.x when DA_SYSTEM=JEDI: input_lam_C3359_NP40X40.nml and the JCB template fix the
+# layout at 40x40 = 1600 tasks
+export NNODES_ANALYSIS_JEDI='16'
+export PPN_ANALYSIS_JEDI='100'
+export TPP_ANALYSIS_JEDI='1'
+# JCB template for this grid; there is no reflectivity template for it yet
+export JCB_CONFIG_CONV='rdas-atmosphere-templates-fv3_c3km.yaml'
+export JCB_CONFIG_DBZ=''
 export NNODES_POST='1'
 export PPN_POST='128'
 export TPP_POST='1'
@@ -125,6 +133,7 @@ DOMAIN_SBATCH=(
   "jrrfs_det_analysis_gsi_diag*:--nodes=1 --time=00:20:00"
   # 18z timed out at 40 min; the spinup analyses run 10-25 min but the heavier cycles need room
   "jrrfs_det_analysis_gsi*:--nodes=10 --time=01:30:00"
+  "jrrfs_det_analysis_jedi*:--nodes=16 --time=01:30:00"
   "jrrfs_det_forecast:--nodes=24 --time=01:00:00"
   "jrrfs_det_forecast_long:--nodes=24 --time=03:00:00"
   "jrrfs_det_forecast_spinup:--nodes=24 --time=00:30:00"
