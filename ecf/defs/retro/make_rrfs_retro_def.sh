@@ -177,6 +177,15 @@ EOF
     echo "  KEEPDATA: ${nkeep} setting(s) rewritten to '${KEEPDATA}'"
   fi
 
+  # Which analysis runs: the route DA_SYSTEM does not select is marked complete, never submitted
+  case "${DA_SYSTEM:-GSI}" in
+    GSI|gsi)   da_system_jedi=0 ;;
+    JEDI|jedi) da_system_jedi=1 ;;
+    *) echo "ERROR: DA_SYSTEM must be GSI or JEDI, not '${DA_SYSTEM}'." >&2; exit 1 ;;
+  esac
+  sed -i -E "s/^( *)edit DA_SYSTEM_JEDI '[01]'/\1edit DA_SYSTEM_JEDI '${da_system_jedi}'/" "${out_def}"
+  echo "  DA_SYSTEM: ${DA_SYSTEM:-GSI} (DA_SYSTEM_JEDI=${da_system_jedi})"
+
   # A manager task that waits on the whole forecast family is fragile once anything is requeued:
   # the family reads active while other tasks in it run, so the manager can start before the
   # forecast does, and it reads queued while the saves it releases wait, which deadlocks it.
