@@ -166,6 +166,9 @@ RUN_GSIDIAG=${RUN_GSIDIAG:-FALSE}         # offline GSI diagnostics (DO_GSIDIAG_
 RUN_LIGHTNING=${RUN_LIGHTNING:-FALSE}     # GLM flash extent density and its DA (DO_GLM_FED_DA)
 RUN_RADAR=${RUN_RADAR:-TRUE}              # MRMS reflectivity; this configuration assimilates it
 RUN_POST=${RUN_POST:-TRUE}                # post and products; FALSE for a DA-only run
+# Which analysis runs: GSI (the operational route) or JEDI
+DA_SYSTEM=${DA_SYSTEM:-GSI}
+
 # Anything else to leave out, as space-separated regular expressions matching whole task names
 SKIP_TASKS=${SKIP_TASKS:-}
 

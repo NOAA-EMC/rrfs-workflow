@@ -113,6 +113,9 @@ RUN_SMOKE=${RUN_SMOKE:-TRUE}
 # The 85 boundary jobs at each long cycle are left alone, because the hourly cycles in the family
 # share them; to cut those as well, shorten the forecast itself with FCST_LEN_HRS and
 # FCST_LEN_HRS_LONG (see the simplified samples, config_*_simple.sh).
+# Which analysis runs: GSI (the operational route) or JEDI
+DA_SYSTEM=${DA_SYSTEM:-GSI}
+
 DO_LONG_FORECAST=${DO_LONG_FORECAST:-TRUE}
 
 # Whether each job keeps its working directory under stmp. The base NCO definition sets YES at all
