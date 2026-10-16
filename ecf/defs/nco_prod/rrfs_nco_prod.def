@@ -1,4 +1,5 @@
 suite prod
+  edit DA_SYSTEM_JEDI '0'
   family primary
     family 00
       family rrfs
@@ -300,10 +301,16 @@ suite prod
                 edit GSI_TYPE 'ANALYSIS'
                 task jrrfs_det_analysis_gsi
                   trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/00/obsproc/v1.2/rrfs/00z/dump/jobsproc_rrfs_dump==complete and /prod/primary/00/obsproc/v1.2/rrfs/00z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/18/rrfs/v1.0/23z/enkf/forecast==complete or /prod/primary/18/rrfs/v1.0/22z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete )
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi
+                  trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/00/obsproc/v1.2/rrfs/00z/dump/jobsproc_rrfs_dump==complete and /prod/primary/00/obsproc/v1.2/rrfs/00z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/18/rrfs/v1.0/23z/enkf/forecast==complete or /prod/primary/18/rrfs/v1.0/22z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete ) and ../init/jrrfs_det_ioda_bufr==complete
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil
-                  trigger ./jrrfs_det_analysis_gsi==complete
+                  trigger ./jrrfs_det_analysis_gsi==complete and ./jrrfs_det_analysis_jedi==complete
                 task jrrfs_det_analysis_gsi_diag
                   trigger ./jrrfs_det_analysis_gsi==complete
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld
                   trigger ./jrrfs_det_update_lbc_soil==complete and ../init/jrrfs_det_process_bufr==complete
               endfamily
@@ -6740,10 +6747,16 @@ suite prod
                 edit GSI_TYPE 'ANALYSIS'
                 task jrrfs_det_analysis_gsi
                   trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/00/obsproc/v1.2/rrfs/01z/dump/jobsproc_rrfs_dump==complete and /prod/primary/00/obsproc/v1.2/rrfs/01z/prep/jobsproc_rrfs_prep==complete and (/prod/primary/00/rrfs/v1.0/00z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /prod/primary/18/rrfs/v1.0/22z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete)
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi
+                  trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/00/obsproc/v1.2/rrfs/01z/dump/jobsproc_rrfs_dump==complete and /prod/primary/00/obsproc/v1.2/rrfs/01z/prep/jobsproc_rrfs_prep==complete and (/prod/primary/00/rrfs/v1.0/00z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /prod/primary/18/rrfs/v1.0/22z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete) and ../init/jrrfs_det_ioda_bufr==complete
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil
-                  trigger ./jrrfs_det_analysis_gsi==complete
+                  trigger ./jrrfs_det_analysis_gsi==complete and ./jrrfs_det_analysis_jedi==complete
                 task jrrfs_det_analysis_gsi_diag
                   trigger ./jrrfs_det_analysis_gsi==complete
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld
                   trigger ./jrrfs_det_update_lbc_soil==complete and ../init/jrrfs_det_process_bufr==complete
               endfamily
@@ -7700,10 +7713,16 @@ suite prod
                 edit GSI_TYPE 'ANALYSIS'
                 task jrrfs_det_analysis_gsi
                   trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/00/obsproc/v1.2/rrfs/02z/dump/jobsproc_rrfs_dump==complete and /prod/primary/00/obsproc/v1.2/rrfs/02z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/00/rrfs/v1.0/01z/enkf/forecast==complete or /prod/primary/00/rrfs/v1.0/00z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete)
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi
+                  trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/00/obsproc/v1.2/rrfs/02z/dump/jobsproc_rrfs_dump==complete and /prod/primary/00/obsproc/v1.2/rrfs/02z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/00/rrfs/v1.0/01z/enkf/forecast==complete or /prod/primary/00/rrfs/v1.0/00z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete) and ../init/jrrfs_det_ioda_bufr==complete
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil
-                  trigger ./jrrfs_det_analysis_gsi==complete
+                  trigger ./jrrfs_det_analysis_gsi==complete and ./jrrfs_det_analysis_jedi==complete
                 task jrrfs_det_analysis_gsi_diag
                   trigger ./jrrfs_det_analysis_gsi==complete
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld
                   trigger ./jrrfs_det_update_lbc_soil==complete and ../init/jrrfs_det_process_bufr==complete
               endfamily
@@ -9021,21 +9040,34 @@ suite prod
                 edit GSI_TYPE 'ANALYSIS'
                 task jrrfs_det_analysis_gsi
                   trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/00/obsproc/v1.2/rrfs/03z/dump/jobsproc_rrfs_dump==complete and /prod/primary/00/obsproc/v1.2/rrfs/03z/prep/jobsproc_rrfs_prep==complete and (/prod/primary/00/rrfs/v1.0/02z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /prod/primary/00/rrfs/v1.0/00z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete)
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi
+                  trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/00/obsproc/v1.2/rrfs/03z/dump/jobsproc_rrfs_dump==complete and /prod/primary/00/obsproc/v1.2/rrfs/03z/prep/jobsproc_rrfs_prep==complete and (/prod/primary/00/rrfs/v1.0/02z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /prod/primary/00/rrfs/v1.0/00z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete) and ../init/jrrfs_det_ioda_bufr==complete
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil
-                  trigger ./jrrfs_det_analysis_gsi==complete
+                  trigger ./jrrfs_det_analysis_gsi==complete and ./jrrfs_det_analysis_jedi==complete
                 task jrrfs_det_analysis_gsi_diag
                   trigger ./jrrfs_det_analysis_gsi==complete
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld
                   trigger ./jrrfs_det_update_lbc_soil==complete and ../init/jrrfs_det_process_bufr==complete
                 task jrrfs_det_analysis_gsi_spinup
                   trigger :TIME >= 0335 and :TIME < 0935 and ../prep/jrrfs_det_prep_cyc_spinup==complete
                   edit CYCLE_TYPE 'spinup'
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi_spinup
+                  trigger :TIME >= 0335 and :TIME < 0935 and ../prep/jrrfs_det_prep_cyc_spinup==complete and ../init/jrrfs_det_ioda_bufr_spinup==complete
+                  edit CYCLE_TYPE 'spinup'
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil_spinup
-                  trigger ./jrrfs_det_analysis_gsi_spinup==complete
+                  trigger ./jrrfs_det_analysis_gsi_spinup==complete and ./jrrfs_det_analysis_jedi_spinup==complete
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_analysis_gsi_diag_spinup
                   trigger ./jrrfs_det_analysis_gsi_spinup==complete
                   edit CYCLE_TYPE 'spinup'
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld_spinup
                   trigger ./jrrfs_det_update_lbc_soil_spinup==complete and ../init/jrrfs_det_process_bufr_spinup==complete
                   edit CYCLE_TYPE 'spinup'
@@ -10016,21 +10048,34 @@ suite prod
                 edit GSI_TYPE 'ANALYSIS'
                 task jrrfs_det_analysis_gsi
                   trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/00/obsproc/v1.2/rrfs/04z/dump/jobsproc_rrfs_dump==complete and /prod/primary/00/obsproc/v1.2/rrfs/04z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/00/rrfs/v1.0/03z/enkf/forecast==complete or /prod/primary/00/rrfs/v1.0/02z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete)
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi
+                  trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/00/obsproc/v1.2/rrfs/04z/dump/jobsproc_rrfs_dump==complete and /prod/primary/00/obsproc/v1.2/rrfs/04z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/00/rrfs/v1.0/03z/enkf/forecast==complete or /prod/primary/00/rrfs/v1.0/02z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete) and ../init/jrrfs_det_ioda_bufr==complete
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil
-                  trigger ./jrrfs_det_analysis_gsi==complete
+                  trigger ./jrrfs_det_analysis_gsi==complete and ./jrrfs_det_analysis_jedi==complete
                 task jrrfs_det_analysis_gsi_diag
                   trigger ./jrrfs_det_analysis_gsi==complete
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld
                   trigger ./jrrfs_det_update_lbc_soil==complete and ../init/jrrfs_det_process_bufr==complete
                 task jrrfs_det_analysis_gsi_spinup
                   trigger ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod/primary/00/obsproc/v1.2/rrfs/04z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/00/rrfs/v1.0/03z/enkf/forecast==complete or /prod/primary/00/rrfs/v1.0/02z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete)
                   edit CYCLE_TYPE 'spinup'
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi_spinup
+                  trigger ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod/primary/00/obsproc/v1.2/rrfs/04z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/00/rrfs/v1.0/03z/enkf/forecast==complete or /prod/primary/00/rrfs/v1.0/02z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete) and ../init/jrrfs_det_ioda_bufr_spinup==complete
+                  edit CYCLE_TYPE 'spinup'
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil_spinup
-                  trigger ./jrrfs_det_analysis_gsi_spinup==complete
+                  trigger ./jrrfs_det_analysis_gsi_spinup==complete and ./jrrfs_det_analysis_jedi_spinup==complete
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_analysis_gsi_diag_spinup
                   trigger ./jrrfs_det_analysis_gsi_spinup==complete
                   edit CYCLE_TYPE 'spinup'
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld_spinup
                   trigger ./jrrfs_det_update_lbc_soil_spinup==complete and ../init/jrrfs_det_process_bufr_spinup==complete
                   edit CYCLE_TYPE 'spinup'
@@ -11352,21 +11397,34 @@ suite prod
                 edit GSI_TYPE 'ANALYSIS'
                 task jrrfs_det_analysis_gsi
                   trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/00/obsproc/v1.2/rrfs/05z/dump/jobsproc_rrfs_dump==complete and /prod/primary/00/obsproc/v1.2/rrfs/05z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/00/rrfs/v1.0/04z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /prod/primary/00/rrfs/v1.0/02z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete)
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi
+                  trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/00/obsproc/v1.2/rrfs/05z/dump/jobsproc_rrfs_dump==complete and /prod/primary/00/obsproc/v1.2/rrfs/05z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/00/rrfs/v1.0/04z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /prod/primary/00/rrfs/v1.0/02z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete) and ../init/jrrfs_det_ioda_bufr==complete
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil
-                  trigger ./jrrfs_det_analysis_gsi==complete
+                  trigger ./jrrfs_det_analysis_gsi==complete and ./jrrfs_det_analysis_jedi==complete
                 task jrrfs_det_analysis_gsi_diag
                   trigger ./jrrfs_det_analysis_gsi==complete
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld
                   trigger ./jrrfs_det_update_lbc_soil==complete and ../init/jrrfs_det_process_bufr==complete
                 task jrrfs_det_analysis_gsi_spinup
                   trigger ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod/primary/00/obsproc/v1.2/rrfs/05z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/00/rrfs/v1.0/04z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /prod/primary/00/rrfs/v1.0/02z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete)
                   edit CYCLE_TYPE 'spinup'
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi_spinup
+                  trigger ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod/primary/00/obsproc/v1.2/rrfs/05z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/00/rrfs/v1.0/04z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /prod/primary/00/rrfs/v1.0/02z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete) and ../init/jrrfs_det_ioda_bufr_spinup==complete
+                  edit CYCLE_TYPE 'spinup'
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil_spinup
-                  trigger ./jrrfs_det_analysis_gsi_spinup==complete
+                  trigger ./jrrfs_det_analysis_gsi_spinup==complete and ./jrrfs_det_analysis_jedi_spinup==complete
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_analysis_gsi_diag_spinup
                   trigger ./jrrfs_det_analysis_gsi_spinup==complete
                   edit CYCLE_TYPE 'spinup'
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld_spinup
                   trigger ./jrrfs_det_update_lbc_soil_spinup==complete and ../init/jrrfs_det_process_bufr_spinup==complete
                   edit CYCLE_TYPE 'spinup'
@@ -12718,21 +12776,34 @@ suite prod
                 edit GSI_TYPE 'ANALYSIS'
                 task jrrfs_det_analysis_gsi
                   trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/06/obsproc/v1.2/rrfs/06z/dump/jobsproc_rrfs_dump==complete and /prod/primary/06/obsproc/v1.2/rrfs/06z/prep/jobsproc_rrfs_prep==complete and (/prod/primary/00/rrfs/v1.0/05z/enkf/forecast==complete or /prod/primary/00/rrfs/v1.0/04z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete )
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi
+                  trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/06/obsproc/v1.2/rrfs/06z/dump/jobsproc_rrfs_dump==complete and /prod/primary/06/obsproc/v1.2/rrfs/06z/prep/jobsproc_rrfs_prep==complete and (/prod/primary/00/rrfs/v1.0/05z/enkf/forecast==complete or /prod/primary/00/rrfs/v1.0/04z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete ) and ../init/jrrfs_det_ioda_bufr==complete
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil
-                  trigger ./jrrfs_det_analysis_gsi==complete
+                  trigger ./jrrfs_det_analysis_gsi==complete and ./jrrfs_det_analysis_jedi==complete
                 task jrrfs_det_analysis_gsi_diag
                   trigger ./jrrfs_det_analysis_gsi==complete
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld
                   trigger ./jrrfs_det_update_lbc_soil==complete and ../init/jrrfs_det_process_bufr==complete
                 task jrrfs_det_analysis_gsi_spinup
                   trigger ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod/primary/06/obsproc/v1.2/rrfs/06z/prep/jobsproc_rrfs_prep==complete and (/prod/primary/00/rrfs/v1.0/05z/enkf/forecast==complete or /prod/primary/00/rrfs/v1.0/04z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete )
                   edit CYCLE_TYPE 'spinup'
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi_spinup
+                  trigger ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod/primary/06/obsproc/v1.2/rrfs/06z/prep/jobsproc_rrfs_prep==complete and (/prod/primary/00/rrfs/v1.0/05z/enkf/forecast==complete or /prod/primary/00/rrfs/v1.0/04z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete ) and ../init/jrrfs_det_ioda_bufr_spinup==complete
+                  edit CYCLE_TYPE 'spinup'
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil_spinup
-                  trigger ./jrrfs_det_analysis_gsi_spinup==complete
+                  trigger ./jrrfs_det_analysis_gsi_spinup==complete and ./jrrfs_det_analysis_jedi_spinup==complete
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_analysis_gsi_diag_spinup
                   trigger ./jrrfs_det_analysis_gsi_spinup==complete
                   edit CYCLE_TYPE 'spinup'
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld_spinup
                   trigger ./jrrfs_det_update_lbc_soil_spinup==complete and ../init/jrrfs_det_process_bufr_spinup==complete
                   edit CYCLE_TYPE 'spinup'
@@ -19195,21 +19266,34 @@ suite prod
                 edit GSI_TYPE 'ANALYSIS'
                 task jrrfs_det_analysis_gsi
                   trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/06/obsproc/v1.2/rrfs/07z/dump/jobsproc_rrfs_dump==complete and /prod/primary/06/obsproc/v1.2/rrfs/07z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /prod/primary/00/rrfs/v1.0/04z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete)
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi
+                  trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/06/obsproc/v1.2/rrfs/07z/dump/jobsproc_rrfs_dump==complete and /prod/primary/06/obsproc/v1.2/rrfs/07z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /prod/primary/00/rrfs/v1.0/04z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete) and ../init/jrrfs_det_ioda_bufr==complete
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil
-                  trigger ./jrrfs_det_analysis_gsi==complete
+                  trigger ./jrrfs_det_analysis_gsi==complete and ./jrrfs_det_analysis_jedi==complete
                 task jrrfs_det_analysis_gsi_diag
                   trigger ./jrrfs_det_analysis_gsi==complete
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld
                   trigger ./jrrfs_det_update_lbc_soil==complete and ../init/jrrfs_det_process_bufr==complete
                 task jrrfs_det_analysis_gsi_spinup
                   trigger ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod/primary/06/obsproc/v1.2/rrfs/07z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /prod/primary/00/rrfs/v1.0/04z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete )
                   edit CYCLE_TYPE 'spinup'
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi_spinup
+                  trigger ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod/primary/06/obsproc/v1.2/rrfs/07z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /prod/primary/00/rrfs/v1.0/04z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete ) and ../init/jrrfs_det_ioda_bufr_spinup==complete
+                  edit CYCLE_TYPE 'spinup'
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil_spinup
-                  trigger ./jrrfs_det_analysis_gsi_spinup==complete
+                  trigger ./jrrfs_det_analysis_gsi_spinup==complete and ./jrrfs_det_analysis_jedi_spinup==complete
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_analysis_gsi_diag_spinup
                   trigger ./jrrfs_det_analysis_gsi_spinup==complete
                   edit CYCLE_TYPE 'spinup'
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld_spinup
                   trigger ./jrrfs_det_update_lbc_soil_spinup==complete and ../init/jrrfs_det_process_bufr_spinup==complete
                   edit CYCLE_TYPE 'spinup'
@@ -20736,21 +20820,34 @@ suite prod
                 edit GSI_TYPE 'ANALYSIS'
                 task jrrfs_det_analysis_gsi
                   trigger (:TIME >= 0831 and :TIME < 2031) and ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/06/obsproc/v1.2/rrfs/08z/dump/jobsproc_rrfs_dump==complete and /prod/primary/06/obsproc/v1.2/rrfs/08z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/06/rrfs/v1.0/07z/enkf/forecast==complete or (( :TIME >= 0841 and :TIME < 2040) and /prod/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete))
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi
+                  trigger (:TIME >= 0831 and :TIME < 2031) and ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/06/obsproc/v1.2/rrfs/08z/dump/jobsproc_rrfs_dump==complete and /prod/primary/06/obsproc/v1.2/rrfs/08z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/06/rrfs/v1.0/07z/enkf/forecast==complete or (( :TIME >= 0841 and :TIME < 2040) and /prod/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete)) and ../init/jrrfs_det_ioda_bufr==complete
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil
-                  trigger ./jrrfs_det_analysis_gsi==complete
+                  trigger ./jrrfs_det_analysis_gsi==complete and ./jrrfs_det_analysis_jedi==complete
                 task jrrfs_det_analysis_gsi_diag
                   trigger ./jrrfs_det_analysis_gsi==complete
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld
                   trigger ./jrrfs_det_update_lbc_soil==complete and ../init/jrrfs_det_process_bufr==complete
                 task jrrfs_det_analysis_gsi_spinup
                   trigger (:TIME >= 0831 and :TIME < 2031) and ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod/primary/06/obsproc/v1.2/rrfs/08z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/06/rrfs/v1.0/07z/enkf/forecast==complete or (( :TIME >= 0841 and :TIME < 2040) and /prod/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete))
                   edit CYCLE_TYPE 'spinup'
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi_spinup
+                  trigger (:TIME >= 0831 and :TIME < 2031) and ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod/primary/06/obsproc/v1.2/rrfs/08z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/06/rrfs/v1.0/07z/enkf/forecast==complete or (( :TIME >= 0841 and :TIME < 2040) and /prod/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete)) and ../init/jrrfs_det_ioda_bufr_spinup==complete
+                  edit CYCLE_TYPE 'spinup'
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil_spinup
-                  trigger ./jrrfs_det_analysis_gsi_spinup==complete
+                  trigger ./jrrfs_det_analysis_gsi_spinup==complete and ./jrrfs_det_analysis_jedi_spinup==complete
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_analysis_gsi_diag_spinup
                   trigger ./jrrfs_det_analysis_gsi_spinup==complete
                   edit CYCLE_TYPE 'spinup'
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld_spinup
                   trigger ./jrrfs_det_update_lbc_soil_spinup==complete and ../init/jrrfs_det_process_bufr_spinup==complete
                   edit CYCLE_TYPE 'spinup'
@@ -22055,10 +22152,16 @@ suite prod
                 edit GSI_TYPE 'ANALYSIS'
                 task jrrfs_det_analysis_gsi
                   trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/06/obsproc/v1.2/rrfs/09z/dump/jobsproc_rrfs_dump==complete and /prod/primary/06/obsproc/v1.2/rrfs/09z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/06/rrfs/v1.0/08z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /prod/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete )
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi
+                  trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/06/obsproc/v1.2/rrfs/09z/dump/jobsproc_rrfs_dump==complete and /prod/primary/06/obsproc/v1.2/rrfs/09z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/06/rrfs/v1.0/08z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /prod/primary/06/rrfs/v1.0/06z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete ) and ../init/jrrfs_det_ioda_bufr==complete
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil
-                  trigger ./jrrfs_det_analysis_gsi==complete
+                  trigger ./jrrfs_det_analysis_gsi==complete and ./jrrfs_det_analysis_jedi==complete
                 task jrrfs_det_analysis_gsi_diag
                   trigger ./jrrfs_det_analysis_gsi==complete
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld
                   trigger ./jrrfs_det_update_lbc_soil==complete and ../init/jrrfs_det_process_bufr==complete
               endfamily
@@ -23013,10 +23116,16 @@ suite prod
                 edit GSI_TYPE 'ANALYSIS'
                 task jrrfs_det_analysis_gsi
                   trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/06/obsproc/v1.2/rrfs/10z/dump/jobsproc_rrfs_dump==complete and /prod/primary/06/obsproc/v1.2/rrfs/10z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/06/rrfs/v1.0/09z/enkf/forecast==complete or /prod/primary/06/rrfs/v1.0/08z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete )
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi
+                  trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/06/obsproc/v1.2/rrfs/10z/dump/jobsproc_rrfs_dump==complete and /prod/primary/06/obsproc/v1.2/rrfs/10z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/06/rrfs/v1.0/09z/enkf/forecast==complete or /prod/primary/06/rrfs/v1.0/08z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete ) and ../init/jrrfs_det_ioda_bufr==complete
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil
-                  trigger ./jrrfs_det_analysis_gsi==complete
+                  trigger ./jrrfs_det_analysis_gsi==complete and ./jrrfs_det_analysis_jedi==complete
                 task jrrfs_det_analysis_gsi_diag
                   trigger ./jrrfs_det_analysis_gsi==complete
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld
                   trigger ./jrrfs_det_update_lbc_soil==complete and ../init/jrrfs_det_process_bufr==complete
               endfamily
@@ -24313,10 +24422,16 @@ suite prod
                 edit GSI_TYPE 'ANALYSIS'
                 task jrrfs_det_analysis_gsi
                   trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/06/obsproc/v1.2/rrfs/11z/dump/jobsproc_rrfs_dump==complete and /prod/primary/06/obsproc/v1.2/rrfs/11z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/06/rrfs/v1.0/10z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /prod/primary/06/rrfs/v1.0/08z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete )
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi
+                  trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/06/obsproc/v1.2/rrfs/11z/dump/jobsproc_rrfs_dump==complete and /prod/primary/06/obsproc/v1.2/rrfs/11z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/06/rrfs/v1.0/10z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /prod/primary/06/rrfs/v1.0/08z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete ) and ../init/jrrfs_det_ioda_bufr==complete
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil
-                  trigger ./jrrfs_det_analysis_gsi==complete
+                  trigger ./jrrfs_det_analysis_gsi==complete and ./jrrfs_det_analysis_jedi==complete
                 task jrrfs_det_analysis_gsi_diag
                   trigger ./jrrfs_det_analysis_gsi==complete
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld
                   trigger ./jrrfs_det_update_lbc_soil==complete and ../init/jrrfs_det_process_bufr==complete
               endfamily
@@ -25621,10 +25736,16 @@ suite prod
                 edit GSI_TYPE 'ANALYSIS'
                 task jrrfs_det_analysis_gsi
                   trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/12/obsproc/v1.2/rrfs/12z/dump/jobsproc_rrfs_dump==complete and /prod/primary/12/obsproc/v1.2/rrfs/12z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/06/rrfs/v1.0/11z/enkf/forecast==complete or /prod/primary/06/rrfs/v1.0/10z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete )
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi
+                  trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/12/obsproc/v1.2/rrfs/12z/dump/jobsproc_rrfs_dump==complete and /prod/primary/12/obsproc/v1.2/rrfs/12z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/06/rrfs/v1.0/11z/enkf/forecast==complete or /prod/primary/06/rrfs/v1.0/10z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete ) and ../init/jrrfs_det_ioda_bufr==complete
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil
-                  trigger ./jrrfs_det_analysis_gsi==complete
+                  trigger ./jrrfs_det_analysis_gsi==complete and ./jrrfs_det_analysis_jedi==complete
                 task jrrfs_det_analysis_gsi_diag
                   trigger ./jrrfs_det_analysis_gsi==complete
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld
                   trigger ./jrrfs_det_update_lbc_soil==complete and ../init/jrrfs_det_process_bufr==complete
               endfamily
@@ -32060,10 +32181,16 @@ suite prod
                 edit GSI_TYPE 'ANALYSIS'
                 task jrrfs_det_analysis_gsi
                   trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/12/obsproc/v1.2/rrfs/13z/dump/jobsproc_rrfs_dump==complete and /prod/primary/12/obsproc/v1.2/rrfs/13z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/12/rrfs/v1.0/12z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /prod/primary/06/rrfs/v1.0/10z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete )
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi
+                  trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/12/obsproc/v1.2/rrfs/13z/dump/jobsproc_rrfs_dump==complete and /prod/primary/12/obsproc/v1.2/rrfs/13z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/12/rrfs/v1.0/12z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /prod/primary/06/rrfs/v1.0/10z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete ) and ../init/jrrfs_det_ioda_bufr==complete
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil
-                  trigger ./jrrfs_det_analysis_gsi==complete
+                  trigger ./jrrfs_det_analysis_gsi==complete and ./jrrfs_det_analysis_jedi==complete
                 task jrrfs_det_analysis_gsi_diag
                   trigger ./jrrfs_det_analysis_gsi==complete
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld
                   trigger ./jrrfs_det_update_lbc_soil==complete and ../init/jrrfs_det_process_bufr==complete
               endfamily
@@ -33019,10 +33146,16 @@ suite prod
                 edit GSI_TYPE 'ANALYSIS'
                 task jrrfs_det_analysis_gsi
                   trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/12/obsproc/v1.2/rrfs/14z/dump/jobsproc_rrfs_dump==complete and /prod/primary/12/obsproc/v1.2/rrfs/14z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/12/rrfs/v1.0/13z/enkf/forecast==complete or /prod/primary/12/rrfs/v1.0/12z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete )
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi
+                  trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/12/obsproc/v1.2/rrfs/14z/dump/jobsproc_rrfs_dump==complete and /prod/primary/12/obsproc/v1.2/rrfs/14z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/12/rrfs/v1.0/13z/enkf/forecast==complete or /prod/primary/12/rrfs/v1.0/12z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete ) and ../init/jrrfs_det_ioda_bufr==complete
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil
-                  trigger ./jrrfs_det_analysis_gsi==complete
+                  trigger ./jrrfs_det_analysis_gsi==complete and ./jrrfs_det_analysis_jedi==complete
                 task jrrfs_det_analysis_gsi_diag
                   trigger ./jrrfs_det_analysis_gsi==complete
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld
                   trigger ./jrrfs_det_update_lbc_soil==complete and ../init/jrrfs_det_process_bufr==complete
               endfamily
@@ -34340,21 +34473,34 @@ suite prod
                 edit GSI_TYPE 'ANALYSIS'
                 task jrrfs_det_analysis_gsi
                   trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/12/obsproc/v1.2/rrfs/15z/dump/jobsproc_rrfs_dump==complete and /prod/primary/12/obsproc/v1.2/rrfs/15z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/12/rrfs/v1.0/14z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /prod/primary/12/rrfs/v1.0/12z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete )
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi
+                  trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/12/obsproc/v1.2/rrfs/15z/dump/jobsproc_rrfs_dump==complete and /prod/primary/12/obsproc/v1.2/rrfs/15z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/12/rrfs/v1.0/14z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /prod/primary/12/rrfs/v1.0/12z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete ) and ../init/jrrfs_det_ioda_bufr==complete
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil
-                  trigger ./jrrfs_det_analysis_gsi==complete
+                  trigger ./jrrfs_det_analysis_gsi==complete and ./jrrfs_det_analysis_jedi==complete
                 task jrrfs_det_analysis_gsi_diag
                   trigger ./jrrfs_det_analysis_gsi==complete
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld
                   trigger ./jrrfs_det_update_lbc_soil==complete and ../init/jrrfs_det_process_bufr==complete
                 task jrrfs_det_analysis_gsi_spinup
                   trigger ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod/primary/12/obsproc/v1.2/rrfs/15z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/12/rrfs/v1.0/14z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or/prod/primary/12/rrfs/v1.0/12z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete )
                   edit CYCLE_TYPE 'spinup'
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi_spinup
+                  trigger ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod/primary/12/obsproc/v1.2/rrfs/15z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/12/rrfs/v1.0/14z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or/prod/primary/12/rrfs/v1.0/12z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete ) and ../init/jrrfs_det_ioda_bufr_spinup==complete
+                  edit CYCLE_TYPE 'spinup'
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil_spinup
-                  trigger ./jrrfs_det_analysis_gsi_spinup==complete
+                  trigger ./jrrfs_det_analysis_gsi_spinup==complete and ./jrrfs_det_analysis_jedi_spinup==complete
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_analysis_gsi_diag_spinup
                   trigger ./jrrfs_det_analysis_gsi_spinup==complete
                   edit CYCLE_TYPE 'spinup'
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld_spinup
                   trigger ./jrrfs_det_update_lbc_soil_spinup==complete and ../init/jrrfs_det_process_bufr_spinup==complete
                   edit CYCLE_TYPE 'spinup'
@@ -35334,21 +35480,34 @@ suite prod
                 edit GSI_TYPE 'ANALYSIS'
                 task jrrfs_det_analysis_gsi
                   trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/12/obsproc/v1.2/rrfs/16z/dump/jobsproc_rrfs_dump==complete and /prod/primary/12/obsproc/v1.2/rrfs/16z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/12/rrfs/v1.0/15z/enkf/forecast==complete or /prod/primary/12/rrfs/v1.0/14z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete )
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi
+                  trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/12/obsproc/v1.2/rrfs/16z/dump/jobsproc_rrfs_dump==complete and /prod/primary/12/obsproc/v1.2/rrfs/16z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/12/rrfs/v1.0/15z/enkf/forecast==complete or /prod/primary/12/rrfs/v1.0/14z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete ) and ../init/jrrfs_det_ioda_bufr==complete
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil
-                  trigger ./jrrfs_det_analysis_gsi==complete
+                  trigger ./jrrfs_det_analysis_gsi==complete and ./jrrfs_det_analysis_jedi==complete
                 task jrrfs_det_analysis_gsi_diag
                   trigger ./jrrfs_det_analysis_gsi==complete
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld
                   trigger ./jrrfs_det_update_lbc_soil==complete and ../init/jrrfs_det_process_bufr==complete
                 task jrrfs_det_analysis_gsi_spinup
                   trigger ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod/primary/12/obsproc/v1.2/rrfs/16z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/12/rrfs/v1.0/15z/enkf/forecast==complete or /prod/primary/12/rrfs/v1.0/14z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete )
                   edit CYCLE_TYPE 'spinup'
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi_spinup
+                  trigger ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod/primary/12/obsproc/v1.2/rrfs/16z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/12/rrfs/v1.0/15z/enkf/forecast==complete or /prod/primary/12/rrfs/v1.0/14z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete ) and ../init/jrrfs_det_ioda_bufr_spinup==complete
+                  edit CYCLE_TYPE 'spinup'
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil_spinup
-                  trigger ./jrrfs_det_analysis_gsi_spinup==complete
+                  trigger ./jrrfs_det_analysis_gsi_spinup==complete and ./jrrfs_det_analysis_jedi_spinup==complete
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_analysis_gsi_diag_spinup
                   trigger ./jrrfs_det_analysis_gsi_spinup==complete
                   edit CYCLE_TYPE 'spinup'
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld_spinup
                   trigger ./jrrfs_det_update_lbc_soil_spinup==complete and ../init/jrrfs_det_process_bufr_spinup==complete
                   edit CYCLE_TYPE 'spinup'
@@ -36670,21 +36829,34 @@ suite prod
                 edit GSI_TYPE 'ANALYSIS'
                 task jrrfs_det_analysis_gsi
                   trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/12/obsproc/v1.2/rrfs/17z/dump/jobsproc_rrfs_dump==complete and /prod/primary/12/obsproc/v1.2/rrfs/17z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/12/rrfs/v1.0/16z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /prod/primary/12/rrfs/v1.0/14z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete )
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi
+                  trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/12/obsproc/v1.2/rrfs/17z/dump/jobsproc_rrfs_dump==complete and /prod/primary/12/obsproc/v1.2/rrfs/17z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/12/rrfs/v1.0/16z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /prod/primary/12/rrfs/v1.0/14z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete ) and ../init/jrrfs_det_ioda_bufr==complete
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil
-                  trigger ./jrrfs_det_analysis_gsi==complete
+                  trigger ./jrrfs_det_analysis_gsi==complete and ./jrrfs_det_analysis_jedi==complete
                 task jrrfs_det_analysis_gsi_diag
                   trigger ./jrrfs_det_analysis_gsi==complete
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld
                   trigger ./jrrfs_det_update_lbc_soil==complete and ../init/jrrfs_det_process_bufr==complete
                 task jrrfs_det_analysis_gsi_spinup
                   trigger ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod/primary/12/obsproc/v1.2/rrfs/17z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/12/rrfs/v1.0/16z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or/prod/primary/12/rrfs/v1.0/14z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete )
                   edit CYCLE_TYPE 'spinup'
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi_spinup
+                  trigger ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod/primary/12/obsproc/v1.2/rrfs/17z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/12/rrfs/v1.0/16z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or/prod/primary/12/rrfs/v1.0/14z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete ) and ../init/jrrfs_det_ioda_bufr_spinup==complete
+                  edit CYCLE_TYPE 'spinup'
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil_spinup
-                  trigger ./jrrfs_det_analysis_gsi_spinup==complete
+                  trigger ./jrrfs_det_analysis_gsi_spinup==complete and ./jrrfs_det_analysis_jedi_spinup==complete
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_analysis_gsi_diag_spinup
                   trigger ./jrrfs_det_analysis_gsi_spinup==complete
                   edit CYCLE_TYPE 'spinup'
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld_spinup
                   trigger ./jrrfs_det_update_lbc_soil_spinup==complete and ../init/jrrfs_det_process_bufr_spinup==complete
                   edit CYCLE_TYPE 'spinup'
@@ -38024,21 +38196,34 @@ suite prod
                 edit GSI_TYPE 'ANALYSIS'
                 task jrrfs_det_analysis_gsi
                   trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/18/obsproc/v1.2/rrfs/18z/dump/jobsproc_rrfs_dump==complete and /prod/primary/18/obsproc/v1.2/rrfs/18z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/12/rrfs/v1.0/17z/enkf/forecast==complete or /prod/primary/12/rrfs/v1.0/16z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete )
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi
+                  trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/18/obsproc/v1.2/rrfs/18z/dump/jobsproc_rrfs_dump==complete and /prod/primary/18/obsproc/v1.2/rrfs/18z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/12/rrfs/v1.0/17z/enkf/forecast==complete or /prod/primary/12/rrfs/v1.0/16z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete ) and ../init/jrrfs_det_ioda_bufr==complete
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil
-                  trigger ./jrrfs_det_analysis_gsi==complete
+                  trigger ./jrrfs_det_analysis_gsi==complete and ./jrrfs_det_analysis_jedi==complete
                 task jrrfs_det_analysis_gsi_diag
                   trigger ./jrrfs_det_analysis_gsi==complete
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld
                   trigger ./jrrfs_det_update_lbc_soil==complete and ../init/jrrfs_det_process_bufr==complete
                 task jrrfs_det_analysis_gsi_spinup
                   trigger ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod/primary/18/obsproc/v1.2/rrfs/18z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/12/rrfs/v1.0/17z/enkf/forecast==complete or /prod/primary/12/rrfs/v1.0/16z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete )
                   edit CYCLE_TYPE 'spinup'
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi_spinup
+                  trigger ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod/primary/18/obsproc/v1.2/rrfs/18z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/12/rrfs/v1.0/17z/enkf/forecast==complete or /prod/primary/12/rrfs/v1.0/16z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete ) and ../init/jrrfs_det_ioda_bufr_spinup==complete
+                  edit CYCLE_TYPE 'spinup'
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil_spinup
-                  trigger ./jrrfs_det_analysis_gsi_spinup==complete
+                  trigger ./jrrfs_det_analysis_gsi_spinup==complete and ./jrrfs_det_analysis_jedi_spinup==complete
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_analysis_gsi_diag_spinup
                   trigger ./jrrfs_det_analysis_gsi_spinup==complete
                   edit CYCLE_TYPE 'spinup'
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld_spinup
                   trigger ./jrrfs_det_update_lbc_soil_spinup==complete and ../init/jrrfs_det_process_bufr_spinup==complete
                   edit CYCLE_TYPE 'spinup'
@@ -44499,21 +44684,34 @@ suite prod
                 edit GSI_TYPE 'ANALYSIS'
                 task jrrfs_det_analysis_gsi
                   trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/18/obsproc/v1.2/rrfs/19z/dump/jobsproc_rrfs_dump==complete and /prod/primary/18/obsproc/v1.2/rrfs/19z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /prod/primary/12/rrfs/v1.0/16z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete )
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi
+                  trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/18/obsproc/v1.2/rrfs/19z/dump/jobsproc_rrfs_dump==complete and /prod/primary/18/obsproc/v1.2/rrfs/19z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /prod/primary/12/rrfs/v1.0/16z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete ) and ../init/jrrfs_det_ioda_bufr==complete
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil
-                  trigger ./jrrfs_det_analysis_gsi==complete
+                  trigger ./jrrfs_det_analysis_gsi==complete and ./jrrfs_det_analysis_jedi==complete
                 task jrrfs_det_analysis_gsi_diag
                   trigger ./jrrfs_det_analysis_gsi==complete
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld
                   trigger ./jrrfs_det_update_lbc_soil==complete and ../init/jrrfs_det_process_bufr==complete
                 task jrrfs_det_analysis_gsi_spinup
                   trigger ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod/primary/18/obsproc/v1.2/rrfs/19z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /prod/primary/12/rrfs/v1.0/16z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete )
                   edit CYCLE_TYPE 'spinup'
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi_spinup
+                  trigger ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod/primary/18/obsproc/v1.2/rrfs/19z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /prod/primary/12/rrfs/v1.0/16z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete ) and ../init/jrrfs_det_ioda_bufr_spinup==complete
+                  edit CYCLE_TYPE 'spinup'
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil_spinup
-                  trigger ./jrrfs_det_analysis_gsi_spinup==complete
+                  trigger ./jrrfs_det_analysis_gsi_spinup==complete and ./jrrfs_det_analysis_jedi_spinup==complete
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_analysis_gsi_diag_spinup
                   trigger ./jrrfs_det_analysis_gsi_spinup==complete
                   edit CYCLE_TYPE 'spinup'
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld_spinup
                   trigger ./jrrfs_det_update_lbc_soil_spinup==complete and ../init/jrrfs_det_process_bufr_spinup==complete
                   edit CYCLE_TYPE 'spinup'
@@ -46040,21 +46238,34 @@ suite prod
                 edit GSI_TYPE 'ANALYSIS'
                 task jrrfs_det_analysis_gsi
                   trigger (:TIME >= 2031 or :TIME < 0831) and ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/18/obsproc/v1.2/rrfs/20z/dump/jobsproc_rrfs_dump==complete and /prod/primary/18/obsproc/v1.2/rrfs/20z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/18/rrfs/v1.0/19z/enkf/forecast==complete or ( (:TIME >= 2040 or :TIME < 0841) and /prod/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete ))
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi
+                  trigger (:TIME >= 2031 or :TIME < 0831) and ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/18/obsproc/v1.2/rrfs/20z/dump/jobsproc_rrfs_dump==complete and /prod/primary/18/obsproc/v1.2/rrfs/20z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/18/rrfs/v1.0/19z/enkf/forecast==complete or ( (:TIME >= 2040 or :TIME < 0841) and /prod/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete )) and ../init/jrrfs_det_ioda_bufr==complete
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil
-                  trigger ./jrrfs_det_analysis_gsi==complete
+                  trigger ./jrrfs_det_analysis_gsi==complete and ./jrrfs_det_analysis_jedi==complete
                 task jrrfs_det_analysis_gsi_diag
                   trigger ./jrrfs_det_analysis_gsi==complete
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld
                   trigger ./jrrfs_det_update_lbc_soil==complete and ../init/jrrfs_det_process_bufr==complete
                 task jrrfs_det_analysis_gsi_spinup
                   trigger (:TIME >= 2031 or :TIME < 0831) and ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod/primary/18/obsproc/v1.2/rrfs/20z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/18/rrfs/v1.0/19z/enkf/forecast==complete or ( (:TIME >= 2040 or :TIME < 0841) and /prod/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete ))
                   edit CYCLE_TYPE 'spinup'
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi_spinup
+                  trigger (:TIME >= 2031 or :TIME < 0831) and ../prep/jrrfs_det_prep_cyc_spinup==complete and /prod/primary/18/obsproc/v1.2/rrfs/20z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/18/rrfs/v1.0/19z/enkf/forecast==complete or ( (:TIME >= 2040 or :TIME < 0841) and /prod/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete )) and ../init/jrrfs_det_ioda_bufr_spinup==complete
+                  edit CYCLE_TYPE 'spinup'
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil_spinup
-                  trigger ./jrrfs_det_analysis_gsi_spinup==complete
+                  trigger ./jrrfs_det_analysis_gsi_spinup==complete and ./jrrfs_det_analysis_jedi_spinup==complete
                   edit CYCLE_TYPE 'spinup'
                 task jrrfs_det_analysis_gsi_diag_spinup
                   trigger ./jrrfs_det_analysis_gsi_spinup==complete
                   edit CYCLE_TYPE 'spinup'
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld_spinup
                   trigger ./jrrfs_det_update_lbc_soil_spinup==complete and ../init/jrrfs_det_process_bufr_spinup==complete
                   edit CYCLE_TYPE 'spinup'
@@ -47359,10 +47570,16 @@ suite prod
                 edit GSI_TYPE 'ANALYSIS'
                 task jrrfs_det_analysis_gsi
                   trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/18/obsproc/v1.2/rrfs/21z/dump/jobsproc_rrfs_dump==complete and /prod/primary/18/obsproc/v1.2/rrfs/21z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/18/rrfs/v1.0/20z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /prod/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete )
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi
+                  trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/18/obsproc/v1.2/rrfs/21z/dump/jobsproc_rrfs_dump==complete and /prod/primary/18/obsproc/v1.2/rrfs/21z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/18/rrfs/v1.0/20z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /prod/primary/18/rrfs/v1.0/18z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete ) and ../init/jrrfs_det_ioda_bufr==complete
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil
-                  trigger ./jrrfs_det_analysis_gsi==complete
+                  trigger ./jrrfs_det_analysis_gsi==complete and ./jrrfs_det_analysis_jedi==complete
                 task jrrfs_det_analysis_gsi_diag
                   trigger ./jrrfs_det_analysis_gsi==complete
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld
                   trigger ./jrrfs_det_update_lbc_soil==complete and ../init/jrrfs_det_process_bufr==complete
               endfamily
@@ -48317,10 +48534,16 @@ suite prod
                 edit GSI_TYPE 'ANALYSIS'
                 task jrrfs_det_analysis_gsi
                   trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/18/obsproc/v1.2/rrfs/22z/dump/jobsproc_rrfs_dump==complete and /prod/primary/18/obsproc/v1.2/rrfs/22z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/18/rrfs/v1.0/21z/enkf/forecast==complete or /prod/primary/18/rrfs/v1.0/20z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete )
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi
+                  trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/18/obsproc/v1.2/rrfs/22z/dump/jobsproc_rrfs_dump==complete and /prod/primary/18/obsproc/v1.2/rrfs/22z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/18/rrfs/v1.0/21z/enkf/forecast==complete or /prod/primary/18/rrfs/v1.0/20z/enkf/forecast/jrrfs_enkf_save_restart_f2_done==complete ) and ../init/jrrfs_det_ioda_bufr==complete
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil
-                  trigger ./jrrfs_det_analysis_gsi==complete
+                  trigger ./jrrfs_det_analysis_gsi==complete and ./jrrfs_det_analysis_jedi==complete
                 task jrrfs_det_analysis_gsi_diag
                   trigger ./jrrfs_det_analysis_gsi==complete
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld
                   trigger ./jrrfs_det_update_lbc_soil==complete and ../init/jrrfs_det_process_bufr==complete
               endfamily
@@ -49617,10 +49840,16 @@ suite prod
                 edit GSI_TYPE 'ANALYSIS'
                 task jrrfs_det_analysis_gsi
                   trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/18/obsproc/v1.2/rrfs/23z/dump/jobsproc_rrfs_dump==complete and /prod/primary/18/obsproc/v1.2/rrfs/23z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/18/rrfs/v1.0/22z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /prod/primary/18/rrfs/v1.0/20z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete)
+                  complete :DA_SYSTEM_JEDI == 1
+                task jrrfs_det_analysis_jedi
+                  trigger ../prep/jrrfs_det_prep_cyc==complete and /prod/primary/18/obsproc/v1.2/rrfs/23z/dump/jobsproc_rrfs_dump==complete and /prod/primary/18/obsproc/v1.2/rrfs/23z/prep/jobsproc_rrfs_prep==complete and ( /prod/primary/18/rrfs/v1.0/22z/enkf/forecast/jrrfs_enkf_save_restart_f1_done==complete or /prod/primary/18/rrfs/v1.0/20z/enkf/forecast/jrrfs_enkf_save_restart_f3_done==complete) and ../init/jrrfs_det_ioda_bufr==complete
+                  edit JEDI_TYPE 'ANALYSIS'
+                  complete :DA_SYSTEM_JEDI == 0
                 task jrrfs_det_update_lbc_soil
-                  trigger ./jrrfs_det_analysis_gsi==complete
+                  trigger ./jrrfs_det_analysis_gsi==complete and ./jrrfs_det_analysis_jedi==complete
                 task jrrfs_det_analysis_gsi_diag
                   trigger ./jrrfs_det_analysis_gsi==complete
+                  complete :DA_SYSTEM_JEDI == 1
                 task jrrfs_det_analysis_nonvarcld
                   trigger ./jrrfs_det_update_lbc_soil==complete and ../init/jrrfs_det_process_bufr==complete
               endfamily
