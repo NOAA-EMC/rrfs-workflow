@@ -5,14 +5,14 @@
 #PBS -q %QUEUE%
 #PBS -A %PROJ%-%PROJENVIR%
 #PBS -l walltime=00:50:00
-#PBS -l place=vscatter:excl,select=10:ncpus=128:ompthreads=1:mem=500G
+#PBS -l place=vscatter:excl,select=16:ncpus=128:ompthreads=1:mem=500G
 #PBS -l debug=true
 #SBATCH --job-name=rrfs_det_analysis_jedi_spinup_%CYC%
 #SBATCH --account=%PROJ%
 #SBATCH --qos=%QUEUE%
 #SBATCH --partition=%PARTITION:u1-compute%
 #SBATCH --time=00:50:00
-#SBATCH --nodes=10
+#SBATCH --nodes=16
 #SBATCH --exclusive
 #SBATCH --mem=0
 #SBATCH --output=%ECF_JOBOUT%
