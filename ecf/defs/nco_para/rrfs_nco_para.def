@@ -75,6 +75,7 @@ extern /prod_clone/primary/18/obsproc/v1.2/rrfs/23z/prep/jobsproc_rrfs_prep
 
 suite para
   edit DA_SYSTEM_JEDI '0'
+  edit FIX_RRFS_JEDI '/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/jedi'
   family primary
     family 00
       family rrfs

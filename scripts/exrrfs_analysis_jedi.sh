@@ -4,7 +4,7 @@ set -x
 source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 
 export FIX_GSI="${FIXrrfs}/gsi"
-export FIX_JEDI="${FIXrrfs}/jedi"
+export FIX_JEDI="${FIX_RRFS_JEDI:-${FIXrrfs}/jedi}"
 export FIXLAM=${FIXLAM:-${HOMErrfs}/fix/lam/RRFS_NA_3km}
 export PARM_JCB="${PARMrrfs}/jedi"
 # RDASApp ships the JCB templates' python driver, the CRTM coefficients and the offline sonde
@@ -438,12 +438,16 @@ ln -snf ${FIXLAM}/${CRES}_grid.tile7.halo3.nc INPUT/${CRES}_grid.tile7.nc
 ln -snf ${FIXLAM}/${CRES}_mosaic.halo3.nc INPUT/grid_spec.nc
 cpreq -p ${FIX_JEDI}/dynamics_lam_cmaq.yaml .
 cpreq -p ${FIX_JEDI}/field_table .
-cpreq -p ${FIX_JEDI}/berror_stats .
-cpreq -p ${FIX_JEDI}/${PREDEF_GRID_NAME}/fmsmpp.nml .
-cpreq -p ${FIX_JEDI}/${PREDEF_GRID_NAME}/gsiparm_regional.anl .
-cpreq -p ${FIX_JEDI}/${PREDEF_GRID_NAME}/input_lam* .
+# dev-sci's shared FIX_RRFS keeps berror_stats with the 13 km grid, which it uses for every grid
+berror=${FIX_JEDI}/berror_stats
+[ -e "${berror}" ] || berror=${FIX_JEDI}/RRFS_CONUS_13km/berror_stats
+cpreq -p ${berror} berror_stats
+# the per-grid namelists live in parm beside the JCB templates that have to match them
+cpreq -p ${PARM_JCB}/${PREDEF_GRID_NAME}/fmsmpp.nml .
+cpreq -p ${PARM_JCB}/${PREDEF_GRID_NAME}/gsiparm_regional.anl .
+cpreq -p ${PARM_JCB}/${PREDEF_GRID_NAME}/input_lam* .
 # only the 13 km grid has the MGBF namelists, which the hybrid background error alone reads
-for f in ${FIX_JEDI}/${PREDEF_GRID_NAME}/mgbf*; do
+for f in ${PARM_JCB}/${PREDEF_GRID_NAME}/mgbf*; do
   [ -e "${f}" ] && cpreq -p "${f}" .
 done
 ln -snf ${RDASAPP_DIR}/fix/expr_data/fv3_2024052700/DataFix .

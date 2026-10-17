@@ -34,3 +34,9 @@ case ${MACHINE} in
   WCOSS2) FIX_RRFS_SHARED=${FIX_RRFS_SHARED:-/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS} ;;
   *)      FIX_RRFS_SHARED=${FIX_RRFS_SHARED:-/scratch4/BMC/rtrr/FIX_RRFS} ;;
 esac
+# fix/jedi for the JEDI tasks while the package fix tree has none: dev-sci's shared FIX_RRFS/jedi,
+# which its Rocoto workflow links in. Empty uses <fix tree>/jedi
+case ${MACHINE} in
+  WCOSS2) FIX_RRFS_JEDI=${FIX_RRFS_JEDI:-/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/jedi} ;;
+  *)      FIX_RRFS_JEDI=${FIX_RRFS_JEDI:-/scratch4/BMC/rtrr/FIX_RRFS/jedi} ;;
+esac

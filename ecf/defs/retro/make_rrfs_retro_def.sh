@@ -30,7 +30,7 @@ awk -v q="'" -v machine="${MACHINE}" -v ph="${PACKAGEHOME}" -v eh="${ECF_HOME}" 
     -v proj="${PROJ}" -v queue="${QUEUE}" -v part="${PARTITION:-}" \
     -v ptmp="${DEV_PTMP}" -v droot="${DEV_DATAROOT}" -v ev="${ECFLOW_VER}" \
     -v envir="${ENVIR}" -v rver="${RRFS_VER}" -v site="${MACHINE_SITE}" -v eh_host="${ECFLOW_HOST}" \
-    -v compath="${DEV_COMPATH}" -v dcom="${DCOMROOT}" -v retro="${RETRO}" '
+    -v compath="${DEV_COMPATH}" -v dcom="${DCOMROOT}" -v retro="${RETRO}" -v fixjedi="${FIX_RRFS_JEDI}" '
   function ed(name, value) { print ind "edit " name " " q value q }
   # suite-wide settings go right after the suite line
   $1 == "suite" && !done {
@@ -42,6 +42,7 @@ awk -v q="'" -v machine="${MACHINE}" -v ph="${PACKAGEHOME}" -v eh="${ECF_HOME}" 
     ed("DEV_COMPATH", compath)
     ed("DCOMROOT", dcom)
     ed("RETRO", retro)
+    if (fixjedi != "") ed("FIX_RRFS_JEDI", fixjedi)
     ed("ecflow_ver", ev)
     ed("ECF_LOGHOST", eh_host)
     ed("ENVIR", envir)
