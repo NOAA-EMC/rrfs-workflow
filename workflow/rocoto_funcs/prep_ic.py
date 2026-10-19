@@ -97,8 +97,8 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
 
     # chemistry update dependencies
     datadep_chem = ""
-    if os.getenv('DO_CHEMISTRY', 'FALSE').upper() == "TRUE":
-        datadep_chem = f'''\n        <datadep age="00:00:05"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;/mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'''
+    if os.getenv('DO_CHEMISTRY', 'FALSE').upper() == "TRUE" and not do_ensemble:
+        datadep_chem = f'''\n        <datadep age="00:00:05"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'''
 
     #
     satbias_dep = ""
