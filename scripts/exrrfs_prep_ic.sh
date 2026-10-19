@@ -200,7 +200,7 @@ else
 
 # Add/update chemistry species for init.nc
 if [[ "${START_TYPE}" == "cold" ]]; then
-  if [[ "${DO_CHEMISTRY^^}" == "TRUE" ]] && [[ "${CYCLE_CHEMISTRY^^}" == "TRUE" ]]; then
+  if [[ "${DO_CHEMISTRY^^}" == "TRUE" ]]; then
     echo "Cycling chemistry fields..."
     source "${USHrrfs}/chem_ic_update.sh"
   fi
