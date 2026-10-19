@@ -160,8 +160,25 @@ RUN_GSIDIAG=${RUN_GSIDIAG:-FALSE}         # offline GSI diagnostics (DO_GSIDIAG_
 RUN_LIGHTNING=${RUN_LIGHTNING:-FALSE}     # GLM flash extent density and its DA (DO_GLM_FED_DA)
 RUN_RADAR=${RUN_RADAR:-TRUE}              # MRMS reflectivity; this configuration assimilates it
 RUN_POST=${RUN_POST:-TRUE}                # post and products; FALSE for a DA-only run
-# Which analysis runs: GSI (the operational route) or JEDI
+# JEDI analysis, the Rocoto config.sh "JEDI options". DA_SYSTEM picks which analysis runs, GSI
+# (the operational route) or JEDI; the rest are read only when it is JEDI. setup_retro_links.sh
+# writes them into det/workflow.conf and make_rrfs_retro_def.sh sizes the job from them.
 DA_SYSTEM=${DA_SYSTEM:-GSI}
+# JCB templates in parm/jedi that the analysis renders its yaml from, conventional and
+# reflectivity. The conventional one decides 3DVar or hybrid: for hybrid 3DEnVar with the
+# 30 EnKF members use rdas-atmosphere-templates-fv3_c13_hybrid.yaml.
+JCB_CONFIG_CONV=${JCB_CONFIG_CONV:-rdas-atmosphere-templates-fv3_c13.yaml}
+JCB_CONFIG_DBZ=${JCB_CONFIG_DBZ-rdas-atmosphere-templates-fv3_c13_dbz.yaml}
+# Whether the analysis also runs on cold-start cycles, and whether synthetic radiosonde
+# temperature and humidity levels are added the way GSI's sonde_ext does
+DO_DACOLD=${DO_DACOLD:-FALSE}
+EXT_SONDE=${EXT_SONDE:-FALSE}
+# Job size. Nodes x tasks per node must match the template's layout,
+# the 14x14 layout in the c13 templates: 196 tasks
+NNODES_ANALYSIS_JEDI=${NNODES_ANALYSIS_JEDI:-2}
+PPN_ANALYSIS_JEDI=${PPN_ANALYSIS_JEDI:-98}
+TPP_ANALYSIS_JEDI=${TPP_ANALYSIS_JEDI:-1}
+WALLTIME_ANALYSIS_JEDI=${WALLTIME_ANALYSIS_JEDI:-00:50:00}
 
 # Anything else to leave out, as space-separated regular expressions matching whole task names
 SKIP_TASKS=${SKIP_TASKS:-}

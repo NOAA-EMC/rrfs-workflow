@@ -189,3 +189,13 @@ if changed:
     open(path, "w").write(text)
     print("Simplified workflow: " + ", ".join(changed))
 EOF
+
+# The JEDI analysis settings in retro/config.sh. They go last, so they win over any earlier
+# setting, and are left out when unset, so the ex-script's NA 3 km defaults apply.
+for name in JCB_CONFIG_CONV JCB_CONFIG_DBZ DO_DACOLD EXT_SONDE \
+            NNODES_ANALYSIS_JEDI PPN_ANALYSIS_JEDI TPP_ANALYSIS_JEDI; do
+  if [ -n "${!name+x}" ]; then
+    echo "export ${name}='${!name}'" >> ./det/workflow.conf
+    echo "JEDI: ${name}=${!name}"
+  fi
+done

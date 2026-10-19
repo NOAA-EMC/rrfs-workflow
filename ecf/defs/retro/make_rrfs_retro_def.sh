@@ -416,10 +416,14 @@ fi
 # names their job sizes through SBATCH_OVERRIDES on Ursa, or QSUB_OVERRIDES on WCOSS2. The table
 # is in sbatch terms; on WCOSS2 --nodes=N becomes N whole 128-core nodes and --time the walltime.
 # The node counts carry over because ranks per node come from the domain's PPN_* settings, which
-# all fit in a WCOSS2 node. RRFS_NA_3km has none: the cards are sized for it.
+# all fit in a WCOSS2 node; RRFS_NA_3km has none, the cards are sized for it. The JEDI analysis
+# comes first and on every domain, sized from the JEDI settings in retro/config.sh, so its job
+# request always matches the tasks the ex-script starts.
+job_sizes=("jrrfs_det_analysis_jedi*:--nodes=${NNODES_ANALYSIS_JEDI:-16} --time=${WALLTIME_ANALYSIS_JEDI:-00:50:00}")
 # shellcheck source=/dev/null
 . "${defs_dir}/domains/${DOMAIN}.sh"
-python3 - "${out_def}" "${MACHINE}" "${DOMAIN_SBATCH[@]}" <<'EOF'
+job_sizes+=("${DOMAIN_SBATCH[@]}")
+python3 - "${out_def}" "${MACHINE}" "${job_sizes[@]}" <<'EOF'
 import fnmatch, re, sys
 path, machine = sys.argv[1], sys.argv[2]
 table = [a.split(":", 1) for a in sys.argv[3:]]
@@ -451,7 +455,7 @@ for line in open(path).read().split("\n"):
             out.append(line[:len(line) - len(line.lstrip())] + f"  edit {var} '{opts}'")
             n += 1
 open(path, "w").write("\n".join(out))
-print(f"{n} tasks given job sizes for the domain")
+print(f"{n} tasks given job sizes for the domain and the JEDI analysis")
 EOF
 
 echo "Wrote ${out_def} from ${BASE_DEF}"

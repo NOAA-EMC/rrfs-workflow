@@ -100,8 +100,25 @@ RUN_BUFRSND=${RUN_BUFRSND:-FALSE}
 # The 85 boundary jobs at each long cycle are left alone, because the hourly cycles in the family
 # share them; to cut those as well, shorten the forecast itself with FCST_LEN_HRS and
 # FCST_LEN_HRS_LONG (see the simplified samples, config_*_simple.sh).
-# Which analysis runs: GSI (the operational route) or JEDI
+# JEDI analysis, the Rocoto config.sh "JEDI options". DA_SYSTEM picks which analysis runs, GSI
+# (the operational route) or JEDI; the rest are read only when it is JEDI. setup_retro_links.sh
+# writes them into det/workflow.conf and make_rrfs_retro_def.sh sizes the job from them.
 DA_SYSTEM=${DA_SYSTEM:-GSI}
+# JCB templates in parm/jedi that the analysis renders its yaml from, conventional and
+# reflectivity. The conventional one decides 3DVar or hybrid; this grid has only the
+# 3DVar template so far.
+JCB_CONFIG_CONV=${JCB_CONFIG_CONV:-rdas-atmosphere-templates-fv3_na3km.yaml}
+JCB_CONFIG_DBZ=${JCB_CONFIG_DBZ-}
+# Whether the analysis also runs on cold-start cycles, and whether synthetic radiosonde
+# temperature and humidity levels are added the way GSI's sonde_ext does
+DO_DACOLD=${DO_DACOLD:-FALSE}
+EXT_SONDE=${EXT_SONDE:-FALSE}
+# Job size. Nodes x tasks per node must match the template's layout,
+# the 40x40 layout in the na3km template: 1600 tasks
+NNODES_ANALYSIS_JEDI=${NNODES_ANALYSIS_JEDI:-16}
+PPN_ANALYSIS_JEDI=${PPN_ANALYSIS_JEDI:-100}
+TPP_ANALYSIS_JEDI=${TPP_ANALYSIS_JEDI:-1}
+WALLTIME_ANALYSIS_JEDI=${WALLTIME_ANALYSIS_JEDI:-00:50:00}
 
 DO_LONG_FORECAST=${DO_LONG_FORECAST:-TRUE}
 
