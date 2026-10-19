@@ -397,5 +397,19 @@
              value: is_valid
            defer to post: true
 
+         # Halve final observation error after all QC and error restoration
+         - filter: Perform Action
+           apply at iterations: 0,1
+           identifier:
+             name: ObsErrorHalve
+             logging: true
+             diagnostic flag new: false
+           filter variables:
+           - name: airTemperatureAt2M
+           action:
+             name: inflate error
+             inflation factor: 0.5
+           defer to post: true
+
          #- filter: GOMsaver
          #  filename: ./data/geovals/adpsfc_geovals_rrfs.nc
