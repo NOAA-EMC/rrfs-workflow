@@ -37,12 +37,6 @@ for src in "${fix_src}"/*; do
   ln -snf "${src}" "${fix_dir}/${name}"
 done
 
-# The IODA fix files (ioda_empty.nc, atms_beamwidth.txt) are not in the NCO
-# fix tree, so they come from dev-sci's shared one. The loop above already linked them if
-# FIX_RRFS_DIR ever grows a jedi directory of its own.
-if [ ! -e "${fix_dir}/jedi" ] && [ -d "${FIX_RRFS_SHARED}/jedi" ]; then
-  ln -snf "${FIX_RRFS_SHARED}/jedi" "${fix_dir}/jedi"
-fi
 for wgf in det enkf ensf firewx; do
   mkdir -p "${fix_dir}/workflow/${wgf}"
   ln -sf "${fix_src}/workflow/${wgf}/workflow.conf_prod" "${fix_dir}/workflow/${wgf}/workflow.conf_prod"
@@ -195,3 +189,13 @@ if changed:
     open(path, "w").write(text)
     print("Simplified workflow: " + ", ".join(changed))
 EOF
+
+# The JEDI analysis settings in retro/config.sh. They go last, so they win over any earlier
+# setting, and are left out when unset, so the ex-script's NA 3 km defaults apply.
+for name in JCB_CONFIG_CONV JCB_CONFIG_DBZ DO_DACOLD EXT_SONDE \
+            NNODES_ANALYSIS_JEDI PPN_ANALYSIS_JEDI TPP_ANALYSIS_JEDI; do
+  if [ -n "${!name+x}" ]; then
+    echo "export ${name}='${!name}'" >> ./det/workflow.conf
+    echo "JEDI: ${name}=${!name}"
+  fi
+done

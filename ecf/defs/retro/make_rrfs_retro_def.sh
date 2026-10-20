@@ -26,11 +26,26 @@ c=${RETRO_DATA_ROOT}/com
 DEV_COMPATH=${DEV_COMPATH:-$c/gfs:$c/gefs:$c/obsproc:$c/nsst:$c/nosofs:$c/hrrr:$c/rap}
 DCOMROOT=${DCOMROOT:-${RETRO_DATA_ROOT}/dcom}
 
-awk -v q="'" -v machine="${MACHINE}" -v ph="${PACKAGEHOME}" -v eh="${ECF_HOME}" -v od="${OUTPUTDIR}" \
-    -v proj="${PROJ}" -v queue="${QUEUE}" -v part="${PARTITION:-}" \
-    -v ptmp="${DEV_PTMP}" -v droot="${DEV_DATAROOT}" -v ev="${ECFLOW_VER}" \
-    -v envir="${ENVIR}" -v rver="${RRFS_VER}" -v site="${MACHINE_SITE}" -v eh_host="${ECFLOW_HOST}" \
-    -v compath="${DEV_COMPATH}" -v dcom="${DCOMROOT}" -v retro="${RETRO}" '
+awk \
+    -v q="'" \
+    -v machine="${MACHINE}" \
+    -v ph="${PACKAGEHOME}" \
+    -v eh="${ECF_HOME}" \
+    -v od="${OUTPUTDIR}" \
+    -v proj="${PROJ}" \
+    -v queue="${QUEUE}" \
+    -v part="${PARTITION:-}" \
+    -v ptmp="${DEV_PTMP}" \
+    -v droot="${DEV_DATAROOT}" \
+    -v ev="${ECFLOW_VER}" \
+    -v envir="${ENVIR}" \
+    -v rver="${RRFS_VER}" \
+    -v site="${MACHINE_SITE}" \
+    -v eh_host="${ECFLOW_HOST}" \
+    -v compath="${DEV_COMPATH}" \
+    -v dcom="${DCOMROOT}" \
+    -v retro="${RETRO}" \
+    -v fixjedi="${FIX_RRFS_JEDI}" '
   function ed(name, value) { print ind "edit " name " " q value q }
   # suite-wide settings go right after the suite line
   $1 == "suite" && !done {
@@ -42,6 +57,7 @@ awk -v q="'" -v machine="${MACHINE}" -v ph="${PACKAGEHOME}" -v eh="${ECF_HOME}" 
     ed("DEV_COMPATH", compath)
     ed("DCOMROOT", dcom)
     ed("RETRO", retro)
+    if (fixjedi != "") ed("FIX_RRFS_JEDI", fixjedi)
     ed("ecflow_ver", ev)
     ed("ECF_LOGHOST", eh_host)
     ed("ENVIR", envir)
@@ -94,6 +110,8 @@ awk -v q="'" -v machine="${MACHINE}" -v ph="${PACKAGEHOME}" -v eh="${ECF_HOME}" 
     if ($2 == "OUTPUTDIR")   ed("OUTPUTDIR", od)
     next
   }
+  # the para definition'"'"'s WCOSS2 path; the one from retro/config.sh is set at the top instead
+  $1 == "edit" && $2 == "FIX_RRFS_JEDI" { next }
   { print }
 ' "${defs_dir}/../${BASE_DEF}" > "${out_def}"
 
@@ -176,6 +194,15 @@ EOF
     sed -i -E "s/^( *)edit KEEPDATA '[A-Za-z]+'/\1edit KEEPDATA '${KEEPDATA}'/" "${out_def}"
     echo "  KEEPDATA: ${nkeep} setting(s) rewritten to '${KEEPDATA}'"
   fi
+
+  # Which analysis runs: the route DA_SYSTEM does not select is marked complete, never submitted
+  case "${DA_SYSTEM:-GSI}" in
+    GSI|gsi)   da_system_jedi=0 ;;
+    JEDI|jedi) da_system_jedi=1 ;;
+    *) echo "ERROR: DA_SYSTEM must be GSI or JEDI, not '${DA_SYSTEM}'." >&2; exit 1 ;;
+  esac
+  sed -i -E "s/^( *)edit DA_SYSTEM_JEDI '[01]'/\1edit DA_SYSTEM_JEDI '${da_system_jedi}'/" "${out_def}"
+  echo "  DA_SYSTEM: ${DA_SYSTEM:-GSI} (DA_SYSTEM_JEDI=${da_system_jedi})"
 
   # A manager task that waits on the whole forecast family is fragile once anything is requeued:
   # the family reads active while other tasks in it run, so the manager can start before the
@@ -406,10 +433,14 @@ fi
 # names their job sizes through SBATCH_OVERRIDES on Ursa, or QSUB_OVERRIDES on WCOSS2. The table
 # is in sbatch terms; on WCOSS2 --nodes=N becomes N whole 128-core nodes and --time the walltime.
 # The node counts carry over because ranks per node come from the domain's PPN_* settings, which
-# all fit in a WCOSS2 node. RRFS_NA_3km has none: the cards are sized for it.
+# all fit in a WCOSS2 node; RRFS_NA_3km has none, the cards are sized for it. The JEDI analysis
+# comes first and on every domain, sized from the JEDI settings in retro/config.sh, so its job
+# request always matches the tasks the ex-script starts.
+job_sizes=("jrrfs_det_analysis_jedi*:--nodes=${NNODES_ANALYSIS_JEDI:-16} --time=${WALLTIME_ANALYSIS_JEDI:-00:50:00}")
 # shellcheck source=/dev/null
 . "${defs_dir}/domains/${DOMAIN}.sh"
-python3 - "${out_def}" "${MACHINE}" "${DOMAIN_SBATCH[@]}" <<'EOF'
+job_sizes+=("${DOMAIN_SBATCH[@]}")
+python3 - "${out_def}" "${MACHINE}" "${job_sizes[@]}" <<'EOF'
 import fnmatch, re, sys
 path, machine = sys.argv[1], sys.argv[2]
 table = [a.split(":", 1) for a in sys.argv[3:]]
@@ -441,7 +472,7 @@ for line in open(path).read().split("\n"):
             out.append(line[:len(line) - len(line.lstrip())] + f"  edit {var} '{opts}'")
             n += 1
 open(path, "w").write("\n".join(out))
-print(f"{n} tasks given job sizes for the domain")
+print(f"{n} tasks given job sizes for the domain and the JEDI analysis")
 EOF
 
 echo "Wrote ${out_def} from ${BASE_DEF}"

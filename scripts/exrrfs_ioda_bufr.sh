@@ -4,7 +4,7 @@ set -x
 source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 
 export FIX_GSI="${FIXrrfs}/gsi"
-export FIX_JEDI="${FIXrrfs}/jedi"
+export FIX_JEDI="${FIX_RRFS_JEDI:-${FIXrrfs}/jedi}"
 # RDASApp ships the python converters, the bufr2ioda yamls and their auxiliary data in its
 # source tree, so the ex-script needs the clone itself and not only the executables installed
 # into exec/. Reading the yamls from there keeps them at the version RDASApp maintains.
