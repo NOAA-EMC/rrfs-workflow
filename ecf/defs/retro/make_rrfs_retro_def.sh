@@ -26,11 +26,26 @@ c=${RETRO_DATA_ROOT}/com
 DEV_COMPATH=${DEV_COMPATH:-$c/gfs:$c/gefs:$c/obsproc:$c/nsst:$c/nosofs:$c/hrrr:$c/rap}
 DCOMROOT=${DCOMROOT:-${RETRO_DATA_ROOT}/dcom}
 
-awk -v q="'" -v machine="${MACHINE}" -v ph="${PACKAGEHOME}" -v eh="${ECF_HOME}" -v od="${OUTPUTDIR}" \
-    -v proj="${PROJ}" -v queue="${QUEUE}" -v part="${PARTITION:-}" \
-    -v ptmp="${DEV_PTMP}" -v droot="${DEV_DATAROOT}" -v ev="${ECFLOW_VER}" \
-    -v envir="${ENVIR}" -v rver="${RRFS_VER}" -v site="${MACHINE_SITE}" -v eh_host="${ECFLOW_HOST}" \
-    -v compath="${DEV_COMPATH}" -v dcom="${DCOMROOT}" -v retro="${RETRO}" -v fixjedi="${FIX_RRFS_JEDI}" '
+awk \
+    -v q="'" \
+    -v machine="${MACHINE}" \
+    -v ph="${PACKAGEHOME}" \
+    -v eh="${ECF_HOME}" \
+    -v od="${OUTPUTDIR}" \
+    -v proj="${PROJ}" \
+    -v queue="${QUEUE}" \
+    -v part="${PARTITION:-}" \
+    -v ptmp="${DEV_PTMP}" \
+    -v droot="${DEV_DATAROOT}" \
+    -v ev="${ECFLOW_VER}" \
+    -v envir="${ENVIR}" \
+    -v rver="${RRFS_VER}" \
+    -v site="${MACHINE_SITE}" \
+    -v eh_host="${ECFLOW_HOST}" \
+    -v compath="${DEV_COMPATH}" \
+    -v dcom="${DCOMROOT}" \
+    -v retro="${RETRO}" \
+    -v fixjedi="${FIX_RRFS_JEDI}" '
   function ed(name, value) { print ind "edit " name " " q value q }
   # suite-wide settings go right after the suite line
   $1 == "suite" && !done {
