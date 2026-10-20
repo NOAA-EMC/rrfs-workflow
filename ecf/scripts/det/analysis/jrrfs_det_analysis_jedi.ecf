@@ -1,0 +1,64 @@
+#!/bin/bash
+#PBS -N rrfs_det_analysis_jedi_%CYC%
+#PBS -j oe
+#PBS -S /bin/bash
+#PBS -q %QUEUE%
+#PBS -A %PROJ%-%PROJENVIR%
+#PBS -l walltime=00:50:00
+#PBS -l place=vscatter:excl,select=16:ncpus=128:ompthreads=1:mem=500G
+#PBS -l debug=true
+#SBATCH --job-name=rrfs_det_analysis_jedi_%CYC%
+#SBATCH --account=%PROJ%
+#SBATCH --qos=%QUEUE%
+#SBATCH --partition=%PARTITION:u1-compute%
+#SBATCH --time=00:50:00
+#SBATCH --nodes=16
+#SBATCH --exclusive
+#SBATCH --mem=0
+#SBATCH --output=%ECF_JOBOUT%
+
+model=rrfs
+export MACHINE=%MACHINE:WCOSS2%
+export cyc="%CYC%"
+%include <head.h>
+%include <envir-p1.h>
+############################################################
+# Load modules
+############################################################
+# Cray modules for WCOSS2; on Ursa, head.h loads modulefiles/run_ursa.lua instead
+if [ "${MACHINE}" = "WCOSS2" ]; then
+module load intel/${intel_ver}
+module load craype/${craype_ver}
+module load ve/rrfs/${rrfs_pythonve_ver}
+module load cray-mpich/${cray_mpich_ver}
+module load cray-pals/${cray_pals_ver}
+module load hdf5-D/${hdf5_ver}
+module load netcdf-D/${netcdf_ver}
+module load pnetcdf-D/${pnetcdf_ver}
+module load bacio/${bacio_ver}
+module load w3emc/${w3emc_ver}
+module load sp/${sp_ver}
+module load ip/${ip_ver}
+module load nemsio/${nemsio_ver}
+module load ncdiag-A/${ncdiag_ver}
+module load libjpeg/${libjpeg_ver}
+module load crtm/${crtm_ver}
+module load udunits/${udunits_ver}
+module load gsl/${gsl_ver}
+module load nco/${nco_ver}
+fi
+
+module list
+export WGF="%WGF%"
+export JEDI_TYPE="%JEDI_TYPE%"
+export MEM_TYPE="%MEM_TYPE%"
+export OB_TYPE="conv"
+############################################################
+# CALL executable job script here
+############################################################
+${HOMErrfs}/jobs/JRRFS_ANALYSIS_JEDI
+
+%include <tail.h>
+
+%manual
+%end

@@ -40,6 +40,8 @@ export SENDCOM=${SENDCOM:-YES}
 if [ -n "%PDY:%" ]; then export PDY=${PDY:-%PDY:%}; fi
 # Developer retros (make_rrfs_retro_def.sh) set RETRO=YES, which turns on their workarounds in the ex-scripts
 if [ -n "%RETRO:%" ]; then export RETRO=%RETRO:%; fi
+# Developer runs can point the JEDI tasks at a fix/jedi outside the package until the package has one
+if [ -n "%FIX_RRFS_JEDI:%" ]; then export FIX_RRFS_JEDI=%FIX_RRFS_JEDI:%; fi
 if [ -n "%PARATEST:%" ]; then export PARATEST=${PARATEST:-%PARATEST:%}; fi
 if [ -n "%COMPATH:%" ]; then export COMPATH=${COMPATH:-%COMPATH:%}; fi
 if [ -n "%MAILTO:%" ]; then export MAILTO=${MAILTO:-%MAILTO:%}; fi
