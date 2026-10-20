@@ -406,11 +406,10 @@ fi
 # names their job sizes through SBATCH_OVERRIDES on Ursa, or QSUB_OVERRIDES on WCOSS2. The table
 # is in sbatch terms; on WCOSS2 --nodes=N becomes N whole 128-core nodes and --time the walltime.
 # The node counts carry over because ranks per node come from the domain's PPN_* settings, which
-# all fit in a WCOSS2 node.
-if [ "${DOMAIN}" != "RRFS_NA_3km" ]; then
-  # shellcheck source=/dev/null
-  . "${defs_dir}/domains/${DOMAIN}.sh"
-  python3 - "${out_def}" "${MACHINE}" "${DOMAIN_SBATCH[@]}" <<'EOF'
+# all fit in a WCOSS2 node. RRFS_NA_3km has none: the cards are sized for it.
+# shellcheck source=/dev/null
+. "${defs_dir}/domains/${DOMAIN}.sh"
+python3 - "${out_def}" "${MACHINE}" "${DOMAIN_SBATCH[@]}" <<'EOF'
 import fnmatch, re, sys
 path, machine = sys.argv[1], sys.argv[2]
 table = [a.split(":", 1) for a in sys.argv[3:]]
@@ -444,7 +443,6 @@ for line in open(path).read().split("\n"):
 open(path, "w").write("\n".join(out))
 print(f"{n} tasks given job sizes for the domain")
 EOF
-fi
 
 echo "Wrote ${out_def} from ${BASE_DEF}"
 echo "  PACKAGEHOME=${PACKAGEHOME}"
