@@ -38,5 +38,6 @@ esac
 # which its Rocoto workflow links in. Empty uses <fix tree>/jedi
 case ${MACHINE} in
   WCOSS2) FIX_RRFS_JEDI=${FIX_RRFS_JEDI:-/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/jedi} ;;
-  *)      FIX_RRFS_JEDI=${FIX_RRFS_JEDI:-/scratch4/BMC/rtrr/FIX_RRFS/jedi} ;;
+  URSA)   FIX_RRFS_JEDI=${FIX_RRFS_JEDI:-/scratch4/BMC/rtrr/FIX_RRFS/jedi} ;;
+  *) echo "MACHINE=${MACHINE} is not supported; the retros run on URSA and WCOSS2" >&2; exit 1 ;;
 esac

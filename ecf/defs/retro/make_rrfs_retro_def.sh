@@ -95,6 +95,8 @@ awk -v q="'" -v machine="${MACHINE}" -v ph="${PACKAGEHOME}" -v eh="${ECF_HOME}" 
     if ($2 == "OUTPUTDIR")   ed("OUTPUTDIR", od)
     next
   }
+  # the para definition'"'"'s WCOSS2 path; the one from retro/config.sh is set at the top instead
+  $1 == "edit" && $2 == "FIX_RRFS_JEDI" { next }
   { print }
 ' "${defs_dir}/../${BASE_DEF}" > "${out_def}"
 

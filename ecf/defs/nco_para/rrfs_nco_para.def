@@ -74,7 +74,12 @@ extern /prod_clone/primary/18/obsproc/v1.2/rrfs/23z/prep/jobsproc_rrfs_prep
 
 
 suite para
+  # JEDI toggle (strip when merging to develop): DA_SYSTEM_JEDI and each task's
+  # "complete :DA_SYSTEM_JEDI" line choose GSI or JEDI while both are in the suite. At the merge the
+  # JEDI tasks replace the GSI ones, the GSI tasks and these lines go, and triggers that wait on both
+  # (e.g. jrrfs_det_update_lbc_soil) wait on the JEDI task only.
   edit DA_SYSTEM_JEDI '0'
+  # fix/jedi while the package fix tree has none (strip once it has fix/jedi)
   edit FIX_RRFS_JEDI '/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS/jedi'
   family primary
     family 00

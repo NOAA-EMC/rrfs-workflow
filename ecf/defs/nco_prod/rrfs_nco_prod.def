@@ -1,4 +1,8 @@
 suite prod
+  # JEDI toggle (strip when merging to develop): DA_SYSTEM_JEDI and each task's
+  # "complete :DA_SYSTEM_JEDI" line choose GSI or JEDI while both are in the suite. At the merge the
+  # JEDI tasks replace the GSI ones, the GSI tasks and these lines go, and triggers that wait on both
+  # (e.g. jrrfs_det_update_lbc_soil) wait on the JEDI task only.
   edit DA_SYSTEM_JEDI '0'
   family primary
     family 00
