@@ -288,7 +288,7 @@ observations:
 #- iasi_metop-c
 
 # Radar
-- mrms_refl
+#- mrms_refl
 #- nexrad_radialVelocity_999
 
 # Analysis iuse flag (default: passivate)
@@ -378,7 +378,7 @@ iuse_atms_n20: passivate
 iuse_atms_n21: passivate
 
 # Radar
-iuse_mrms_refl: accept
+iuse_mrms_refl: passivate
 iuse_nexrad_radialVelocity_999: passivate
 
 crtm_coefficient_path: "Data/crtm"
