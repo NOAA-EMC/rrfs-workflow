@@ -144,8 +144,6 @@ if [[ ${START_TYPE} == "warm" ]] || [[ ${START_TYPE} == "cold" && ${COLDSTART_CY
   if [[ "${GETKF_TYPE}" == "post" && "${SAVE_GETKF_ANL^^}" == "TRUE" ]]; then
     #
     export CMDFILE="${DATA}/poescript_getkfpost"
-    mkdir -p "$(dirname "${CMDFILE}")"
-    : > "${CMDFILE}"
 
     comoutdir=${COMOUT}/getkf_${GETKF_TYPE}/${WGF}
 
@@ -160,7 +158,7 @@ if [[ ${START_TYPE} == "warm" ]] || [[ ${START_TYPE} == "cold" && ${COLDSTART_CY
     export err=$?
 
     if (( err != 0 )) ; then
-      echo "Error: copying getkf post files failed with error code ${err} "
+      echo "Error: copying GETKF post files failed with error code ${err} "
       err_exit
     fi
 
