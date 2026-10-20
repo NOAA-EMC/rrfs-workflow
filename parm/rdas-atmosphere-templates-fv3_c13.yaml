@@ -375,7 +375,6 @@ iuse_sfcshp_winds_282: accept
 iuse_sfcshp_winds_284: accept
 
 # Remote
-iuse_nexrad_radialVelocity_999: accept
 iuse_gnss_zenithTotalDelay: accept
 iuse_satwnd_winds_243_56: accept
 iuse_satwnd_winds_253_56: accept
@@ -405,6 +404,10 @@ iuse_atms_n20: passivate
 iuse_atms_n21: passivate
 iuse_cris-fsr_n20: passivate
 iuse_cris-fsr_n21: passivate
+
+# Radar
+iuse_mrms_refl: accept
+iuse_nexrad_radialVelocity_999: accept
 
 crtm_coefficient_path: "Data/crtm"
 

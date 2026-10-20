@@ -321,7 +321,7 @@ iuse_adpupa_winds_220: passivate
 iuse_adpupa_winds_232: passivate
 
 iuse_aircar_airTemperature_133: accept
-iuse_aircar_specificHumidity_133: passivate
+iuse_aircar_specificHumidity_133: accept
 iuse_aircar_winds_233: accept
 
 iuse_aircft_airTemperature_130: passivate
@@ -369,10 +369,22 @@ iuse_sfcshp_winds_284: passivate
 
 # Remote
 iuse_gnss_zenithTotalDelay: passivate
+iuse_satwnd_winds_243_56: passivate
+iuse_satwnd_winds_253_56: passivate
+iuse_satwnd_winds_243_57: passivate
+iuse_satwnd_winds_253_57: passivate
+iuse_satwnd_winds_242_174: passivate
+iuse_satwnd_winds_250_174: passivate
+iuse_satwnd_winds_252_174: passivate
 iuse_satwnd_winds_245_270: passivate
-iuse_satwnd_winds_245_272: passivate
 iuse_satwnd_winds_246_270: passivate
+iuse_satwnd_winds_247_270: passivate
+iuse_satwnd_winds_245_272: passivate
 iuse_satwnd_winds_246_272: passivate
+iuse_satwnd_winds_247_272: passivate
+iuse_satwnd_winds_245_273: passivate
+iuse_satwnd_winds_246_273: passivate
+iuse_satwnd_winds_247_273: passivate
 
 # SatRad
 iuse_abi_g16: passivate
@@ -386,6 +398,7 @@ iuse_atms_n21: passivate
 
 # Radar
 iuse_mrms_refl: accept
+iuse_nexrad_radialVelocity_999: passivate
 
 crtm_coefficient_path: "Data/crtm"
 

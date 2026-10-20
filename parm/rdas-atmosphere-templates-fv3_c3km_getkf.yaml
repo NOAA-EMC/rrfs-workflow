@@ -290,6 +290,7 @@ observations:
 
 # Radar
 - mrms_refl
+#- nexrad_radialVelocity_999
 
 # Analysis iuse flag (default: passivate)
 # Upper-air conventional
@@ -381,6 +382,7 @@ iuse_cris-fsr_n21: passivate
 
 # Radar
 iuse_mrms_refl: accept
+iuse_nexrad_radialVelocity_999: passivate
 
 crtm_coefficient_path: "Data/crtm"
 

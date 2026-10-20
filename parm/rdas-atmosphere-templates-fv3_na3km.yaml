@@ -246,12 +246,34 @@ observations:
 
 # Remote
 #- gnss_zenithTotalDelay
+
+# Meteosat / EUMETSAT satelliteIdentifier 56
+#- satwnd_winds_243_56
+#- satwnd_winds_253_56
+
+# Meteosat / EUMETSAT satelliteIdentifier 57
+#- satwnd_winds_243_57
+#- satwnd_winds_253_57
+
+# Himawari / JMA satelliteIdentifier 174
+#- satwnd_winds_242_174
+#- satwnd_winds_250_174
+#- satwnd_winds_252_174
+
+# GOES-16 satelliteIdentifier 270
 #- satwnd_winds_245_270
-#- satwnd_winds_245_272
 #- satwnd_winds_246_270
-#- satwnd_winds_246_272
 #- satwnd_winds_247_270
+
+# GOES-18 satelliteIdentifier 272
+#- satwnd_winds_245_272
+#- satwnd_winds_246_272
 #- satwnd_winds_247_272
+
+# GOES-19 satelliteIdentifier 273
+#- satwnd_winds_245_273
+#- satwnd_winds_246_273
+#- satwnd_winds_247_273
 
 # SatRad
 #- abi_g16
@@ -264,6 +286,10 @@ observations:
 #- atms_n21
 #- iasi_metop-b
 #- iasi_metop-c
+
+# Radar
+- mrms_refl
+#- nexrad_radialVelocity_999
 
 # Analysis iuse flag (default: passivate)
 # Upper-air conventional
@@ -324,12 +350,22 @@ iuse_sfcshp_winds_284: passivate
 
 # Remote
 iuse_gnss_zenithTotalDelay: passivate
+iuse_satwnd_winds_243_56: passivate
+iuse_satwnd_winds_253_56: passivate
+iuse_satwnd_winds_243_57: passivate
+iuse_satwnd_winds_253_57: passivate
+iuse_satwnd_winds_242_174: passivate
+iuse_satwnd_winds_250_174: passivate
+iuse_satwnd_winds_252_174: passivate
 iuse_satwnd_winds_245_270: passivate
-iuse_satwnd_winds_245_272: passivate
 iuse_satwnd_winds_246_270: passivate
-iuse_satwnd_winds_246_272: passivate
 iuse_satwnd_winds_247_270: passivate
+iuse_satwnd_winds_245_272: passivate
+iuse_satwnd_winds_246_272: passivate
 iuse_satwnd_winds_247_272: passivate
+iuse_satwnd_winds_245_273: passivate
+iuse_satwnd_winds_246_273: passivate
+iuse_satwnd_winds_247_273: passivate
 
 # SatRad
 iuse_abi_g16: passivate
@@ -340,6 +376,10 @@ iuse_amsua_metop-c: passivate
 iuse_atms_npp: passivate
 iuse_atms_n20: passivate
 iuse_atms_n21: passivate
+
+# Radar
+iuse_mrms_refl: accept
+iuse_nexrad_radialVelocity_999: passivate
 
 crtm_coefficient_path: "Data/crtm"
 
