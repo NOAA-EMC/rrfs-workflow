@@ -103,7 +103,7 @@ state_variables:
 - cloud_liquid_water
 - ozone_mass_mixing_ratio
 - geopotential_height_times_gravity_at_surface
-- f10m
+- ratio_of_wind_at_surface_adjacent_layer_to_wind_at_10m
 - slmsk
 - sheleg
 - skin_temperature_at_surface
@@ -146,6 +146,7 @@ cloud_ice_number_concentration: ice_nc
 rain_number_concentration: rain_nc
 upward_air_velocity: W
 equivalent_reflectivity_factor: ref_f3d
+ratio_of_wind_at_surface_adjacent_layer_to_wind_at_10m: f10m
 
 # Background error
 atmosphere_bump_data_directory: DATA/berror
@@ -215,28 +216,28 @@ observations:
 #- rassda_airTemperature_126
 
 # Surface conventional
-#- adpsfc_airTemperature_181
-#- adpsfc_airTemperature_183
-#- adpsfc_airTemperature_187
-#- adpsfc_specificHumidity_181
-#- adpsfc_specificHumidity_183
-#- adpsfc_specificHumidity_187
+#- adpsfc_airTemperatureAt2M_181
+#- adpsfc_airTemperatureAt2M_183
+#- adpsfc_airTemperatureAt2M_187
+#- adpsfc_specificHumidityAt2M_181
+#- adpsfc_specificHumidityAt2M_183
+#- adpsfc_specificHumidityAt2M_187
 #- adpsfc_stationPressure_181
 #- adpsfc_stationPressure_187
 #- adpsfc_winds_281
 #- adpsfc_winds_284
 #- adpsfc_winds_287
-#- msonet_airTemperature_188
-#- msonet_specificHumidity_188
+#- msonet_airTemperatureAt2M_188
+#- msonet_specificHumidityAt2M_188
 #- msonet_stationPressure_188
 #- msonet_winds_288
 
-#- sfcshp_airTemperature_180
-#- sfcshp_airTemperature_182
-#- sfcshp_airTemperature_183
-#- sfcshp_specificHumidity_180
-#- sfcshp_specificHumidity_182
-#- sfcshp_specificHumidity_183
+#- sfcshp_airTemperatureAt2M_180
+#- sfcshp_airTemperatureAt2M_182
+#- sfcshp_airTemperatureAt2M_183
+#- sfcshp_specificHumidityAt2M_180
+#- sfcshp_specificHumidityAt2M_182
+#- sfcshp_specificHumidityAt2M_183
 #- sfcshp_stationPressure_180
 #- sfcshp_stationPressure_182
 #- sfcshp_winds_280
@@ -293,28 +294,28 @@ iuse_vadwnd_winds_224: passivate
 iuse_rassda_airTemperature_126: passivate
 
 # Surface conventional
-iuse_adpsfc_airTemperature_181: passivate
-iuse_adpsfc_airTemperature_183: passivate
-iuse_adpsfc_airTemperature_187: passivate
-iuse_adpsfc_specificHumidity_181: passivate
-iuse_adpsfc_specificHumidity_183: passivate
-iuse_adpsfc_specificHumidity_187: passivate
+iuse_adpsfc_airTemperatureAt2M_181: passivate
+iuse_adpsfc_airTemperatureAt2M_183: passivate
+iuse_adpsfc_airTemperatureAt2M_187: passivate
+iuse_adpsfc_specificHumidityAt2M_181: passivate
+iuse_adpsfc_specificHumidityAt2M_183: passivate
+iuse_adpsfc_specificHumidityAt2M_187: passivate
 iuse_adpsfc_stationPressure_181: passivate
 iuse_adpsfc_stationPressure_187: passivate
 iuse_adpsfc_winds_281: passivate
 iuse_adpsfc_winds_284: passivate
 iuse_adpsfc_winds_287: passivate
-iuse_msonet_airTemperature_188: passivate
-iuse_msonet_specificHumidity_188: passivate
+iuse_msonet_airTemperatureAt2M_188: passivate
+iuse_msonet_specificHumidityAt2M_188: passivate
 iuse_msonet_stationPressure_188: passivate
 iuse_msonet_winds_288: passivate
 
-iuse_sfcshp_airTemperature_180: passivate
-iuse_sfcshp_airTemperature_182: passivate
-iuse_sfcshp_airTemperature_183: passivate
-iuse_sfcshp_specificHumidity_180: passivate
-iuse_sfcshp_specificHumidity_182: passivate
-iuse_sfcshp_specificHumidity_183: passivate
+iuse_sfcshp_airTemperatureAt2M_180: passivate
+iuse_sfcshp_airTemperatureAt2M_182: passivate
+iuse_sfcshp_airTemperatureAt2M_183: passivate
+iuse_sfcshp_specificHumidityAt2M_180: passivate
+iuse_sfcshp_specificHumidityAt2M_182: passivate
+iuse_sfcshp_specificHumidityAt2M_183: passivate
 iuse_sfcshp_stationPressure_180: passivate
 iuse_sfcshp_stationPressure_182: passivate
 iuse_sfcshp_winds_280: passivate

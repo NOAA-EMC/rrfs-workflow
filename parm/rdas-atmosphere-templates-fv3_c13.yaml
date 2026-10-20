@@ -269,7 +269,6 @@ observations:
 - sfcshp_winds_284
 
 # Remote
-- nexrad_radialVelocity_999
 #- gnss_zenithTotalDelay
 
 # Meteosat / EUMETSAT satelliteIdentifier 56
@@ -313,6 +312,10 @@ observations:
 #- cris-fsr_n21
 #- iasi_metop-b
 #- iasi_metop-c
+
+# Radar
+#- mrms_refl
+- nexrad_radialVelocity_999
 
 # Analysis iuse flag (default: passivate)
 # Upper-air conventional
