@@ -190,13 +190,7 @@ RRFSE_NWGES=${RRFSE_NWGES:-/scratch4/NCEPDEV/fv3-cam/runs_co13km/rrfs.v0.8.6/nwg
 # from workflow.conf, where it is also 30; a staged ensemble of another size needs both changed.
 NUM_ENS_MEMBERS=${NUM_ENS_MEMBERS:-30}
 
-# Whether each job keeps its working directory under stmp. The base NCO definition sets YES at all
-# eight places, which on Ursa filled a 244 TiB project quota in ten days and stopped all three
-# suites: with YES, exrrfs_clean.sh does not delete the shared umbrella directories but *renames*
-# them (rrfs_forecast_12_v1.0 -> rrfs_forecast_<pid>_12_v1.0), so nothing is ever reclaimed.
-# NO costs no debugging, because head.h traps ERR and EXIT and exits before the J-job reaches its
-# cleanup line, so a job that fails keeps its working directory either way. Set YES only when you
-# want the directories of jobs that *succeeded*.
+# YES keeps the working directories under stmp after jobs finish (sets KEEPDATA and KEEP_TMP)
 KEEPDATA=${KEEPDATA:-NO}
 
 # suite definition to copy, relative to ecf/defs
