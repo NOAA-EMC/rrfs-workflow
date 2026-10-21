@@ -235,13 +235,13 @@ observations:
           units: "Pa"
 
         # ObsType
-        - name: "ObsType/specificHumidity"
+        - name: "ObsType/specificHumidityAt2M"
           coordinates: "longitude latitude"
           source: variables/prepbufrReportType
           longName: "specificHumidity Report Type"
           units: ""
 
-        - name: "ObsType/airTemperature"
+        - name: "ObsType/airTemperatureAt2M"
           coordinates: "longitude latitude"
           source: variables/prepbufrReportType
           longName: "airTemperature report Type"
@@ -266,13 +266,13 @@ observations:
           units: ""
 
         # ObsValue
-        - name: "ObsValue/specificHumidity"
+        - name: "ObsValue/specificHumidityAt2M"
           coordinates: "longitude latitude"
           source: variables/specificHumidity
           longName: "Specific Humidity"
           units: "Kilogram Kilogram-1"
 
-        - name: "ObsValue/airTemperature"
+        - name: "ObsValue/airTemperatureAt2M"
           coordinates: "longitude latitude"
           source: variables/airTemperature
           longName: "Temperature"
@@ -331,12 +331,12 @@ observations:
           source: variables/heightOfObservationQualityMark
           longName: "Height Quality Marker"
 
-        - name: "QualityMarker/specificHumidity"
+        - name: "QualityMarker/specificHumidityAt2M"
           coordinates: "longitude latitude"
           source: variables/specificHumidityQualityMarker
           longName: "Specific Humidity Quality Marker"
 
-        - name: "QualityMarker/airTemperature"
+        - name: "QualityMarker/airTemperatureAt2M"
           coordinates: "longitude latitude"
           source: variables/airTemperatureQualityMarker
           longName: "Temperature Quality Marker"
@@ -363,7 +363,7 @@ observations:
           longName: "Pressure Observation Error"
           units: "Pa"
 
-        - name: "ObsError/specificHumidity"
+        - name: "ObsError/specificHumidityAt2M"
           coordinates: "longitude latitude"
           source: variables/specificHumidityError
           longName: "Specific Humidity Error"
@@ -375,7 +375,7 @@ observations:
           longName: "Relative Humidity Error"
           units: "1"
 
-        - name: "ObsError/airTemperature"
+        - name: "ObsError/airTemperatureAt2M"
           coordinates: "longitude latitude"
           source: variables/airTemperatureError
           longName: "Temperature Error"
@@ -406,7 +406,7 @@ observations:
 #          longName: "Analysis-Tuned Relative Humidity Error"
 #          units: "1"
 #
-#        - name: "TunedObsError/airTemperature"
+#        - name: "TunedObsError/airTemperatureAt2M"
 #          coordinates: "longitude latitude"
 #          source: variables/airTemperatureTunedError
 #          longName: "Analysis-Tuned Temperature Error"
