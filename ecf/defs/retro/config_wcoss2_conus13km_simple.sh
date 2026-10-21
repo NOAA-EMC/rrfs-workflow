@@ -131,9 +131,7 @@ DO_LONG_FORECAST=${DO_LONG_FORECAST:-TRUE}
 # simple configuration (ush/sample_configs/RRFS_v1.2 in the Rocoto workflow).
 # ecf/defs/retro/make_rrfs_retro_def.sh takes the tasks out of the suite definition and
 # ush/retro/setup_retro_links.sh turns the matching switches off in fix/workflow/det/workflow.conf,
-# both from the settings here, so the two halves cannot disagree. On RRFS_CONUS_13km this leaves
-# 838 tasks a day against 12544 for the whole suite: 25 at an hourly cycle, 26 at the two that
-# cold start, and 84 at 00, 06, 12 and 18z.
+# both from the settings here, so the two halves cannot disagree.
 #
 # A task switched off here is given "defstatus complete", and every trigger that named it is
 # rewritten: a step taken out of the middle of a chain hands on its own dependencies, so what
@@ -162,7 +160,7 @@ FCST_LEN_HRS_LONG=${FCST_LEN_HRS_LONG:-12}
 # Steps inside a cycle, each the ecflow side of one of the FALSE switches in the Rocoto config.sh.
 RUN_NONVARCLD=${RUN_NONVARCLD:-FALSE}     # non-variational cloud analysis (DO_NONVAR_CLDANAL)
 RUN_UPDATE_BC=${RUN_UPDATE_BC:-FALSE}     # boundary update and soil adjustment (DO_UPDATE_BC)
-RUN_GSIDIAG=${RUN_GSIDIAG:-FALSE}         # offline GSI diagnostics (DO_GSIDIAG_OFFLINE)
+RUN_GSIDIAG=${RUN_GSIDIAG:-TRUE}          # offline GSI diagnostics (DO_GSIDIAG_OFFLINE)
 RUN_LIGHTNING=${RUN_LIGHTNING:-FALSE}     # GLM flash extent density and its DA (DO_GLM_FED_DA)
 RUN_RADAR=${RUN_RADAR:-TRUE}              # MRMS reflectivity; this configuration assimilates it
 RUN_POST=${RUN_POST:-TRUE}                # post and products; FALSE for a DA-only run
