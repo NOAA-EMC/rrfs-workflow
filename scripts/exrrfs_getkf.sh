@@ -142,9 +142,26 @@ if [[ ${START_TYPE} == "warm" ]] || [[ ${START_TYPE} == "cold" && ${COLDSTART_CY
 
   # Save analysis files if requested
   if [[ "${GETKF_TYPE}" == "post" && "${SAVE_GETKF_ANL^^}" == "TRUE" ]]; then
+    #
+    export CMDFILE="${DATA}/poescript_getkfpost"
+
+    comoutdir=${COMOUT}/getkf_${GETKF_TYPE}/${WGF}
+
+    mkdir -p "${comoutdir}"
+
     for mem in $(seq -w 001 "${ENS_SIZE}"); do
-      cp -rL "${DATA}/data/ens/mem${mem}.nc"  "${COMOUT}/getkf_${GETKF_TYPE}/${WGF}/mem${mem}.nc"
+      echo "${cpreq} ${DATA}/data/ens/mem${mem}.nc ${comoutdir}/mem${mem}.nc" >> "${CMDFILE}"
     done
+
+    ${cpreq} "${EXECrrfs}"/rank_run.x .
+    ${MPI_RUN_CMD} ./rank_run.x "${CMDFILE}"
+    export err=$?
+
+    if (( err != 0 )) ; then
+      echo "Error: copying GETKF post files failed with error code ${err} "
+      err_exit
+    fi
+
   fi
 
 else
