@@ -187,12 +187,16 @@ EOF
     echo "       Fire weather starts from the parent's hour-0 natlev file, which only the 36 s step writes." >&2
     exit 1
   fi
-  # Whether jobs keep their stmp working directories (KEEPDATA). The base definition sets YES at
-  # every place it appears; rewrite the value rather than the lines so the count does not matter.
+  # Whether jobs keep their stmp working directories. Two suite variables decide it and KEEPDATA in
+  # retro/config.sh sets both. KEEPDATA is read by each job, for its own directory; the base
+  # definition sets YES at every place it appears, so rewrite the value rather than the lines.
+  # KEEP_TMP is read by jrrfs_clean, for the hour's shared directories at the end of each cycle; the
+  # base definition leaves it to the job card's default, NO, so add it at the top.
   if [ -n "${KEEPDATA:-}" ]; then
     nkeep=$(grep -cE "^ *edit KEEPDATA " "${out_def}")
     sed -i -E "s/^( *)edit KEEPDATA '[A-Za-z]+'/\1edit KEEPDATA '${KEEPDATA}'/" "${out_def}"
-    echo "  KEEPDATA: ${nkeep} setting(s) rewritten to '${KEEPDATA}'"
+    sed -i "/^suite /a\\  edit KEEP_TMP '${KEEPDATA}'" "${out_def}"
+    echo "  KEEPDATA: ${nkeep} setting(s) rewritten to '${KEEPDATA}', and KEEP_TMP set to match"
   fi
 
   # Which analysis runs: the route DA_SYSTEM does not select is marked complete, never submitted
