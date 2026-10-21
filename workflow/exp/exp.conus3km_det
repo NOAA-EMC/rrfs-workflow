@@ -11,11 +11,13 @@ if [[ "${RRFSV2_RT_NAME^^}" == "RRFSV2X" ]]; then   # special treatment for rrfs
   export TAG=rrfsv2x
   export OPSROOT=/scratch3/BMC/rtwrfruc/RRFSv2X/NCO_dirs/${EXP_NAME}
   export ARCHIVE_HPSSDIR="/5year/BMC/wrfruc/rrfsv2x"
+  export REALTIME=true
 elif [[ "${RRFSV2_RT_NAME^^}" == "RRFSV2B" ]]; then 
   export EXP_NAME=RRFSv2b
   export TAG=rrfsv2b
   export OPSROOT=/gpfs/f6/bil-fire10-oar/world-shared/mhu/rrfsv2b/${EXP_NAME}
   export ARCHIVE_HPSSDIR="/5year/BMC/wrfruc/rrfsv2b"
+  export REALTIME=true
 else # ========== for retros ==========
   export EXP_NAME=conus3km
   export TAG=d3km
@@ -27,8 +29,6 @@ export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
 export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=YES
 #
 export ZETA_LEVELS="L60.txt"
-export REALTIME=false    # true, false
-#
 export USE_MERRA2=false  # false: default GOCART aerosol climatology; true: MERRA2 aerosol climatology
 #
 export DO_IODA=true
