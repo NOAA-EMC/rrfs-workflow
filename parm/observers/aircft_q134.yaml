@@ -101,7 +101,7 @@
          - filter: Variable Assignment
            identifier:
              name: ReassignQmUpperAircft
-               logging: true
+             logging: true
            where:
            - variable: ObsType/specificHumidity
              is_in: 134
