@@ -17,7 +17,7 @@ if [[ "${srcfile}" == *det* ]]; then
     -e "s/for i in {0..23..3}/#for i in {0..23..3}/"  -e "s/for i in {0..23..12}/#for i in {0..23..12}/" \
     -e "s/EXP_NAME=RRFSv2/EXP_NAME=RRFSv2_kickstart/"  -e "s/TAG=rrfsv2/TAG=rrfsv2_ks/" \
     -e "s|DO_SPPT=false|DO_SPPT=false\nexport SFC_UPDATE_SOURCE_DIR=${SFC_UPDATE_SOURCE_DIR}|" \
-    ${srcfile} > ${srcfile}_kickstart
+    "${srcfile}" > "${srcfile}_kickstart"
 
   # generate the rap_ic exp file
   sed -e "s/EXP_NAME=RRFSv2_kickstart/EXP_NAME=RRFSv2_rap_ic/" -e "s/export DO_RADAR_REF=true/export DO_RADAR_REF=false/" \
@@ -25,9 +25,9 @@ if [[ "${srcfile}" == *det* ]]; then
     -e "s/DO_IODA=true/DO_IODA=false/" -e "s/export DO_JEDI=true/export DO_JEDI=false\nexport IC_ONLY=true/" \
     -e 's/IC_EXTRN_MDL_NAME="GFS"/IC_EXTRN_MDL_NAME="RAP"/' -e "s/May2024\/GFS/May2024\/rap/" \
     -e "s/RETRO_PERIOD=\"${kickstart_period_det}\"/\"${rap_ic_period}\"/" -e "s/TAG=rrfsv2_ks/TAG=rrfsv2_rap_ic/" \
-    ${srcfile}_kickstart > ${srcfile}_rap_ic
+    "${srcfile}_kickstart" > "${srcfile}_rap_ic"
 
 else  # enkf
   sed -e "s/RETRO_PERIOD=\"2024050610-2024051300\"/RETRO_PERIOD=\"${kickstart_period_enkf}\"/" \
-    ${srcfile} > ${srcfile}_kickstart
+    "${srcfile}" > "${srcfile}_kickstart"
 fi
