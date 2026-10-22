@@ -6,28 +6,15 @@ export NET=rrfs                   # rrfs, rtma,
 export MESH_NAME=conus3km         # conus12km, conus3km, na12km, etc
 export WGF="det"   # working group function = "det", "enkf", "ens", "firewx"
 export VERSION=$(cat ./VERSION)
-if [[ "${RRFSV2_RT_NAME^^}" == "RRFSV2X" ]]; then   # special treatment for rrfsv2x and rrfsv2b
-  export EXP_NAME=RRFSv2X
-  export TAG=rrfsv2x
-  export OPSROOT=/scratch3/BMC/rtwrfruc/RRFSv2X/NCO_dirs/${EXP_NAME}
-  export ARCHIVE_HPSSDIR="/5year/BMC/wrfruc/rrfsv2x"
-  export REALTIME=true
-elif [[ "${RRFSV2_RT_NAME^^}" == "RRFSV2B" ]]; then 
-  export EXP_NAME=RRFSv2b
-  export TAG=rrfsv2b
-  export OPSROOT=/gpfs/f6/bil-fire10-oar/world-shared/mhu/rrfsv2b/${EXP_NAME}
-  export ARCHIVE_HPSSDIR="/5year/BMC/wrfruc/rrfsv2b"
-  export REALTIME=true
-else # ========== for retros ==========
-  export EXP_NAME=conus3km
-  export TAG=d3km
-  export OPSROOT=/scratch3/BMC/wrfruc/gge/OPSROOT/${EXP_NAME}
-  export ARCHIVE_HPSSDIR="/5year/BMC/wrfruc/Guoqing.Ge/${EXP_NAME}"
-fi
+export EXP_NAME=RRFSv2
+export TAG=rrfsv2
+export OPSROOT=/scratch3/BMC/wrfruc/gge/OPSROOT/${EXP_NAME}
+#export OPSROOT=/scratch3/BMC/rtwrfruc/RRFSv2X/NCO_dirs/${EXP_NAME}
 export EXPDIR=${OPSROOT}/exp/${NET}${WGF}
 export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
 export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=YES
 #
+export REALTIME=false
 export ZETA_LEVELS="L60.txt"
 export USE_MERRA2=false  # false: default GOCART aerosol climatology; true: MERRA2 aerosol climatology
 #
@@ -93,6 +80,7 @@ export GRAPHICS_MODEL=${TAG}   # Model Name in the plots
 if [[ "${REALTIME^^}" == "TRUE" ]]; then
   export GRAPHICS_ZIP=true
   export DO_ARCHIVE=true
+  export ARCHIVE_HPSSDIR="/5year/BMC/wrfruc/${TAG}"
   export ARCHIVE_INTERVAL=1  # run the archive task every several hours
   export ARCHIVE_COM1_SPEC='{"include":"ioda*, jedivar, nonvar*, fcst, upp, pyDAmonitor, nclprd, graphics", "exclude":""}'  # use " inside and ' outside
   export ARCHIVE_STMP=''  # eg. 'fcst,mpassit'  # archive files under the given task umbrella directories
@@ -122,6 +110,7 @@ if [[ "${REALTIME^^}" == "TRUE" ]]; then
   export IC_EXTRN_MDL_FILENAME_PATTERN_B="gfs.@Y@m@d/@H/atmos/gfs.t@Hz.pgrb2b.0p25.f^HHH^"
 else  # ========== for retros ==========
   export DO_ARCHIVE=false
+  export ARCHIVE_HPSSDIR="/5year/BMC/wrfruc/Guoqing.Ge/${EXP_NAME}"
   export GRAPHICS_TILES="full NE NC NW SE SC SW EastCO"
   export ARCHIVE_INTERVAL=1  # run the archive task every several hours
   export ARCHIVE_COM1_SPEC='{"include":"ioda*, jedivar, nonvar*, fcst, upp, pyDAmonitor, nclprd, graphics", "exclude":""}'  # use " inside and ' outside
