@@ -14,13 +14,11 @@ pygrafdir="${HOMErrfs}/workflow/sideload/pygraf"
 image_list="${pygrafdir}/image_lists/regional_mpas_subset.yml"
 file_tmpl="${NET}.t${cyc}z.prslev.f0{FCST_TIME:02d}.${UPP_DOMAIN}grib2"
 model=${GRAPHICS_MODEL:-${NET}}
-ntasks=${NTASKS:-12}
+ntasks=${GRAPHICS_CORES_PER_TILE:-12}
 grib2_dir="${COMOUT}/upp/det"
-tile=${TILE:-'full'}
-workdir="${COMOUT}/graphics/${WGF}/${tile}"
+tiles=${TILES_IN_GROUP:-${TILE:-'full'}}
 zipdir="${COMOUT}/nclprd"
-rm -rf "${workdir}"
-mkdir -p "${workdir}"
+[[ "${GRAPHICS_ZIP^^}" == "TRUE" ]] && mkdir -p "${zipdir}"
 cd "${pygrafdir}" || exit 1
 #
 # find forecst length for this cycle
@@ -32,15 +30,26 @@ fhr1=0
 fhr2=${fcst_len_hrs_thiscyc}
 wait_minutes=${WAIT_MINUTES:-180}
 #
-# generate the graphics
+# generate the graphics concurrently
 #
-if [[ "${GRAPHICS_ZIP^^}" == "TRUE" ]]; then
-  mkdir -p "${zipdir}"
-  python create_graphics.py maps --all_leads -d ${grib2_dir} -f ${fhr1} ${fhr2} --file_type prs --file_tmpl ${file_tmpl} -m ${model} \
-      --images ${image_list} hourly -n ${ntasks} -o ${workdir} -s ${CDATE} --tiles ${tile} -z ${zipdir} -w ${wait_minutes}
-else
-  python create_graphics.py maps --all_leads -d ${grib2_dir} -f ${fhr1} ${fhr2} --file_type prs --file_tmpl ${file_tmpl} -m ${model} \
-      --images ${image_list} hourly -n ${ntasks} -o ${workdir} -s ${CDATE} --tiles ${tile} -w ${wait_minutes}
-fi
-export err=$?; err_chk
+pids=()
+for tile in ${tiles}; do
+  workdir="${COMOUT}/graphics/${WGF}/${tile}"
+  rm -rf "${workdir}"
+  mkdir -p "${workdir}"
+  if [[ "${GRAPHICS_ZIP^^}" == "TRUE" ]]; then
+    python create_graphics.py maps --all_leads -d ${grib2_dir} -f ${fhr1} ${fhr2} --file_type prs --file_tmpl ${file_tmpl} -m ${model} \
+        --images ${image_list} hourly -n ${ntasks} -o ${workdir} -s ${CDATE} --tiles ${tile} -z ${zipdir} -w ${wait_minutes} &
+  else
+    python create_graphics.py maps --all_leads -d ${grib2_dir} -f ${fhr1} ${fhr2} --file_type prs --file_tmpl ${file_tmpl} -m ${model} \
+        --images ${image_list} hourly -n ${ntasks} -o ${workdir} -s ${CDATE} --tiles ${tile} -w ${wait_minutes} &
+  fi
+  pids+=($!)
+done
+
+export err=0
+for pid in "${pids[@]}"; do
+  wait "${pid}" || export err=$((err + 1))
+done
+err_chk
 exit 0
