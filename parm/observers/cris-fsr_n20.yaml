@@ -625,7 +625,7 @@
              error parameter vector: *cris-fsr_n20_error0
          actions:
          - name: set
-           flag: GrossCheck
+           flag: GrossErrorCheck
            ignore: rejected observations
          - name: reject
 

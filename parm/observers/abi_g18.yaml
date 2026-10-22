@@ -862,7 +862,7 @@
              error parameter vector: *abi_g18_error0
          actions:
            - name: set
-             flag: GrossCheck
+             flag: GrossErrorCheck
              ignore: rejected observations
            - name: reject
 
