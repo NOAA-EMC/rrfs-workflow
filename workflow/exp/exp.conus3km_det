@@ -40,7 +40,6 @@ export DO_HOFX=false
 export HOFX_FHRS="000 001 012"
 export DO_SPPT=false
 export DO_SFC_UPDATE=true # do sfc update at cold start cycs
-export SFC_UPDATE_LOOK_BACK_HRS=3  # hours going back to look for surface update source files (mpasout)
 
 export STATIC_BEC_MODEL="GSIBEC" # the static bec model, GSIBEC and BUMPBEC
 export GSIBEC_X=40 #GSIBEC_X * GSIBEC_Y should match the number of MPI tasks
@@ -79,6 +78,7 @@ export DO_GRAPHICS=true
 export GRAPHICS_TILES="full NE NC NW SE SC SW EastCO"
 export GRAPHICS_MODEL=${TAG}   # Model Name in the plots
 if [[ "${REALTIME^^}" == "TRUE" ]]; then
+  export SFC_UPDATE_LOOK_BACK_HRS=3  # hours going back to look for surface update source files (mpasout)
   export GRAPHICS_ZIP=true
   export DO_ARCHIVE=true
   export ARCHIVE_HPSSDIR="/5year/BMC/wrfruc/${TAG}"
@@ -110,12 +110,13 @@ if [[ "${REALTIME^^}" == "TRUE" ]]; then
   export IC_EXTRN_MDL_FILENAME_PATTERN="gfs.@Y@m@d/@H/atmos/gfs.t@Hz.pgrb2.0p25.f^HHH^"
   export IC_EXTRN_MDL_FILENAME_PATTERN_B="gfs.@Y@m@d/@H/atmos/gfs.t@Hz.pgrb2b.0p25.f^HHH^"
 else  # ========== for retros ==========
-  export DO_ARCHIVE=false
-  export ARCHIVE_HPSSDIR="/5year/BMC/wrfruc/${USER}/${EXP_NAME}"
-  export ARCHIVE_INTERVAL=1  # run the archive task every several hours
-  export ARCHIVE_COM1_SPEC='{"include":"ioda*, jedivar, nonvar*, fcst, upp, pyDAmonitor, nclprd, graphics", "exclude":""}'  # use " inside and ' outside
-  export ARCHIVE_STMP=''  # eg. 'fcst,mpassit'  # archive files under the given task umbrella directories
-  export ARCHIVE_STMP_INTERVAL='1'  # ARCHIVE_STMP_INTERVAL must divide ARCHIVE_INTERVAL evenly
+  export SFC_UPDATE_LOOK_BACK_HRS=1  # hours going back to look for surface update source files (mpasout)
+  #export DO_ARCHIVE=true
+  #export ARCHIVE_HPSSDIR="/5year/BMC/wrfruc/${USER}/${EXP_NAME}"
+  #export ARCHIVE_INTERVAL=1  # run the archive task every several hours
+  #export ARCHIVE_COM1_SPEC='{"include":"ioda*, jedivar, nonvar*, fcst, upp, pyDAmonitor, nclprd, graphics", "exclude":""}'  # use " inside and ' outside
+  #export ARCHIVE_STMP=''  # eg. 'fcst,mpassit'  # archive files under the given task umbrella directories
+  #export ARCHIVE_STMP_INTERVAL='1'  # ARCHIVE_STMP_INTERVAL must divide ARCHIVE_INTERVAL evenly
 
   export IC_EXTRN_MDL_FILENAME_PATTERN="gfs.@Y@m@d/@H/gfs.t@Hz.pgrb2.0p25.f^HHH^"
   export IC_EXTRN_MDL_FILENAME_PATTERN_B="gfs.@Y@m@d/@H/gfs.t@Hz.pgrb2b.0p25.f^HHH^"
