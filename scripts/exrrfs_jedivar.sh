@@ -191,7 +191,7 @@ if [[ ${START_TYPE} == "warm" ]] || [[ ${START_TYPE} == "cold" && ${COLDSTART_CY
         echo "Warning: soil nudging failed"
       else
         var_list="tslb,smois,soilt1,skintemp"
-        ncks -A -v ${var_list} soil_analyzed.nc "${UMBRELLA_PREP_IC_DATA}/${initial_file}"
+        "${USHrrfs}"/append_soil.py soil_analyzed.nc "${UMBRELLA_PREP_IC_DATA}/${initial_file}" "${var_list}"
       fi
   fi
   # the input/output file are linked from the umbrella directory, so no need to copy
