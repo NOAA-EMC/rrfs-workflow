@@ -76,6 +76,7 @@ export PRODSWITCH_CYCS="09 21"
 export KEEPDATA=YES
 export DO_PYDAMONITOR=true
 export DO_GRAPHICS=true
+export GRAPHICS_TILES="full NE NC NW SE SC SW EastCO"
 export GRAPHICS_MODEL=${TAG}   # Model Name in the plots
 if [[ "${REALTIME^^}" == "TRUE" ]]; then
   export GRAPHICS_ZIP=true
@@ -110,8 +111,7 @@ if [[ "${REALTIME^^}" == "TRUE" ]]; then
   export IC_EXTRN_MDL_FILENAME_PATTERN_B="gfs.@Y@m@d/@H/atmos/gfs.t@Hz.pgrb2b.0p25.f^HHH^"
 else  # ========== for retros ==========
   export DO_ARCHIVE=false
-  export ARCHIVE_HPSSDIR="/5year/BMC/wrfruc/Guoqing.Ge/${EXP_NAME}"
-  export GRAPHICS_TILES="full NE NC NW SE SC SW EastCO"
+  export ARCHIVE_HPSSDIR="/5year/BMC/wrfruc/${USER}/${EXP_NAME}"
   export ARCHIVE_INTERVAL=1  # run the archive task every several hours
   export ARCHIVE_COM1_SPEC='{"include":"ioda*, jedivar, nonvar*, fcst, upp, pyDAmonitor, nclprd, graphics", "exclude":""}'  # use " inside and ' outside
   export ARCHIVE_STMP=''  # eg. 'fcst,mpassit'  # archive files under the given task umbrella directories
