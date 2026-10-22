@@ -225,6 +225,7 @@ case ${MACHINE} in
       export OBSPATH="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/May2024/obs_rap"
       export OBSPATH_NSSLMOSAIC="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/May2024/reflectivity"
       export OBSPATH_AIRNOW="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/May2024/airnow"
+      export NSST_SOURCE_DIR="/gpfs/f6/bil-fire10-oar/world-shared/RRFS2_RETRO_DATA/May2024/NSST"
     fi
     export ACCOUNT="wrfruc"
     export QUEUE="normal"
