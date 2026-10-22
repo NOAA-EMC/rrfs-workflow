@@ -9,11 +9,10 @@ from rocoto_funcs.smart_superyaml import smart_superyaml
 print('Aloha!')
 #
 
-if len(sys.argv) < 2:
-    EXPin = "exp.setup"
-else:
+if len(sys.argv) == 2:
     EXPin = sys.argv[1]
-    os.environ['RRFSV2_RT_NAME'] = sys.argv[2]   # optional parm to faciliate setting up rrfsv2 realtime runs
+else:
+    EXPin = "exp.setup"
 
 # find the HOMErrfs directory and the MACHINE; run init.sh
 HOMErrfs = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
