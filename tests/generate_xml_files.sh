@@ -81,51 +81,35 @@ echo -e "\n----------ens_conus12km realtime----------"
 mv "OPSROOT/hrly_12km/exp/rrfsenkf/rrfs.xml" "${rundir}/xml/${myexp}_rt.xml"
 
 # ----------------------------------------------------------------------------------------------------
-# conus3km
-echo -e "\n----------conus3km org----------"
-myexp=conus3km
+# conus3km_det
+echo -e "\n----------conus3km_det org----------"
+myexp=conus3km_det
 myfile=${wflow}/exp/exp.${myexp}
 sed 's|^export OPSROOT=/scratch3/BMC/wrfruc/gge/OPSROOT/${EXP_NAME}|export OPSROOT=./OPSROOT/${EXP_NAME}|' "${myfile}" > "exp.test"
 ./setup_rocoto.py "exp.test"
-mv "OPSROOT/conus3km/exp/rrfsdet/rrfs.xml" "${rundir}/xml/${myexp}_retro.xml"
+mv "OPSROOT/RRFSv2/exp/rrfsdet/rrfs.xml" "${rundir}/xml/${myexp}_retro.xml"
 
-echo -e "\n----------conus3km realtime----------"
+echo -e "\n----------conus3km_det realtime----------"
 { cat "exp.test"; echo -e 'export REALTIME=true'; } > exp.tmp
 ./setup_rocoto.py exp.tmp
-mv "OPSROOT/conus3km/exp/rrfsdet/rrfs.xml" "${rundir}/xml/${myexp}_rt.xml"
+mv "OPSROOT/RRFSv2/exp/rrfsdet/rrfs.xml" "${rundir}/xml/${myexp}_rt.xml"
 
-# ens_conus3km
-echo -e "\n----------ens_conus3km org----------"
-myexp=ens_conus3km
+# conus3km_enkf
+echo -e "\n----------conus3km_enkf org----------"
+myexp=conus3km_enkf
 myfile=${wflow}/exp/exp.${myexp}
 sed 's|^export OPSROOT=/scratch3/BMC/wrfruc/gge/OPSROOT/${EXP_NAME}|export OPSROOT=./OPSROOT/${EXP_NAME}|' "${myfile}" > "exp.test"
 ./setup_rocoto.py "exp.test"
-mv "OPSROOT/conus3km/exp/rrfsenkf/rrfs.xml" "${rundir}/xml/${myexp}_retro.xml"
+mv "OPSROOT/RRFSv2/exp/rrfsenkf/rrfs.xml" "${rundir}/xml/${myexp}_retro.xml"
 
-echo -e "\n----------ens_conus3km realtime----------"
+echo -e "\n----------conus3km_enkf realtime----------"
 { cat "exp.test"; echo -e 'export REALTIME=true'; } > exp.tmp
 ./setup_rocoto.py exp.tmp
-mv "OPSROOT/conus3km/exp/rrfsenkf/rrfs.xml" "${rundir}/xml/${myexp}_rt.xml"
+mv "OPSROOT/RRFSv2/exp/rrfsenkf/rrfs.xml" "${rundir}/xml/${myexp}_rt.xml"
 
 
 # ----------------------------------------------------------------------------------------------------
 # na12km
 # ens_na12km
-
-# ----------------------------------------------------------------------------------------------------
-# rt_ursa
-echo -e "\n----------rrfsv2x----------"
-myexp=rrfsv2x
-myfile=${wflow}/exp/rt_ursa/exp.${myexp}
-sed 's|^export OPSROOT=/scratch3/BMC/rtwrfruc/RRFSv2X/NCO_dirs/${EXP_NAME}|export OPSROOT=./OPSROOT/${EXP_NAME}|' "${myfile}" > "exp.test"
-./setup_rocoto.py "exp.test"
-mv "OPSROOT/RRFSv2X/exp/rrfsdet/rrfs.xml" "${rundir}/xml/${myexp}.xml"
-
-echo -e "\n----------rrfsv2x_ens----------"
-myexp=rrfsv2x_ens
-myfile=${wflow}/exp/rt_ursa/exp.${myexp}
-sed 's|^export OPSROOT=/scratch3/BMC/rtwrfruc/RRFSv2X/NCO_dirs/${EXP_NAME}|export OPSROOT=./OPSROOT/${EXP_NAME}|' "${myfile}" > "exp.test"
-./setup_rocoto.py "exp.test"
-mv "OPSROOT/RRFSv2X/exp/rrfsenkf/rrfs.xml" "${rundir}/xml/${myexp}.xml"
 
 echo "OPSROOT: ${wflow}/OPSROOT"
