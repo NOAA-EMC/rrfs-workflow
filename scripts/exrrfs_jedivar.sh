@@ -156,7 +156,6 @@ case ${YAML_GEN_METHOD:-1} in
     ;;
 esac
 
-# output directory name under COMOUT (also used for satbias, which is copied outside the DA branch)
 if [[ "${DO_SPINUP^^}" == "TRUE" ]];  then
   jedivar_str="jedivar_spinup"
 else
