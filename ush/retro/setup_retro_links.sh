@@ -26,9 +26,10 @@ if [ "${MACHINE}" = "URSA" ]; then
   module load run_ursa
 fi
 
-# Build fix/ as links into the copy of the WCOSS2 fix tree that FIX_RRFS_DIR names.
-# workflow/ is a local directory because the workflow.conf step below writes into it.
-fix_dir=${repo}/fix
+# Build a per-suite fix tree from links into FIX_RRFS_DIR. Keep generated workflow settings
+# under this suite's work base so another retro setup cannot rewrite this suite's settings.
+fix_dir=${RETRO_FIX_DIR}
+export FIXrrfs=${fix_dir}
 fix_src=${FIX_RRFS_DIR}
 mkdir -p "${fix_dir}"
 for src in "${fix_src}"/*; do

@@ -14,6 +14,8 @@ export ECF_RID=${ECF_RID:-${PBS_JOBID:-${SLURM_JOB_ID:-$(hostname -s).$$}}}
 export ECF_JOB=%ECF_JOB%
 export ECF_JOBOUT=%ECF_JOBOUT%
 export ecflow_ver=%ecflow_ver%
+# Retro suites set FIXrrfs to their own generated fix tree for isolated runtime settings.
+if [ -n "%FIXrrfs:%" ]; then export FIXrrfs="%FIXrrfs:%"; fi
 # Machine the suite runs on (WCOSS2 or URSA); scripts that set MACHINE themselves keep their value
 export MACHINE=${MACHINE:-%MACHINE:WCOSS2%}
 
