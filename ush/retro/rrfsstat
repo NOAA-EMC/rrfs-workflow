@@ -24,16 +24,17 @@ ecf/defs/retro/config.sh and port 1500 + your uid on Ursa (what the ecflow modul
 2000 + your uid on WCOSS2 (what NCO assigns). So it works with or without the module loaded; pass
 --port only if your server runs on another port.
 
-States are ecflow's: queued, submitted, active, complete, aborted, suspended, unknown.
+States are ecFlow's: queued (ready for ecFlow to submit), submitted (accepted by the batch
+scheduler and waiting to run), active (running), complete, aborted, suspended, unknown.
 "aborted" is the one to look at; it means the job failed. "suspended" is a node someone held.
 Task listings give the job log of each aborted or running task on the line below it.
 --workflow prints them in the words rocotostat uses (RUNNING, DONE, FAILED and so on).
 
 Tasks the configuration switched off are left out of every listing: they are in the definition
 only so that ecflow has something to call complete, and a simplified retro has thousands of them.
---set-aside puts them back, marked SET-ASIDE. --plan adds a census by task type to the listing,
-and covers the days the retro has not reached yet, which is how to tell whether a simplified
-retro has been cut down the way it was meant to be.
+The --set-aside option includes them, marked SET-ASIDE. --plan adds a census by task type to the
+listing and covers the days the retro has not reached yet, which is how to tell whether a
+simplified retro has been cut down the way it was meant to be.
 """
 
 import argparse
@@ -52,10 +53,10 @@ except ImportError:
              "  module matching its bindings, then run it as: python3 rrfsstat ...")
 
 # most interesting first, so the states worth acting on sort to the top of a task listing
-STATE_ORDER = ["aborted", "active", "submitted", "queued", "unknown", "complete"]
+STATE_ORDER = ["aborted", "active", "submitted", "queued", "unknown", "complete", "suspended"]
 # rocotostat-style words for --workflow, so the listing reads like the Rocoto one
-STATE_WORD = {"aborted": "FAILED", "active": "RUNNING", "submitted": "SUBMITTED",
-              "queued": "QUEUED", "complete": "DONE", "suspended": "HELD", "unknown": "UNKNOWN"}
+STATE_WORD = {"aborted": "FAILED", "active": "RUNNING", "submitted": "BATCH QUEUED",
+              "queued": "READY", "complete": "DONE", "suspended": "HELD", "unknown": "UNKNOWN"}
 DEFAULT_SUITE = "para"
 # task listings give the job log path of tasks in these states, on a line below the task
 LOG_STATES = ("aborted", "active")
@@ -65,16 +66,23 @@ def settings_from_config():
     """Fall back to ecf/defs/retro/config.sh so this works without any environment set up."""
     here = os.path.dirname(os.path.realpath(__file__))
     defs = os.path.join(here, "..", "..", "ecf", "defs")
-    host = port = None
+    host = port = suite = None
     try:
         with open(os.path.join(defs, "retro/config.sh")) as f:
             text = f.read()
     except OSError:
-        return host, port
+        return host, port, suite
     m = re.search(r"^ECFLOW_HOST=\$\{ECFLOW_HOST:-([^}]+)\}", text, re.M)
     if m:
         host = m.group(1).strip()
-    return host, port
+    m = re.search(r"^RRFS_SUITE=\$\{RRFS_SUITE:-([^}]+)\}", text, re.M)
+    if m and "$" not in m.group(1):
+        suite = m.group(1).strip()
+    if suite is None:
+        m = re.search(r"^EXPT_ID=\$\{EXPT_ID:-([^}]+)\}", text, re.M)
+        if m:
+            suite = m.group(1).strip()
+    return host, port, suite
 
 
 def default_port():
@@ -133,7 +141,8 @@ def collect(defs, suite, cycle_filter, state_filter, show_all=False):
             cyc = m.group(1) if m else "-"
             if cycle_filter and cyc not in cycle_filter:
                 continue
-            state = str(task.get_state())
+            node_state = str(task.get_state())
+            state = node_state
             # show held work as suspended, but never hide a failure: an aborted task below a
             # suspended family still makes that family roll up as aborted
             if state != "aborted" and suspended_ancestor(defs, path):
@@ -151,10 +160,13 @@ def collect(defs, suite, cycle_filter, state_filter, show_all=False):
                 "cycle": cyc,
                 "task": short,
                 "state": state,
+                # Keep the task state separate from a hold inherited from a parent node.
+                "node_state": node_state,
+                "held": state == "suspended" and node_state != "suspended",
                 "try": task.get_try_no(),
                 "changed": str(task.get_state_change_time()).replace("T", " ")[5:],
                 # only where someone would open it, since the driver lists the suite every minute
-                "log": job_log(task) if state in LOG_STATES else "",
+                "log": job_log(task) if node_state in LOG_STATES else "",
             })
     return rows
 
@@ -188,18 +200,22 @@ def print_rollup(rows, jobs, out):
     counts = {}
     for r in rows:
         key = (r["pdy"], r["cycle"])
-        counts.setdefault(key, {}).setdefault(r["state"], 0)
-        counts[key][r["state"]] += 1
-    head = f"{'CYCLE':<16}{'TASKS':>7}  " + "  ".join(f"{s.upper():>9}" for s in STATE_ORDER)
+        counts.setdefault(key, {}).setdefault(r["node_state"], 0)
+        counts[key][r["node_state"]] += 1
+        counts[key].setdefault("held", 0)
+        counts[key]["held"] += int(r["held"])
+    head = f"{'CYCLE':<16}{'TASKS':>7}  " + "  ".join(
+        f"{STATE_WORD.get(s, s.upper()):>12}" for s in STATE_ORDER)
     print(head, file=out)
     print("-" * len(head), file=out)
     for (pdy, cyc), c in sorted(counts.items()):
-        total = sum(c.values())
-        cells = "  ".join(f"{c.get(s, 0):>9}" for s in STATE_ORDER)
-        susp = c.get("suspended", 0)
+        # Held is an overlay count and can overlap the underlying task-state counts.
+        total = sum(c.get(s, 0) for s in STATE_ORDER)
+        cells = "  ".join(f"{c.get(s, 0):>12}" for s in STATE_ORDER)
+        susp = c.get("held", 0) + c.get("suspended", 0)
         line = f"{pdy + ' ' + cyc:<16}{total:>7}  {cells}"
         if susp:
-            line += f"   (+{susp} suspended)"
+            line += f"   (+{susp} held)"
         print(line, file=out)
     running = sum(1 for v in jobs.values() if v[0] == "RUNNING")
     print(f"\nbatch: {len(jobs)} job(s) in the queue, {running} running", file=out)
@@ -207,14 +223,14 @@ def print_rollup(rows, jobs, out):
 
 def print_tasks(rows, jobs, out):
     order = {s: i for i, s in enumerate(STATE_ORDER)}
-    rows = sorted(rows, key=lambda r: (order.get(r["state"], 99), r["pdy"], r["cycle"], r["task"]))
-    head = f"{'CYCLE':<16}{'TASK':<58}{'STATE':<11}{'TRY':>4}  {'CHANGED':<16}{'BATCH':<20}"
+    rows = sorted(rows, key=lambda r: (order.get(r["node_state"], 99), r["pdy"], r["cycle"], r["task"]))
+    head = f"{'CYCLE':<16}{'TASK':<58}{'STATE':<18}{'TRY':>4}  {'CHANGED':<16}{'BATCH':<20}"
     print(head, file=out)
     print("-" * len(head), file=out)
     for r in rows:
         sj = slurm_for(r, jobs)
         task = r["task"] if len(r["task"]) <= 57 else "…" + r["task"][-56:]
-        print(f"{r['pdy'] + ' ' + r['cycle']:<16}{task:<58}{r['state']:<11}{r['try']:>4}  "
+        print(f"{r['pdy'] + ' ' + r['cycle']:<16}{task:<58}{display_state(r):<18}{r['try']:>4}  "
               f"{r['changed']:<16}{sj:<20}", file=out)
         if r["log"]:
             print(f"{'':<16}log: {r['log']}", file=out)
@@ -234,9 +250,15 @@ def slurm_for(r, jobs):
 
 def word_for(r):
     """The rocotostat-style word for a task, or SET-ASIDE for one completed without running."""
-    if r["aside"] and r["state"] == "complete":
+    if r["aside"] and r["node_state"] == "complete":
         return "SET-ASIDE"
-    return STATE_WORD.get(r["state"], r["state"].upper())
+    return STATE_WORD.get(r["node_state"], r["node_state"].upper())
+
+
+def display_state(r):
+    """Show the task state and mark a hold inherited from a suspended ancestor."""
+    state = word_for(r)
+    return f"{state} (HELD)" if r["held"] else state
 
 
 def write_report(rows, jobs, directory, total):
@@ -251,7 +273,8 @@ def write_report(rows, jobs, directory, total):
     for r in rows:
         w = word_for(r)
         counts[w] = counts.get(w, 0) + 1
-    line = lambda r: f"{r['pdy']} {r['cycle']}  {r['task']}  {word_for(r)}"
+    held_count = sum(1 for r in rows if r["held"])
+    line = lambda r: f"{r['pdy']} {r['cycle']}  {r['task']}  {display_state(r)}"
 
     with open(os.path.join(directory, "stat"), "w") as f:
         print_workflow(rows, jobs, f)
@@ -261,12 +284,14 @@ def write_report(rows, jobs, directory, total):
 
     with open(os.path.join(directory, "RUN"), "w") as f:
         print("----------", file=f)
-        for w in ("RUNNING", "SUBMITTED", "QUEUED"):
+        for w in ("RUNNING", "BATCH QUEUED", "READY"):
             for r in rows:
                 if word_for(r) == w:
                     print(line(r), file=f)
-        for w in ("DONE", "RUNNING", "SUBMITTED", "QUEUED", "FAILED", "HELD", "SET-ASIDE", "UNKNOWN"):
-            print(f"#{w.title() + ':':<11}{counts.get(w, 0)}", file=f)
+        for w in ("DONE", "RUNNING", "BATCH QUEUED", "READY", "FAILED", "HELD", "SET-ASIDE", "UNKNOWN"):
+            # Held tasks are also counted under their underlying state above.
+            n = held_count + counts.get("HELD", 0) if w == "HELD" else counts.get(w, 0)
+            print(f"#{w.title() + ':':<15}{n}", file=f)
         print(time.strftime("%a %b %d %H:%M:%S %Z %Y"), file=f)
 
     with open(os.path.join(directory, "DEAD"), "w") as f:
@@ -321,19 +346,22 @@ def print_workflow(rows, jobs, out):
     cycles = {}
     for r in rows:
         cycles.setdefault((r["pdy"], r["cycle"]), []).append(r)
-    print("STATE: DONE complete, RUNNING active, SUBMITTED in the batch queue, QUEUED waiting on a "
-          "trigger,\n       FAILED aborted, HELD suspended, SET-ASIDE switched off by the "
-          "configuration\n", file=out)
+    print("STATE: DONE complete, RUNNING active, BATCH QUEUED accepted by the scheduler and waiting "
+          "to run,\n       READY eligible for ecFlow submission, FAILED aborted, HELD suspended; "
+          "(HELD) marks a suspended ancestor, SET-ASIDE switched off by the configuration\n", file=out)
     for (pdy, cyc), items in cycles.items():
         counts = {}
         for r in items:
             counts[word_for(r)] = counts.get(word_for(r), 0) + 1
         summary = ", ".join(f"{n} {w.lower()}" for w, n in sorted(counts.items(), key=lambda kv: -kv[1]))
+        held = sum(1 for r in items if r["held"]) + counts.get("HELD", 0)
+        if held:
+            summary += f" (+{held} held)"
         print(f"{pdy} {cyc}   {len(items)} tasks: {summary}", file=out)
         for r in items:
-            word = word_for(r)
+            word = display_state(r)
             task = r["task"] if len(r["task"]) <= 57 else "\u2026" + r["task"][-56:]
-            print(f"  {task:<58}{word:<11}{r['try']:>4}  {r['changed']:<16}{slurm_for(r, jobs):<20}".rstrip(), file=out)
+            print(f"  {task:<58}{word:<18}{r['try']:>4}  {r['changed']:<16}{slurm_for(r, jobs):<20}".rstrip(), file=out)
         print("", file=out)
     print(f"{len(rows)} task(s) in {len(cycles)} cycle(s)", file=out)
 
@@ -342,7 +370,7 @@ def main():
     p = argparse.ArgumentParser(description="state of the RRFS ecflow suite, rocotostat style")
     p.add_argument("--host", help="ecflow server host (default: ECF_HOST, then retro/config.sh)")
     p.add_argument("--port", help="ecflow server port (default: ECF_PORT)")
-    p.add_argument("--suite", default=os.getenv("RRFS_SUITE", DEFAULT_SUITE))
+    p.add_argument("--suite", help="ecFlow suite (default: RRFS_SUITE, then retro/config.sh)")
     p.add_argument("-t", "--tasks", action="store_true", help="one line per task, not a rollup")
     p.add_argument("-w", "--workflow", action="store_true",
                    help="every task in workflow order, grouped by cycle (like rocotostat -c all)")
@@ -353,16 +381,17 @@ def main():
     p.add_argument("-a", "--all", action="store_true",
                    help="include day families the retro has not released yet")
     p.add_argument("--set-aside", action="store_true",
-                   help="also list the tasks the configuration switched off")
+                   help="also list tasks the configuration switched off, marked SET-ASIDE")
     p.add_argument("-o", "--out", help="write to this file instead of the terminal")
     p.add_argument("--report", nargs="?", const=".", metavar="DIR",
                    help="write stat, RUN and DEAD files into DIR (default: here)")
     p.add_argument("-l", "--loop", type=int, metavar="SECONDS", help="refresh until interrupted")
     a = p.parse_args()
 
-    cfg_host, cfg_port = settings_from_config()
+    cfg_host, cfg_port, cfg_suite = settings_from_config()
     host = a.host or os.getenv("ECF_HOST") or cfg_host
     port = a.port or os.getenv("ECF_PORT") or cfg_port or default_port()
+    suite = a.suite or os.getenv("RRFS_SUITE") or cfg_suite or DEFAULT_SUITE
     if not host or not port:
         sys.exit("ERROR: no ecflow server; pass --host and --port or set ECF_HOST/ECF_PORT")
     cycles = set(a.cycle.split(",")) if a.cycle else None
@@ -380,16 +409,16 @@ def main():
                      "  different port, pass --port <port>. The ecflow module sets ECF_PORT to\n"
                      "  your default, 1500 + your uid.")
         defs = ci.get_defs()
-        if defs is None or defs.find_suite(a.suite) is None:
-            sys.exit(f"rrfsstat: the server on {host}:{port} is running but has no /{a.suite} suite loaded "
+        if defs is None or defs.find_suite(suite) is None:
+            sys.exit(f"rrfsstat: the server on {host}:{port} is running but has no /{suite} suite loaded "
                      "yet (step D on the run instructions).")
         # the plan is about the configuration rather than today's progress, so it covers the
         # day families the retro has not reached yet as well
-        rows = collect(defs, a.suite, cycles, states, a.all or a.plan)
+        rows = collect(defs, suite, cycles, states, a.all or a.plan)
         total = len(rows)
         if not a.set_aside:
-            # a task the configuration switched off is complete before the retro starts and stays
-            # that way; listing thousands of them buries the handful that do run
+            # Switched-off tasks stay complete so their dependencies work; hide them by default
+            # because a simplified retro may have thousands. --set-aside lists them all.
             rows = [r for r in rows if not r["aside"]]
         jobs = slurm_jobs()
         if a.report:

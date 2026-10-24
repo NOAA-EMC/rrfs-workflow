@@ -6,7 +6,7 @@
 #
 # Usage: ush/retro/start_retro.sh [--hold] [--reload]
 #   --hold    start everything with the RRFS suite suspended, so nothing is submitted until you
-#             run "ecflow_client --resume /para"; use the pause to suspend what you want to skip
+#             run "ush/retro/ecflow_tools/resume.sh"; use the pause to suspend what you want to skip
 #             (see "Run less than the whole retro" in the instructions)
 #   --reload  the suites are already loaded: delete and reload them. Their state is lost, so the
 #             retro starts over from RETRO_START.
@@ -51,7 +51,7 @@ echo "retro:  ${RETRO_START} to ${RETRO_END}"
 # Decide about the suites before changing anything, so a refusal leaves everything as it was
 ping_ok() { ecflow_client --ping >/dev/null 2>&1; }
 suite_loaded() { ecflow_client --get_state "/$1" >/dev/null 2>&1; }
-if ping_ok && { suite_loaded "${RRFS_SUITE}" || suite_loaded prod_clone; } && [ "${reload}" != YES ]; then
+if ping_ok && { suite_loaded "${RRFS_SUITE}" || suite_loaded "${PRODCLONE_SUITE}"; } && [ "${reload}" != YES ]; then
   die "suites are already loaded on ${ECF_HOST}:${ECF_PORT}. Re-running would lose their state;
        pass --reload if that is what you want, or use ecflow_client/rrfsstat to work with them."
 fi
@@ -101,7 +101,7 @@ ecflow_client --restart
 
 step "D: load and begin the suites"
 if [ "${reload}" = YES ]; then
-  for s in "${RRFS_SUITE}" prod_clone; do
+  for s in "${RRFS_SUITE}" "${PRODCLONE_SUITE}"; do
     suite_loaded "${s}" && ecflow_client --delete=force yes "/${s}" && echo "deleted /${s}"
   done
 fi
@@ -116,7 +116,7 @@ if [ "${hold}" = YES ]; then
   ecflow_client --alter change defstatus suspended "/${RRFS_SUITE}"
 fi
 ecflow_client --begin "${RRFS_SUITE}"
-ecflow_client --begin prod_clone
+ecflow_client --begin "${PRODCLONE_SUITE}"
 if [ "${hold}" = YES ]; then
   echo "/${RRFS_SUITE} is SUSPENDED: nothing will be submitted until you run"
   echo "  ecflow_client --resume /${RRFS_SUITE}"
@@ -124,10 +124,10 @@ fi
 
 step "Running"
 cat <<EOF
-Suites /${RRFS_SUITE} and /prod_clone are loaded and begun on ${ECF_HOST}:${ECF_PORT}.
+Suites /${RRFS_SUITE} and /${PRODCLONE_SUITE} are loaded and begun on ${ECF_HOST}:${ECF_PORT}.
 $( [ "${hold}" = YES ] && echo "/${RRFS_SUITE} is suspended (--hold); resume it to start submitting." || echo "The retro driver releases the first family within a minute." )
 
-Watch it:  ${repo}/ush/retro/rrfsstat          (or ${ECF_HOME}/rrfs_status.txt)
+Watch it:  ${repo}/ush/retro/rrfsstat --suite ${RRFS_SUITE}  (or ${ECF_HOME}/rrfs_status.txt)
      GUI:  ecflow_ui, server ${ECF_HOST} port ${ECF_PORT}
     Logs:  ${ECF_HOME}/${RRFS_SUITE}/primary/<DD>/rrfs/v1.0/<cyc>/<wgf>/<family>/<task>.1
     Stop:  ecflow_client --suspend /${RRFS_SUITE}      (pause everything, keep state)
