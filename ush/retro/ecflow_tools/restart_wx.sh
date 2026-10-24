@@ -16,7 +16,7 @@ if [ "${confirmation}" != "RESTART" ]; then
   exit 1
 fi
 
-read -r -p "Clean configured OUTPUTDIR, DEV_PTMP, and DEV_DATAROOT? [y/N] " clean_answer
+read -r -p "Clean OUTPUTDIR, DEV_PTMP, DEV_DATAROOT, and suite job/log files? [y/N] " clean_answer
 case ${clean_answer,,} in
   y|yes) clean=YES ;;
   n|no|'') clean=NO ;;
@@ -30,7 +30,9 @@ fi
 # Resolve and constrain cleanup targets so a bad config cannot remove RETRO_WORK_BASE or its parent.
 base=$(realpath -m -- "${RETRO_WORK_BASE}")
 targets=()
-for target in "${OUTPUTDIR}" "${DEV_PTMP}" "${DEV_DATAROOT}"; do
+# Remove only the selected suites' generated job files and logs; keep ECF_HOME for the server.
+for target in "${OUTPUTDIR}" "${DEV_PTMP}" "${DEV_DATAROOT}" \
+             "${ECF_HOME}/${RRFS_SUITE}" "${ECF_HOME}/${PRODCLONE_SUITE}"; do
   resolved=$(realpath -m -- "${target}")
   case ${resolved} in
     "${base}"/*) targets+=("${resolved}") ;;
