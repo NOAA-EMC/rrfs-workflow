@@ -4,12 +4,13 @@
 # the ecflow server, loading and beginning both suites). Settings come from
 # ecf/defs/retro/config.sh; edit that first (step A).
 #
-# Usage: ush/retro/start_retro.sh [--hold] [--reload]
+# Usage: ush/retro/start_retro.sh [--hold] [--reload] [--workaround]
 #   --hold    start everything with the RRFS suite suspended, so nothing is submitted until you
 #             run "ush/retro/ecflow_tools/resume.sh"; use the pause to suspend what you want to skip
 #             (see "Run less than the whole retro" in the instructions)
 #   --reload  the suites are already loaded: delete and reload them. Their state is lost, so the
 #             retro starts over from RETRO_START.
+#   --workaround  copy the selected GSI workaround files into the suite fix tree.
 #
 # Run from any login node. On Ursa the server runs on uecflow01 at the port the ecflow module gives
 # you (1500 + uid), and this script starts it. On WCOSS2 start it yourself first with NCO's
@@ -20,11 +21,13 @@ set -eu
 repo=$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/../.." && pwd)
 hold=NO
 reload=NO
+workaround=NO
 for arg in "$@"; do
   case ${arg} in
     --hold)   hold=YES ;;
     --reload) reload=YES ;;
-    -h|--help) sed -n '2,17p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    --workaround) workaround=YES ;;
+    -h|--help) sed -n '2,18p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'; exit 0 ;;
     *) echo "unknown option: ${arg} (try --help)" >&2; exit 1 ;;
   esac
 done
@@ -60,7 +63,13 @@ step "B: links and suite definitions"
 log=${ECF_HOME}/start_retro.setup.log
 mkdir -p "${ECF_HOME}" "${OUTPUTDIR}" "${DEV_PTMP}" "${DEV_DATAROOT}"
 # setup_retro_links.sh runs ecf/setup_ecf_links.sh and is verbose; keep its output in a log
-"${repo}/ush/retro/setup_retro_links.sh" > "${log}" 2>&1 || die "setup_retro_links.sh failed; see ${log}"
+if [ "${workaround}" = YES ]; then
+  "${repo}/ush/retro/setup_retro_links.sh" --workaround > "${log}" 2>&1 \
+    || die "setup_retro_links.sh failed; see ${log}"
+else
+  "${repo}/ush/retro/setup_retro_links.sh" > "${log}" 2>&1 \
+    || die "setup_retro_links.sh failed; see ${log}"
+fi
 echo "links and generated job cards: done (log: ${log})"
 # A retro running 3DVar without the EnKF takes the ensemble for the hybrid analysis from a staged
 # one; link it into COM before the first analysis asks for it (RRFSE_NWGES in retro/config.sh).

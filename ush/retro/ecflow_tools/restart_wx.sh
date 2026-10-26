@@ -3,6 +3,14 @@
 set -eu
 
 repo=$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/../../.." && pwd)
+workaround=NO
+for arg in "$@"; do
+  case ${arg} in
+    --workaround) workaround=YES ;;
+    -h|--help) echo "Usage: ${BASH_SOURCE[0]} [--workaround]"; exit 0 ;;
+    *) echo "unknown option: ${arg} (try --help)" >&2; exit 1 ;;
+  esac
+done
 # Use the same suite name and retro settings as the definition generator.
 # shellcheck source=/dev/null
 . "${repo}/ecf/defs/retro/load_config.sh"
@@ -10,6 +18,9 @@ repo=$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/../../.." && pwd)
 echo "This will reset /${RRFS_SUITE} and /${PRODCLONE_SUITE} and discard their current ecFlow state."
 echo "/${RRFS_SUITE} will be reloaded suspended for inspection; /${PRODCLONE_SUITE} will begin."
 echo "Any active ecFlow tasks may be interrupted."
+if [ "${workaround}" = YES ]; then
+  echo "The GSI workaround files will be copied into the suite fix tree."
+fi
 read -r -p "Type RESTART to continue: " confirmation
 if [ "${confirmation}" != "RESTART" ]; then
   echo "Restart cancelled."
@@ -24,6 +35,9 @@ case ${clean_answer,,} in
 esac
 
 if [ "${clean}" = "NO" ]; then
+  if [ "${workaround}" = YES ]; then
+    exec "${repo}/ush/retro/start_retro.sh" --reload --hold --workaround
+  fi
   exec "${repo}/ush/retro/start_retro.sh" --reload --hold
 fi
 
@@ -68,4 +82,7 @@ fi
 
 # Remove data only after deleting loaded suites, then let start_retro rebuild links and definitions.
 rm -rf -- "${targets[@]}"
+if [ "${workaround}" = YES ]; then
+  exec "${repo}/ush/retro/start_retro.sh" --hold --workaround
+fi
 exec "${repo}/ush/retro/start_retro.sh" --hold

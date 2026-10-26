@@ -34,6 +34,10 @@ if [ -n "%rrfs_ver:%" ]; then export rrfs_ver=${rrfs_ver:-%rrfs_ver:%}; fi
 if [ -f "$versionfile" ]; then
   . $versionfile 
 fi
+# Default atmospheric fixed files to the configured RRFS fix tree.
+if [ -n "${FIXrrfs:-}" ]; then
+  export FIXam=${FIXam:-${FIXrrfs}/am}
+fi
 export envir=%ENVIR%
 export MACHINE_SITE=%MACHINE_SITE%
 export RUN_ENVIR=${RUN_ENVIR:-nco}
