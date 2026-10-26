@@ -37,6 +37,9 @@ import re
 import sys
 
 TRUE, FALSE = "TRUE", "FALSE"
+# Member-count test knob (strip before the PR): a term that names a task not in the suite at all (--mode ignore,
+# EnKF members past NUM_ENS_MEMBERS): it leaves its and/or
+DROP = "DROP"
 # ecflow node states a trigger can test; complete is the only one a task that never runs reaches
 STATES = ("unknown", "complete", "queued", "aborted", "submitted", "active", "suspended")
 NODE_KW = ("suite", "family", "task")
@@ -142,11 +145,13 @@ def unparse(node, parent_op=None):
 
 def fold(node):
     """Constant-fold the TRUE and FALSE that rewriting leaves behind."""
-    if node in (TRUE, FALSE) or isinstance(node, Prim):
+    if node in (TRUE, FALSE, DROP) or isinstance(node, Prim):
         return node
     op, parts = node
     kept = []
     for p in (fold(c) for c in parts):
+        if p == DROP:
+            continue
         if op == "and":
             if p == FALSE:
                 return FALSE
@@ -159,6 +164,8 @@ def fold(node):
                 continue
         kept.append(p)
     if not kept:
+        if all(fold(c) == DROP for c in parts):
+            return DROP
         return TRUE if op == "and" else FALSE
     return kept[0] if len(kept) == 1 else (op, kept)
 
@@ -289,7 +296,7 @@ def main():
     touched = [False]
 
     def rewrite(node, base, depth=0):
-        if node in (TRUE, FALSE):
+        if node in (TRUE, FALSE, DROP):
             return node
         if isinstance(node, Prim):
             if node.ref is None:
@@ -299,7 +306,9 @@ def main():
                 return node
             touched[0] = True
             if node.event:
-                return release.get(target, FALSE)
+                # Member-count test knob (strip before the PR): an event of a task that never runs is never
+                # set; under ignore the task is not part of this retro at all, so drop it
+                return release.get(target, DROP if args.mode == "ignore" else FALSE)
             if args.mode == "ignore":
                 return TRUE if node.state == "complete" else FALSE
             if node.state not in ("complete", "active"):
@@ -326,7 +335,7 @@ def main():
                 continue
             if new == FALSE:
                 sys.exit(f"skip_tasks.py: the {kw} of {path} can never be satisfied")
-            if new == TRUE:
+            if new in (TRUE, DROP):
                 # nothing left to wait for; drop the attribute rather than write a tautology
                 lines[ln] = None
                 changed += 1

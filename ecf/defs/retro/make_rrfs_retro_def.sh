@@ -199,7 +199,8 @@ EOF
     echo "  KEEPDATA: ${nkeep} setting(s) rewritten to '${KEEPDATA}', and KEEP_TMP set to match"
   fi
 
-  # Which analysis runs: the route DA_SYSTEM does not select is marked complete, never submitted
+  # Which analyses run, det and EnKF: the route DA_SYSTEM does not select is marked complete,
+  # never submitted
   case "${DA_SYSTEM:-GSI}" in
     GSI|gsi)   da_system_jedi=0 ;;
     JEDI|jedi) da_system_jedi=1 ;;
@@ -388,6 +389,23 @@ EOF
     ${skip} --label "boundaries past hour ${lbc_last}" "${lbc_args[@]}"
   fi
 
+  # Member-count test knob (strip before the PR): fewer EnKF members (NUM_ENS_MEMBERS, at most the 30 the definition has): the tasks of the
+  # members past it. setup_retro_links.sh puts the same number in workflow.conf, which the EnKF,
+  # its managers and the deterministic hybrid read. Dropped rather than inlined, since nothing
+  # should wait on a member that does not exist.
+  nmem=${NUM_ENS_MEMBERS:-30}
+  if [ "${nmem}" -lt 1 ] || [ "${nmem}" -gt 30 ]; then
+    echo "ERROR: NUM_ENS_MEMBERS must be 1 to 30, not ${nmem}." >&2
+    exit 1
+  fi
+  if [ "${nmem}" -lt 30 ]; then
+    mem_args=()
+    for (( m = nmem + 1; m <= 30; m++ )); do
+      mem_args+=(--name "jrrfs_enkf_[a-z0-9_]*mem$(printf '%03d' ${m})(_f[0-9]+)?")
+    done
+    ${skip} --mode ignore --label "EnKF members past ${nmem} (NUM_ENS_MEMBERS)" "${mem_args[@]}"
+  fi
+
   # Anything else this retro leaves out, as a space-separated list of task-name patterns
   if [ -n "${SKIP_TASKS:-}" ]; then
     extra=()
@@ -437,10 +455,11 @@ fi
 # names their job sizes through SBATCH_OVERRIDES on Ursa, or QSUB_OVERRIDES on WCOSS2. The table
 # is in sbatch terms; on WCOSS2 --nodes=N becomes N whole 128-core nodes and --time the walltime.
 # The node counts carry over because ranks per node come from the domain's PPN_* settings, which
-# all fit in a WCOSS2 node; RRFS_NA_3km has none, the cards are sized for it. The JEDI analysis
-# comes first and on every domain, sized from the JEDI settings in retro/config.sh, so its job
-# request always matches the tasks the ex-script starts.
+# all fit in a WCOSS2 node; RRFS_NA_3km has none, the cards are sized for it. The JEDI analyses
+# come first and on every domain, sized from the JEDI settings in retro/config.sh, so their job
+# requests always match the tasks the ex-scripts start.
 job_sizes=("jrrfs_det_analysis_jedi*:--nodes=${NNODES_ANALYSIS_JEDI:-16} --time=${WALLTIME_ANALYSIS_JEDI:-00:50:00}")
+job_sizes+=("jrrfs_enkf_analysis_jedi*:--nodes=${NNODES_ANALYSIS_ENKF_JEDI:-48} --time=${WALLTIME_ANALYSIS_ENKF_JEDI:-01:00:00}")
 # shellcheck source=/dev/null
 . "${defs_dir}/domains/${DOMAIN}.sh"
 job_sizes+=("${DOMAIN_SBATCH[@]}")
@@ -476,7 +495,7 @@ for line in open(path).read().split("\n"):
             out.append(line[:len(line) - len(line.lstrip())] + f"  edit {var} '{opts}'")
             n += 1
 open(path, "w").write("\n".join(out))
-print(f"{n} tasks given job sizes for the domain and the JEDI analysis")
+print(f"{n} tasks given job sizes for the domain and the JEDI analyses")
 EOF
 
 echo "Wrote ${out_def} from ${BASE_DEF}"
