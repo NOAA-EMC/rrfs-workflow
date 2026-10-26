@@ -3,21 +3,33 @@
 import os
 import textwrap
 from rocoto_funcs.base import xml_task, get_cascade_env
-from rocoto_funcs.smart_graphics_groups import smart_graphics_groups
 
 # begin of graphics --------------------------------------------------------
 
 
 def graphics(xmlFile, expdir):
     meta_id = 'graphics'
+    task_id = f'{meta_id}_#tile#'
+    tiles = os.getenv('GRAPHICS_TILES', 'full')
+    meta_bgn = f'''
+<metatask name="{meta_id}">
+<var name="tile">{tiles}</var>'''
+    meta_end = f'</metatask>\n'
     cycledefs = 'prod'
-    list_groups = smart_graphics_groups()
-
+    #
+    # Task-specific EnVars beyond the task_common_vars
+    dcTaskEnv = {
+        'FCST_LEN_HRS_CYCLES': os.getenv('FCST_LEN_HRS_CYCLES', '03 03'),
+        'TILE': '#tile#',
+        'GRAPHICS_ZIP': os.getenv('GRAPHICS_ZIP', 'FALSE').upper(),
+        'GRAPHICS_MODEL': os.getenv('GRAPHICS_MODEL', ''),
+        'UPP_DOMAIN': os.getenv('UPP_DOMAIN', 'conus.'),
+    }
     # dependencies
     timedep = ""
     realtime = os.getenv("REALTIME", "false")
     if realtime.upper() == "TRUE":
-        starttime = get_cascade_env(f"STARTTIME_{meta_id}".upper())
+        starttime = get_cascade_env(f"STARTTIME_{task_id}".upper())
         timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
     #
     taskdep = '\n<taskdep task="upp_g00"/>'
@@ -36,17 +48,7 @@ def graphics(xmlFile, expdir):
   </and>
   </dependency>'''
 
-    for grp in list_groups:
-        task_id = grp['task_id']
-        dcTaskEnv = {
-            'FCST_LEN_HRS_CYCLES': os.getenv('FCST_LEN_HRS_CYCLES', '03 03'),
-            'TILES_IN_GROUP': grp['tiles_str'],
-            'GRAPHICS_CORES_PER_TILE': str(grp['cores_per_tile']),
-            'GRAPHICS_ZIP': os.getenv('GRAPHICS_ZIP', 'FALSE').upper(),
-            'GRAPHICS_MODEL': os.getenv('GRAPHICS_MODEL', ''),
-            'UPP_DOMAIN': os.getenv('UPP_DOMAIN', 'conus.'),
-        }
-
-        xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv, dependencies, False, meta_id, "", "", "GRAPHICS")
+    #
+    xml_task(xmlFile, expdir, task_id, cycledefs, dcTaskEnv, dependencies, True, meta_id, meta_bgn, meta_end, "GRAPHICS")
 
 # end of graphics --------------------------------------------------------
