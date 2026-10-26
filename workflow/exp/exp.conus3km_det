@@ -276,7 +276,7 @@ case ${MACHINE} in
     export WALLTIME_FCST_XL="5:30:00"
     export WALLTIME_SAVE_FCST="0:30:00"
     export WALLTIME_MPASSIT="3:00:00"
-    export WALLTIME_UPP="3:00:00"
+    export WALLTIME_UPP="2:00:00"
     export WALLTIME_JEDIVAR="00:25:00"
     ;;
   "wcoss2")
