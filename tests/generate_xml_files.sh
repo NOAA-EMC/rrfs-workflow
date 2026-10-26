@@ -67,15 +67,15 @@ mv "OPSROOT/hrly_12km/exp/rrfsdet/rrfs.xml" "${rundir}/xml/${myexp}_gefs.xml"
 # -- chemistry --
 # -- rtma --
 
-# ens_conus12km
-echo -e "\n----------ens_conus12km org----------"
-myexp=ens_conus12km
+# conus12km_enkf
+echo -e "\n----------conus12km_enkf org----------"
+myexp=conus12km_enkf
 myfile=${wflow}/exp/exp.${myexp}
 sed 's|^export OPSROOT=/scratch3/BMC/wrfruc/gge/OPSROOT/${EXP_NAME}|export OPSROOT=./OPSROOT/${EXP_NAME}|' "${myfile}" > "exp.test"
 ./setup_rocoto.py "exp.test"
 mv "OPSROOT/hrly_12km/exp/rrfsenkf/rrfs.xml" "${rundir}/xml/${myexp}_retro.xml"
 
-echo -e "\n----------ens_conus12km realtime----------"
+echo -e "\n----------conus12km_enkf realtime----------"
 { cat "exp.test"; echo -e 'export REALTIME=true'; } > exp.tmp
 ./setup_rocoto.py exp.tmp
 mv "OPSROOT/hrly_12km/exp/rrfsenkf/rrfs.xml" "${rundir}/xml/${myexp}_rt.xml"

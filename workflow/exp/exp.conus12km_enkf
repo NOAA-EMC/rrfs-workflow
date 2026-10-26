@@ -5,8 +5,8 @@
 export NET=rrfs                    # rrfs, rtma, 
 export MESH_NAME=conus12km         # conus12km, conus3km, na12km, etc
 export WGF="enkf"   # working group function = "det", "enkf", "ens", "firewx"
-export EXP_NAME=hrly_12km
 export VERSION=$(cat ./VERSION)
+export EXP_NAME=hrly_12km
 export TAG=e12km
 export OPSROOT=/scratch3/BMC/wrfruc/gge/OPSROOT/${EXP_NAME}
 export EXPDIR=${OPSROOT}/exp/${NET}${WGF}
@@ -14,7 +14,7 @@ export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
 export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=YES
 #
 export DO_ENSEMBLE=true
-export DO_ENSMEAN_POST=true
+export DO_ENSMEAN_POST=false
 export IC_ONLY=false  # interpolate GEFS/GDAS to the target mesh to provide ensemble BEC
 export DO_DETERMINISTIC=false
 export ENS_SIZE=30
@@ -24,9 +24,11 @@ export USE_MERRA2=false  # false: default GOCART aerosol climatology; true: MERR
 #
 export DO_IODA=false
 export DO_JEDI=false
+export GETKF_ONESTEP=true
 export DO_NONVAR_CLOUD_ANA=false
 export COLDSTART_CYCS_DO_DA=false
 export DO_RECENTER=false
+export RECENTER_TEMPLATE=CONTROL
 export DO_RADAR_REF=false
 export SAVE_GETKF_ANL=false
 export DO_CLEAN=true
@@ -40,9 +42,11 @@ for i in {0..23};    do arr[$i]="01"; done # 1hr fcst
 for i in {0..23..6}; do arr[$i]="01"; done # 1hr fcst every 6hrs
 export FCST_LEN_HRS_CYCLES="${arr[*]}"
 export HISTORY_INTERVAL=1
+export DIAG_INTERVAL=none
 export MPASOUT_TIMELEVELS="0 1"
 export POST_GROUP_TOT_NUM=1 # num of groups, the final group absorbs leftovers, the first group contains the extra f000h file
 export ENSMEAN_GROUP_TOTAL_NUM=3
+export DO_POST=false
 
 export IC_OFFSET=30
 export LBC_OFFSET=6
@@ -56,6 +60,7 @@ export LBC_CYCS="00 06 12 18"
 export COLDSTART_CYCS="00 06 12 18"   # cycles to cold start from external models
 export RECENTER_CYCS="${COLDSTART_CYCS}"
 export DET_RECENTERCYCS_DO_DA=false # whether or not do detministic DA at RECENTER_CYCS
+export DET_RECENTERCYCS_CLDANA=false #true # whether or not do detministic NONVAR_CLOUD_ANA at RECENTER_CYCS
 #
 #export DO_PYDAMONITOR=true
 #export DO_GRAPHICS=true

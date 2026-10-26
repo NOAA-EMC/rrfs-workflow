@@ -41,7 +41,7 @@ def smart_superyaml(HOMErrfs, ytype, mesh, getkf_onestep=False):
             # GETKF observer_solver: change observer distribution
             if getkf_onestep:
                 for i, line in enumerate(tmp):
-                    if line.strip() == "distribution:":
+                    if line.split("#")[0].strip() == "distribution:":  # ignore trailing comments
                         if i + 1 < len(tmp) and 'name: "RoundRobin"' in tmp[i + 1]:
                             indent = line[:len(line) - len(line.lstrip())]
                             absolute_pos = observer["pos1"] + i
