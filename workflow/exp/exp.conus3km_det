@@ -237,6 +237,7 @@ case ${MACHINE} in
     export NODES_FCST="<nodes>4:ppn=192</nodes>"
     export NODES_FCST_L="<nodes>4:ppn=192</nodes>"
     export NODES_FCST_XL="<nodes>10:ppn=192</nodes>"
+    export NODES_FCST_SPINUP="<nodes>4:ppn=160</nodes>"
     export NODES_MPASSIT="<nodes>1:ppn=160</nodes>"
     export NODES_UPP="<nodes>1:ppn=80</nodes>"
     export NODES_JEDIVAR="<nodes>20:ppn=40</nodes>"
