@@ -156,6 +156,11 @@ case ${YAML_GEN_METHOD:-1} in
     ;;
 esac
 
+if [[ "${DO_SPINUP^^}" == "TRUE" ]];  then
+  jedivar_str="jedivar_spinup"
+else
+  jedivar_str="jedivar"
+fi
 if [[ ${START_TYPE} == "warm" ]] || [[ ${START_TYPE} == "cold" && ${COLDSTART_CYCS_DO_DA^^} == "TRUE" ]]; then
   # run mpasjedi_variational.x
   #export OOPS_TRACE=1
@@ -195,11 +200,6 @@ if [[ ${START_TYPE} == "warm" ]] || [[ ${START_TYPE} == "cold" && ${COLDSTART_CY
       fi
   fi
   # the input/output file are linked from the umbrella directory, so no need to copy
-  if [[ "${DO_SPINUP^^}" == "TRUE" ]];  then
-    jedivar_str="jedivar_spinup"
-  else
-    jedivar_str="jedivar"
-  fi
   if [[ "${SAVE_JEDI_ANL:-"FALSE"}" == "TRUE" ]];  then
     cp "${DATA}/${initial_file}" "${COMOUT}/${jedivar_str}/${WGF}/${initial_file%.nc}.${timestr}.nc"
   fi  

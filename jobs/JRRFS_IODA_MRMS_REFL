@@ -18,7 +18,7 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 #-----------------------------------------------------------------------
 #
 export pid=${pid:-$$}
-export jobid=${jobid:-ioda_mrmr_refl_${cyc}}
+export jobid=${jobid:-ioda_mrms_refl_${cyc}}
 export UMBRELLA_IODA_MRMS_DATA=${UMBRELLA_IODA_MRMS_DATA:-${DATAROOT}/${RUN}_ioda_mrms_refl_${cyc}_${rrfs_ver}/${WGF}}
 export DATA=${DATA:-${UMBRELLA_IODA_MRMS_DATA}/${jobid}}
 
