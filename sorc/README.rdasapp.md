@@ -33,8 +33,13 @@ checking out the externals again, use:
 ```
 
 The `--workaround` option copies the branch's local RDASApp workaround sources
-and configurations before building. Use it for validation and baseline
-experiments. Omit it for a build without those local workarounds.
+and configurations before building. It also installs a GSI analysis script
+overlay that forces 3DVAR instead of hybrid ensemble assimilation, sets the GSI
+`qmin` constant to zero, stages the GSI `convinfo.rrfs` override for each retro's
+private fix tree, installs the JEDI `gsiparm_regional.anl` override for the 13 km
+domain, and skips quarter-hour aggregation when `RUN_SUBHOURLY_POST=FALSE`. Use it
+for retro validation and baseline experiments. Omit it for a build without those
+local workarounds. The overlays remain in the checkout after the build.
 
 A regular build using already checked-out externals can be run with:
 
