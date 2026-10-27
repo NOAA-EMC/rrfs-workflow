@@ -151,6 +151,10 @@ for imem in $(seq 1 ${NUM_ENS_MEMBERS}); do
   # a member without a restart coupler.res is a cold start, which GETKF cannot read
   if [ ! -r "${bkpath}/coupler.res" ]; then
     ncold=$(( ncold + 1 ))
+  # GETKF writes the analysis into these files, so an A-grid wind already in one means an earlier
+  # run updated it and running again would analyze an analysis
+  elif ncdump -h ${bkpath}/fv_core.res.tile1.nc 2>/dev/null | grep -q ' ua_anl('; then
+    err_exit "${bkpath} already holds a GETKF analysis; rerun prep_cyc for this cycle before rerunning GETKF"
   fi
 
   mkdir -p data/inputs/${memcharv0}
