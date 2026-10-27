@@ -442,12 +442,6 @@ if [ "${BUILD_WORKAROUND}" = true ]; then
      "${HOME_DIR}/scripts/exrrfs_analysis_gsi.sh"
 fi
 
-# Install the post overlay that skips quarter-hour aggregation when those tasks are disabled.
-if [ "${BUILD_WORKAROUND}" = true ]; then
-  printf "... copying hourly-only post workaround script ...\n"
-  cp "${SORC_DIR}/_workaround_/scripts/exrrfs_post.sh" \
-     "${HOME_DIR}/scripts/exrrfs_post.sh"
-fi
 
 # Apply the GSI qmin source overlay only when this build includes GSI.
 if [ "${BUILD_WORKAROUND}" = true ] && [ "${BUILD_GSI}" = "on" ]; then

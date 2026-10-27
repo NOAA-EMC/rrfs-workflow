@@ -149,9 +149,10 @@ if [ ${len_fhr} -eq 9 ]; then
   if [ ${post_min} -lt ${nsout_min} ]; then
     post_min=00
 #	  if [ $post_fhr -ge 1 -a $post_fhr -le $POSTPROC_SUBH_LEN_HRS ]
-	  if [ $post_fhr -ge 1 -a $post_fhr -le 18 ]
-	  then
-          SUBH_GEN=1
+	  # Hourly post jobs only aggregate quarter-hour files when those tasks are enabled.
+	  if [ "${RUN_SUBHOURLY_POST:-TRUE}" != "FALSE" ] && \
+             [ "$post_fhr" -ge 1 ] && [ "$post_fhr" -le 18 ]; then
+            SUBH_GEN=1
 	  fi
   fi
 else
