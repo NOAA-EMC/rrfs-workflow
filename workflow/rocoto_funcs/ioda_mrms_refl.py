@@ -11,6 +11,7 @@ def ioda_mrms_refl(xmlFile, expdir):
     if os.getenv("DO_SPINUP", "FALSE").upper() == "TRUE":
         cycledefs = 'prod,spinup'
     OBSPATH_NSSLMOSAIC = os.getenv("OBSPATH_NSSLMOSAIC", 'OBSPATH_NSSLMOSAIC_not_defined')
+    MRMS_PREFIX = os.getenv("MRMS_PREFIX", 'MergedReflectivityQC')
     RADARREFL_TIMELEVEL = os.getenv("RADARREFL_TIMELEVEL", 'RADARREFL_TIMELEVEL_not_defined')
     MRMS_GRIDSPACINGDEG = os.getenv("MRMS_GRIDSPACINGDEG", 'MRMS_GRIDSPACINGDEG_not_defined')
     do_jedi = os.getenv("DO_JEDI", "FALSE").upper()
@@ -24,7 +25,8 @@ def ioda_mrms_refl(xmlFile, expdir):
     # Task-specific EnVars beyond the task_common_vars
     dcTaskEnv = {
         'REFERENCE_TIME': '@Y-@m-@dT@H:00:00Z',
-        'OBSPATH_NSSLMOSAIC': f'{OBSPATH_NSSLMOSAIC}',
+        'OBSPATH_NSSLMOSAIC': f'<cyclestr>{OBSPATH_NSSLMOSAIC}</cyclestr>',
+        'MRMS_PREFIX': f'{MRMS_PREFIX}',
         'RADARREFL_TIMELEVEL': f'{RADARREFL_TIMELEVEL}',
         'MRMS_GRIDSPACINGDEG': f'{MRMS_GRIDSPACINGDEG}',
         'ASSIM_METHOD': f'{ASSIM_METHOD}'
