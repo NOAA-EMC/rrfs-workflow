@@ -3,7 +3,7 @@
 #
 # shellcheck disable=SC2154,SC2153
 
-cat "${PARMrrfs}/chemistry/namelist.init_atmosphere" >> namelist.atmosphere
+cat "${PARMrrfs}/chemistry/namelist.atmosphere" >> namelist.atmosphere
 #
 # Now adjust the configure options based on activated CHEM_GROUPS
 if [[ "${CHEM_GROUPS}" == *smoke* ]]; then
