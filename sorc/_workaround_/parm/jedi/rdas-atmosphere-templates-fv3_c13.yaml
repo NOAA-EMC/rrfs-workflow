@@ -268,7 +268,7 @@ observations:
 - sfcshp_winds_284
 
 # Remote
-- nexrad_radialVelocity_999
+#- nexrad_radialVelocity_999
 #- gnss_zenithTotalDelay
 
 # Meteosat / EUMETSAT satelliteIdentifier 56
