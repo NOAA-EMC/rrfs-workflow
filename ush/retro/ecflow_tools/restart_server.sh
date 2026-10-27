@@ -36,18 +36,51 @@ export ECF_HOST=${host_requested:-${ECFLOW_HOST}}
 export ECF_PORT=${port_requested:-${default_port}}
 
 if ! ecflow_client --ping >/dev/null 2>&1; then
-  if [ ! -d "${ECF_HOME}" ]; then
-    echo "ECF_HOME does not exist: ${ECF_HOME}" >&2
-    exit 1
-  fi
-
-  # Require a checkpoint so a typo in ECF_HOME cannot start a blank server.
+  # The shared server may have been started from another experiment's ECF_HOME.
+  # Prefer the configured directory, then search this retro work root for a unique checkpoint.
   checkpoint=${ECF_HOME}/${ECF_HOST}.${ECF_PORT}.ecf.check
   checkpoint_backup=${checkpoint}.b
   if [ ! -f "${checkpoint}" ] && [ ! -f "${checkpoint_backup}" ]; then
-    echo "No ecFlow checkpoint found for ${ECF_HOST}:${ECF_PORT} in ${ECF_HOME}." >&2
-    echo "Expected ${checkpoint} or ${checkpoint_backup}; refusing to start an empty server." >&2
-    exit 1
+    checkpoint_files=()
+    if [ -n "${RETRO_WORK_ROOT:-}" ]; then
+      shopt -s nullglob
+      checkpoint_files=(
+        "${RETRO_WORK_ROOT}"/*/submit/"${ECF_HOST}.${ECF_PORT}.ecf.check"
+        "${RETRO_WORK_ROOT}"/*/submit/"${ECF_HOST}.${ECF_PORT}.ecf.check".b
+      )
+      shopt -u nullglob
+    fi
+
+    checkpoint_dirs=()
+    for candidate in "${checkpoint_files[@]}"; do
+      candidate_dir=${candidate%/*}
+      found=NO
+      for existing_dir in "${checkpoint_dirs[@]}"; do
+        if [ "${existing_dir}" = "${candidate_dir}" ]; then
+          found=YES
+          break
+        fi
+      done
+      if [ "${found}" = NO ]; then
+        checkpoint_dirs+=("${candidate_dir}")
+      fi
+    done
+
+    if [ "${#checkpoint_dirs[@]}" -eq 1 ]; then
+      ECF_HOME=${checkpoint_dirs[0]}
+      checkpoint=${ECF_HOME}/${ECF_HOST}.${ECF_PORT}.ecf.check
+      checkpoint_backup=${checkpoint}.b
+      echo "Using server checkpoint directory found under RETRO_WORK_ROOT: ${ECF_HOME}"
+    elif [ "${#checkpoint_dirs[@]}" -gt 1 ]; then
+      echo "Multiple ecFlow checkpoint directories found for ${ECF_HOST}:${ECF_PORT}:" >&2
+      printf '  %s\n' "${checkpoint_dirs[@]}" >&2
+      echo "Set ECF_HOME to the server's checkpoint directory and retry." >&2
+      exit 1
+    else
+      echo "No ecFlow checkpoint found for ${ECF_HOST}:${ECF_PORT}." >&2
+      echo "Checked ${ECF_HOME} and searched ${RETRO_WORK_ROOT:-<unset>}; refusing to start an empty server." >&2
+      exit 1
+    fi
   fi
 
   echo "Starting ecFlow server on ${ECF_HOST}:${ECF_PORT} from ${ECF_HOME}."
