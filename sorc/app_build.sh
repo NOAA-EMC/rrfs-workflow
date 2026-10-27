@@ -454,9 +454,9 @@ fi
 if [ "${BUILD_WORKAROUND}" = true ]; then
   printf "... staging GSI convinfo and JEDI namelist workarounds ...\n"
   mkdir -p "${HOME_DIR}/fix/gsi" "${HOME_DIR}/parm/jedi/RRFS_CONUS_13km"
-  cp "${SORC_DIR}/_workaround_/fix/gsi/convinfo.rrfs" \
+  cp --remove-destination "${SORC_DIR}/_workaround_/fix/gsi/convinfo.rrfs" \
      "${HOME_DIR}/fix/gsi/convinfo.rrfs"
-  cp "${SORC_DIR}/_workaround_/parm/jedi/RRFS_CONUS_13km/gsiparm_regional.anl" \
+  cp --remove-destination "${SORC_DIR}/_workaround_/parm/jedi/RRFS_CONUS_13km/gsiparm_regional.anl" \
      "${HOME_DIR}/parm/jedi/RRFS_CONUS_13km/gsiparm_regional.anl"
 fi
 
