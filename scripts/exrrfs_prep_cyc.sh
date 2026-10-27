@@ -1042,7 +1042,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-if [ ${WGF} = "enkf" ] && [ "${DA_SYSTEM:-GSI}" = "JEDI" ] && [ -f ${DATA}/phy_data.nc ]; then
+if [ ${WGF} = "enkf" ] && [ "${DA_OPTION_ENKF:-GSI}" = "JEDI" ] && [ -f ${DATA}/phy_data.nc ]; then
   ncks -O -v ref_f3d ${DATA}/phy_data.nc ${DATA}/phy_data.nc_prepdbz
   python ${USHrrfs}/prep_phydata_dbz.py ${DATA}/phy_data.nc_prepdbz
 fi

@@ -199,15 +199,22 @@ EOF
     echo "  KEEPDATA: ${nkeep} setting(s) rewritten to '${KEEPDATA}', and KEEP_TMP set to match"
   fi
 
-  # Which analyses run, det and EnKF: the route DA_SYSTEM does not select is marked complete,
-  # never submitted
-  case "${DA_SYSTEM:-GSI}" in
-    GSI|gsi)   da_system_jedi=0 ;;
-    JEDI|jedi) da_system_jedi=1 ;;
-    *) echo "ERROR: DA_SYSTEM must be GSI or JEDI, not '${DA_SYSTEM}'." >&2; exit 1 ;;
+  # Which analyses run: the route DA_OPTION_DET (det) or DA_OPTION_ENKF (EnKF) does not select is
+  # marked complete, never submitted
+  case "${DA_OPTION_DET:-GSI}" in
+    GSI|gsi)   da_det_jedi=0 ;;
+    JEDI|jedi) da_det_jedi=1 ;;
+    *) echo "ERROR: DA_OPTION_DET must be GSI or JEDI, not '${DA_OPTION_DET}'." >&2; exit 1 ;;
   esac
-  sed -i -E "s/^( *)edit DA_SYSTEM_JEDI '[01]'/\1edit DA_SYSTEM_JEDI '${da_system_jedi}'/" "${out_def}"
-  echo "  DA_SYSTEM: ${DA_SYSTEM:-GSI} (DA_SYSTEM_JEDI=${da_system_jedi})"
+  case "${DA_OPTION_ENKF:-GSI}" in
+    GSI|gsi)   da_enkf_jedi=0 ;;
+    JEDI|jedi) da_enkf_jedi=1 ;;
+    *) echo "ERROR: DA_OPTION_ENKF must be GSI or JEDI, not '${DA_OPTION_ENKF}'." >&2; exit 1 ;;
+  esac
+  sed -i -E "s/^( *)edit DA_DET_JEDI '[01]'/\1edit DA_DET_JEDI '${da_det_jedi}'/" "${out_def}"
+  sed -i -E "s/^( *)edit DA_ENKF_JEDI '[01]'/\1edit DA_ENKF_JEDI '${da_enkf_jedi}'/" "${out_def}"
+  echo "  DA_OPTION_DET: ${DA_OPTION_DET:-GSI} (DA_DET_JEDI=${da_det_jedi})"
+  echo "  DA_OPTION_ENKF: ${DA_OPTION_ENKF:-GSI} (DA_ENKF_JEDI=${da_enkf_jedi})"
 
   # A manager task that waits on the whole forecast family is fragile once anything is requeued:
   # the family reads active while other tasks in it run, so the manager can start before the
