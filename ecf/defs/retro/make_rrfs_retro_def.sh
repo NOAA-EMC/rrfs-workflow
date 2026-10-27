@@ -421,6 +421,9 @@ EOF
   # does when DO_SPINUP is FALSE and the hour is in CYCL_HRS_PRODSTART: the trigger below points
   # it at the make_ics task in its own ics family instead of at the cycle before it.
   if [ "${DO_SPINUP:-TRUE}" = "FALSE" ]; then
+    # The EnKF spin-up recenter is the exception: it reads the det analysis, which is then the
+    # production cycle's, so its det terms move to the production tasks
+    sed -i '/jrrfs_enkf_prep_cyc_spinup_mem/s#\(det/[a-z]*/jrrfs_det_[a-z0-9_]*\)_spinup#\1#g' "${out_def}"
     ${skip} --mode ignore --label "spin-up cycles (DO_SPINUP=FALSE)" \
             --name 'jrrfs_det_[a-z0-9_]*spinup[a-z0-9_]*'
     python3 - "${out_def}" ${DET_COLD_START_HRS:-03 15} <<'EOF'
@@ -449,6 +452,82 @@ open(path, "w").write("\n".join(lines))
 print(f"  cold start: {n} prep_cyc task(s) pointed at their own ics family")
 EOF
   fi
+
+  # The previous cycle only. Operations lets prep_cyc and the det analysis start on a restart
+  # from two or three cycles back when the last cycle is late, and the ex-scripts then wait a few
+  # minutes and fall back to it (or, in the det analysis, to the GDAS ensemble); blend_ics does the
+  # same with no trigger at all. A retro should wait instead, so each "or" of cycles in those
+  # triggers keeps only the previous cycle's term, and blend_ics waits on its member's previous
+  # cycle restart. The det production start hours read the spin-up cycle's restart, so they wait
+  # on that too.
+  python3 - "${out_def}" "${defs_dir}" ${DET_PROD_START_HRS:-09 21} <<'EOF'
+import re, sys
+sys.path.insert(0, sys.argv[2])
+from skip_tasks import Prim, parse, read_defs, tokenize, unparse
+path = sys.argv[1]
+lines = open(path).read().split("\n")
+nodes = read_defs(lines)
+target = re.compile(r"jrrfs_(det_prep_cyc|enkf_prep_cyc_(ensmean|mem\d+)|det_analysis_(gsi|jedi))(_spinup)?")
+
+
+def hours(node):
+    """cycle hours the node references name"""
+    if isinstance(node, Prim):
+        m = re.search(r"/(\d\d)z/", node.ref or "")
+        return {m.group(1)} if m else set()
+    if isinstance(node, str):
+        return set()
+    return set().union(*(hours(p) for p in node[1]))
+
+
+def previous_only(node, prev):
+    if isinstance(node, (Prim, str)):
+        return node
+    op, parts = node
+    parts = [previous_only(p, prev) for p in parts]
+    keep = [p for p in parts if hours(p) == {prev}]
+    if op == "or" and len(keep) == 1 and all(hours(p) for p in parts):
+        return keep[0]
+    return (op, parts)
+
+
+prod_start = [int(h) for h in sys.argv[3:]]
+n_or = n_blend = n_spinup = 0
+for node in nodes.values():
+    cyc = re.findall(r"/(\d\d)z/", node.path + "/")
+    if node.kind != "task" or not cyc:
+        continue
+    prev = (int(cyc[-1]) - 1) % 24
+    for i in node.expr_lines:
+        text = lines[i].strip()
+        if not text.startswith("trigger "):
+            continue
+        indent = lines[i][:len(lines[i]) - len(lines[i].lstrip())]
+        if target.fullmatch(node.name):
+            old = parse(tokenize(text[len("trigger "):]), node.path)
+            new = previous_only(old, f"{prev:02d}")
+            if unparse(new) != unparse(old):
+                lines[i] = indent + "trigger " + unparse(new)
+                n_or += 1
+        m = re.fullmatch(r"jrrfs_enkf_blend_ics_mem(\d+)", node.name)
+        if m:
+            restart = re.sub(r"/primary/\d\d/rrfs/v1\.0/\d\dz/.*",
+                             f"/primary/{prev // 6 * 6:02d}/rrfs/v1.0/{prev:02d}z/enkf/forecast/"
+                             f"jrrfs_enkf_save_restart_mem{m.group(1)}_f1", node.path)
+            if restart in nodes:
+                lines[i] += f" and {restart}==complete"
+                n_blend += 1
+        if node.name == "jrrfs_det_prep_cyc" and int(cyc[-1]) in prod_start:
+            restart = re.sub(r"/primary/\d\d/rrfs/v1\.0/\d\dz/.*",
+                             f"/primary/{prev // 6 * 6:02d}/rrfs/v1.0/{prev:02d}z/det/forecast/"
+                             "jrrfs_det_save_restart_spinup_f001", node.path)
+            if restart in nodes:
+                lines[i] += f" and {restart}==complete"
+                n_spinup += 1
+open(path, "w").write("\n".join(lines))
+print(f"  previous cycle only: {n_or} trigger(s) cut to it, {n_blend} blend_ics and {n_spinup} det "
+      "production start prep_cyc task(s) wait on it")
+EOF
 fi
 
 # Coarser domains (strip when merging to the nco branch): give the tasks the domain's table
