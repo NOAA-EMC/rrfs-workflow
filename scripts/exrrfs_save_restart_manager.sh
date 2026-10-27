@@ -1,9 +1,6 @@
 #!/bin/bash
 set -x
 
-# Member-count test knob (strip before the PR): NUM_ENS_MEMBERS from workflow.conf replaces the literal 30
-source ${FIXrrfs}/workflow/${WGF}/workflow.conf
-
 #-----------------------------------------------------------------------
 # RRFS enkf save_restart job manager
 # Even cycles only.
@@ -29,7 +26,7 @@ export SLEEP_INT=15
 if [ ${WGF} == "enkf" ]; then
   scan_release_enkf_save_restart="YES"
 
-  for mem in $(seq 1 ${NUM_ENS_MEMBERS}); do
+  for mem in $(seq 1 30); do
     for fhr in $(seq 1 3); do
       mem_3d=$( printf "%03d" ${mem} )
       search_str=${mem_3d}${fhr}
@@ -55,7 +52,7 @@ while [ $proceed_trigger_scan == "YES" ]; do
     echo "Proceeding with scan_release_enkf_save_restart"
     source_file_found="YES"
     umbrella_forecast_data=${umbrella_forecast_data_base}
-    for mem in $(seq 1 ${NUM_ENS_MEMBERS}); do
+    for mem in $(seq 1 30); do
       mem_3d=$( printf "%03d" ${mem} )
       umbrella_forecast_data=${umbrella_forecast_data_base}/m${mem_3d}/RESTART
       for fhr in $(seq 1 3); do

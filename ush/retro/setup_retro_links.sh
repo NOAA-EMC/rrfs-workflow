@@ -200,14 +200,6 @@ for name in JCB_CONFIG_CONV JCB_CONFIG_DBZ DO_DACOLD EXT_SONDE \
   fi
 done
 
-# Member-count test knob (strip before the PR): fewer EnKF members, which make_rrfs_retro_def.sh also drops from the definition. det reads the
-# number too, for the members its hybrid analysis looks for.
-if [ -n "${NUM_ENS_MEMBERS:-}" ]; then
-  echo "export NUM_ENS_MEMBERS='${NUM_ENS_MEMBERS}'" >> ./enkf/workflow.conf
-  echo "export NUM_ENS_MEMBERS='${NUM_ENS_MEMBERS}'" >> ./det/workflow.conf
-  echo "EnKF members: NUM_ENS_MEMBERS=${NUM_ENS_MEMBERS}"
-fi
-
 # The JEDI EnKF settings, into enkf/workflow.conf. With DA_SYSTEM there, prep_cyc makes the
 # members' reflectivity file for GETKF and the forecast turns the analyzed A-grid wind into D-grid
 # wind. GETKF also reads the MRMS reflectivity in IODA.

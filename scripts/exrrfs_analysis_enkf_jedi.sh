@@ -151,10 +151,6 @@ for imem in $(seq 1 ${NUM_ENS_MEMBERS}); do
   # a member without a restart coupler.res is a cold start, which GETKF cannot read
   if [ ! -r "${bkpath}/coupler.res" ]; then
     ncold=$(( ncold + 1 ))
-  # GETKF writes the analysis into these files, so an A-grid wind already in one means an earlier
-  # run updated it and running again would analyze an analysis
-  elif ncdump -h ${bkpath}/fv_core.res.tile1.nc 2>/dev/null | grep -q ' ua_anl('; then
-    err_exit "${bkpath} already holds a GETKF analysis; rerun prep_cyc for this cycle before rerunning GETKF"
   fi
 
   mkdir -p data/inputs/${memcharv0}
@@ -192,13 +188,12 @@ WIN_PREFIX="${YYYY}${MM}${DD}.${HH}0000."
 SUFFIX="${CDATE}"
 jedi_yaml="jedienkf.yaml"
 
-# do replacements; Member-count test knob (strip before the PR): the member count line
+# do replacements
 chmod u+w ${JCB_CONFIG_ENKF}
 sed -i \
   -e "s|@ATMOSPHERE_BACKGROUND_TIME_ISO@|'${WIN_ISO}'|" \
   -e "s|@ATMOSPHERE_BACKGROUND_TIME_PREFIX@|'${WIN_PREFIX}'|" \
   -e "s|@SUFFIX@|${SUFFIX}|g" \
-  -e "s|^atmosphere_number_ensemble_members:.*|atmosphere_number_ensemble_members: ${NUM_ENS_MEMBERS}|" \
   ${JCB_CONFIG_ENKF}
 
 python run_jcb.py "${YYYYMMDDHH}" "${JCB_CONFIG_ENKF}" "${jedi_yaml}"

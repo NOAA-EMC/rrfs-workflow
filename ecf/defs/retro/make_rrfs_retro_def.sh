@@ -389,23 +389,6 @@ EOF
     ${skip} --label "boundaries past hour ${lbc_last}" "${lbc_args[@]}"
   fi
 
-  # Member-count test knob (strip before the PR): fewer EnKF members (NUM_ENS_MEMBERS, at most the 30 the definition has): the tasks of the
-  # members past it. setup_retro_links.sh puts the same number in workflow.conf, which the EnKF,
-  # its managers and the deterministic hybrid read. Dropped rather than inlined, since nothing
-  # should wait on a member that does not exist.
-  nmem=${NUM_ENS_MEMBERS:-30}
-  if [ "${nmem}" -lt 1 ] || [ "${nmem}" -gt 30 ]; then
-    echo "ERROR: NUM_ENS_MEMBERS must be 1 to 30, not ${nmem}." >&2
-    exit 1
-  fi
-  if [ "${nmem}" -lt 30 ]; then
-    mem_args=()
-    for (( m = nmem + 1; m <= 30; m++ )); do
-      mem_args+=(--name "jrrfs_enkf_[a-z0-9_]*mem$(printf '%03d' ${m})(_f[0-9]+)?")
-    done
-    ${skip} --mode ignore --label "EnKF members past ${nmem} (NUM_ENS_MEMBERS)" "${mem_args[@]}"
-  fi
-
   # Anything else this retro leaves out, as a space-separated list of task-name patterns
   if [ -n "${SKIP_TASKS:-}" ]; then
     extra=()
