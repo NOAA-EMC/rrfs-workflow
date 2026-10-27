@@ -237,7 +237,8 @@ EOF
 
 # Runtime analysis and post settings from retro/config.sh go last, so they win over earlier
 # workflow values. The post script uses RUN_SUBHOURLY_POST to match task selection in the definition.
-for name in RUN_SUBHOURLY_POST JCB_CONFIG_CONV JCB_CONFIG_DBZ DO_DACOLD EXT_SONDE \
+# Carry this experiment's radiance DA switch into the regenerated runtime workflow config.
+for name in DO_RADDA RUN_RADAR OB_TYPE RUN_SUBHOURLY_POST JCB_CONFIG_CONV JCB_CONFIG_DBZ DO_DACOLD EXT_SONDE \
             NNODES_ANALYSIS_JEDI PPN_ANALYSIS_JEDI TPP_ANALYSIS_JEDI; do
   if [ -n "${!name+x}" ]; then
     echo "export ${name}='${!name}'" >> ./det/workflow.conf

@@ -163,7 +163,16 @@ RUN_NONVARCLD=${RUN_NONVARCLD:-FALSE}     # non-variational cloud analysis (DO_N
 RUN_UPDATE_BC=${RUN_UPDATE_BC:-FALSE}     # boundary update and soil adjustment (DO_UPDATE_BC)
 RUN_GSIDIAG=${RUN_GSIDIAG:-TRUE}          # offline GSI diagnostics (DO_GSIDIAG_OFFLINE)
 RUN_LIGHTNING=${RUN_LIGHTNING:-FALSE}     # GLM flash extent density and its DA (DO_GLM_FED_DA)
-RUN_RADAR=${RUN_RADAR:-TRUE}              # MRMS reflectivity; this configuration assimilates it
+DO_RADDA=${DO_RADDA:-FALSE}              # Satellite radiance DA is off for the zero-observation comparison.
+RUN_RADAR=${RUN_RADAR:-FALSE}              # MRMS reflectivity is off for the zero-observation comparison.
+# Match the GSI observation mode to radar processing unless this experiment sets OB_TYPE directly.
+if [ -z "${OB_TYPE:-}" ]; then
+  if [ "${RUN_RADAR}" = "TRUE" ]; then
+    OB_TYPE=conv_dbz
+  else
+    OB_TYPE=conv
+  fi
+fi
 RUN_POST=${RUN_POST:-TRUE}                # post and products; FALSE for a DA-only run
 # The simple retro only needs on-the-hour deterministic post outputs.
 RUN_SUBHOURLY_POST=${RUN_SUBHOURLY_POST:-FALSE}
