@@ -11,6 +11,7 @@ def nonvar_reflobs(xmlFile, expdir):
     if os.getenv("DO_SPINUP", "FALSE").upper() == "TRUE":
         cycledefs = 'prod,spinup'
     OBSPATH_NSSLMOSAIC = os.getenv("OBSPATH_NSSLMOSAIC", 'OBSPATH_NSSLMOSAIC_not_defined')
+    MRMS_PREFIX = os.getenv("MRMS_PREFIX", 'MergedReflectivityQC')
     realtime = os.getenv("REALTIME", "false")
     if realtime.upper() == "TRUE":
         stop_if_no_obs = 0
@@ -19,7 +20,8 @@ def nonvar_reflobs(xmlFile, expdir):
     # Task-specific EnVars beyond the task_common_vars
     dcTaskEnv = {
         'REFERENCE_TIME': '@Y-@m-@dT@H:00:00Z',
-        'OBSPATH_NSSLMOSAIC': f'{OBSPATH_NSSLMOSAIC}',
+        'OBSPATH_NSSLMOSAIC': f'<cyclestr>{OBSPATH_NSSLMOSAIC}</cyclestr>',
+        'MRMS_PREFIX': f'{MRMS_PREFIX}',
         'STOP_IF_NO_OBS': f'{stop_if_no_obs}'
     }
 
