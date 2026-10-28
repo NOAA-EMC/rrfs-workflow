@@ -1035,6 +1035,20 @@ fi
 #
 #-----------------------------------------------------------------------
 #
+# The JEDI EnKF (GETKF) reads reflectivity from a copy of phy_data.nc that
+# holds only ref_f3d, vertically reversed and floored at 0 dBZ. Make it
+# here, where each member has its own job, rather than for all members in
+# turn in the analysis task.
+#
+#-----------------------------------------------------------------------
+#
+if [ ${WGF} = "enkf" ] && [ "${DA_SYSTEM_ENKF:-GSI}" = "JEDI" ] && [ -f ${DATA}/phy_data.nc ]; then
+  ncks -O -v ref_f3d ${DATA}/phy_data.nc ${DATA}/phy_data.nc_prepdbz
+  python ${USHrrfs}/prep_phydata_dbz.py ${DATA}/phy_data.nc_prepdbz
+fi
+#
+#-----------------------------------------------------------------------
+#
 # This job share data with forecast job of current cycle
 #   (1) Move output to Umbrella Data for the initial condition - ICS_ROOT 
 #   (2) Create share from ICS_ROOT to forecast Umbrella Data location - FORECAST_INPUT_PRODUCT
@@ -1042,7 +1056,7 @@ fi
 #-----------------------------------------------------------------------
 #
 
-for file_for_fcst_INPUT in *.nc coupler.res fv3_grid_spec bk_coupler.res gvf* *.grib2; do
+for file_for_fcst_INPUT in *.nc coupler.res fv3_grid_spec bk_coupler.res gvf* *.grib2 phy_data.nc_prepdbz; do
   if [ -f ${FORECAST_INPUT_PRODUCT}/${file_for_fcst_INPUT} ]; then
     echo "Overwrite ${FORECAST_INPUT_PRODUCT}/${file_for_fcst_INPUT}"
   fi

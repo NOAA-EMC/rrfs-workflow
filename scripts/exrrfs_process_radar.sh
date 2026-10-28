@@ -7,6 +7,8 @@ export FIXam=${FIXam:-${HOMErrfs}/fix/am}
 export FIXLAM=${FIXLAM:-${HOMErrfs}/fix/lam/RRFS_NA_3km}
 export FIX_GSI="${FIXrrfs}/gsi"
 export OBSPATH_NSSLMOSIAC="${DCOMROOT}/ldmdata/obs/upperair/mrms/conus/MergedReflectivityQC"
+export RDASAPP_DIR="${RDASAPP_DIR:-${HOMErrfs}/sorc/RDASApp}"
+export DO_IODA_MRMS=${DO_IODA_MRMS:-"FALSE"}
 
 #
 #-----------------------------------------------------------------------
@@ -371,6 +373,23 @@ EOF
   fi
   cpreq ${DATA}/${bigmin}/Gridded_ref.nc ${shared_output_data}/rrfs.t${HH}z.Gridded_ref.nc.${bigmin}
   cpreq -p Gridded_ref.nc ${COMOUT_ANALYSIS}/rrfs.t${HH}z.Gridded_ref.nc.${bigmin}
+
+  # Convert the gridded reflectivity to IODA for the JEDI analyses, which read
+  # ioda_mrms_refl.nc from the analysis COM directory. JEDI warns and goes on
+  # without the file, so a failed conversion does not stop the cycle.
+  if [ "${DO_IODA_MRMS}" = "TRUE" ]; then
+    shopt -s nullglob
+    dirs=("${RDASAPP_DIR}"/build/lib/python3.*)
+    PYIODALIB=${dirs[0]}
+    shopt -u nullglob
+    export PYTHONPATH="${PYIODALIB}:${PYIODALIB}/site-packages:${PYTHONPATH:-}"
+    python ${USHrrfs}/MRMS2ioda.py -i ./Gridded_ref.nc -c "${YYYY}-${MM}-${DD}T${HH}:${bigmin}:00" -o ioda_mrms_refl.nc
+    if [ -s ioda_mrms_refl.nc ]; then
+      cpreq -p ioda_mrms_refl.nc ${COMOUT_ANALYSIS}/ioda_mrms_refl.nc
+    else
+      echo "WARNING: no IODA MRMS file made for loop ${bigmin}"
+    fi
+  fi
 done # done with the bigmin for-loop
 #
 #-----------------------------------------------------------------------
