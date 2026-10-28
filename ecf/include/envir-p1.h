@@ -29,7 +29,7 @@ if [[ ! " prod para test " =~ " ${envir} " && " ops.prod ops.para " =~ " $(whoam
 PTMP=%DEV_PTMP:/lfs/h3/emc/lam/noscrub/ecflow/ptmp%
 model=rrfs
 PSLOT=ecflow_rrfs
-export COMROOT=${PTMP}/${USER}/${PSLOT}/para/com
+export COMROOT=${PTMP}/${USER}/${PSLOT}/%RRFS_SUITE:para%/com
 # DEV_COMPATH adds upstream COM directories to search, e.g. staged retro data on Ursa
 DEV_COMPATH="%DEV_COMPATH:%"
 export COMPATH=${COMROOT}/${model}${DEV_COMPATH:+:${DEV_COMPATH}}
@@ -42,7 +42,7 @@ export CDATE=${PDY}%CYC:%
 export COMrrfs=$(compath.py rrfs/${rrfs_ver})
 export COMOUT_PREP="$(compath.py obsproc/v1.2)"
 
-export DATAROOT=%DEV_DATAROOT:/lfs/h3/emc/lam/noscrub/ecflow/stmp/${USER}/${model}/${PSLOT}%
+export DATAROOT=%DEV_DATAROOT:/lfs/h3/emc/lam/noscrub/ecflow/stmp/${USER}/${model}/${PSLOT}%/%RRFS_SUITE:para%
 #### export umbrella_fsm_data=${DATAROOT}/rrfs_fsm_${PDY}${cyc}_${rrfs_ver}/${WGF}
 #if [ "${CYCLE_TYPE}" = "spinup" ]; then
 #  export umbrella_init_data="${DATAROOT}/${PDY}/${RUN}_init_spinup_${cyc}_${rrfs_ver}/${WGF}"

@@ -147,6 +147,10 @@ EOF
 
   # Retro overrides: where the retros differ from workflow.conf_dev on purpose
   echo "# ---- RRFS_NA_3km retro overrides"
+  cat <<'EOF'
+# The retro fix tree is outside the repo, so the ex-scripts' ${HOMErrfs}/fix/lam default misses it
+export FIXLAM="${FIXrrfs}/lam/RRFS_NA_3km"
+EOF
   if [ "$1" = "ensf" ]; then
     cat <<'EOF'
 # The dev ensf layout (50 x 64 for every member) does not match the per-member stochastic

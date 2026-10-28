@@ -158,6 +158,8 @@ RUN_GSIDIAG=${RUN_GSIDIAG:-TRUE}          # offline GSI diagnostics (DO_GSIDIAG_
 RUN_LIGHTNING=${RUN_LIGHTNING:-FALSE}     # GLM flash extent density and its DA (DO_GLM_FED_DA)
 RUN_RADAR=${RUN_RADAR:-TRUE}              # MRMS reflectivity; this configuration assimilates it
 RUN_POST=${RUN_POST:-TRUE}                # post and products; FALSE for a DA-only run
+# Keep hourly post products without requiring quarter-hour UPP jobs.
+RUN_SUBHOURLY_POST=${RUN_SUBHOURLY_POST:-FALSE}
 # JEDI analysis, the Rocoto config.sh "JEDI options". DA_OPTION_DET picks which det analysis
 # runs, GSI (the operational route) or JEDI; the rest are read only when it is JEDI.
 # setup_retro_links.sh writes them into det/workflow.conf and make_rrfs_retro_def.sh sizes the

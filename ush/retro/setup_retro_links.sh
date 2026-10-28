@@ -3,7 +3,7 @@
 # Set up a retro's fix tree, links and job cards: ecf/setup_ecf_links.sh plus the steps a retro
 # needs around it. Settings come from ecf/defs/retro/config.sh; edit that first.
 #
-# Usage: ush/retro/setup_retro_links.sh
+# Usage: ush/retro/setup_retro_links.sh [--workaround]
 #
 # ecf/setup_ecf_links.sh is an operational script that NCO runs too, so the retro-only steps live
 # here rather than in it. They keep the order they need there: the fix tree first, because
@@ -11,6 +11,15 @@
 # settings of a simplified retro last, so that nothing appended after them wins.
 #
 set -eu
+
+workaround=NO
+for arg in "$@"; do
+  case ${arg} in
+    --workaround) workaround=YES ;;
+    -h|--help) echo "Usage: ${BASH_SOURCE[0]} [--workaround]"; exit 0 ;;
+    *) echo "unknown option: ${arg} (try --help)" >&2; exit 1 ;;
+  esac
+done
 
 repo=$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")/../.." && pwd)
 ecf_dir=${repo}/ecf
@@ -26,15 +35,29 @@ if [ "${MACHINE}" = "URSA" ]; then
   module load run_ursa
 fi
 
-# Build fix/ as links into the copy of the WCOSS2 fix tree that FIX_RRFS_DIR names.
-# workflow/ is a local directory because the workflow.conf step below writes into it.
-fix_dir=${repo}/fix
+# Build a per-suite fix tree from links into FIX_RRFS_DIR. Keep generated workflow settings
+# under this suite's work base so another retro setup cannot rewrite this suite's settings.
+fix_dir=${RETRO_FIX_DIR}
+export FIXrrfs=${fix_dir}
 fix_src=${FIX_RRFS_DIR}
+retro_convinfo=${repo}/sorc/_workaround_/fix/gsi/convinfo.rrfs
+retro_gsiparm=${repo}/sorc/_workaround_/fix/gsi/gsiparm.anl.sh
 mkdir -p "${fix_dir}"
 for src in "${fix_src}"/*; do
   name=$(basename "${src}")
   [ "${name}" = "workflow" ] && continue
-  ln -snf "${src}" "${fix_dir}/${name}"
+  if [ "${name}" = "gsi" ]; then
+    # Keep GSI files as individual links so selected workarounds can safely replace them.
+    [ -L "${fix_dir}/gsi" ] && rm -f "${fix_dir}/gsi"
+    mkdir -p "${fix_dir}/gsi"
+    for gsi_file in "${src}"/*; do
+      [ -e "${gsi_file}" ] || continue
+      gsi_name=$(basename "${gsi_file}")
+      ln -snf "${gsi_file}" "${fix_dir}/gsi/${gsi_name}"
+    done
+  else
+    ln -snf "${src}" "${fix_dir}/${name}"
+  fi
 done
 
 for wgf in det enkf ensf firewx; do
@@ -75,6 +98,28 @@ for entry in "${DOMAIN_FIX_LINKS[@]}"; do
   done
   ln -snf "${entry#*:}" "${fix_dir}/${sub}/${DOMAIN}"
 done
+
+# Replace and verify GSI workaround files only when explicitly requested.
+if [ "${workaround}" = "YES" ] && { [ -f "${retro_convinfo}" ] || [ -f "${retro_gsiparm}" ]; }; then
+  if [ -L "${fix_dir}/gsi" ]; then
+    echo "FATAL: suite GSI fix directory is still a symlink: ${fix_dir}/gsi" >&2
+    exit 1
+  fi
+  mkdir -p "${fix_dir}/gsi"
+  for override_src in "${retro_convinfo}" "${retro_gsiparm}"; do
+    [ -f "${override_src}" ] || continue
+    override_name=$(basename "${override_src}")
+    override_dest=${fix_dir}/gsi/${override_name}
+    [ -L "${override_dest}" ] && rm -f "${override_dest}"
+    cp "${override_src}" "${override_dest}"
+    if [ -L "${override_dest}" ] || ! cmp -s "${override_src}" "${override_dest}"; then
+      echo "FATAL: suite GSI copy does not match workaround: ${override_dest}" >&2
+      exit 1
+    fi
+    echo "Verified retro GSI copy: ${override_dest}"
+  done
+fi
+
 for wgf in det enkf ensf; do
   conf_block=$(domain_workflow_conf "${wgf}")
   printf '%s\n' "${conf_block}" >> "${fix_dir}/workflow/${wgf}/workflow.conf"
@@ -190,9 +235,10 @@ if changed:
     print("Simplified workflow: " + ", ".join(changed))
 EOF
 
-# The JEDI analysis settings in retro/config.sh. They go last, so they win over any earlier
-# setting, and are left out when unset, so the ex-script's NA 3 km defaults apply.
-for name in JCB_CONFIG_CONV JCB_CONFIG_DBZ DO_DACOLD EXT_SONDE \
+# Runtime analysis and post settings from retro/config.sh go last, so they win over earlier
+# workflow values. The post script uses RUN_SUBHOURLY_POST to match task selection in the definition.
+# Carry this experiment's radiance DA switch into the regenerated runtime workflow config.
+for name in DO_RADDA RUN_RADAR OB_TYPE RUN_SUBHOURLY_POST JCB_CONFIG_CONV JCB_CONFIG_DBZ DO_DACOLD EXT_SONDE \
             NNODES_ANALYSIS_JEDI PPN_ANALYSIS_JEDI TPP_ANALYSIS_JEDI; do
   if [ -n "${!name+x}" ]; then
     echo "export ${name}='${!name}'" >> ./det/workflow.conf
