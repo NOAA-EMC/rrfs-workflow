@@ -467,84 +467,115 @@ print(f"  cold start: {n} prep_cyc task(s) pointed at their own ics family")
 EOF
   fi
 
-  # The previous cycle only. Operations lets prep_cyc and the det analysis start on a restart
-  # from two or three cycles back when the last cycle is late, and the ex-scripts then wait a few
-  # minutes and fall back to it (or, in the det analysis, to the GDAS ensemble); blend_ics does the
-  # same with no trigger at all. A retro should wait instead, so each "or" of cycles in those
-  # triggers keeps only the previous cycle's term, and blend_ics waits on its member's previous
-  # cycle restart. The det production start hours read the spin-up cycle's restart, so they wait
-  # on that too.
-  python3 - "${out_def}" "${defs_dir}" ${DET_PROD_START_HRS:-09 21} <<'EOF'
-import re, sys
-sys.path.insert(0, sys.argv[2])
-from skip_tasks import Prim, parse, read_defs, tokenize, unparse
-path = sys.argv[1]
+  # Retro jobs must use the immediately previous cycle's background. Production OR branches
+  # allow prep and analysis to proceed from older restarts when the latest cycle is late.
+  python3 - "${out_def}" "${defs_dir}" "${RRFS_SUITE}" ${DET_PROD_START_HRS:-09 21} <<'EOF'
+import importlib.util
+import re
+import sys
+
+path, defs_dir, suite = sys.argv[1:4]
+prod_start = [int(h) for h in sys.argv[4:]]
+spec = importlib.util.spec_from_file_location("skip_tasks", f"{defs_dir}/skip_tasks.py")
+skip_tasks = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(skip_tasks)
+
+def leaves(node):
+    if isinstance(node, skip_tasks.Prim):
+        yield node.text
+    else:
+        for child in node[1]:
+            yield from leaves(child)
+
+def is_background_or(node):
+    if not isinstance(node, tuple) or node[0] != "or" or len(node[1]) < 2:
+        return False
+    # Keep only OR groups whose every branch names an EnKF or deterministic forecast state.
+    return all(any(re.search(r"/(?:det|enkf)/forecast(?:/|\s*==)", text)
+                       and re.search(r"==\s*complete$", text)
+                       for text in leaves(branch)) for branch in node[1])
+
+def prune(node):
+    if isinstance(node, skip_tasks.Prim):
+        return node, 0
+    op, children = node
+    rewritten = []
+    removed = 0
+    for child in children:
+        child, count = prune(child)
+        rewritten.append(child)
+        removed += count
+    if is_background_or((op, rewritten)):
+        # The workflow lists the newest background first, so keep only that branch.
+        return rewritten[0], removed + len(rewritten) - 1
+    return (op, rewritten), removed
+
 lines = open(path).read().split("\n")
-nodes = read_defs(lines)
-target = re.compile(r"jrrfs_(det_prep_cyc|enkf_prep_cyc_(ensmean|mem\d+)|det_analysis_(gsi|jedi))(_spinup)?")
-
-
-def hours(node):
-    """cycle hours the node references name"""
-    if isinstance(node, Prim):
-        m = re.search(r"/(\d\d)z/", node.ref or "")
-        return {m.group(1)} if m else set()
-    if isinstance(node, str):
-        return set()
-    return set().union(*(hours(p) for p in node[1]))
-
-
-def previous_only(node, prev):
-    if isinstance(node, (Prim, str)):
-        return node
-    op, parts = node
-    parts = [previous_only(p, prev) for p in parts]
-    keep = [p for p in parts if hours(p) == {prev}]
-    if op == "or" and len(keep) == 1 and all(hours(p) for p in parts):
-        return keep[0]
-    return (op, parts)
-
-
-prod_start = [int(h) for h in sys.argv[3:]]
-n_or = n_blend = n_spinup = 0
-for node in nodes.values():
-    cyc = re.findall(r"/(\d\d)z/", node.path + "/")
-    if node.kind != "task" or not cyc:
+task_name = None
+changed = removed = 0
+for i, line in enumerate(lines):
+    text = line.strip()
+    task = re.fullmatch(r"task\s+(\S+)", text)
+    if task:
+        task_name = task.group(1)
+    elif text.startswith("family ") or text == "endfamily":
+        task_name = None
+    if not text.startswith("trigger ") or task_name is None:
         continue
-    prev = (int(cyc[-1]) - 1) % 24
-    for i in node.expr_lines:
-        text = lines[i].strip()
-        if not text.startswith("trigger "):
-            continue
-        indent = lines[i][:len(lines[i]) - len(lines[i].lstrip())]
-        if target.fullmatch(node.name):
-            old = parse(tokenize(text[len("trigger "):]), node.path)
-            new = previous_only(old, f"{prev:02d}")
-            if unparse(new) != unparse(old):
-                lines[i] = indent + "trigger " + unparse(new)
-                n_or += 1
-        m = re.fullmatch(r"jrrfs_enkf_blend_ics_mem(\d+)", node.name)
-        if m:
-            restart = re.sub(r"/primary/\d\d/rrfs/v1\.0/\d\dz/.*",
-                             f"/primary/{prev // 6 * 6:02d}/rrfs/v1.0/{prev:02d}z/enkf/forecast/"
-                             f"jrrfs_enkf_save_restart_mem{m.group(1)}_f1", node.path)
-            if restart in nodes:
-                lines[i] += f" and {restart}==complete"
-                n_blend += 1
-        if node.name == "jrrfs_det_prep_cyc" and int(cyc[-1]) in prod_start:
-            restart = re.sub(r"/primary/\d\d/rrfs/v1\.0/\d\dz/.*",
-                             f"/primary/{prev // 6 * 6:02d}/rrfs/v1.0/{prev:02d}z/det/forecast/"
-                             "jrrfs_det_save_restart_spinup_f001", node.path)
-            if restart in nodes:
-                lines[i] += f" and {restart}==complete"
-                n_spinup += 1
+    if not re.fullmatch(r"jrrfs_(?:det|enkf)_prep_cyc(?:_spinup|_ensmean|_mem\d+)?|"
+                        r"jrrfs_det_analysis_(?:gsi|jedi)(?:_spinup)?", task_name):
+        continue
+    expression = text[len("trigger "):]
+    node = skip_tasks.parse(skip_tasks.tokenize(expression), "/")
+    node, count = prune(node)
+    if count:
+        indent = line[:len(line) - len(line.lstrip())]
+        lines[i] = indent + "trigger " + skip_tasks.unparse(node)
+        changed += 1
+        removed += count
+
 open(path, "w").write("\n".join(lines))
-print(f"  previous cycle only: {n_or} trigger(s) cut to it, {n_blend} blend_ics and {n_spinup} det "
-      "production start prep_cyc task(s) wait on it")
+print(f"  strict backgrounds: {removed} older-cycle trigger alternative(s) removed "
+      f"from {changed} prep/analysis trigger(s)")
+
+# Waits the older restarts stood in for without a trigger alternative: blend_ics on its member's
+# previous-cycle restart, and the det production start hours on the spin-up cycle's restart.
+tasks = skip_tasks.read_defs(lines)
+task_name = None
+cyc = None
+waits = 0
+for i, line in enumerate(lines):
+    text = line.strip()
+    family = re.fullmatch(r"family (\d\d)z", text)
+    if family:
+        cyc = int(family.group(1))
+    task = re.fullmatch(r"task\s+(\S+)", text)
+    if task:
+        task_name = task.group(1)
+    elif text.startswith("family ") or text == "endfamily":
+        task_name = None
+    if not text.startswith("trigger ") or task_name is None:
+        continue
+    prev = (cyc - 1) % 24
+    prev_cycle = f"/{suite}/primary/{prev // 6 * 6:02d}/rrfs/v1.0/{prev:02d}z"
+    member = re.fullmatch(r"jrrfs_enkf_blend_ics_mem(\d+)", task_name)
+    restart = None
+    if member:
+        restart = f"{prev_cycle}/enkf/forecast/jrrfs_enkf_save_restart_mem{member.group(1)}_f1"
+    elif task_name == "jrrfs_det_prep_cyc" and cyc in prod_start:
+        restart = f"{prev_cycle}/det/forecast/jrrfs_det_save_restart_spinup_f001"
+    if restart in tasks:
+        lines[i] += f" and {restart}==complete"
+        waits += 1
+
+open(path, "w").write("\n".join(lines))
+print(f"  strict backgrounds: {waits} blend_ics and det production start trigger(s) wait on a "
+      "previous-cycle restart")
 EOF
-  # Nothing reads the 2 and 3 h restart saves now, which only fed those older-cycle terms. This
-  # has to follow the cut: run before it, ignore mode would make each "or" true from the start.
-  ${skip} --mode ignore --label "older-cycle restart saves (previous cycle only)" \
+
+  # With older-cycle trigger alternatives removed, these restart saves are not needed by a retro.
+  # Keep the task nodes visible as set-aside, and rewrite references so they cannot enable fallback.
+  ${skip} --mode ignore --label "older-cycle restart saves (retro)" \
           --name 'jrrfs_det_save_restart_f[23]' \
           --name 'jrrfs_enkf_save_restart_(mem[0-9]+_f[23]|f[23]_done)'
 
