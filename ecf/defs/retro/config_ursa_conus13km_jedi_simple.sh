@@ -203,7 +203,7 @@ WALLTIME_ANALYSIS_JEDI=${WALLTIME_ANALYSIS_JEDI:-00:50:00}
 # JEDI EnKF. DA_SYSTEM_ENKF picks which EnKF analysis runs, GSI or JEDI (GETKF), independent of
 # DA_SYSTEM_DET; the rest are read only when it is JEDI. setup_retro_links.sh writes them into
 # enkf/workflow.conf.
-DA_SYSTEM_ENKF=${DA_SYSTEM_ENKF:-GSI}
+DA_SYSTEM_ENKF=${DA_SYSTEM_ENKF:-JEDI}
 JCB_CONFIG_ENKF=${JCB_CONFIG_ENKF:-rdas-atmosphere-templates-fv3_c13_getkf.yaml}
 NNODES_ANALYSIS_ENKF_JEDI=${NNODES_ANALYSIS_ENKF_JEDI:-4}
 PPN_ANALYSIS_ENKF_JEDI=${PPN_ANALYSIS_ENKF_JEDI:-40}
