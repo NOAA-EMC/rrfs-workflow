@@ -209,7 +209,7 @@ export OMP_STACKSIZE=${OMP_STACKSIZE:-1024m}
 #-----------------------------------------------------------------------
 #
 anlfile=${FORECAST_INPUT_PRODUCT}/fv_core.res.tile1.nc
-if [ ${WGF} = "enkf" ] && [ "${DA_OPTION_ENKF:-GSI}" = "JEDI" ] && [ -f ${anlfile} ] \
+if [ ${WGF} = "enkf" ] && [ "${DA_SYSTEM_ENKF:-GSI}" = "JEDI" ] && [ -f ${anlfile} ] \
    && ncdump -h ${anlfile} | grep -q " ua_anl("; then
   export LD_LIBRARY_PATH="${RDASAPP_DIR:-${HOMErrfs}/sorc/RDASApp}/build/lib64:${LD_LIBRARY_PATH}"
   # Disable HDF5's advisory file locking to avoid intermittent failures

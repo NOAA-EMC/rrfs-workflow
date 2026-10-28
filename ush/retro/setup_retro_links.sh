@@ -246,13 +246,13 @@ for name in DO_RADDA RUN_RADAR OB_TYPE RUN_SUBHOURLY_POST JCB_CONFIG_CONV JCB_CO
   fi
 done
 
-# The JEDI EnKF settings, into enkf/workflow.conf. With DA_OPTION_ENKF there, prep_cyc makes the
+# The JEDI EnKF settings, into enkf/workflow.conf. With DA_SYSTEM_ENKF there, prep_cyc makes the
 # members' reflectivity file for GETKF and the forecast turns the analyzed A-grid wind into D-grid
 # wind. GETKF also reads the MRMS reflectivity in IODA.
-if [ "${DA_OPTION_ENKF:-GSI}" = "JEDI" ] || [ "${DA_OPTION_ENKF:-GSI}" = "jedi" ]; then
-  echo "export DA_OPTION_ENKF='JEDI'" >> ./enkf/workflow.conf
+if [ "${DA_SYSTEM_ENKF:-GSI}" = "JEDI" ] || [ "${DA_SYSTEM_ENKF:-GSI}" = "jedi" ]; then
+  echo "export DA_SYSTEM_ENKF='JEDI'" >> ./enkf/workflow.conf
   echo "export DO_IODA_MRMS='TRUE'" >> ./enkf/workflow.conf
-  echo "JEDI EnKF: DA_OPTION_ENKF=JEDI DO_IODA_MRMS=TRUE"
+  echo "JEDI EnKF: DA_SYSTEM_ENKF=JEDI DO_IODA_MRMS=TRUE"
   for name in JCB_CONFIG_ENKF NNODES_ANALYSIS_ENKF_JEDI PPN_ANALYSIS_ENKF_JEDI TPP_ANALYSIS_ENKF_JEDI; do
     if [ -n "${!name+x}" ]; then
       echo "export ${name}='${!name}'" >> ./enkf/workflow.conf
