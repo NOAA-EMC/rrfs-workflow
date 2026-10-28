@@ -1,0 +1,53 @@
+#!/bin/bash
+
+date
+export PS4='+ $SECONDS + '
+set -xue
+
+#-----------------------------------------------------------------------
+# Specify Package Location
+#-----------------------------------------------------------------------
+export NET='rrfs'
+export HOMErrfs=${HOMErrfs:-""}
+export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
+export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
+export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
+export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
+
+# Load the shared message helpers used by this job wrapper.
+. "${USHrrfs}/source_util_funcs.sh"
+
+#-----------------------------------------------------------------------
+# Set up the archive working directory and cycle COM paths
+#-----------------------------------------------------------------------
+export DATA=${DATA:-${DATAROOT}/${jobid}}
+mkdir -p "${DATA}"
+cd "${DATA}"
+export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/${rrfs_ver})}
+export COMOUT=${COMrrfs}/rrfs.${PDY}/${cyc}
+export pgmout="${DATA}/OUTPUT.$$"
+
+#-----------------------------------------------------------------------
+# Call the ex-script for this J-job
+#-----------------------------------------------------------------------
+env
+${HOMErrfs}/scripts/exrrfs_archive_retro.sh
+export err=$?; err_chk
+
+if [ -e "${pgmout}" ]; then
+  cat "${pgmout}"
+fi
+
+if [ -d "${COMOUT}" ]; then
+  print_info_msg "Archive completed for ${PDY} ${cyc}z."
+else
+  print_info_msg "Archive skipped for ${PDY} ${cyc}z because the cycle COM directory is absent."
+fi
+
+#-----------------------------------------------------------------------
+# Remove the temporary working directory when requested
+#-----------------------------------------------------------------------
+if [ "${KEEPDATA^^}" != YES ]; then
+  cd "${DATAROOT}"
+  rm -rf "${DATA}"
+fi

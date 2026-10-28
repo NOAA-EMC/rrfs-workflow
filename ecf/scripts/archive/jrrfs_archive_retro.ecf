@@ -1,0 +1,41 @@
+#!/bin/bash
+#PBS -N rrfs_archive_retro_%CYC%
+#PBS -j oe
+#PBS -S /bin/bash
+#PBS -q %QUEUE%
+#PBS -A %PROJ%-%PROJENVIR%
+#PBS -l walltime=00:30:00
+#PBS -l place=vscatter:shared,select=1:ncpus=1:mem=16GB
+#PBS -l debug=true
+#SBATCH --job-name=rrfs_archive_retro_%CYC%
+#SBATCH --account=%PROJ%
+#SBATCH --qos=%QUEUE%
+#SBATCH --partition=u1-service
+#SBATCH --time=00:30:00
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --mem=16G
+#SBATCH --output=%ECF_JOBOUT%
+
+model=rrfs
+export MACHINE=%MACHINE:WCOSS2%
+export cyc="%CYC%"
+export CYCLE_TYPE=prod
+export ARCHIVEDIR="%ARCHIVEDIR%"
+%include <head.h>
+%include <envir-p1.h>
+
+# The base run_ursa and WCOSS2 environments may not load HPSS commands; add them when needed.
+if ! command -v hsi >/dev/null 2>&1 || ! command -v htar >/dev/null 2>&1; then
+  module load hpss
+fi
+
+############################################################
+# CALL executable job script here
+############################################################
+${HOMErrfs}/jobs/JRRFS_ARCHIVE_RETRO
+
+%include <tail.h>
+
+%manual
+%end

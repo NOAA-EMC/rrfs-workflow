@@ -35,7 +35,7 @@ export PREDEF_GRID_NAME='RRFS_CONUS_13km'
   # how exrrfs_prdgen.sh names this domain's products
   export PRDGEN_GRIDNAME='conus'
   export PRDGEN_GRIDSPACING='13km'
-export FIXLAM="${HOMErrfs}/fix/lam/RRFS_CONUS_13km"
+export FIXLAM="${FIXrrfs}/lam/RRFS_CONUS_13km"
 export CRES='C775'
 export RES_IN_FIXLAM_FILENAMES='775'
 export ESGgrid_LON_CTR='-97.5'

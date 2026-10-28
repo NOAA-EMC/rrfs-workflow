@@ -27,11 +27,12 @@ if [ "${DO_SPINUP:-TRUE}" = "FALSE" ]; then
 fi
 
 awk -v q="'" -v ph="${PACKAGEHOME}" -v eh="${ECF_HOME}" -v com="${RETRO_DATA_ROOT}/com" \
-    -v start="${RETRO_START}" -v end="${RETRO_END}" -v suite="${RRFS_SUITE}" -v ev="${ECFLOW_VER}" \
+    -v start="${RETRO_START}" -v end="${RETRO_END}" -v suite="${RRFS_SUITE}" \
+    -v clone="${PRODCLONE_SUITE}" -v ev="${ECFLOW_VER}" \
     -v det_cold="${det_cold}" '
   function ed(name, value) { print "  edit " name " " q value q }
   $1 == "suite" {
-    print
+    print "suite " clone
     ed("ECF_HOME", eh)
     # job logs next to the job files; the NCO dev ecflow servers set ECF_OUT to ~/ecflow, where the
     # per-family log directories do not exist, so no job could write its output
@@ -45,6 +46,7 @@ awk -v q="'" -v ph="${PACKAGEHOME}" -v eh="${ECF_HOME}" -v com="${RETRO_DATA_ROO
     ed("RETRO_START", start)
     ed("RETRO_END", end)
     ed("RRFS_SUITE", suite)
+    ed("PRODCLONE_SUITE", clone)
     ed("ALWAYS_COMPLETE", "nosofs")
     ed("DET_COLD_HR", det_cold)
     print ""
@@ -73,4 +75,4 @@ echo "Wrote ${out_def}"
 echo "  PACKAGEHOME=${PACKAGEHOME}"
 echo "  ECF_HOME=${ECF_HOME}"
 echo "  RETRO_COMROOT=${RETRO_DATA_ROOT}/com"
-echo "  retro ${RETRO_START} to ${RETRO_END}, stepping suite /${RRFS_SUITE}"
+echo "  retro ${RETRO_START} to ${RETRO_END}, stepping suite /${RRFS_SUITE} via /${PRODCLONE_SUITE}"

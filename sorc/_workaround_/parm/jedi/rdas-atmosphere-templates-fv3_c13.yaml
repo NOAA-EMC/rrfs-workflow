@@ -172,8 +172,8 @@ atmosphere_gsibec_path: DATA/berror
 atmosphere_number_ensemble_members: 30
 atmosphere_layout_gsib_x: 14
 atmosphere_layout_gsib_y: 14
-gsibec_lats: 253 #127
-gsibec_lons: 421 #211
+gsibec_lats: 253 # Match the ratio-1 GSI analysis grid.
+gsibec_lons: 421 # Match the ratio-1 GSI analysis grid.
 lat_start: -14.726005
 lat_end: 14.726005
 lon_start: -25.076254
@@ -310,6 +310,8 @@ observations:
 #- atms_n21
 #- cris-fsr_n20
 #- cris-fsr_n21
+#- iasi_metop-b
+#- iasi_metop-c
 
 # Analysis iuse flag (default: passivate)
 # Upper-air conventional

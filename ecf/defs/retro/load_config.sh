@@ -9,11 +9,13 @@
 # config.sh is git-ignored; link or copy one of the config_<machine>_<domain>.sh samples beside it.
 
 _retro_dir=$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)
-if [ -f "${_retro_dir}/config.sh" ]; then
+# RETRO_CONFIG selects an experiment config; the default keeps the existing config.sh workflow.
+_retro_config=${RETRO_CONFIG:-${_retro_dir}/config.sh}
+if [ -f "${_retro_config}" ]; then
   # shellcheck source=/dev/null
-  . "${_retro_dir}/config.sh"
+  . "${_retro_config}"
 else
-  echo "ecf/defs/retro/config.sh not found." >&2
+  echo "Retro config not found: ${_retro_config}" >&2
   # where the file used to live, before the retro settings moved into ecf/defs/retro
   for old in "${_retro_dir}/../retro_config.sh" "${_retro_dir}/../ursa_config.sh"; do
     if [ -e "${old}" ] || [ -L "${old}" ]; then
@@ -24,7 +26,12 @@ else
   echo "  ln -s config_ursa_na3km.sh ecf/defs/retro/config.sh" >&2
   exit 1
 fi
-unset _retro_dir
+unset _retro_dir _retro_config
+# Each run can use its own pair of top-level suites on a shared ecFlow server.
+RRFS_SUITE=${RRFS_SUITE:-para}
+PRODCLONE_SUITE=${PRODCLONE_SUITE:-prod_clone}
+# Keep each suite's generated workflow settings separate, even when RETRO_WORK_BASE is shared.
+RETRO_FIX_DIR=${RETRO_FIX_DIR:-${RETRO_WORK_BASE}/fix/${RRFS_SUITE}}
 # Settings files from before MACHINE was a setting were all for Ursa
 MACHINE=${MACHINE:-URSA}
 # The NA sample leaves DOMAIN out; default it here so every script that reads it agrees

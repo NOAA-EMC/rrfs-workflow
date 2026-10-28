@@ -149,9 +149,10 @@ if [ ${len_fhr} -eq 9 ]; then
   if [ ${post_min} -lt ${nsout_min} ]; then
     post_min=00
 #	  if [ $post_fhr -ge 1 -a $post_fhr -le $POSTPROC_SUBH_LEN_HRS ]
-	  if [ $post_fhr -ge 1 -a $post_fhr -le 18 ]
-	  then
-          SUBH_GEN=1
+	  # Hourly post jobs only aggregate quarter-hour files when those tasks are enabled.
+	  if [ "${RUN_SUBHOURLY_POST:-TRUE}" != "FALSE" ] && \
+             [ "$post_fhr" -ge 1 ] && [ "$post_fhr" -le 18 ]; then
+            SUBH_GEN=1
 	  fi
   fi
 else
@@ -216,27 +217,27 @@ if [ ${USE_CUSTOM_POST_CONFIG_FILE} = "TRUE" ]; then
   if [ ${PREDEF_GRID_NAME} = "RRFS_NA_3km" ] || [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
     if [ ${post_fhr} -eq 000 ]; then
       if [ ${WGF} = "det" ]; then
-        CUSTOM_POST_CONFIG_FP="${HOMErrfs}/fix/upp/postxconfig-NT-rrfs_f00.txt"
+        CUSTOM_POST_CONFIG_FP="${FIX_UPP}/postxconfig-NT-rrfs_f00.txt"
       elif [ ${WGF} = "ensf" ]; then
-        CUSTOM_POST_CONFIG_FP="${HOMErrfs}/fix/upp/postxconfig-NT-refs_f00.txt"
+        CUSTOM_POST_CONFIG_FP="${FIX_UPP}/postxconfig-NT-refs_f00.txt"
       elif [ ${WGF} = "firewx" ]; then
-        CUSTOM_POST_CONFIG_FP="${HOMErrfs}/fix/upp/postxconfig-NT-rrfs_firewx_f00.txt"
+        CUSTOM_POST_CONFIG_FP="${FIX_UPP}/postxconfig-NT-rrfs_firewx_f00.txt"
       fi
     elif [ ${post_fhr} -eq 001 ]; then
       if [ ${WGF} = "det" ]; then
-        CUSTOM_POST_CONFIG_FP="${HOMErrfs}/fix/upp/postxconfig-NT-rrfs_f01.txt"
+        CUSTOM_POST_CONFIG_FP="${FIX_UPP}/postxconfig-NT-rrfs_f01.txt"
       elif [ ${WGF} = "ensf" ]; then
-        CUSTOM_POST_CONFIG_FP="${HOMErrfs}/fix/upp/postxconfig-NT-refs_f01.txt"
+        CUSTOM_POST_CONFIG_FP="${FIX_UPP}/postxconfig-NT-refs_f01.txt"
       elif [ ${WGF} = "firewx" ]; then
-        CUSTOM_POST_CONFIG_FP="${HOMErrfs}/fix/upp/postxconfig-NT-rrfs_firewx_f01.txt"
+        CUSTOM_POST_CONFIG_FP="${FIX_UPP}/postxconfig-NT-rrfs_firewx_f01.txt"
       fi
     else
       if [ ${WGF} = "det" ]; then
-        CUSTOM_POST_CONFIG_FP="${HOMErrfs}/fix/upp/postxconfig-NT-rrfs.txt"
+        CUSTOM_POST_CONFIG_FP="${FIX_UPP}/postxconfig-NT-rrfs.txt"
       elif [ ${WGF} = "ensf" ]; then
-        CUSTOM_POST_CONFIG_FP="${HOMErrfs}/fix/upp/postxconfig-NT-refs.txt"
+        CUSTOM_POST_CONFIG_FP="${FIX_UPP}/postxconfig-NT-refs.txt"
       elif [ ${WGF} = "firewx" ]; then
-        CUSTOM_POST_CONFIG_FP="${HOMErrfs}/fix/upp/postxconfig-NT-rrfs_firewx.txt"
+        CUSTOM_POST_CONFIG_FP="${FIX_UPP}/postxconfig-NT-rrfs_firewx.txt"
       fi
     fi
   fi

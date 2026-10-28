@@ -56,7 +56,11 @@ else
 fi
 
 # point at proper resource fix file
-cd ${ECF_DIR}/../fix/workflow/
+fix_dir=${FIXrrfs:-${ECF_DIR}/../fix}
+for wgf in det enkf ensf firewx; do
+  mkdir -p "${fix_dir}/workflow/${wgf}"
+done
+cd "${fix_dir}/workflow/"
 echo "point at proper workflow.conf version..."
   rm -f ./det/workflow.conf ./enkf/workflow.conf ./ensf/workflow.conf ./firewx/workflow.conf
 if [ ${resource_config} == "NCO" ]; then

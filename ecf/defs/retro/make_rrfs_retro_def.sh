@@ -19,6 +19,12 @@ case ${MACHINE} in
   URSA|WCOSS2) ;;
   *) echo "MACHINE=${MACHINE} is not supported; the retro suite runs on URSA and WCOSS2" >&2; exit 1 ;;
 esac
+for suite_name in "${RRFS_SUITE}" "${PRODCLONE_SUITE}"; do
+  if [[ ! ${suite_name} =~ ^[A-Za-z0-9_]+$ ]]; then
+    echo "ERROR: ecFlow suite names may contain only letters, numbers, and underscores: ${suite_name}" >&2
+    exit 1
+  fi
+done
 
 # Derived from the settings above
 PACKAGEHOME=${PACKAGEHOME:-$(cd "${defs_dir}/../../.." && pwd)}
@@ -30,6 +36,7 @@ awk \
     -v q="'" \
     -v machine="${MACHINE}" \
     -v ph="${PACKAGEHOME}" \
+    -v fixrrfs="${RETRO_FIX_DIR}" \
     -v eh="${ECF_HOME}" \
     -v od="${OUTPUTDIR}" \
     -v proj="${PROJ}" \
@@ -44,18 +51,24 @@ awk \
     -v eh_host="${ECFLOW_HOST}" \
     -v compath="${DEV_COMPATH}" \
     -v dcom="${DCOMROOT}" \
+    -v archivedir="${ARCHIVEDIR:-}" \
+    -v suite="${RRFS_SUITE}" \
+    -v prodclone="${PRODCLONE_SUITE}" \
     -v retro="${RETRO}" \
     -v fixjedi="${FIX_RRFS_JEDI}" '
   function ed(name, value) { print ind "edit " name " " q value q }
   # suite-wide settings go right after the suite line
   $1 == "suite" && !done {
-    print; ind = "  "; done = 1
+    print "suite " suite; ind = "  "; done = 1
     ed("MACHINE", machine)
+    ed("RRFS_SUITE", suite)
+    ed("PRODCLONE_SUITE", prodclone)
     if (machine == "URSA") ed("PARTITION", part)
     ed("DEV_PTMP", ptmp)
     ed("DEV_DATAROOT", droot)
     ed("DEV_COMPATH", compath)
     ed("DCOMROOT", dcom)
+    if (archivedir != "") ed("ARCHIVEDIR", archivedir)
     ed("RETRO", retro)
     if (fixjedi != "") ed("FIX_RRFS_JEDI", fixjedi)
     ed("ecflow_ver", ev)
@@ -66,6 +79,7 @@ awk \
     ed("NET", "rrfs")
     ed("RUN", "rrfs")
     ed("PACKAGEHOME", ph)
+    ed("FIXrrfs", fixrrfs)
     ed("PROJ", proj)
     ed("PROJENVIR", "DEV")
     ed("QUEUE", queue)
@@ -114,6 +128,10 @@ awk \
   $1 == "edit" && $2 == "FIX_RRFS_JEDI" { next }
   { print }
 ' "${defs_dir}/../${BASE_DEF}" > "${out_def}"
+
+# The NCO base definition keeps its operational suite paths; rewrite only this generated retro copy
+# so both experiments can coexist on one ecFlow server.
+sed -i -E "s|/para/|/${RRFS_SUITE}/|g; s|/prod_clone/|/${PRODCLONE_SUITE}/|g" "${out_def}"
 
 # For retros, make every clock-time condition in the triggers always true; the dependencies on other
 # tasks and on /prod_clone stay, and the retro prod_clone steps the dates (ush/prod_clone/make_retro_def.sh)
@@ -325,6 +343,12 @@ EOF
             --name 'jrrfs_det_(post|prdgen)_f000_00_36(_long)?'
   fi
 
+  # Keep quarter-hour post jobs only when the retro requests them; hourly post outputs remain active.
+  if [ "${RUN_SUBHOURLY_POST:-TRUE}" = "FALSE" ]; then
+    ${skip} --mode ignore --label "sub-hourly posts (RUN_SUBHOURLY_POST=FALSE)" \
+            --name 'jrrfs_det_post_f[0-9]{3}_(15|30|45)_00(_long)?'
+  fi
+
   # The whole 84 h forecast chain (DO_LONG_FORECAST): the forecast, its restarts, and the post and
   # product generation that read its output. Every one of those task names ends in _long, or in
   # _long_<hour> for the restarts.
@@ -431,6 +455,123 @@ open(path, "w").write("\n".join(lines))
 print(f"  cold start: {n} prep_cyc task(s) pointed at their own ics family")
 EOF
   fi
+
+  # Retro jobs must use the immediately previous cycle's background. Production OR branches
+  # allow prep and analysis to proceed from older restarts when the latest cycle is late.
+  python3 - "${out_def}" "${defs_dir}" <<'EOF'
+import importlib.util
+import re
+import sys
+
+path, defs_dir = sys.argv[1:]
+spec = importlib.util.spec_from_file_location("skip_tasks", f"{defs_dir}/skip_tasks.py")
+skip_tasks = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(skip_tasks)
+
+def leaves(node):
+    if isinstance(node, skip_tasks.Prim):
+        yield node.text
+    else:
+        for child in node[1]:
+            yield from leaves(child)
+
+def is_background_or(node):
+    if not isinstance(node, tuple) or node[0] != "or" or len(node[1]) < 2:
+        return False
+    # Keep only OR groups whose every branch names an EnKF or deterministic forecast state.
+    return all(any(re.search(r"/(?:det|enkf)/forecast(?:/|\s*==)", text)
+                       and re.search(r"==\s*complete$", text)
+                       for text in leaves(branch)) for branch in node[1])
+
+def prune(node):
+    if isinstance(node, skip_tasks.Prim):
+        return node, 0
+    op, children = node
+    rewritten = []
+    removed = 0
+    for child in children:
+        child, count = prune(child)
+        rewritten.append(child)
+        removed += count
+    if is_background_or((op, rewritten)):
+        # The workflow lists the newest background first, so keep only that branch.
+        return rewritten[0], removed + len(rewritten) - 1
+    return (op, rewritten), removed
+
+lines = open(path).read().split("\n")
+task_name = None
+changed = removed = 0
+for i, line in enumerate(lines):
+    text = line.strip()
+    task = re.fullmatch(r"task\s+(\S+)", text)
+    if task:
+        task_name = task.group(1)
+    elif text.startswith("family ") or text == "endfamily":
+        task_name = None
+    if not text.startswith("trigger ") or task_name is None:
+        continue
+    if not re.fullmatch(r"jrrfs_(?:det|enkf)_prep_cyc(?:_spinup|_ensmean|_mem\d+)?|"
+                        r"jrrfs_det_analysis_(?:gsi|jedi)(?:_spinup)?", task_name):
+        continue
+    expression = text[len("trigger "):]
+    node = skip_tasks.parse(skip_tasks.tokenize(expression), "/")
+    node, count = prune(node)
+    if count:
+        indent = line[:len(line) - len(line.lstrip())]
+        lines[i] = indent + "trigger " + skip_tasks.unparse(node)
+        changed += 1
+        removed += count
+
+open(path, "w").write("\n".join(lines))
+print(f"  strict backgrounds: {removed} older-cycle trigger alternative(s) removed "
+      f"from {changed} prep/analysis trigger(s)")
+EOF
+
+  # With older-cycle trigger alternatives removed, these restart saves are not needed by a retro.
+  # Keep the task nodes visible as set-aside, and rewrite references so they cannot enable fallback.
+  ${skip} --mode ignore --label "older-cycle restart saves (retro)" \
+          --name 'jrrfs_det_save_restart_f[23]'
+
+  # Keep the archive step in retro definitions only. Each deterministic cycle gets one task after
+  # its det family is complete, so no partial cycle COM directory is written to HPSS.
+  if [ "${DO_ARCHIVE_RETRO:-FALSE}" = "TRUE" ]; then
+    if [ -z "${ARCHIVEDIR:-}" ]; then
+      echo "ERROR: DO_ARCHIVE_RETRO=TRUE requires ARCHIVEDIR." >&2
+      exit 1
+    fi
+    python3 - "${out_def}" <<'EOF'
+import re, sys
+
+path = sys.argv[1]
+lines = open(path).read().split("\n")
+out = []
+stack = []
+cycles = 0
+for line in lines:
+    text = line.strip()
+    if text == "endfamily":
+        if stack and re.fullmatch(r"\d\dz", stack[-1][1]):
+            indent = stack[-1][0] + "  "
+            out.extend([
+                indent + "family archive",
+                indent + "  trigger det == complete",
+                indent + "  task jrrfs_archive_retro",
+                indent + "endfamily",
+            ])
+            cycles += 1
+        if stack:
+            stack.pop()
+    out.append(line)
+    match = re.match(r"^(\s*)family (\S+)$", line)
+    if match:
+        stack.append((match.group(1), match.group(2)))
+
+if cycles == 0:
+    sys.exit("ERROR: no hourly cycle families found for archive task insertion")
+open(path, "w").write("\n".join(out))
+print(f"  archive: {cycles} deterministic cycle task(s) added")
+EOF
+  fi
 fi
 
 # Coarser domains (strip when merging to the nco branch): give the tasks the domain's table
@@ -487,3 +628,4 @@ echo "  DEV_PTMP=${DEV_PTMP}"
 echo "  DEV_DATAROOT=${DEV_DATAROOT}"
 echo "  RETRO_DATA_ROOT=${RETRO_DATA_ROOT}"
 echo "  DOMAIN=${DOMAIN}"
+echo "  RRFS_SUITE=${RRFS_SUITE} PRODCLONE_SUITE=${PRODCLONE_SUITE}"
