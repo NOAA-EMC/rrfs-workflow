@@ -117,10 +117,11 @@ RUN_SMOKE=${RUN_SMOKE:-FALSE}
 # The 85 boundary jobs at each long cycle are left alone, because the hourly cycles in the family
 # share them; to cut those as well, shorten the forecast itself with FCST_LEN_HRS and
 # FCST_LEN_HRS_LONG (see the simplified samples, config_*_simple.sh).
-# JEDI analysis, the Rocoto config.sh "JEDI options". DA_SYSTEM picks which analysis runs, GSI
-# (the operational route) or JEDI; the rest are read only when it is JEDI. setup_retro_links.sh
-# writes them into det/workflow.conf and make_rrfs_retro_def.sh sizes the job from them.
-DA_SYSTEM=${DA_SYSTEM:-GSI}
+# JEDI analysis, the Rocoto config.sh "JEDI options". DA_SYSTEM_DET picks which det analysis
+# runs, GSI (the operational route) or JEDI; the rest are read only when it is JEDI.
+# setup_retro_links.sh writes them into det/workflow.conf and make_rrfs_retro_def.sh sizes the
+# job from them.
+DA_SYSTEM_DET=${DA_SYSTEM_DET:-GSI}
 # JCB templates in parm/jedi that the analysis renders its yaml from, conventional and
 # reflectivity. The conventional one decides 3DVar or hybrid: for hybrid 3DEnVar with the
 # 30 EnKF members use rdas-atmosphere-templates-fv3_c13_hybrid.yaml.
@@ -136,6 +137,15 @@ NNODES_ANALYSIS_JEDI=${NNODES_ANALYSIS_JEDI:-2}
 PPN_ANALYSIS_JEDI=${PPN_ANALYSIS_JEDI:-98}
 TPP_ANALYSIS_JEDI=${TPP_ANALYSIS_JEDI:-1}
 WALLTIME_ANALYSIS_JEDI=${WALLTIME_ANALYSIS_JEDI:-00:50:00}
+# JEDI EnKF. DA_SYSTEM_ENKF picks which EnKF analysis runs, GSI or JEDI (GETKF), independent of
+# DA_SYSTEM_DET; the rest are read only when it is JEDI. setup_retro_links.sh writes them into
+# enkf/workflow.conf.
+DA_SYSTEM_ENKF=${DA_SYSTEM_ENKF:-GSI}
+JCB_CONFIG_ENKF=${JCB_CONFIG_ENKF:-rdas-atmosphere-templates-fv3_c13_getkf.yaml}
+NNODES_ANALYSIS_ENKF_JEDI=${NNODES_ANALYSIS_ENKF_JEDI:-4}
+PPN_ANALYSIS_ENKF_JEDI=${PPN_ANALYSIS_ENKF_JEDI:-40}
+TPP_ANALYSIS_ENKF_JEDI=${TPP_ANALYSIS_ENKF_JEDI:-1}
+WALLTIME_ANALYSIS_ENKF_JEDI=${WALLTIME_ANALYSIS_ENKF_JEDI:-01:00:00}
 
 DO_LONG_FORECAST=${DO_LONG_FORECAST:-TRUE}
 

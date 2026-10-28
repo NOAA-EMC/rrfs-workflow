@@ -217,14 +217,22 @@ EOF
     echo "  KEEPDATA: ${nkeep} setting(s) rewritten to '${KEEPDATA}', and KEEP_TMP set to match"
   fi
 
-  # Which analysis runs: the route DA_SYSTEM does not select is marked complete, never submitted
-  case "${DA_SYSTEM:-GSI}" in
-    GSI|gsi)   da_system_jedi=0 ;;
-    JEDI|jedi) da_system_jedi=1 ;;
-    *) echo "ERROR: DA_SYSTEM must be GSI or JEDI, not '${DA_SYSTEM}'." >&2; exit 1 ;;
+  # Which analyses run: the route DA_SYSTEM_DET (det) or DA_SYSTEM_ENKF (EnKF) does not select is
+  # marked complete, never submitted
+  case "${DA_SYSTEM_DET:-GSI}" in
+    GSI|gsi)   da_det_jedi=0 ;;
+    JEDI|jedi) da_det_jedi=1 ;;
+    *) echo "ERROR: DA_SYSTEM_DET must be GSI or JEDI, not '${DA_SYSTEM_DET}'." >&2; exit 1 ;;
   esac
-  sed -i -E "s/^( *)edit DA_SYSTEM_JEDI '[01]'/\1edit DA_SYSTEM_JEDI '${da_system_jedi}'/" "${out_def}"
-  echo "  DA_SYSTEM: ${DA_SYSTEM:-GSI} (DA_SYSTEM_JEDI=${da_system_jedi})"
+  case "${DA_SYSTEM_ENKF:-GSI}" in
+    GSI|gsi)   da_enkf_jedi=0 ;;
+    JEDI|jedi) da_enkf_jedi=1 ;;
+    *) echo "ERROR: DA_SYSTEM_ENKF must be GSI or JEDI, not '${DA_SYSTEM_ENKF}'." >&2; exit 1 ;;
+  esac
+  sed -i -E "s/^( *)edit DA_DET_JEDI '[01]'/\1edit DA_DET_JEDI '${da_det_jedi}'/" "${out_def}"
+  sed -i -E "s/^( *)edit DA_ENKF_JEDI '[01]'/\1edit DA_ENKF_JEDI '${da_enkf_jedi}'/" "${out_def}"
+  echo "  DA_SYSTEM_DET: ${DA_SYSTEM_DET:-GSI} (DA_DET_JEDI=${da_det_jedi})"
+  echo "  DA_SYSTEM_ENKF: ${DA_SYSTEM_ENKF:-GSI} (DA_ENKF_JEDI=${da_enkf_jedi})"
 
   # A manager task that waits on the whole forecast family is fragile once anything is requeued:
   # the family reads active while other tasks in it run, so the manager can start before the
@@ -427,6 +435,9 @@ EOF
   # does when DO_SPINUP is FALSE and the hour is in CYCL_HRS_PRODSTART: the trigger below points
   # it at the make_ics task in its own ics family instead of at the cycle before it.
   if [ "${DO_SPINUP:-TRUE}" = "FALSE" ]; then
+    # The EnKF spin-up recenter is the exception: it reads the det analysis, which is then the
+    # production cycle's, so its det terms move to the production tasks
+    sed -i '/jrrfs_enkf_prep_cyc_spinup_mem/s#\(det/[a-z]*/jrrfs_det_[a-z0-9_]*\)_spinup#\1#g' "${out_def}"
     ${skip} --mode ignore --label "spin-up cycles (DO_SPINUP=FALSE)" \
             --name 'jrrfs_det_[a-z0-9_]*spinup[a-z0-9_]*'
     python3 - "${out_def}" ${DET_COLD_START_HRS:-03 15} <<'EOF'
@@ -458,12 +469,13 @@ EOF
 
   # Retro jobs must use the immediately previous cycle's background. Production OR branches
   # allow prep and analysis to proceed from older restarts when the latest cycle is late.
-  python3 - "${out_def}" "${defs_dir}" <<'EOF'
+  python3 - "${out_def}" "${defs_dir}" "${RRFS_SUITE}" ${DET_PROD_START_HRS:-09 21} <<'EOF'
 import importlib.util
 import re
 import sys
 
-path, defs_dir = sys.argv[1:]
+path, defs_dir, suite = sys.argv[1:4]
+prod_start = [int(h) for h in sys.argv[4:]]
 spec = importlib.util.spec_from_file_location("skip_tasks", f"{defs_dir}/skip_tasks.py")
 skip_tasks = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(skip_tasks)
@@ -525,12 +537,47 @@ for i, line in enumerate(lines):
 open(path, "w").write("\n".join(lines))
 print(f"  strict backgrounds: {removed} older-cycle trigger alternative(s) removed "
       f"from {changed} prep/analysis trigger(s)")
+
+# Waits the older restarts stood in for without a trigger alternative: blend_ics on its member's
+# previous-cycle restart, and the det production start hours on the spin-up cycle's restart.
+tasks = skip_tasks.read_defs(lines)
+task_name = None
+cyc = None
+waits = 0
+for i, line in enumerate(lines):
+    text = line.strip()
+    family = re.fullmatch(r"family (\d\d)z", text)
+    if family:
+        cyc = int(family.group(1))
+    task = re.fullmatch(r"task\s+(\S+)", text)
+    if task:
+        task_name = task.group(1)
+    elif text.startswith("family ") or text == "endfamily":
+        task_name = None
+    if not text.startswith("trigger ") or task_name is None:
+        continue
+    prev = (cyc - 1) % 24
+    prev_cycle = f"/{suite}/primary/{prev // 6 * 6:02d}/rrfs/v1.0/{prev:02d}z"
+    member = re.fullmatch(r"jrrfs_enkf_blend_ics_mem(\d+)", task_name)
+    restart = None
+    if member:
+        restart = f"{prev_cycle}/enkf/forecast/jrrfs_enkf_save_restart_mem{member.group(1)}_f1"
+    elif task_name == "jrrfs_det_prep_cyc" and cyc in prod_start:
+        restart = f"{prev_cycle}/det/forecast/jrrfs_det_save_restart_spinup_f001"
+    if restart in tasks:
+        lines[i] += f" and {restart}==complete"
+        waits += 1
+
+open(path, "w").write("\n".join(lines))
+print(f"  strict backgrounds: {waits} blend_ics and det production start trigger(s) wait on a "
+      "previous-cycle restart")
 EOF
 
   # With older-cycle trigger alternatives removed, these restart saves are not needed by a retro.
   # Keep the task nodes visible as set-aside, and rewrite references so they cannot enable fallback.
   ${skip} --mode ignore --label "older-cycle restart saves (retro)" \
-          --name 'jrrfs_det_save_restart_f[23]'
+          --name 'jrrfs_det_save_restart_f[23]' \
+          --name 'jrrfs_enkf_save_restart_(mem[0-9]+_f[23]|f[23]_done)'
 
   # Keep the archive step in retro definitions only. Each deterministic cycle gets one task after
   # its det family is complete, so no partial cycle COM directory is written to HPSS.
@@ -578,10 +625,11 @@ fi
 # names their job sizes through SBATCH_OVERRIDES on Ursa, or QSUB_OVERRIDES on WCOSS2. The table
 # is in sbatch terms; on WCOSS2 --nodes=N becomes N whole 128-core nodes and --time the walltime.
 # The node counts carry over because ranks per node come from the domain's PPN_* settings, which
-# all fit in a WCOSS2 node; RRFS_NA_3km has none, the cards are sized for it. The JEDI analysis
-# comes first and on every domain, sized from the JEDI settings in retro/config.sh, so its job
-# request always matches the tasks the ex-script starts.
+# all fit in a WCOSS2 node; RRFS_NA_3km has none, the cards are sized for it. The JEDI analyses
+# come first and on every domain, sized from the JEDI settings in retro/config.sh, so their job
+# requests always match the tasks the ex-scripts start.
 job_sizes=("jrrfs_det_analysis_jedi*:--nodes=${NNODES_ANALYSIS_JEDI:-16} --time=${WALLTIME_ANALYSIS_JEDI:-00:50:00}")
+job_sizes+=("jrrfs_enkf_analysis_jedi*:--nodes=${NNODES_ANALYSIS_ENKF_JEDI:-48} --time=${WALLTIME_ANALYSIS_ENKF_JEDI:-01:00:00}")
 # shellcheck source=/dev/null
 . "${defs_dir}/domains/${DOMAIN}.sh"
 job_sizes+=("${DOMAIN_SBATCH[@]}")
@@ -617,7 +665,7 @@ for line in open(path).read().split("\n"):
             out.append(line[:len(line) - len(line.lstrip())] + f"  edit {var} '{opts}'")
             n += 1
 open(path, "w").write("\n".join(out))
-print(f"{n} tasks given job sizes for the domain and the JEDI analysis")
+print(f"{n} tasks given job sizes for the domain and the JEDI analyses")
 EOF
 
 echo "Wrote ${out_def} from ${BASE_DEF}"

@@ -140,6 +140,7 @@ case $MACHINE in
     export MPICH_OFI_STARTUP_CONNECT=1
     export MPICH_OFI_VERBOSE=1
     export MPICH_OFI_NIC_VERBOSE=1
+    APRUN_UA="mpiexec -n 1 -ppn 1 --cpu-bind core --depth 1"
     ;;
 
   "HERA")
@@ -150,6 +151,7 @@ case $MACHINE in
     OMP_NUM_THREADS=${TPP_FORECAST}
     OMP_STACKSIZE=1G
     APRUN="srun --export=ALL --mem=0"
+    APRUN_UA="srun --export=ALL -n 1"
     ;;
 
   "ORION")
@@ -192,6 +194,36 @@ fi
 export KMP_AFFINITY=scatter
 export OMP_NUM_THREADS=${OMP_NUM_THREADS:-1}
 export OMP_STACKSIZE=${OMP_STACKSIZE:-1024m}
+#
+#-----------------------------------------------------------------------
+#
+# Post-process the JEDI GETKF analysis for the ensemble member. GETKF
+# writes each member's analysis in place, with the analyzed A-grid wind as
+# ua_anl/va_anl beside the background D-grid u/v. rdas_ua2u.x's --in_anl
+# mode converts the A-grid wind increment (ua_anl-ua, va_anl-va) to a
+# D-grid increment, adds it to u/v and removes ua_anl/va_anl
+# (--remove_anl_winds). This is done here rather than in the analysis task
+# so that it runs in parallel across the members. The check for ua_anl
+# skips members GETKF did not update (cold starts) and a forecast rerun.
+#
+#-----------------------------------------------------------------------
+#
+anlfile=${FORECAST_INPUT_PRODUCT}/fv_core.res.tile1.nc
+if [ ${WGF} = "enkf" ] && [ "${DA_SYSTEM_ENKF:-GSI}" = "JEDI" ] && [ -f ${anlfile} ] \
+   && ncdump -h ${anlfile} | grep -q " ua_anl("; then
+  export LD_LIBRARY_PATH="${RDASAPP_DIR:-${HOMErrfs}/sorc/RDASApp}/build/lib64:${LD_LIBRARY_PATH}"
+  # Disable HDF5's advisory file locking to avoid intermittent failures
+  export HDF5_USE_FILE_LOCKING=FALSE
+  export pgm="rdas_ua2u.x"
+  cpreq -p ${EXECrrfs}/${pgm} ${DATA}/${pgm}
+
+  ${APRUN_UA} ${DATA}/${pgm} ua_update_u \
+    --in_grid=${FIXrrfs}/gsi/${PREDEF_GRID_NAME}/fv3_grid_spec \
+    --in_anl=${anlfile} \
+    --remove_anl_winds >>$pgmout 2>errfile
+  export err=$?; err_chk
+  mv errfile errfile_ua2u
+fi
 #
 #-----------------------------------------------------------------------
 #
