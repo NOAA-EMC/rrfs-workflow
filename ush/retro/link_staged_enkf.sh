@@ -37,9 +37,9 @@ esac
 [ -d "${RRFSE_NWGES}" ] || { echo "FATAL: no such directory: ${RRFSE_NWGES}" >&2; exit 1; }
 members=${NUM_ENS_MEMBERS:-30}
 
-# envir-p1.h builds this from DEV_PTMP; see its COMROOT line. The suite directory is "para"
-# whatever the suite is called, because that is what envir-p1.h writes.
-com=${DEV_PTMP}/${USER}/ecflow_rrfs/para/com/rrfs/${RRFS_VER:-v1.0}
+# Match the suite-specific COMROOT built by envir-p1.h so concurrent DA experiments get separate
+# staged-ensemble links.
+com=${DEV_PTMP}/${USER}/ecflow_rrfs/${RRFS_SUITE}/com/rrfs/${RRFS_VER:-v1.0}
 
 # The analysis at the first cycle of the retro looks back up to three hours, so link the end of
 # the day before as well where the stage has it. It is not required: a first cycle that cannot

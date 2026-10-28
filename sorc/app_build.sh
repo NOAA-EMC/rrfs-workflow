@@ -427,16 +427,37 @@ if [ "${BUILD_WORKAROUND}" = true ] && [ "${BUILD_RDASAPP}" = "on" ]; then
   printf "... copying RDASApp workaround codes ...\n"
   cp "${SORC_DIR}/_workaround_/gsibec/constants.f90" \
      "${SORC_DIR}/RDASApp/sorc/gsibec/src/gsibec/gsi/constants.f90"
-  cp "${SORC_DIR}/_workaround_/gsibec/gsimod.F90" \
-     "${SORC_DIR}/RDASApp/sorc/gsibec/src/gsibec/gsi/gsimod.F90"
   cp "${SORC_DIR}/_workaround_/gsibec/mod_fv3_lola.f90" \
      "${SORC_DIR}/RDASApp/sorc/gsibec/src/gsibec/gsi/mod_fv3_lola.f90"
-  cp "${SORC_DIR}/_workaround_/parm/rdas-atmosphere-templates-fv3_c13.yaml" \
-     "${HOME_DIR}/parm/rdas-atmosphere-templates-fv3_c13.yaml"
-  cp "${SORC_DIR}/_workaround_/ush/config_det_c13_3dvar_gsi_baseline005.sh" \
-     "${HOME_DIR}/ush/config_det_c13_3dvar_gsi_baseline005.sh"
-  cp "${SORC_DIR}/_workaround_/ush/config_det_c13_3dvar_jedi_baseline005.sh" \
-     "${HOME_DIR}/ush/config_det_c13_3dvar_jedi_baseline005.sh"
+  # JEDI reads this template from parm/jedi, so overwrite that runtime template with the full workaround file.
+  mkdir -p "${HOME_DIR}/parm/jedi"
+  cp "${SORC_DIR}/_workaround_/parm/jedi/rdas-atmosphere-templates-fv3_c13.yaml" \
+     "${HOME_DIR}/parm/jedi/rdas-atmosphere-templates-fv3_c13.yaml"
+fi
+
+# Apply the optional GSI 3DVAR script overlay after checkout, which may replace workflow sources.
+if [ "${BUILD_WORKAROUND}" = true ]; then
+  printf "... copying GSI 3DVAR workaround script ...\n"
+  cp "${SORC_DIR}/_workaround_/scripts/exrrfs_analysis_gsi.sh" \
+     "${HOME_DIR}/scripts/exrrfs_analysis_gsi.sh"
+fi
+
+
+# Apply the GSI qmin source overlay only when this build includes GSI.
+if [ "${BUILD_WORKAROUND}" = true ] && [ "${BUILD_GSI}" = "on" ]; then
+  printf "... copying GSI qmin workaround source ...\n"
+  cp "${SORC_DIR}/_workaround_/gsi/constants.f90" \
+     "${SORC_DIR}/gsi/src/gsi/constants.f90"
+fi
+
+# Stage runtime configuration overlays for the retro fix and JEDI parameter setup.
+if [ "${BUILD_WORKAROUND}" = true ]; then
+  printf "... staging GSI convinfo and JEDI namelist workarounds ...\n"
+  mkdir -p "${HOME_DIR}/fix/gsi" "${HOME_DIR}/parm/jedi/RRFS_CONUS_13km"
+  cp --remove-destination "${SORC_DIR}/_workaround_/fix/gsi/convinfo.rrfs" \
+     "${HOME_DIR}/fix/gsi/convinfo.rrfs"
+  cp --remove-destination "${SORC_DIR}/_workaround_/parm/jedi/RRFS_CONUS_13km/gsiparm_regional.anl" \
+     "${HOME_DIR}/parm/jedi/RRFS_CONUS_13km/gsiparm_regional.anl"
 fi
 
 # Patch ufs-weather-model for Ursa's oneAPI 2024 compilers (icx, no classic icc; ifort 2021.13).
