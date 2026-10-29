@@ -45,7 +45,7 @@ These are in compliance with the (NCO implementation standard)
 
 1. Clone the `main` branch of the authoritative repository:
 ```
-git clone https://github.com/NOAA-EMC/rrfs-workflow
+git clone -b main https://github.com/NOAA-EMC/rrfs-workflow
 ```
 
 2. Move to the `sorc` directory:
