@@ -114,26 +114,26 @@
              name: reduce obs space
 
          # Duplicate Check
-         - filter: DuplicateThinning
-           identifier:
-             name: DuplicateThinning
-             logging: true
-           filter variables:
-           - name: airTemperature
-           analysis_time: "@ANALYSIS_DATE@"
-           analysis_time_tolerance: PT0S
-           min_spacing: PT90M
-           equidistant_time_selection: after
-           variable names:
-           - MetaData/longitude
-           - MetaData/latitude
-           - MetaData/pressure
-           tolerance:
-           - 1.0e-6
-           - 1.0e-6
-           - 1.0e-6
-           action:
-             name: reduce obs space
+#         - filter: DuplicateThinning
+#           identifier:
+#             name: DuplicateThinning
+#             logging: true
+#           filter variables:
+#           - name: airTemperature
+#           analysis_time: "@ANALYSIS_DATE@"
+#           analysis_time_tolerance: PT0S
+#           min_spacing: PT90M
+#           equidistant_time_selection: after
+#           variable names:
+#           - MetaData/longitude
+#           - MetaData/latitude
+#           - MetaData/pressure
+#           tolerance:
+#           - 1.0e-6
+#           - 1.0e-6
+#           - 1.0e-6
+#           action:
+#             name: reduce obs space
 
          # Online regional domain check
          - filter: Bounds Check
