@@ -71,8 +71,8 @@
            where:
              - variable:
                  name: MetaData/timeOffset # units: s
-               minvalue: -5400
-               maxvalue:  5400
+               minvalue: -2700
+               maxvalue:  2700
            action:
              name: reduce obs space
 
@@ -130,7 +130,7 @@
 #           - name: windEastward
 #           - name: windNorthward
 #           analysis_time: "@ANALYSIS_DATE@"
-#           analysis_time_tolerance: PT0M
+#           analysis_time_tolerance: PT0S
 #           min_spacing: PT90M
 #           equidistant_time_selection: after
 #           variable names:
@@ -345,7 +345,7 @@
            - name: ObsFunction/WindsSPDBCheck
              options:
                wndtype:    [ 234 ]
-               cgross:     [ 7.5 ]
+               cgross:     [ 10.0 ]
                error_min:  [ 1.4 ]
                error_max:  [ 6.1 ]
                variable: windEastward
@@ -369,7 +369,7 @@
            - name: ObsFunction/WindsSPDBCheck
              options:
                wndtype:    [ 234 ]
-               cgross:     [ 7.5 ]
+               cgross:     [ 10.0 ]
                error_min:  [ 1.4 ]
                error_max:  [ 6.1 ]
                variable: windNorthward
@@ -393,7 +393,7 @@
            - name: ObsFunction/WindsSPDBCheck
              options:
                wndtype:    [ 234 ]
-               cgross:     [ 5.25 ]
+               cgross:     [ 7.0 ]
                error_min:  [ 1.4 ]
                error_max:  [ 6.1 ]
                variable: windEastward
@@ -417,7 +417,7 @@
            - name: ObsFunction/WindsSPDBCheck
              options:
                wndtype:    [ 234 ]
-               cgross:     [ 5.25 ]
+               cgross:     [ 7.0 ]
                error_min:  [ 1.4 ]
                error_max:  [ 6.1 ]
                variable: windNorthward

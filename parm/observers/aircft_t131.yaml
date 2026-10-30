@@ -70,8 +70,8 @@
            where:
              - variable:
                  name: MetaData/timeOffset # units: s
-               minvalue: -5400
-               maxvalue:  5400
+               minvalue: -3600
+               maxvalue:  3600
            action:
              name: reduce obs space
 
@@ -121,7 +121,7 @@
 #           filter variables:
 #           - name: airTemperature
 #           analysis_time: "@ANALYSIS_DATE@"
-#           analysis_time_tolerance: PT0M
+#           analysis_time_tolerance: PT0S
 #           min_spacing: PT90M
 #           equidistant_time_selection: after
 #           variable names:
@@ -189,6 +189,8 @@
                name: ObsFunction/ObsErrorFactorPressureCheck
                options:
                  variable: airTemperature
+                 surface observation error ramp: true
+                 max levels below surface: 15
                  inflation factor: 8.0
 
 #         # Error inflation based on errormod (qcmod.f90)
