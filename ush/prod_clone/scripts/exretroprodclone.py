@@ -505,7 +505,10 @@ def throttle_cycles(ci, defs):
             if re.fullmatch(r"\d\dz", cyc.name()):
                 cycles.append((family_pdy(chain) + cyc.name(), cyc))
     cycles.sort(key=lambda c: c[0])
-    running = sum(1 for _, c in cycles if not c.is_suspended() and c.get_state() != COMPLETE)
+    # clean waits on the next cycle, so it must not hold a slot (deadlocks at CYCLE_THROTTLE=1)
+    def busy(cyc):
+        return any(f.get_state() != COMPLETE for f in cyc.nodes if f.name() != "clean")
+    running = sum(1 for _, c in cycles if not c.is_suspended() and busy(c))
     waiting = [c for _, c in cycles if c.is_suspended()]
     resume = waiting[:max(0, CYCLE_THROTTLE - running)]
     for cyc in resume:

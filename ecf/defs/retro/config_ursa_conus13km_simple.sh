@@ -141,6 +141,7 @@ DET_COLD_START_HRS=${DET_COLD_START_HRS:-"00 12"}
 # Cold starts read the GFS cycle 6 h earlier; grib2 reads gfs.tHHz.pgrb2.0p25.fHHH
 EXTRN_MDL_ICS_OFFSET_HRS=${EXTRN_MDL_ICS_OFFSET_HRS:-6}
 GFS_FILE_FMT_ICS=${GFS_FILE_FMT_ICS:-}
+DO_SURFACE_CYCLE=${DO_SURFACE_CYCLE:-FALSE}
 
 # Forecast length in hours: the hourly cycles, and the 00, 06, 12 and 18z cycles. Operations runs
 # 18 and 84. The post, product generation and boundary jobs past the end of the forecast come out
