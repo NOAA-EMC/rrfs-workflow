@@ -92,6 +92,13 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
       <or>{timedep}{datadep_sfc}
       </or>'''
 
+    # chemistry update dependencies
+    datadep_chem = ""
+    if os.getenv('DO_CHEMISTRY', 'FALSE').upper() == "TRUE" and not do_ensemble:
+        dcTaskEnv['USE_EXTERNAL_CHEM'] = os.getenv('USE_EXTERNAL_CHEM_ICS', 'FALSE').upper()
+        dcTaskEnv['CHEM_GROUPS'] = os.getenv('CHEM_GROUPS', 'smoke')
+        datadep_chem = f'''\n        <datadep age="00:00:05"><cyclestr offset="-{cyc_interval}:00:00">&COMROOT;/&NET;/&rrfs_ver;/&RUN;.@Y@m@d/@H/fcst/&WGF;/</cyclestr><cyclestr>mpasout.@Y-@m-@d_@H.@M.@S.nc</cyclestr></datadep>'''
+
     #
     satbias_dep = ""
     if os.getenv("USE_THE_LATEST_SATBIAS", "FALSE").upper() == "TRUE":
@@ -116,7 +123,7 @@ def prep_ic(xmlFile, expdir, do_ensemble=False, spinup_mode=0):
     <and>
       <or>
 {streqs}
-      </or>{icdep}{sfc_dep}{satbias_dep}
+      </or>{icdep}{sfc_dep}{satbias_dep}{datadep_chem}
     </and>
     <and>
 {strneqs}{datadep}

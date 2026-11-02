@@ -3,7 +3,7 @@
          _anchor_channels: &abi_g18_channels 7-16
          _anchor_use_flag: &abi_g18_use_flag [-1, 1, 1, 1, -1, -1, -1, -1, -1, -1]
          _anchor_use_flag_clddet: &abi_g18_use_flag_clddet [-2, -2, -2, -2, -2, -2, -2, -2, -2, -2]
-         _anchor_error: &abi_g18_error [ 2.2, 1.756, 1.587, 1.185, 2.2, 2.2, 2.2, 2.2, 2.2, 2.2 ]
+         _anchor_error0: &abi_g18_error0 [ 2.2, 1.756, 1.587, 1.185, 2.2, 2.2, 2.2, 2.2, 2.2, 2.2 ]
          _anchor_obserr_bound_max: &abi_g18_obserr_bound_max [2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0, 2.0]
          distribution:
            name: "RoundRobin"
@@ -100,7 +100,7 @@
          identifier:
            name: PolygonCheck
            logging: true
-         <<: *polygonConfig
+         <<: *polygonConfig  # yamllint disable-line rule:anchors
 
        - filter: Create Diagnostic Flags
          apply at iterations: 0,1
@@ -182,7 +182,7 @@
        - filter: Domain Check
          apply at iterations: 0,1
          identifier:
-           name: CloudFractionCheck
+           name: CloudFractionCheck0_
            logging: true
            diagnostic flag new: true
          filter variables:
@@ -207,7 +207,7 @@
        - filter: Bounds Check
          apply at iterations: 0,1
          identifier:
-           name: ClearSkyStdCheck
+           name: ClearSkyStdCheck0_
            logging: true
            diagnostic flag new: true
          filter variables:
@@ -252,7 +252,7 @@
        - filter: Variable Assignment
          apply at iterations: 0,1
          identifier:
-           name: ClearSkyStdCheck
+           name: ClearSkyStdCheck1_
            logging: true
            diagnostic flag new: true
          assignments:
@@ -321,7 +321,7 @@
            channels: *abi_g18_channels
          action:
            name: assign error
-           error parameter vector: *abi_g18_error
+           error parameter vector: *abi_g18_error0
 
        # --------------------------------------------------------
        # Step 8 : Create surface flag assignment from Geovals
@@ -578,7 +578,7 @@
              use_flag: *abi_g18_use_flag
              use_flag_clddet: *abi_g18_use_flag_clddet
              obserr_dtempf: [0.5, 2.0, 4.0, 2.0, 4.0]
-             error parameter vector: *abi_g18_error
+             error parameter vector: *abi_g18_error0
          maxvalue: 1.0e-12
          actions:
            - name: set
@@ -593,7 +593,7 @@
        - filter: Domain Check
          apply at iterations: 0,1
          identifier:
-           name: ClearSkyStdCheck
+           name: ClearSkyStdCheck2_
            logging: true
            diagnostic flag new: true
          filter variables:
@@ -759,7 +759,7 @@
        - filter: Domain Check
          apply at iterations: 0,1
          identifier:
-           name: CloudFractionCheck
+           name: CloudFractionCheck1_
            logging: true
            diagnostic flag new: true
          filter variables:
@@ -782,7 +782,7 @@
        - filter: Variable Assignment
          apply at iterations: 0,1
          identifier:
-           name: SplitWindowCheck
+           name: SplitWindowCheck0_
            logging: true
            diagnostic flag new: true
          assignments:
@@ -814,7 +814,7 @@
        - filter: Bounds Check
          apply at iterations: 0,1
          identifier:
-           name: SplitWindowCheck
+           name: SplitWindowCheck1_
            logging: true
            diagnostic flag new: true
          filter variables:
@@ -859,7 +859,7 @@
                options:
                  channels: *abi_g18_channels
              obserr_bound_max: *abi_g18_obserr_bound_max
-             error parameter vector: *abi_g18_error
+             error parameter vector: *abi_g18_error0
          actions:
            - name: set
              flag: GrossCheck

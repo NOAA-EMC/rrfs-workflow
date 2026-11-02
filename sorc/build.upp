@@ -15,6 +15,11 @@ rm -rf "${HOMErrfs}/sorc/UPP/tests/install"
 rm -rf "${EXEC}"
 
 cd "${HOMErrfs}/sorc/UPP/tests" || exit 1
+# workaround for gaeac7
+if [[ "${MACHINE}" == "gaeac7" ]]; then
+  cp ../../_workaround_/UPP/gaeac7_intel.lua ../modulefiles
+  sed -i -e "s/gaea/NOTAPPLY/" compile_upp.sh
+fi
 ./compile_upp.sh
 
 mkdir -p "${HOMErrfs}/exec"

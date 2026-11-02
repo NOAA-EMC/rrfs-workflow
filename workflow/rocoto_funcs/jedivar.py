@@ -58,6 +58,10 @@ def jedivar(xmlFile, expdir, spinup_mode=0):
         'GSIBEC_NORTH_POLE_LAT': os.getenv('GSIBEC_NORTH_POLE_LAT', 'GSIBEC_NORTH_POLE_LAT_not_defined'),
         'GSIBEC_NORTH_POLE_LON': os.getenv('GSIBEC_NORTH_POLE_LON', 'GSIBEC_NORTH_POLE_LON_not_defined'),
     }
+
+    if os.getenv('DO_CHEMISTRY', 'FALSE').upper() == "TRUE":
+        dcTaskEnv['CHEM_GROUPS'] = os.getenv('CHEM_GROUPS', 'smoke')
+
     if do_spinup:
         dcTaskEnv['DO_SPINUP'] = 'TRUE'
     if len(snudgetype) >= 3:

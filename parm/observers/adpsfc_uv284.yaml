@@ -62,7 +62,7 @@
            identifier:
              name: PolygonCheck
              logging: true
-           <<: *polygonConfig
+           <<: *polygonConfig  # yamllint disable-line rule:anchors
 
          # Time window filter
          - filter: Domain Check
@@ -78,6 +78,9 @@
              name: reduce obs space
 
          - filter: Perform Action
+           identifier:
+             name: ObsInvalidCheck
+             logging: true
            where:
            - variable: ObsValue/windEastward
              value: is_not_valid

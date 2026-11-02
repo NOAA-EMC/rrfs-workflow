@@ -12,9 +12,6 @@ case ${MACHINE} in
   hera|ursa)
     config_geog_data_path=/scratch3/BMC/wrfruc/mpas/WPS_GEOG/
     ;;
-  jet)
-    config_geog_data_path=/mnt/lfs5/BMC/wrfruc/HRRRv5/geog/
-    ;;
   orion|hercules)
     config_geog_data_path=/work/noaa/zrtrr/WPS_GEOG
     ;;

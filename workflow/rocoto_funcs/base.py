@@ -10,13 +10,12 @@ def source(bash_file, optional=False):
     """
     Source a Bash file and capture the environment variables
     """
-    # check if bash_file exists
-    command = f"source {bash_file} && env"
+    command = f"source {bash_file} >/dev/null && env -0"
     proc = subprocess.Popen(
         ['bash', '-c', command],
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
-        universal_newlines=True
+        text=True
     )
     stdout, stderr = proc.communicate()
     if proc.returncode != 0:
@@ -25,9 +24,12 @@ def source(bash_file, optional=False):
         else:
             raise Exception(f"Error sourcing bash file: {stderr}")
     env_vars = {}
-    for line in stdout.splitlines():
-        key, _, value = line.partition("=")
-        env_vars[key] = value
+    for entry in stdout.split('\0'):
+        if not entry:
+            continue
+        key, sep, value = entry.partition("=")
+        if key and sep and not key.startswith("BASH_FUNC_"):
+            env_vars[key] = value
     # Update the current environment
     os.environ.update(env_vars)
 # end of source(bash_file)

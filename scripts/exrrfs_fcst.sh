@@ -81,8 +81,13 @@ if [[ "${MPASOUT_TIMELEVELS}" != "" ]]; then # prioritize MPASOUT_TIMELEVELS
 else
   mpasout_replacement="s/@mpasout_interval@/${mpasout_interval}/"
 fi
+if [[ "${DIAG_TIMELEVELS}" != "" ]]; then # prioritize DIAG_TIMELEVELS
+  diag_replacement="s|output_interval=\"@diag_interval@\"|output_timelevels=\"${DIAG_TIMELEVELS}\"|"
+else
+  diag_replacement="s/@diag_interval@/${diag_interval}/"
+fi
 sed -e "s/@restart_interval@/${restart_interval}/" -e "s/@history_interval@/${history_interval}/" \
-    -e "s/@diag_interval@/${diag_interval}/" -e "s/@lbc_interval@/${lbc_interval}/" \
+    -e "${diag_replacement}" -e "s/@lbc_interval@/${lbc_interval}/" \
     -e "${mpasout_replacement}"  "${PARMrrfs}"/streams.atmosphere  > streams.atmosphere
 #
 if [[ "${mpasout_interval,,}" == "none" ]]; then  # remove the da_state stream for coldstart only forecasts
@@ -94,7 +99,7 @@ if [[ "${DO_CHEMISTRY^^}" == "TRUE" ]]; then
   source "${USHrrfs}"/chem_fcst.sh
 fi
 #
-# prelink the history/diag files to umbrella
+# prelink the history files to umbrella
 if [[ "${history_interval,,}" != "none" ]]; then
   history_all=$(seq 0 $((10#${history_interval%%:*})) $((10#${fcst_len_hrs_thiscyc} )) )
   for fhr in ${history_all}; do
@@ -106,17 +111,40 @@ if [[ "${history_interval,,}" != "none" ]]; then
     fi
   done
 fi
-if [[ "${diag_interval,,}" != "none" ]]; then
-  diag_all=$(seq 0 $((10#${diag_interval%%:*})) $((10#${fcst_len_hrs_thiscyc} )) )
-  for fhr in ${diag_all}; do
+
+# prelink the diag files to umbrella
+if [[ "${DIAG_TIMELEVELS}" != "" ]]; then # prioritize DIAG_TIMELEVELS
+  if [[ "${DIAG_TIMELEVELS}" == *1-999* ]]; then  # special treatment for hourly cycling only
+    read -ra diag_all <<< "$(seq 1 1 $((10#${fcst_len_hrs_thiscyc} )) | paste -sd ' ')"
+    head_levels="${DIAG_TIMELEVELS/ 1-999/}"
+    read -ra diag_head <<< "${head_levels}"
+    diag_all=("${diag_head[@]}" "${diag_all[@]}")
+  else
+    read -ra diag_all <<< "${DIAG_TIMELEVELS}"
+  fi
+elif [[ "${diag_interval,,}" != "none" ]]; then
+  read -ra diag_all <<< "$(seq 0 $((10#${diag_interval%%:*})) $((10#${fcst_len_hrs_thiscyc} )) | paste -sd ' ')"
+fi
+# shellcheck disable=SC2068
+for fhr in ${diag_all[@]}; do
+  if [[ "${fhr}" == "${dt}"s* ]]; then  # only t=dt output, link it to t=0
+    timestr=$( date -ud "${CDATE:0:8} ${CDATE:8:2} ${dt} seconds" +%Y-%m-%d_%H.%M.%S)
+    timestr2=$(date -d "${CDATE:0:8} ${CDATE:8:2}" +%Y-%m-%d_%H.%M.%S)
+    if [[ "${DIAG_TIMELEVELS}" == "0 ${dt}"s* ]]; then
+      timestr2=${timestr}  # if output both t=0 and t=dt, don't link t=dt to t=0
+    fi
+    ln -snf "${UMBRELLA_FCST_DATA}/diag.${timestr2}.nc" "${DATA}/diag.${timestr}.nc"
+    ln -snf "${UMBRELLA_FCST_DATA}/diag.${timestr2}.nc.done" "${DATA}/diag.${timestr}.nc.done"
+  else
     CDATEp=$( ${NDATE} "${fhr}" "${CDATE}" )
     timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
     if [[ "${DO_SPINUP:-FALSE}" != "TRUE" ]];  then
       ln -snf "${UMBRELLA_FCST_DATA}/diag.${timestr}.nc" "${DATA}/"
       ln -snf "${UMBRELLA_FCST_DATA}/diag.${timestr}.nc.done" "${DATA}/"
     fi
-  done
-fi
+  fi
+done
+
 # prelink the mpasout files to umbrella
 if [[ "${MPASOUT_TIMELEVELS}" != "" ]]; then # prioritize MPASOUT_TIMELEVELS
   read -ra mpasout_all <<< "${MPASOUT_TIMELEVELS}"
@@ -125,10 +153,14 @@ elif [[ "${mpasout_interval,,}" != "none" ]]; then
 fi
 # shellcheck disable=SC2068
 for fhr in ${mpasout_all[@]}; do
-  CDATEp=$( ${NDATE} "${fhr}" "${CDATE}" )
-  timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
-  ln -snf "${UMBRELLA_FCST_DATA}/mpasout.${timestr}.nc" "${DATA}/"
-  ln -snf "${UMBRELLA_FCST_DATA}/mpasout.${timestr}.nc.done" "${DATA}/"
+  cur_hr=10#${fhr}
+  max_hr=10#${fcst_len_hrs_thiscyc}
+  if (( cur_hr <= max_hr )); then
+    CDATEp=$( ${NDATE} "${fhr}" "${CDATE}" )
+    timestr=$(date -d "${CDATEp:0:8} ${CDATEp:8:2}" +%Y-%m-%d_%H.%M.%S)
+    ln -snf "${UMBRELLA_FCST_DATA}/mpasout.${timestr}.nc" "${DATA}/"
+    ln -snf "${UMBRELLA_FCST_DATA}/mpasout.${timestr}.nc.done" "${DATA}/"
+  fi
 done
 
 # run the MPAS model

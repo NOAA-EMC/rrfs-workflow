@@ -53,7 +53,7 @@ for bigmin_this in ${RADARREFL_TIMELEVEL[@]}; do
   obs_appendix=${REFLOBS_APPENDIX:-grib2}
   NSSL=${OBSPATH_NSSLMOSAIC}
 
-  mrms="MergedReflectivityQC"
+  mrms="${MRMS_PREFIX:-MergedReflectivityQC}"
   #
   #-----------------------------------------------------------------------
   #

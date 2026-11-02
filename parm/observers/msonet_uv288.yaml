@@ -61,7 +61,7 @@
            identifier:
              name: PolygonCheck
              logging: true
-           <<: *polygonConfig
+           <<: *polygonConfig  # yamllint disable-line rule:anchors
 
          # Time window filter
          - filter: Domain Check
@@ -114,7 +114,7 @@
          - filter: AcceptList  # accept back selected providers
            apply at iterations: 0,1
            identifier:
-             name: AcceptProviders_raws
+             name: AcceptProvidersRaws
              logging: true
              diagnostic flag new: false
            where:
@@ -126,7 +126,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_afa
+             name: AcceptStationsAfa
              logging: true
              diagnostic flag new: false
            where:
@@ -137,7 +137,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_apg
+             name: AcceptStationsApg
              logging: true
              diagnostic flag new: false
            where:
@@ -148,7 +148,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_aprswxnet
+             name: AcceptStationsAprswxnet
              logging: true
              diagnostic flag new: false
            where:
@@ -159,7 +159,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_arlfrd
+             name: AcceptStationsArlfrd
              logging: true
              diagnostic flag new: false
            where:
@@ -170,7 +170,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_aws
+             name: AcceptStationsAws
              logging: true
              diagnostic flag new: false
            where:
@@ -181,7 +181,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_awx
+             name: AcceptStationsAwx
              logging: true
              diagnostic flag new: false
            where:
@@ -192,7 +192,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_caic
+             name: AcceptStationsCaic
              logging: true
              diagnostic flag new: false
            where:
@@ -203,7 +203,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_codot
+             name: AcceptStationsCodot
              logging: true
              diagnostic flag new: false
            where:
@@ -214,7 +214,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_coop
+             name: AcceptStationsCoop
              logging: true
              diagnostic flag new: false
            where:
@@ -225,7 +225,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_dcnet
+             name: AcceptStationsDcnet
              logging: true
              diagnostic flag new: false
            where:
@@ -236,7 +236,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_gadot
+             name: AcceptStationsGadot
              logging: true
              diagnostic flag new: false
            where:
@@ -247,7 +247,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_gldnws
+             name: AcceptStationsGldnws
              logging: true
              diagnostic flag new: false
            where:
@@ -258,7 +258,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_gomoos
+             name: AcceptStationsGomoos
              logging: true
              diagnostic flag new: false
            where:
@@ -269,7 +269,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_hads
+             name: AcceptStationsHads
              logging: true
              diagnostic flag new: false
            where:
@@ -280,7 +280,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_iadot
+             name: AcceptStationsIadot
              logging: true
              diagnostic flag new: false
            where:
@@ -291,7 +291,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_iem
+             name: AcceptStationsIem
              logging: true
              diagnostic flag new: false
            where:
@@ -302,7 +302,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_indot
+             name: AcceptStationsIndot
              logging: true
              diagnostic flag new: false
            where:
@@ -313,7 +313,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_internet
+             name: AcceptStationsInternet
              logging: true
              diagnostic flag new: false
            where:
@@ -324,7 +324,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_ksdot
+             name: AcceptStationsKsdot
              logging: true
              diagnostic flag new: false
            where:
@@ -335,7 +335,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_map
+             name: AcceptStationsMap
              logging: true
              diagnostic flag new: false
            where:
@@ -346,7 +346,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_mddot
+             name: AcceptStationsMddot
              logging: true
              diagnostic flag new: false
            where:
@@ -357,7 +357,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_mndot
+             name: AcceptStationsMndot
              logging: true
              diagnostic flag new: false
            where:
@@ -368,7 +368,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_mocomagnet
+             name: AcceptStationsMocomagnet
              logging: true
              diagnostic flag new: false
            where:
@@ -379,7 +379,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_maritime
+             name: AcceptStationsMaritime
              logging: true
              diagnostic flag new: false
            where:
@@ -390,7 +390,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_mesowest
+             name: AcceptStationsMesowest
              logging: true
              diagnostic flag new: false
            where:
@@ -401,7 +401,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_nddot
+             name: AcceptStationsNddot
              logging: true
              diagnostic flag new: false
            where:
@@ -412,7 +412,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_nedor
+             name: AcceptStationsNedor
              logging: true
              diagnostic flag new: false
            where:
@@ -423,7 +423,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_nerrs
+             name: AcceptStationsNerrs
              logging: true
              diagnostic flag new: false
            where:
@@ -434,7 +434,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_nhdot
+             name: AcceptStationsNhdot
              logging: true
              diagnostic flag new: false
            where:
@@ -445,7 +445,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_njwxnet
+             name: AcceptStationsNjwxnet
              logging: true
              diagnostic flag new: false
            where:
@@ -456,7 +456,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_nonfedawos
+             name: AcceptStationsNonfedawos
              logging: true
              diagnostic flag new: false
            where:
@@ -467,7 +467,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_ohdot
+             name: AcceptStationsOhdot
              logging: true
              diagnostic flag new: false
            where:
@@ -478,7 +478,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_raws
+             name: AcceptStationsRaws
              logging: true
              diagnostic flag new: false
            where:
@@ -489,7 +489,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_sao
+             name: AcceptStationsSao
              logging: true
              diagnostic flag new: false
            where:
@@ -500,7 +500,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_sfwmd
+             name: AcceptStationsSfwmd
              logging: true
              diagnostic flag new: false
            where:
@@ -511,7 +511,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_udfcd
+             name: AcceptStationsUdfcd
              logging: true
              diagnostic flag new: false
            where:
@@ -522,7 +522,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_urbanet
+             name: AcceptStationsUrbanet
              logging: true
              diagnostic flag new: false
            where:
@@ -533,7 +533,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_vadot
+             name: AcceptStationsVadot
              logging: true
              diagnostic flag new: false
            where:
@@ -544,7 +544,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_vtdot
+             name: AcceptStationsVtdot
              logging: true
              diagnostic flag new: false
            where:
@@ -555,7 +555,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_widot
+             name: AcceptStationsWidot
              logging: true
              diagnostic flag new: false
            where:
@@ -566,7 +566,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_wxforyou
+             name: AcceptStationsWxforyou
              logging: true
              diagnostic flag new: false
            where:
@@ -577,7 +577,7 @@
          - filter: AcceptList  # accept back selected stations
            apply at iterations: 0,1
            identifier:
-             name: AcceptStations_wydot
+             name: AcceptStationsWydot
              logging: true
              diagnostic flag new: false
            where:
