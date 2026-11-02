@@ -121,7 +121,7 @@
 #           filter variables:
 #           - name: airTemperature
 #           analysis_time: "@ANALYSIS_DATE@"
-#           analysis_time_tolerance: PT0S
+#           analysis_time_tolerance: PT0M
 #           min_spacing: PT90M
 #           equidistant_time_selection: after
 #           variable names:
