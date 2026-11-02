@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+declare -rx PS4='+ $(basename ${BASH_SOURCE[0]:-${FUNCNAME[0]:-"Unknown"}})[${LINENO}]: '
+set -x
+date
+
+#-----------------------------------------------------------------------
+# Specify Execution Areas
+#-----------------------------------------------------------------------
+export HOMErrfs=${HOMErrfs}
+export EXECrrfs=${EXECrrfs:-${HOMErrfs}/exec}
+export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
+export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
+export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
+
+#-----------------------------------------------------------------------
+# Create DATA directory
+#-----------------------------------------------------------------------
+export pid=${pid:-$$}
+export jobid=${jobid:-ioda_viirs_${cyc}}
+export UMBRELLA_IODA_VIIRS_DATA=${UMBRELLA_IODA_VIIRS_DATA:-${DATAROOT}/${RUN}_ioda_viirs_${cyc}_${rrfs_ver}/${WGF}}
+export DATA=${DATA:-${UMBRELLA_IODA_VIIRS_DATA}/${jobid}}
+
+[[ -d "${DATA}" ]] && rm -rf "${DATA}"
+mkdir -p "${DATA}"
+
+#-----------------------------------------------------------------------
+# COM directories
+#-----------------------------------------------------------------------
+export COMINrrfs=${COMINrrfs:-$(compath.py "${envir}/rrfs/${rrfs_ver}")}
+
+export COMOUT=${COMOUT:-$(compath.py -o "${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}")}
+#export COMOUT=/gpfs/f6/wrfruc/scratch/Steven.Fletcher/rrfs-data/com/${RUN}.${PDY}/${cyc}
+mkdir -p "${COMOUT}/ioda_viirs/${WGF}"
+
+#-----------------------------------------------------------------------
+# Execute the VIIRS converter script
+#-----------------------------------------------------------------------
+export pgmout="${DATA}/OUTPUT.$$"
+"${HOMErrfs}/scripts/exrrfs_ioda_viirs.sh"
+export err=$?; err_chk
+
+[[ -e "${pgmout}" ]] && cat "${pgmout}"
+
+#-----------------------------------------------------------------------
+# Cleanup
+#-----------------------------------------------------------------------
+[[ "${KEEPDATA^^}" == "NO" ]] && rm -rf "${DATA}"
+
+date
+echo "JOB ${jobid:-} HAS COMPLETED NORMALLY!"
+exit 0
+
