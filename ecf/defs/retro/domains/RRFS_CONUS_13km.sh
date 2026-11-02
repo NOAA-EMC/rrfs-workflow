@@ -124,9 +124,8 @@ export DO_ENS_BLENDING='FALSE'
 EOF
 }
 
-# Job sizes: <ecflow task-name glob>:<extra sbatch options>. make_rrfs_retro_def.sh puts the
-# options on the matching tasks, and sbatch command-line options override the #SBATCH lines in the
-# ecf cards, so the cards themselves stay as they are.
+# Job sizes: <ecflow task-name glob>:<extra sbatch options>. Node sizing stays with the domain;
+# task walltimes come from the selected retro config and override the #SBATCH lines in the cards.
 DOMAIN_SBATCH=(
   # ensf: 5 members of a 60 h forecast. The cards ask for 68 nodes per member and 4 per post, as
   # the NA domain needs; at this resolution one node does either. prep_cyc, make_lbcs and prdgen
@@ -134,25 +133,24 @@ DOMAIN_SBATCH=(
   "jrrfs_ensf_forecast*:--nodes=1 --time=01:30:00"
   "jrrfs_ensf_post_*:--nodes=1"
   "jrrfs_ensf_recenter*:--nodes=1"
-  "jrrfs_archive_retro:--time=00:12:00"
-  "jrrfs_clean:--nodes=1 --time=00:12:00"
-  "jrrfs_clean_early:--nodes=1 --time=00:12:00"
-  "jrrfs_det_forecast:--nodes=1 --time=00:12:00"
-  "jrrfs_det_forecast_long:--nodes=1 --time=00:30:00"
+  "jrrfs_clean:--nodes=1"
+  "jrrfs_clean_early:--nodes=1"
+  "jrrfs_det_forecast:--nodes=1"
+  "jrrfs_det_forecast_long:--nodes=1"
   "jrrfs_det_forecast_spinup:--nodes=1 --time=00:15:00"
   # the spinup analyses fall back to the 80 GDAS members at cold starts and on day 1; on a busy
   # WCOSS2 those reads (10-30 s each) ran past 40 min
   "jrrfs_det_analysis_gsi_spinup:--nodes=1 --time=01:30:00"
-  "jrrfs_det_analysis_gsi*:--nodes=1 --time=00:12:00"
-  "jrrfs_det_ioda_bufr:--nodes=1 --time=00:12:00"
-  "jrrfs_det_make_ics:--nodes=1 --time=00:12:00"
-  "jrrfs_det_make_lbcs_*:--nodes=1 --time=00:12:00"
-  "jrrfs_det_post_f*:--nodes=1 --time=00:12:00"
-  "jrrfs_det_prdgen_f*:--nodes=1 --time=00:12:00"
-  "jrrfs_det_prep_cyc:--nodes=1 --time=00:12:00"
-  "jrrfs_det_process_bufr:--nodes=1 --time=00:12:00"
-  "jrrfs_det_save_restart_f*:--nodes=1 --time=00:12:00"
-  "jrrfs_det_save_restart_long_*:--nodes=1 --time=00:12:00"
+  "jrrfs_det_analysis_gsi*:--nodes=1"
+  "jrrfs_det_ioda_bufr:--nodes=1"
+  "jrrfs_det_make_ics:--nodes=1"
+  "jrrfs_det_make_lbcs_*:--nodes=1"
+  "jrrfs_det_post_f*:--nodes=1"
+  "jrrfs_det_prdgen_f*:--nodes=1"
+  "jrrfs_det_prep_cyc:--nodes=1"
+  "jrrfs_det_process_bufr:--nodes=1"
+  "jrrfs_det_save_restart_f*:--nodes=1"
+  "jrrfs_det_save_restart_long_*:--nodes=1"
   "jrrfs_enkf_forecast*:--nodes=1 --time=00:30:00"
   "jrrfs_enkf_recenter*:--nodes=1"
   "jrrfs_enkf_calc_ensmean*:--nodes=1"
