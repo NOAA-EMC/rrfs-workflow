@@ -196,7 +196,7 @@ JCB_CONFIG_DBZ=${JCB_CONFIG_DBZ-rdas-atmosphere-templates-fv3_c13_dbz.yaml}
 DO_DACOLD=${DO_DACOLD:-FALSE}
 EXT_SONDE=${EXT_SONDE:-FALSE}
 # Job size. Nodes x tasks per node must match the template's layout,
-+# Walltimes for the 13 km retro tasks. These config values override the task-card defaults.
+# Walltimes for the 13 km retro tasks. These config values override the task-card defaults.
 WALLTIME_ARCHIVE_RETRO=${WALLTIME_ARCHIVE_RETRO:-00:12:00}
 WALLTIME_CLEAN=${WALLTIME_CLEAN:-00:12:00}
 WALLTIME_CLEAN_EARLY=${WALLTIME_CLEAN_EARLY:-00:12:00}
