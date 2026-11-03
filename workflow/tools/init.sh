@@ -15,9 +15,6 @@ case ${MACHINE} in
   ursa)
     FIX_RRFS_LOCATION=/scratch4/BMC/rtrr/FIX_RRFS2
     ;;
-  jet)
-    FIX_RRFS_LOCATION=/lfs5/BMC/nrtrr/FIX_RRFS2
-    ;;
   orion|hercules)
     FIX_RRFS_LOCATION=/work/noaa/zrtrr/FIX_RRFS2
     ;;
@@ -29,6 +26,8 @@ case ${MACHINE} in
       FIX_RRFS_LOCATION=/gpfs/f5/gsl-glo/world-shared/role.rrfsfix/FIX_RRFS2
     elif [[ -d /gpfs/f6 ]]; then
       FIX_RRFS_LOCATION=/gpfs/f6/bil-fire10-oar/world-shared/role.rrfsfix/FIX_RRFS2
+    elif [[ -d /gpfs/f7 ]]; then
+      FIX_RRFS_LOCATION=/gpfs/f7/wrfruc/world-shared/role.rrfsfix/FIX_RRFS2
     else
       echo "unsupported gaea cluster: ${MACHINE}"
     fi

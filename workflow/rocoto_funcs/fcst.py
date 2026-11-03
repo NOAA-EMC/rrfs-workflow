@@ -25,12 +25,21 @@ def fcst(xmlFile, expdir, do_ensemble=False, dcEnsGrpInfo=None, do_spinup=False,
     # Task-specific EnVars beyond the task_common_vars
     extrn_mdl_source = os.getenv('IC_EXTRN_MDL_NAME', 'IC_PREFIX_not_defined')
     fcst_len_hrs_cycles = os.getenv('FCST_LEN_HRS_CYCLES', '03 03')
-    if do_spinup:
-        fcst_len_hrs_cycles = ('01 ' * 24).strip()  # spinup cycles only need 1h forecasts
     lbc_interval = os.getenv('LBC_INTERVAL', '3')
     history_interval = os.getenv('HISTORY_INTERVAL', '1')
     diag_interval = os.getenv('DIAG_INTERVAL', '1')
+    diag_timelevels = os.getenv('DIAG_TIMELEVELS', '')
     restart_interval = os.getenv('RESTART_INTERVAL', 'none')
+    mpasout_interval = os.getenv('MPASOUT_INTERVAL', '1')
+    mpasout_timelevels = os.getenv('MPASOUT_TIMELEVELS', '')
+    if do_spinup:  # hardcode spinup cycles to 1h forecasts
+        fcst_len_hrs_cycles = ('01 ' * 24).strip()
+        mpasout_interval = history_interval = diag_interval = '1'
+        mpasout_timelevels = diag_timelevels = ''
+        # history_interval = diag_interval = 'none'  #TBD
+    fcst_dt = os.getenv('FCST_DT', 'FCST_DT_not_defined')
+    diag_timelevels = diag_timelevels.replace('@dt@', f'{fcst_dt}s')
+
     physics_suite = os.getenv('PHYSICS_SUITE', 'PHYSICS_SUITE_not_defined')
     coldhrs = os.getenv('COLDSTART_CYCS', '03 15')
     coldstart_cyc_do_da = os.getenv('COLDSTART_CYCS_DO_DA', 'TRUE')
@@ -40,14 +49,15 @@ def fcst(xmlFile, expdir, do_ensemble=False, dcEnsGrpInfo=None, do_spinup=False,
         'LBC_INTERVAL': f'{lbc_interval}',
         'HISTORY_INTERVAL': f'{history_interval}',
         'DIAG_INTERVAL': f'{diag_interval}',
+        'DIAG_TIMELEVELS': f'{diag_timelevels}',
         'RESTART_INTERVAL': f'{restart_interval}',
-        'MPASOUT_INTERVAL': os.getenv('MPASOUT_INTERVAL', '1'),
-        'MPASOUT_TIMELEVELS': os.getenv('MPASOUT_TIMELEVELS', ''),
+        'MPASOUT_INTERVAL': f'{mpasout_interval}',
+        'MPASOUT_TIMELEVELS': f'{mpasout_timelevels}',
         'PHYSICS_SUITE': f'{physics_suite}',
         'LSM_SCHEME': os.getenv('LSM_SCHEME', 'sf_ruc'),
         'NSOIL_LEVELS': os.getenv('NSOIL_LEVELS', '9'),
         'FCST_LEN_HRS_CYCLES': f'{fcst_len_hrs_cycles}',
-        'FCST_DT': os.getenv('FCST_DT', 'FCST_DT_not_defined'),
+        'FCST_DT': f'{fcst_dt}',
         'FCST_SUBSTEPS': os.getenv('FCST_SUBSTEPS', 'FCST_SUBSTEPS_not_defined'),
         'FCST_RADT': os.getenv('FCST_RADT', 'FCST_RADT_not_defined'),
     }

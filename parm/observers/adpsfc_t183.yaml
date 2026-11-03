@@ -54,7 +54,7 @@
            identifier:
              name: PolygonCheck
              logging: true
-           <<: *polygonConfig
+           <<: *polygonConfig  # yamllint disable-line rule:anchors
 
          # Time window filter
          - filter: Domain Check
@@ -393,6 +393,20 @@
            - variable:
                name: TempObsErrorData/airTemperatureAt2M
              value: is_valid
+           defer to post: true
+
+         # Halve final observation error after all QC and error restoration
+         - filter: Perform Action
+           apply at iterations: 0,1
+           identifier:
+             name: ObsErrorHalve
+             logging: true
+             diagnostic flag new: false
+           filter variables:
+           - name: airTemperatureAt2M
+           action:
+             name: inflate error
+             inflation factor: 0.5
            defer to post: true
 
          #- filter: GOMsaver

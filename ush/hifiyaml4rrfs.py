@@ -1,5 +1,5 @@
 # ------------------------------
-#  Guoqing.Ge@noaa.gov, Aug. 31st, 2025
+#  hifiyaml v0.2.2
 # ------------------------------
 import re
 import sys
@@ -14,7 +14,7 @@ def load(fpath, replacements=None, pattern=r"@(\w+)@"):
     data = []
     with open(fpath, 'r') as infile:
         for line in infile:
-            line = line.rstrip()  # strip all trailing empty spaces
+            line = line.rstrip('\r\n')  # strip trailing newline characters
             if replacements:
                 line = compiled.sub(lambda m: replacements.get(m.group(1), m.group(0)), line)
             data.append(line)
@@ -89,12 +89,13 @@ def next_pos(data, pos, querystr=""):
     line1 = data[pos]
     nspace, spaces, line1 = strip_indentations(line1)
     if len(query_list) >= 2 and query_list[-2].isdigit() and not query_list[-1].isdigit():
-        # i.e, the ".../0/key" situation
+        # i.e, the ".../0/key" situation where key is on the same line as "- "
         # more complicated situations, such as a list of list (of list ...)
         # are suggested to be handled based on the first list block outside hifiyaml
-        line1 = line1[2:]  # assume "- " instead of "-   " or even more spaces
-        nspace += 2
-        spaces += "  "
+        if line1.startswith("- "):
+            line1 = line1[2:]  # assume "- " instead of "-   " or even more spaces
+            nspace += 2
+            spaces += "  "
 
     end = len(data)
     next_pos = None
@@ -161,10 +162,10 @@ def get_start_pos(data, querystr="", stop_on_error=False, linestr=""):
                     nextpos = i
                     knt = int(s)
                     for j in range(0, knt):
-                        nextpos = next_pos(data, nextpos, querystr)
+                        nextpos = next_pos(data, nextpos)
                     cur = nextpos
                     if cur >= len(data):
-                        errmsg = f"WARNNING: out of the list index '{querystr}' "
+                        errmsg = f"WARNING: out of the list index '{querystr}' "
                         sys.stderr.write(f"{errmsg}\n")
                         if stop_on_error:
                             sys.exit(1)
@@ -175,16 +176,18 @@ def get_start_pos(data, querystr="", stop_on_error=False, linestr=""):
                     while dashpos < len(data) and data[dashpos].strip().startswith('#'):
                         dashpos += 1
                     if dashpos >= len(data) or "- " not in data[dashpos]:  # out of the list index
-                        errmsg = f"WARNNING: out of the list index '{querystr}' "
+                        errmsg = f"WARNING: out of the list index '{querystr}' "
                         sys.stderr.write(f"{errmsg}\n")
                         if stop_on_error:
                             sys.exit(1)
+                    end = next_pos(data, cur)
                     found = True
                     break
 
             else:  # dictionary key or linestr
                 if (linestr and linestr in data[i] and not data[i].strip().startswith("#")) or f"{s}:" in line:
                     cur = i
+                    end = next_pos(data, cur)
                     found = True
                     break
         if not found:
@@ -211,7 +214,10 @@ def get(data, querystr, do_dedent=False):
         pos1 = 0
         pos2 = len(data)
     else:
-        pos1, _ = get_start_pos(data, querystr)
+        pos1, errmsg = get_start_pos(data, querystr)
+        if errmsg is not None:
+            sys.stderr.write(f"{errmsg}\n")
+            return block
         pos2 = next_pos(data, pos1, querystr)
 
     nspace = strip_indentations(data[pos1])[0]

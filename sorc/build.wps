@@ -31,7 +31,7 @@ cd "${HOMErrfs}/sorc/WPS" || exit 1
 ./clean
 if [[ "${MACHINE}" == "wcoss2" ]]; then
   cp ../_workaround_/WPS/configure.wps_wcoss2 configure.wps
-elif [[ "${MACHINE}" == "gaeac6" ]] || [[ "${MACHINE}" == "orion" || "${MACHINE}" == "hercules" || "${MACHINE}" == "ursa" || "${MACHINE}" == "hostgeneric" ]]; then
+elif [[ "${MACHINE}" == gaeac* ]] || [[ "${MACHINE}" == "orion" || "${MACHINE}" == "hercules" || "${MACHINE}" == "ursa" || "${MACHINE}" == "hostgeneric" ]]; then
   mkdir -p .tmpNETCDFDIR/include
   mkdir -p .tmpNETCDFDIR/lib
   ln -snf "${netcdf_c_ROOT}"/include/* .tmpNETCDFDIR/include
@@ -46,7 +46,7 @@ else
 fi
 ./compile ungrib
 
-if [[ "${MACHINE}" == "gaeac6" ]] || [[ "${MACHINE}" == "orion" || "${MACHINE}" == "hercules" || "${MACHINE}" == "ursa" || "${MACHINE}" == "hostgeneric" ]]; then
+if [[ "${MACHINE}" == gaeac* ]] || [[ "${MACHINE}" == "orion" || "${MACHINE}" == "hercules" || "${MACHINE}" == "ursa" || "${MACHINE}" == "hostgeneric" ]]; then
   cd ungrib/src || exit 1
   ifort -o ungrib.exe  misc_definitions_module.o debug_cio.o module_debug.o module_stringutil.o \
     table.o module_datarray.o gridinfo.o new_storage.o filelist.o ungrib.o output.o rrpr.o \
