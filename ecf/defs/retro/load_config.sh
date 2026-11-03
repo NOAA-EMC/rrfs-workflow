@@ -30,8 +30,14 @@ unset _retro_dir _retro_config
 # Each run can use its own pair of top-level suites on a shared ecFlow server.
 RRFS_SUITE=${RRFS_SUITE:-para}
 PRODCLONE_SUITE=${PRODCLONE_SUITE:-prod_clone}
-# Keep each suite's generated workflow settings separate, even when RETRO_WORK_BASE is shared.
-RETRO_FIX_DIR=${RETRO_FIX_DIR:-${RETRO_WORK_BASE}/fix/${RRFS_SUITE}}
+# Keep each experiment's generated workflow settings separate. WCOSS2's ptmp is scratch,
+# so put its fix tree under the persistent ecFlow data root beside submit; other machines
+# keep the existing work-base location.
+if [ "${MACHINE}" = "WCOSS2" ] && [ -n "${ECF_DATA_ROOT:-}" ] && [ -n "${EXPT_ID:-}" ]; then
+  RETRO_FIX_DIR=${RETRO_FIX_DIR:-${ECF_DATA_ROOT}/fix/${EXPT_ID}}
+else
+  RETRO_FIX_DIR=${RETRO_FIX_DIR:-${RETRO_WORK_BASE}/fix/${RRFS_SUITE}}
+fi
 # Settings files from before MACHINE was a setting were all for Ursa
 MACHINE=${MACHINE:-URSA}
 # The NA sample leaves DOMAIN out; default it here so every script that reads it agrees

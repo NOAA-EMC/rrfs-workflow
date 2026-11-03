@@ -421,6 +421,13 @@ if [ "${EXTRN}" = true ]; then
   ./manage_externals/checkout_externals
 fi
 
+# Apply the UPP aerosol layer bounds correction before compiling UPP.
+if [ "${BUILD_WORKAROUND}" = true ] && [ "${BUILD_UPP}" = "on" ]; then
+  printf "... copying UPP aerosol layer workaround source ...\n"
+  cp "${SORC_DIR}/_workaround_/upp/MDLFLD.f" \
+     "${SORC_DIR}/UPP/sorc/ncep_post.fd/MDLFLD.f"
+fi
+
 # Apply the development workarounds that are carried with this branch. These
 # are intentionally opt-in and are applied after external checkout.
 if [ "${BUILD_WORKAROUND}" = true ] && [ "${BUILD_RDASAPP}" = "on" ]; then

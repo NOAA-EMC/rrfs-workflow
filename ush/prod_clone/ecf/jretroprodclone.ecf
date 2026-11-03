@@ -41,7 +41,9 @@ ${pyexe} -c "import ecflow"
 export RETRO_COMROOT=%RETRO_COMROOT%
 export RETRO_START=%RETRO_START%
 export RETRO_END=%RETRO_END%
-export RETRO_STATE=%ECF_HOME%/retro_prod_clone_state.json
+# Keep each experiment's driver state and reports separate in the shared server home.
+export RETRO_STATE=%ECF_HOME%/%PRODCLONE_SUITE:prod_clone%/retro_prod_clone_state.json
+export RRFS_STATUS_DIR=%ECF_HOME%/%RRFS_SUITE:para%
 export RRFS_SUITE=%RRFS_SUITE:para%
 export PRODCLONE_SUITE=%PRODCLONE_SUITE:prod_clone%
 export RRFS_VER=%rrfs_ver:v1.0%
@@ -59,5 +61,5 @@ Retro stand-in for jupdateprodclonestatuses. Each run marks its driver-suite tas
 upstream files exist under RETRO_COMROOT for the family's date, and releases the next RRFS primary
 family (setting PDY and requeuing it) once the current one is complete.
 
-To restart a retro from RETRO_START, remove %ECF_HOME%/retro_prod_clone_state.json.
+To restart a retro from RETRO_START, remove %ECF_HOME%/%PRODCLONE_SUITE:prod_clone%/retro_prod_clone_state.json.
 %end

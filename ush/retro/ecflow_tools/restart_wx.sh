@@ -43,20 +43,82 @@ fi
 
 # Resolve and constrain cleanup targets so a bad config cannot remove RETRO_WORK_BASE or its parent.
 base=$(realpath -m -- "${RETRO_WORK_BASE}")
+if [ "${base}" = "/" ] || [ -z "${base}" ]; then
+  echo "Refusing to clean with unsafe RETRO_WORK_BASE: ${base}" >&2
+  exit 1
+fi
+# WCOSS2 keeps each experiment's working files on a separate stmp filesystem.
+# Allow only that experiment's child directory, never the shared stmp root.
+stmp_target=
+if [ "${MACHINE}" = WCOSS2 ] && [ -n "${RETRO_STMP_ROOT:-}" ] && [ -n "${EXPT_ID:-}" ]; then
+  case ${EXPT_ID} in
+    .|..|*/*) echo "Refusing to clean with unsafe EXPT_ID: ${EXPT_ID}" >&2; exit 1 ;;
+  esac
+  stmp_root=$(realpath -m -- "${RETRO_STMP_ROOT}")
+  if [ "${stmp_root}" = / ]; then
+    echo "Refusing to clean with unsafe RETRO_STMP_ROOT: ${stmp_root}" >&2
+    exit 1
+  fi
+  stmp_target=${stmp_root}/${EXPT_ID}
+fi
+# Shared noscrub storage permits only the selected suites and this experiment's output.
+# Resolve parents but not child names, so a child symlink cannot redirect cleanup elsewhere.
+persistent_targets=()
+server_home=$(realpath -m -- "${ECF_HOME}")
+data_root=
+output_root=
+if [ "${MACHINE}" = WCOSS2 ] && [ -n "${ECF_DATA_ROOT:-}" ]; then
+  data_root=$(realpath -m -- "${ECF_DATA_ROOT}")
+  output_root=$(realpath -m -- "${ECF_OUTPUTDIR:-${data_root}/output}")
+  if [ "${data_root}" = / ]; then
+    echo "Refusing to clean with unsafe ECF_DATA_ROOT: ${data_root}" >&2
+    exit 1
+  fi
+  for parent in "${server_home}" "${output_root}"; do
+    case ${parent} in
+      "${data_root}"/*) ;;
+      *) echo "Refusing to clean outside the persistent ecFlow workspace: ${parent}" >&2; exit 1 ;;
+    esac
+  done
+  for child in "${RRFS_SUITE}" "${PRODCLONE_SUITE}" "${EXPT_ID:-}"; do
+    case ${child} in
+      ''|.|..|*/*) echo "Refusing to clean with unsafe experiment or suite name: ${child}" >&2; exit 1 ;;
+    esac
+  done
+  persistent_targets=("${server_home}/${RRFS_SUITE}" "${server_home}/${PRODCLONE_SUITE}"
+                      "${output_root}/${EXPT_ID}")
+fi
 targets=()
 # Remove only the selected suites' generated job files and logs; keep ECF_HOME for the server.
 for target in "${OUTPUTDIR}" "${DEV_PTMP}" "${DEV_DATAROOT}" \
              "${ECF_HOME}/${RRFS_SUITE}" "${ECF_HOME}/${PRODCLONE_SUITE}"; do
   resolved=$(realpath -m -- "${target}")
+  if [ "${resolved}" = "${base}" ] || [ "${resolved}" = "${server_home}" ] || \
+     [ "${resolved}" = "${data_root}" ] || [ "${resolved}" = "${output_root}" ]; then
+    echo "Refusing to clean a shared or experiment root: ${resolved}" >&2
+    exit 1
+  fi
   case ${resolved} in
     "${base}"/*) targets+=("${resolved}") ;;
-    *) echo "Refusing to clean path outside RETRO_WORK_BASE: ${resolved}" >&2; exit 1 ;;
+    *)
+      # Allow only this experiment stmp directory or the exact selected persistent children.
+      allowed=NO
+      if [ -n "${stmp_target}" ] && [ "${target}" = "${DEV_DATAROOT}" ] && \
+         [ "${resolved}" = "${stmp_target}" ]; then
+        allowed=YES
+      fi
+      for persistent_target in "${persistent_targets[@]}"; do
+        if [ "${resolved}" = "${persistent_target}" ]; then allowed=YES; fi
+      done
+      if [ "${allowed}" = YES ]; then
+        targets+=("${resolved}")
+      else
+        echo "Refusing to clean outside the configured experiment directories: ${resolved}" >&2
+        exit 1
+      fi
+      ;;
   esac
 done
-if [ "${base}" = "/" ] || [ -z "${base}" ]; then
-  echo "Refusing to clean with unsafe RETRO_WORK_BASE: ${base}" >&2
-  exit 1
-fi
 echo "Will clean these directories:"
 for target in "${targets[@]}"; do echo "  ${target}"; done
 
