@@ -30,7 +30,6 @@ awk -v q="'" -v ph="${PACKAGEHOME}" -v eh="${ECF_HOME}" -v com="${RETRO_DATA_ROO
     -v start="${RETRO_START}" -v end="${RETRO_END}" -v suite="${RRFS_SUITE}" \
     -v clone="${PRODCLONE_SUITE}" -v ev="${ECFLOW_VER}" \
     -v det_cold="${det_cold}" \
-    -v window="${RETRO_FAMILY_WINDOW:-1}" \
     -v layout="${RETRO_LAYOUT:-families}" \
     -v throttle="${CYCLE_THROTTLE:-1}" '
   function ed(name, value) { print "  edit " name " " q value q }
@@ -52,7 +51,6 @@ awk -v q="'" -v ph="${PACKAGEHOME}" -v eh="${ECF_HOME}" -v com="${RETRO_DATA_ROO
     ed("PRODCLONE_SUITE", clone)
     ed("ALWAYS_COMPLETE", "nosofs")
     ed("DET_COLD_HR", det_cold)
-    ed("RETRO_FAMILY_WINDOW", window)
     ed("RETRO_LAYOUT", layout)
     # change it while the retro runs with ush/retro/ecflow_tools/throttle.sh
     ed("CYCLE_THROTTLE", throttle)

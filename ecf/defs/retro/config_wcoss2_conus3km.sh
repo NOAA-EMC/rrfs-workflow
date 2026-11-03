@@ -89,9 +89,6 @@ DOMAIN=${DOMAIN:-RRFS_CONUS_3km}
 # ---------------------------------------------------------------------------------------------
 RETRO_START=${RETRO_START:-20240506}      # first retro day, and the day that cold starts
 RETRO_END=${RETRO_END:-20240512}          # last retro day
-# How many 6-cycle primary families the retro driver keeps open at once, 1-4. 1 runs them one
-# after another; 4 lets the 03z and 15z cold-start chains run side by side.
-RETRO_FAMILY_WINDOW=${RETRO_FAMILY_WINDOW:-4}
 # YES relaxes the suite's 399 clock-time triggers so cycles are not gated on the wall clock
 RETRO=${RETRO:-YES}
 
