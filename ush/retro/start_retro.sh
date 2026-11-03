@@ -44,6 +44,11 @@ esac
 if ! type module >/dev/null 2>&1; then source /etc/profile; fi
 # the module may set ECF_PORT (Ursa: to 1500 + uid), so keep a port chosen beforehand
 port_requested=${ECF_PORT:-}
+# Loading ecFlow can repoint ECF_ROOT to its software installation; retain the data workspace.
+server_data_root=${ECF_DATA_ROOT:-${HOME}/ecflow}
+server_output_dir=${ECF_OUTPUTDIR:-${server_data_root}/output}
+server_com_dir=${ECF_COMDIR:-${ECF_HOME}}
+server_lfs_dir=${LFS_OUTPUTDIR:-${ECF_HOME}}
 module load "ecflow/${ECFLOW_VER}" >/dev/null 2>&1 || die "cannot load ecflow/${ECFLOW_VER}"
 export ECF_HOST=${ECFLOW_HOST}
 export ECF_PORT=${port_requested:-${default_port}}
@@ -60,8 +65,10 @@ if ping_ok && { suite_loaded "${RRFS_SUITE}" || suite_loaded "${PRODCLONE_SUITE}
 fi
 
 step "B: links and suite definitions"
-log=${ECF_HOME}/start_retro.setup.log
-mkdir -p "${ECF_HOME}" "${OUTPUTDIR}" "${DEV_PTMP}" "${DEV_DATAROOT}"
+# Setup logs and driver files belong to their suites when ECF_HOME is shared.
+log=${ECF_HOME}/${RRFS_SUITE}/start_retro.setup.log
+mkdir -p "${ECF_HOME}/${RRFS_SUITE}" "${ECF_HOME}/${PRODCLONE_SUITE}" \
+         "${OUTPUTDIR}" "${DEV_PTMP}" "${DEV_DATAROOT}"
 # setup_retro_links.sh runs ecf/setup_ecf_links.sh and is verbose; keep its output in a log
 if [ "${workaround}" = YES ]; then
   "${repo}/ush/retro/setup_retro_links.sh" --workaround > "${log}" 2>&1 \
@@ -92,8 +99,10 @@ if ping_ok; then
 elif [ "${MACHINE}" = "WCOSS2" ]; then
   # NCO's development servers are started through their own script, which also registers them
   die "no server answers on ${ECF_HOST}:${ECF_PORT}. Start it first: ssh ${ECF_HOST}, then
-       export ECF_ROOT=\$HOME/ecflow ECF_OUTPUTDIR=\$HOME/ecflow LFS_OUTPUTDIR=\$HOME/ecflow ECF_COMDIR=\$HOME/ecflow
-       mkdir -p \$ECF_ROOT; /apps/ops/prod/nco/core/ecflow.v5.6.0.14/scripts/server_check.sh
+       export ECF_HOST='${ECF_HOST}' ECF_ROOT='${server_data_root}' ECF_DATA_ROOT='${server_data_root}'
+       export ECF_HOME='${ECF_HOME}' ECF_OUTPUTDIR='${server_output_dir}'
+       export ECF_COMDIR='${server_com_dir}' LFS_OUTPUTDIR='${server_lfs_dir}'
+       mkdir -p '${ECF_HOME}' '${server_output_dir}'; /apps/ops/prod/nco/core/ecflow.v${ECFLOW_VER}/scripts/server_check.sh
        and answer yes. Then re-run this script; the steps before this one are safe to repeat."
 else
   # setsid gives the server its own session: a plain "nohup ... &" keeps the ssh session open for
@@ -115,7 +124,7 @@ if [ "${reload}" = YES ]; then
   done
 fi
 # a state file left from an earlier retro would make the driver think it had already started
-rm -f "${ECF_HOME}/retro_prod_clone_state.json"
+rm -f "${ECF_HOME}/${PRODCLONE_SUITE}/retro_prod_clone_state.json"
 ecflow_client --load "${repo}/ecf/defs/retro/rrfs_retro.def"
 ecflow_client --load "${repo}/ush/prod_clone/ecf/defs_retro.def"
 # --begin clears ordinary suspensions and submits whatever is already free (e.g. the cleanup
@@ -136,7 +145,7 @@ cat <<EOF
 Suites /${RRFS_SUITE} and /${PRODCLONE_SUITE} are loaded and begun on ${ECF_HOST}:${ECF_PORT}.
 $( [ "${hold}" = YES ] && echo "/${RRFS_SUITE} is suspended (--hold); resume it to start submitting." || echo "The retro driver releases the first family within a minute." )
 
-Watch it:  ${repo}/ush/retro/rrfsstat --suite ${RRFS_SUITE}  (or ${ECF_HOME}/rrfs_status.txt)
+Watch it:  ${repo}/ush/retro/rrfsstat --suite ${RRFS_SUITE}  (or ${ECF_HOME}/${RRFS_SUITE}/rrfs_status.txt)
      GUI:  ecflow_ui, server ${ECF_HOST} port ${ECF_PORT}
     Logs:  ${ECF_HOME}/${RRFS_SUITE}/primary/<DD>/rrfs/v1.0/<cyc>/<wgf>/<family>/<task>.1
     Stop:  ecflow_client --suspend /${RRFS_SUITE}      (pause everything, keep state)

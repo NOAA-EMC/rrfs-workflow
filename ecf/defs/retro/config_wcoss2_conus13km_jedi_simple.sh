@@ -1,6 +1,6 @@
 #!/bin/bash
 #
-# Sample settings for a simplified RRFS_CONUS_13km retro on WCOSS2: deterministic 3DVar cycling
+# Sample settings for a simplified RRFS_CONUS_13km JEDI retro on WCOSS2.
 # only, with the ensemble for the hybrid analysis read from a staged one rather than produced by
 # this suite.
 #
@@ -34,27 +34,41 @@ MACHINE=${MACHINE:-WCOSS2}
 # ---------------------------------------------------------------------------------------------
 # Where the workflow writes
 # ---------------------------------------------------------------------------------------------
-# Everything this run produces hangs off one base directory.
-# A week of NA 3 km output is tens of TB, so the default is ptmp; note its purge policy.
-RETRO_WORK_BASE=${RETRO_WORK_BASE:-/lfs/h2/emc/ptmp/${USER}/ecflow_rrfs}
+# Give each experiment its own suite, COM output, work files, and archive path.
+EXPT_ID=${EXPT_ID:-det_c13_3dvar_jedi_baseline006}
+RRFS_SUITE=${RRFS_SUITE:-${EXPT_ID}}
+PRODCLONE_SUITE=${PRODCLONE_SUITE:-${RRFS_SUITE}_prod_clone}
+
+# Keep model COM output under ptmp and job working files under stmp.
+RETRO_WORK_ROOT=${RETRO_WORK_ROOT:-/lfs/h2/emc/ptmp/${USER}/ecflow_rrfs}
+RETRO_WORK_BASE=${RETRO_WORK_BASE:-${RETRO_WORK_ROOT}/${EXPT_ID}}
 
 # ecflow job files and their output (the server creates the task directories underneath)
-ECF_HOME=${ECF_HOME:-${RETRO_WORK_BASE}/submit}
-OUTPUTDIR=${OUTPUTDIR:-${RETRO_WORK_BASE}/output}
-# COM output. envir-p1.h builds COMROOT as ${DEV_PTMP}/${USER}/ecflow_rrfs/para/com, so this is a
-# base directory and the user and suite names are appended to it.
+# Keep the shared server workspace and checkpoints on persistent noscrub storage.
+# The ecFlow software module also uses ECF_ROOT, so ECF_DATA_ROOT identifies our workspace.
+export ECF_DATA_ROOT=${ECF_DATA_ROOT:-/lfs/h2/emc/da/noscrub/${USER}/ecflow}
+export ECF_ROOT=${ECF_DATA_ROOT}
+export ECF_HOME=${ECF_HOME:-${ECF_DATA_ROOT}/submit}
+export ECF_OUTPUTDIR=${ECF_OUTPUTDIR:-${ECF_DATA_ROOT}/output}
+export ECF_COMDIR=${ECF_COMDIR:-${ECF_HOME}}
+export LFS_OUTPUTDIR=${LFS_OUTPUTDIR:-${ECF_HOME}}
+# Separate experiment output beneath the shared output directory.
+OUTPUTDIR=${OUTPUTDIR:-${ECF_OUTPUTDIR}/${EXPT_ID}}
+# COM output is rooted under this experiment's work base; the user and suite are appended.
 DEV_PTMP=${DEV_PTMP:-${RETRO_WORK_BASE}/ptmp}
 # job working directories (DATAROOT). In stmp rather than under RETRO_WORK_BASE, which is in
 # ptmp: a job's working directory is scratch for as long as that job runs, which is what stmp is
 # for, and it keeps the COM output and the working directories on separate filesystems the way
 # the Rocoto retros do (their STMP and PTMP).
-DEV_DATAROOT=${DEV_DATAROOT:-/lfs/h2/emc/stmp/${USER}/ecflow_rrfs}
+RETRO_STMP_ROOT=${RETRO_STMP_ROOT:-/lfs/h2/emc/stmp/${USER}/ecflow_rrfs}
+DEV_DATAROOT=${DEV_DATAROOT:-${RETRO_STMP_ROOT}/${EXPT_ID}}
 
 # ---------------------------------------------------------------------------------------------
 # PBS
 # ---------------------------------------------------------------------------------------------
 PROJ=${PROJ:-RRFS}                        # the cards add -DEV: "-A RRFS-DEV"
 QUEUE=${QUEUE:-dev}
+QUEUE_ARCH=${QUEUE_ARCH:-dev_transfer} # HPSS transfers use the WCOSS2 transfer queue
 # NCO keeps the production job sizes (115-node forecasts); EMC selects the smaller dev resources
 # and 52-node forecast layouts that EMC's WCOSS2 parallels run.
 RESOURCE_CONFIG=${RESOURCE_CONFIG:-EMC}
@@ -67,7 +81,8 @@ RESOURCE_CONFIG=${RESOURCE_CONFIG:-EMC}
 # production switch the other machine's hosts refuse the login. Its port is your uid + 2000.
 # ECFLOW_VER must be a version "module avail ecflow" lists, since every job loads it.
 ECFLOW_VER=${ECFLOW_VER:-5.6.0.14}
-ECFLOW_HOST=${ECFLOW_HOST:-cdecflow01}    # host running the server (head.h reads it as ECF_LOGHOST)
+ECFLOW_HOST=${ECFLOW_HOST:-${ECF_HOST:-cdecflow01}}    # host running the server (head.h reads it as ECF_LOGHOST)
+export ECF_HOST=${ECFLOW_HOST}
 
 # ---------------------------------------------------------------------------------------------
 # Input data
@@ -75,7 +90,7 @@ ECFLOW_HOST=${ECFLOW_HOST:-cdecflow01}    # host running the server (head.h read
 # fix tree; setup_retro_links.sh links <repo>/fix to it. The production package's tree has the
 # workflow.conf_dev and _prod files the retro needs; NCO may remove a version once the next is
 # installed, so update the version here (or link a copy of your own) when the links break.
-FIX_RRFS_DIR=${FIX_RRFS_DIR:-/lfs/h1/ops/prod/packages/rrfs.v1.0.26/fix}
+FIX_RRFS_DIR=${FIX_RRFS_DIR:-/lfs/h1/ops/prod/packages/rrfs.v1.0.28/fix}
 # dev-sci's shared fix tree; the domain files (ecf/defs/retro/domains) link other grids' fix files
 # from it
 FIX_RRFS_SHARED=${FIX_RRFS_SHARED:-/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS}
@@ -162,13 +177,28 @@ RUN_NONVARCLD=${RUN_NONVARCLD:-FALSE}     # non-variational cloud analysis (DO_N
 RUN_UPDATE_BC=${RUN_UPDATE_BC:-FALSE}     # boundary update and soil adjustment (DO_UPDATE_BC)
 RUN_GSIDIAG=${RUN_GSIDIAG:-TRUE}          # offline GSI diagnostics (DO_GSIDIAG_OFFLINE)
 RUN_LIGHTNING=${RUN_LIGHTNING:-FALSE}     # GLM flash extent density and its DA (DO_GLM_FED_DA)
-RUN_RADAR=${RUN_RADAR:-TRUE}              # MRMS reflectivity; this configuration assimilates it
+DO_RADDA=${DO_RADDA:-FALSE}               # Keep satellite radiance DA off by default.
+RUN_RADAR=${RUN_RADAR:-FALSE}              # Keep radar DA off by default for simple comparisons.
+# Match GSI observation selection to radar processing unless the experiment sets OB_TYPE directly.
+if [ -z "${OB_TYPE:-}" ]; then
+  if [ "${RUN_RADAR}" = "TRUE" ]; then
+    OB_TYPE=conv_dbz
+  else
+    OB_TYPE=conv
+  fi
+fi
 RUN_POST=${RUN_POST:-TRUE}                # post and products; FALSE for a DA-only run
+# The simple retro only needs on-the-hour deterministic post outputs.
+RUN_SUBHOURLY_POST=${RUN_SUBHOURLY_POST:-FALSE}
+# Archive completed deterministic cycles separately for each experiment.
+DO_ARCHIVE_RETRO=${DO_ARCHIVE_RETRO:-TRUE}
+ARCHIVE_ROOT=${ARCHIVE_ROOT:-/NCEPDEV/emc-meso/5year/${USER}/RRFSv1/May2024_retro/v1.2.0}
+ARCHIVEDIR=${ARCHIVEDIR:-${ARCHIVE_ROOT}/${EXPT_ID}}
 # JEDI analysis, the Rocoto config.sh "JEDI options". DA_SYSTEM_DET picks which det analysis
 # runs, GSI (the operational route) or JEDI; the rest are read only when it is JEDI.
 # setup_retro_links.sh writes them into det/workflow.conf and make_rrfs_retro_def.sh sizes the
 # job from them.
-DA_SYSTEM_DET=${DA_SYSTEM_DET:-GSI}
+DA_SYSTEM_DET=${DA_SYSTEM_DET:-JEDI}
 # JCB templates in parm/jedi that the analysis renders its yaml from, conventional and
 # reflectivity. The conventional one decides 3DVar or hybrid: for hybrid 3DEnVar with the
 # 30 EnKF members use rdas-atmosphere-templates-fv3_c13_hybrid.yaml.
@@ -179,11 +209,29 @@ JCB_CONFIG_DBZ=${JCB_CONFIG_DBZ-rdas-atmosphere-templates-fv3_c13_dbz.yaml}
 DO_DACOLD=${DO_DACOLD:-FALSE}
 EXT_SONDE=${EXT_SONDE:-FALSE}
 # Job size. Nodes x tasks per node must match the template's layout,
+# Walltimes for the 13 km retro tasks. These config values override the task-card defaults.
+WALLTIME_ARCHIVE_RETRO=${WALLTIME_ARCHIVE_RETRO:-00:12:00}
+WALLTIME_CLEAN=${WALLTIME_CLEAN:-00:12:00}
+WALLTIME_CLEAN_EARLY=${WALLTIME_CLEAN_EARLY:-00:12:00}
+WALLTIME_DET_FORECAST=${WALLTIME_DET_FORECAST:-00:12:00}
+WALLTIME_DET_FORECAST_LONG=${WALLTIME_DET_FORECAST_LONG:-00:30:00}
+WALLTIME_DET_ANALYSIS_GSI=${WALLTIME_DET_ANALYSIS_GSI:-00:12:00}
+WALLTIME_DET_IODA_BUFR=${WALLTIME_DET_IODA_BUFR:-00:12:00}
+WALLTIME_DET_MAKE_ICS=${WALLTIME_DET_MAKE_ICS:-00:12:00}
+WALLTIME_DET_MAKE_LBCS=${WALLTIME_DET_MAKE_LBCS:-00:12:00}
+WALLTIME_DET_POST=${WALLTIME_DET_POST:-00:12:00}
+WALLTIME_DET_PRDGEN=${WALLTIME_DET_PRDGEN:-00:12:00}
+WALLTIME_DET_PREP_CYC=${WALLTIME_DET_PREP_CYC:-00:12:00}
+WALLTIME_DET_PROCESS_BUFR=${WALLTIME_DET_PROCESS_BUFR:-00:12:00}
+WALLTIME_DET_SAVE_RESTART=${WALLTIME_DET_SAVE_RESTART:-00:12:00}
+WALLTIME_DET_SAVE_RESTART_LONG=${WALLTIME_DET_SAVE_RESTART_LONG:-00:12:00}
+
+
 # the 14x14 layout in the c13 templates: 196 tasks
 NNODES_ANALYSIS_JEDI=${NNODES_ANALYSIS_JEDI:-2}
 PPN_ANALYSIS_JEDI=${PPN_ANALYSIS_JEDI:-98}
 TPP_ANALYSIS_JEDI=${TPP_ANALYSIS_JEDI:-1}
-WALLTIME_ANALYSIS_JEDI=${WALLTIME_ANALYSIS_JEDI:-00:50:00}
+WALLTIME_ANALYSIS_JEDI=${WALLTIME_ANALYSIS_JEDI:-00:12:00}
 # JEDI EnKF. DA_SYSTEM_ENKF picks which EnKF analysis runs, GSI or JEDI (GETKF), independent of
 # DA_SYSTEM_DET; the rest are read only when it is JEDI. setup_retro_links.sh writes them into
 # enkf/workflow.conf.
@@ -207,11 +255,10 @@ RRFSE_NWGES=${RRFSE_NWGES:-/lfs/h3/emc/lam/noscrub/hui.liu/runs_co13km/rrfs.v0.8
 NUM_ENS_MEMBERS=${NUM_ENS_MEMBERS:-30}
 
 # YES keeps the working directories under stmp after jobs finish (sets KEEPDATA and KEEP_TMP)
-KEEPDATA=${KEEPDATA:-NO}
+KEEPDATA=${KEEPDATA:-YES}
 
 # suite definition to copy, relative to ecf/defs
 BASE_DEF=${BASE_DEF:-nco_para/rrfs_nco_para.def}
-RRFS_SUITE=${RRFS_SUITE:-para}            # suite name in the generated definition
 RRFS_VER=${RRFS_VER:-v1.0}
 ENVIR=${ENVIR:-prod}
 MACHINE_SITE=${MACHINE_SITE:-development}

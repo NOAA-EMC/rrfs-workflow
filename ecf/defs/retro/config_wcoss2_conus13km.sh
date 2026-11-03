@@ -52,6 +52,7 @@ DEV_DATAROOT=${DEV_DATAROOT:-/lfs/h2/emc/stmp/${USER}/ecflow_rrfs}
 # ---------------------------------------------------------------------------------------------
 PROJ=${PROJ:-RRFS}                        # the cards add -DEV: "-A RRFS-DEV"
 QUEUE=${QUEUE:-dev}
+QUEUE_ARCH=${QUEUE_ARCH:-dev_transfer} # HPSS transfers use the WCOSS2 transfer queue
 # NCO keeps the production job sizes (115-node forecasts); EMC selects the smaller dev resources
 # and 52-node forecast layouts that EMC's WCOSS2 parallels run.
 RESOURCE_CONFIG=${RESOURCE_CONFIG:-EMC}
@@ -72,7 +73,7 @@ ECFLOW_HOST=${ECFLOW_HOST:-cdecflow01}    # host running the server (head.h read
 # fix tree; setup_retro_links.sh links <repo>/fix to it. The production package's tree has the
 # workflow.conf_dev and _prod files the retro needs; NCO may remove a version once the next is
 # installed, so update the version here (or link a copy of your own) when the links break.
-FIX_RRFS_DIR=${FIX_RRFS_DIR:-/lfs/h1/ops/prod/packages/rrfs.v1.0.26/fix}
+FIX_RRFS_DIR=${FIX_RRFS_DIR:-/lfs/h1/ops/prod/packages/rrfs.v1.0.28/fix}
 # dev-sci's shared fix tree; the domain files (ecf/defs/retro/domains) link other grids' fix files
 # from it
 FIX_RRFS_SHARED=${FIX_RRFS_SHARED:-/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS}

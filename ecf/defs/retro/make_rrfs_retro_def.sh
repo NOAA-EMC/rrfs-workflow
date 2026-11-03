@@ -30,6 +30,7 @@ done
 PACKAGEHOME=${PACKAGEHOME:-$(cd "${defs_dir}/../../.." && pwd)}
 c=${RETRO_DATA_ROOT}/com
 DEV_COMPATH=${DEV_COMPATH:-$c/gfs:$c/gefs:$c/obsproc:$c/nsst:$c/nosofs:$c/hrrr:$c/rap}
+QUEUE_ARCH=${QUEUE_ARCH:-${QUEUE}}
 DCOMROOT=${DCOMROOT:-${RETRO_DATA_ROOT}/dcom}
 
 awk \
@@ -41,6 +42,7 @@ awk \
     -v od="${OUTPUTDIR}" \
     -v proj="${PROJ}" \
     -v queue="${QUEUE}" \
+    -v queue_arch="${QUEUE_ARCH}" \
     -v part="${PARTITION:-}" \
     -v ptmp="${DEV_PTMP}" \
     -v droot="${DEV_DATAROOT}" \
@@ -83,7 +85,7 @@ awk \
     ed("PROJ", proj)
     ed("PROJENVIR", "DEV")
     ed("QUEUE", queue)
-    ed("QUEUE_ARCH", queue)
+    ed("QUEUE_ARCH", queue_arch)
     ed("OUTPUTDIR", od)
     # no product alerts from a retro; the WCOSS2 fake dbn_alert fails on any file it cannot find,
     # such as the NA subset that prdgen alerts on but a CONUS domain never writes
@@ -120,7 +122,7 @@ awk \
     if ($2 == "PACKAGEHOME") ed("PACKAGEHOME", ph)
     if ($2 == "PROJ")        ed("PROJ", proj)
     if ($2 == "QUEUE")       ed("QUEUE", queue)
-    if ($2 == "QUEUE_ARCH")  ed("QUEUE_ARCH", queue)
+    if ($2 == "QUEUE_ARCH")  ed("QUEUE_ARCH", queue_arch)
     if ($2 == "OUTPUTDIR")   ed("OUTPUTDIR", od)
     next
   }
@@ -576,7 +578,7 @@ EOF
   # With older-cycle trigger alternatives removed, these restart saves are not needed by a retro.
   # Keep the task nodes visible as set-aside, and rewrite references so they cannot enable fallback.
   ${skip} --mode ignore --label "older-cycle restart saves (retro)" \
-          --name 'jrrfs_det_save_restart_f[23]' \
+          --name 'jrrfs_det_save_restart_(f[23]|long_[23])' \
           --name 'jrrfs_enkf_save_restart_(mem[0-9]+_f[23]|f[23]_done)'
 
   # Keep the archive step in retro definitions only. Each deterministic cycle gets one task after
@@ -622,8 +624,9 @@ EOF
 fi
 
 # Coarser domains (strip when merging to the nco branch): give the tasks the domain's table
-# names their job sizes through SBATCH_OVERRIDES on Ursa, or QSUB_OVERRIDES on WCOSS2. The table
-# is in sbatch terms; on WCOSS2 --nodes=N becomes N whole 128-core nodes and --time the walltime.
+# names their node sizes through SBATCH_OVERRIDES on Ursa, or QSUB_OVERRIDES on WCOSS2. Task
+# walltimes come from the retro config so simplified and full runs can set them consistently.
+# The table is in sbatch terms; on WCOSS2 --nodes=N becomes N whole 128-core nodes.
 # The node counts carry over because ranks per node come from the domain's PPN_* settings, which
 # all fit in a WCOSS2 node; RRFS_NA_3km has none, the cards are sized for it. The JEDI analyses
 # come first and on every domain, sized from the JEDI settings in retro/config.sh, so their job
@@ -633,10 +636,31 @@ job_sizes+=("jrrfs_enkf_analysis_jedi*:--nodes=${NNODES_ANALYSIS_ENKF_JEDI:-48} 
 # shellcheck source=/dev/null
 . "${defs_dir}/domains/${DOMAIN}.sh"
 job_sizes+=("${DOMAIN_SBATCH[@]}")
-python3 - "${out_def}" "${MACHINE}" "${job_sizes[@]}" <<'EOF'
+# Per-task walltimes are configurable without editing the domain's node sizing table.
+job_walltimes=(
+  "jrrfs_archive_retro:${WALLTIME_ARCHIVE_RETRO:-}"
+  "jrrfs_clean:${WALLTIME_CLEAN:-}"
+  "jrrfs_clean_early:${WALLTIME_CLEAN_EARLY:-}"
+  "jrrfs_det_forecast:${WALLTIME_DET_FORECAST:-}"
+  "jrrfs_det_forecast_long:${WALLTIME_DET_FORECAST_LONG:-}"
+  "jrrfs_det_analysis_gsi*:${WALLTIME_DET_ANALYSIS_GSI:-}"
+  "jrrfs_det_ioda_bufr:${WALLTIME_DET_IODA_BUFR:-}"
+  "jrrfs_det_make_ics:${WALLTIME_DET_MAKE_ICS:-}"
+  "jrrfs_det_make_lbcs_*:${WALLTIME_DET_MAKE_LBCS:-}"
+  "jrrfs_det_post_f*:${WALLTIME_DET_POST:-}"
+  "jrrfs_det_prdgen_f*:${WALLTIME_DET_PRDGEN:-}"
+  "jrrfs_det_prep_cyc:${WALLTIME_DET_PREP_CYC:-}"
+  "jrrfs_det_process_bufr:${WALLTIME_DET_PROCESS_BUFR:-}"
+  "jrrfs_det_save_restart_f*:${WALLTIME_DET_SAVE_RESTART:-}"
+  "jrrfs_det_save_restart_long_*:${WALLTIME_DET_SAVE_RESTART_LONG:-}"
+)
+python3 - "${out_def}" "${MACHINE}" "${job_sizes[@]}" -- "${job_walltimes[@]}" <<'EOF'
 import fnmatch, re, sys
 path, machine = sys.argv[1], sys.argv[2]
-table = [a.split(":", 1) for a in sys.argv[3:]]
+args = sys.argv[3:]
+separator = args.index("--")
+size_table = [a.split(":", 1) for a in args[:separator]]
+walltime_table = [a.split(":", 1) for a in args[separator + 1:]]
 
 def qsub_opts(sbatch):
     out = []
@@ -658,14 +682,19 @@ for line in open(path).read().split("\n"):
     out.append(line)
     t = line.split()
     if len(t) >= 2 and t[0] == "task":
-        opts = next((o for pat, o in table if fnmatch.fnmatch(t[1], pat)), None)
+        opts = next((o for pat, o in size_table if fnmatch.fnmatch(t[1], pat)), "")
+        walltime = next((value for pat, value in walltime_table
+                         if value and fnmatch.fnmatch(t[1], pat)), "")
+        # Keep an explicit domain-specific time, such as the longer GSI spin-up allocation.
+        if walltime and not re.search(r"(?:^|\s)--time=", opts):
+            opts = (opts + " " if opts else "") + f"--time={walltime}"
         if opts:
             if machine == "WCOSS2":
                 opts = qsub_opts(opts)
             out.append(line[:len(line) - len(line.lstrip())] + f"  edit {var} '{opts}'")
             n += 1
 open(path, "w").write("\n".join(out))
-print(f"{n} tasks given job sizes for the domain and the JEDI analyses")
+print(f"{n} tasks given job sizes and configured walltimes")
 EOF
 
 echo "Wrote ${out_def} from ${BASE_DEF}"
