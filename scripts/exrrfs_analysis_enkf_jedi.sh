@@ -73,18 +73,20 @@ TPP_ANALYSIS_ENKF_JEDI=${TPP_ANALYSIS_ENKF_JEDI:-1}
 case $MACHINE in
 #
 "WCOSS2")
+  ulimit -v unlimited
   export FI_MR_CACHE_MONITOR=memhooks
   export FI_MR_CACHE_MAX_COUNT=0
   export MPICH_ENV_DISPLAY=1
   export MPICH_OFI_STARTUP_CONNECT=1
   export MPICH_OFI_VERBOSE=1
-  export MPICH_MPIIO_HINTS='*.tile1.nc:romio_cb_read=disable,*.sfc_data.nc:romio_cb_read=disable,*.phy_data.nc:romio_cb_read=disable,*.fv_*.res.nc:romio_cb_write=enable,*.sfc_data.nc:romio_cb_write=enable'
+  export MPICH_MPIIO_HINTS='*.tile1.nc:romio_cb_read=disable,*.sfc_data.nc:romio_cb_read=disable,*.phy_data.nc:romio_cb_read=disable,*.fv_*.res.nc:romio_cb_write=disable,*.sfc_data.nc:romio_cb_write=disable'
   export OMP_STACKSIZE=500M
   export OMP_NUM_THREADS=${TPP_ANALYSIS_ENKF_JEDI}
   export MALLOC_MMAP_THRESHOLD_=1048576
   export MALLOC_TRIM_THRESHOLD_=1048576
   ncores=$(( NNODES_ANALYSIS_ENKF_JEDI*PPN_ANALYSIS_ENKF_JEDI ))
-  APRUN="mpiexec -n ${ncores} -ppn ${PPN_ANALYSIS_ENKF_JEDI} --cpu-bind core --depth ${OMP_NUM_THREADS}"
+  depth=$(( 128 / PPN_ANALYSIS_ENKF_JEDI ))
+  APRUN="mpiexec -n ${ncores} -ppn ${PPN_ANALYSIS_ENKF_JEDI} --cpu-bind core --depth ${depth}"
   ;;
 #
 "URSA")
