@@ -10,12 +10,16 @@ one cold start to the next stands on its own, so the whole retro can be written 
   /<clone>/primary/<PDY>_<FF>/...                                 one family per GFS cycle and day
 
 Each chain family carries PDY and its own DEV_DATAROOT (<dataroot>/<PDY>), because the working
-directories are named by cycle hour alone. Every cycle family starts suspended; the retro driver
-resumes them oldest first, CYCLE_THROTTLE at a time (exretroprodclone.py).
+directories are named by cycle hour alone. A chain that runs past midnight (15z to 02z) gives
+those cycles the next day's PDY. Every cycle family starts suspended; the retro driver resumes
+them oldest first, CYCLE_THROTTLE at a time (exretroprodclone.py). The retro covers RETRO_START
+00z to RETRO_END 23z; cycles before the first cold start only make the LBCs it reads.
 
 References between the old families are rewritten for each day:
   - to a cycle in the same chain: the new absolute path
-  - to an earlier chain: dropped (a "== complete" test becomes true); the chain cold starts
+  - to an earlier chain: dropped (a "== complete" test becomes true); the chain cold starts,
+    but still waits on the LBCs it reads from there (03z reads 00z's)
+  - to a cycle outside the retro: dropped
   - to a later chain (clean waits on the next cycles): the last cycle of its own chain instead
   - to /prod_clone: the clone family of that GFS cycle at or before the cycle's 6-hourly family
 cycle_end tasks go, and so do tasks that never run (defstatus complete) and families left empty,
@@ -23,7 +27,7 @@ unless something waits on one of their events.
 
 Usage:
   chain_suite.py rrfs  <def> --suite S --clone C --start YYYYMMDD --end YYYYMMDD
-                             --chains "00 12" --dataroot DIR
+                             --chains "03 15" --dataroot DIR
   chain_suite.py clone <def> --start YYYYMMDD --end YYYYMMDD
 """
 
@@ -121,8 +125,8 @@ def expand_rrfs(args):
     nodes, owner = read_blocks(lines)
     suite, clone = args.suite, args.clone
     chains = sorted(int(h) for h in args.chains.split())
-    if not chains or any(h % 6 for h in chains):
-        sys.exit(f"chain_suite.py: chain start hours must be multiples of 6, not '{args.chains}'")
+    if not chains or any(h < 0 or h > 23 for h in chains):
+        sys.exit(f"chain_suite.py: chain start hours must be 00-23, not '{args.chains}'")
     primary = nodes[f"/{suite}/primary"]
     fams = {f.name: f for f in primary.children}
     if sorted(fams) != ["00", "06", "12", "18"]:
@@ -178,7 +182,22 @@ def expand_rrfs(args):
     def is_pruned(path):
         return is_pruned_in(path, pruned)
 
-    stats = {"same chain": 0, "earlier chain": 0, "later chain": 0, "clone": 0, "never-run": 0}
+    # The retro runs from RETRO_START 00z to RETRO_END 23z. Cycles before the first cold start
+    # only make the LBCs it reads (det/ics); a chain past RETRO_END 23z stops there.
+    first = datetime.datetime.strptime(args.start, "%Y%m%d")
+    first_cold = first + datetime.timedelta(hours=chains[0])
+    retro_last = datetime.datetime.strptime(args.end, "%Y%m%d") + datetime.timedelta(hours=23)
+
+    def lbc_only(path):
+        """True if path is a cycle's det/ics family, inside it, or one of the families above it."""
+        m = re.match(r"(/[^/]+/primary/\d\d/rrfs/v1\.0/\d\dz)(/.*)?$", path)
+        if not m:
+            return False
+        rest = m.group(2) or ""
+        return rest in ("", "/det", "/det/ics") or rest.startswith("/det/ics/")
+
+    stats = {"same chain": 0, "earlier chain": 0, "earlier-chain LBCs": 0, "later chain": 0,
+             "clone": 0, "never-run": 0, "outside the retro": 0}
     externs = set()
     rrfs_re = re.compile(rf"/{re.escape(suite)}/primary/(\d\d)/rrfs/v1\.0/(\d\d)z(/.*)?$")
     clone_re = re.compile(rf"/{re.escape(clone)}/primary/(\d\d)(/.*)?$")
@@ -210,18 +229,26 @@ def expand_rrfs(args):
             m = rrfs_re.match(target)
             if m:
                 tfam, th, rest = m.group(1), int(m.group(2)), m.group(3) or ""
-                if tfam == src_fam and not node.ref.startswith("/"):
-                    return node          # relative, inside the old family: still right as written
-                touched[0] = True
                 delta = (th - src_dt.hour) % 24
                 if delta > 6:
                     delta -= 24
                 tdt = src_dt + datetime.timedelta(hours=delta)
+                if tdt > retro_last or tdt < first or (src_dt < first_cold and not lbc_only(target)):
+                    touched[0] = True
+                    stats["outside the retro"] += 1
+                    return true_if_complete(node)
                 tchain = chain_of(tdt)
+                if tfam == src_fam and not node.ref.startswith("/") and tchain == own_chain:
+                    return node          # relative, inside the old family: still right as written
+                touched[0] = True
                 if tchain == own_chain:
                     stats["same chain"] += 1
                     return new_prim(node, f"/{suite}/primary/{chain_name(tchain)}/rrfs/v1.0/{th:02d}z{rest}")
                 if tchain < own_chain:
+                    # a cold start still needs LBCs made in an earlier chain (03z reads 00z's)
+                    if lbc_only(target) and rest.startswith("/det/ics"):
+                        stats["earlier-chain LBCs"] += 1
+                        return new_prim(node, f"/{suite}/primary/{chain_name(tchain)}/rrfs/v1.0/{th:02d}z{rest}")
                     stats["earlier chain"] += 1
                     return true_if_complete(node)
                 stats["later chain"] += 1
@@ -247,9 +274,9 @@ def expand_rrfs(args):
         new = fold(walk(parse(tokenize(expr), base_old)))
         return new if touched[0] else None
 
-    def emit_node(node, out, src_fam, src_dt):
+    def emit_node(node, out, src_fam, src_dt, chain_day):
         """The lines of a cycle family or anything in it, rewritten for the cycle at src_dt."""
-        if node.path in pruned:
+        if node.path in pruned or (src_dt < first_cold and not lbc_only(node.path)):
             return
         body_end = node.children[0].start if node.children else (node.end - 1 if node.kind != "task" else node.end)
         for i in range(node.start, body_end):
@@ -266,19 +293,35 @@ def expand_rrfs(args):
             out.append(line)
             if i == node.start and re.fullmatch(r"\d\dz", node.name):
                 out.append(line[:len(line) - len(line.lstrip())] + "  defstatus suspended")
+                # a cycle past midnight belongs to the next day
+                if src_dt.date() != chain_day.date():
+                    out.append(line[:len(line) - len(line.lstrip())] + f"  edit PDY '{src_dt:%Y%m%d}'")
         for child in node.children:
-            emit_node(child, out, src_fam, src_dt)
+            emit_node(child, out, src_fam, src_dt, chain_day)
         if node.kind != "task":
             out.append(lines[node.end - 1])
 
-    first = datetime.datetime.strptime(args.start, "%Y%m%d")
     out_primary, ncycles, nchains = [], 0, 0
     fam_indent = lines[fams["00"].start][:len(lines[fams["00"].start]) - len(lines[fams["00"].start].lstrip())]
-    for day in days(args.start, args.end):
+    # from the day before, whose last chain may run into RETRO_START (15z to 02z)
+    for day in days((first - datetime.timedelta(days=1)).strftime("%Y%m%d"), args.end):
         pdy = day.strftime("%Y%m%d")
         for start in chains:
             cdt = day + datetime.timedelta(hours=start)
-            if cdt < first:
+            body = []
+            for h in chain_cycles(start):
+                hdt = cdt + datetime.timedelta(hours=h - start)
+                src = fams[f"{h % 24 // 6 * 6:02d}"]
+                cyc = nodes[f"{src.path}/rrfs/v1.0/{h % 24:02d}z"]
+                if hdt < first or hdt > retro_last:
+                    continue
+                ics = f"{cyc.path}/det/ics"
+                if hdt < first_cold and (ics not in nodes or is_pruned(ics)):
+                    continue
+                n = len(body)
+                emit_node(cyc, body, src.name, hdt, cdt)
+                ncycles += len(body) > n
+            if not body:
                 continue
             fam = fams[f"{start // 6 * 6:02d}"]
             rrfs = nodes[f"{fam.path}/rrfs"]
@@ -291,15 +334,7 @@ def expand_rrfs(args):
             for i in range(v10.start + 1, v10.children[0].start):
                 if lines[i].split()[:2] != ["defstatus", "complete"]:
                     out_primary.append(lines[i])
-            for h in chain_cycles(start):
-                hdt = cdt + datetime.timedelta(hours=h - start)
-                src = fams[f"{h % 24 // 6 * 6:02d}"]
-                cyc = nodes[f"{src.path}/rrfs/v1.0/{h % 24:02d}z"]
-                # a chain past midnight keeps the day it started on; its cycles need their own
-                if hdt.date() != cdt.date():
-                    sys.exit("chain_suite.py: chains that cross midnight are not supported")
-                emit_node(cyc, out_primary, src.name, hdt)
-                ncycles += 1
+            out_primary.extend(body)
             out_primary.append(lines[v10.end - 1])
             out_primary.append(lines[rrfs.end - 1])
             out_primary.append(f"{fam_indent}endfamily")
@@ -344,7 +379,7 @@ def main():
     ap.add_argument("--clone")
     ap.add_argument("--start", required=True)
     ap.add_argument("--end", required=True)
-    ap.add_argument("--chains", default="00 12")
+    ap.add_argument("--chains", default="03 15")
     ap.add_argument("--dataroot")
     args = ap.parse_args()
     if args.which == "rrfs":

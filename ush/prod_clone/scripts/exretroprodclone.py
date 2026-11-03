@@ -503,7 +503,8 @@ def throttle_cycles(ci, defs):
         ver = defs.find_abs_node(f"{chain.get_abs_node_path()}/rrfs/{RRFS_VER}")
         for cyc in ver.nodes if ver else []:
             if re.fullmatch(r"\d\dz", cyc.name()):
-                cycles.append((family_pdy(chain) + cyc.name(), cyc))
+                # a chain past midnight gives those cycles the next day's PDY
+                cycles.append(((family_pdy(cyc) or family_pdy(chain)) + cyc.name(), cyc))
     cycles.sort(key=lambda c: c[0])
     # clean waits on the next cycle, so it must not hold a slot (deadlocks at CYCLE_THROTTLE=1)
     def busy(cyc):

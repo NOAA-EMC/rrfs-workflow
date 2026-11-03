@@ -141,6 +141,9 @@ def collect(defs, suite, cycle_filter, state_filter, show_all=False):
             cyc = m.group(1) if m else "-"
             if cycle_filter and cyc not in cycle_filter:
                 continue
+            # a chain past midnight gives those cycles the next day's PDY
+            cyc_node = defs.find_abs_node(path[:m.end(1)]) if m else None
+            cyc_pdy = (family_pdy(cyc_node) if cyc_node else None) or pdy
             node_state = str(task.get_state())
             state = node_state
             # show held work as suspended, but never hide a failure: an aborted task below a
@@ -156,7 +159,7 @@ def collect(defs, suite, cycle_filter, state_filter, show_all=False):
                      or any(v.name() == "RETRO_SET_ASIDE" for v in task.variables))
             rows.append({
                 "aside": aside,
-                "pdy": pdy,
+                "pdy": cyc_pdy,
                 "cycle": cyc,
                 "task": short,
                 "state": state,
