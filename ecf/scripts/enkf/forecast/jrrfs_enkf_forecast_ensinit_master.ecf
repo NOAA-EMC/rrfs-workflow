@@ -56,6 +56,12 @@ export WGF="%WGF%"
 export MEMBER_NAME="%MEMBER_NAME%"
 export CYCLE_TYPE="%CYCLE_TYPE%"
 export CYCLE_SUBTYPE="%CYCLE_SUBTYPE%"
+# JEDI EnKF forecasts can run RDASApp's analysis-wind conversion executable.
+if [ "${MACHINE}" = "WCOSS2" ] && [ "%DA_ENKF_JEDI:0%" = "1" ]; then
+  module use "${HOMErrfs}/modulefiles"
+  module load run_rdasapp_wcoss2
+fi
+
 module list
 ############################################################
 # CALL executable job script here

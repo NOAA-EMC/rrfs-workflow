@@ -379,7 +379,9 @@ def write_status():
     if not os.path.exists(rrfsstat):
         return
     common = [sys.executable, rrfsstat, "--suite", RRFS_SUITE]
-    for args, name in (([], "rrfs_status.txt"),
+    # Request the original status formats explicitly; the default live view and
+    # RUN report have their own full-retro progress and count display.
+    for args, name in ((["--rollup"], "rrfs_status.txt"),
                        (["-t", "-s", "aborted,active,submitted,queued"], "rrfs_status_tasks.txt")):
         try:
             subprocess.run(common + args + ["-o", os.path.join(STATUS_DIR, name)],

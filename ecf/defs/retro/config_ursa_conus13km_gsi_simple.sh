@@ -33,7 +33,7 @@ MACHINE=${MACHINE:-URSA}
 
 # Keep each DA experiment's ecFlow suites, work files, COM output, and archive separate. Use a
 # separate checkout for each experiment because setup_retro_links.sh writes generated config there.
-EXPT_ID=${EXPT_ID:-det_c13_3dvar_gsi_ecflow_test}
+EXPT_ID=${EXPT_ID:-det_c13_3dvar_gsi_baseline006}
 RRFS_SUITE=${RRFS_SUITE:-${EXPT_ID}}
 PRODCLONE_SUITE=${PRODCLONE_SUITE:-${RRFS_SUITE}_prod_clone}
 
@@ -58,6 +58,7 @@ DEV_DATAROOT=${DEV_DATAROOT:-${RETRO_WORK_BASE}/stmp}
 # ---------------------------------------------------------------------------------------------
 PROJ=${PROJ:-fv3-cam}                     # account
 QUEUE=${QUEUE:-batch}                     # QOS
+QUEUE_ARCH=${QUEUE_ARCH:-${QUEUE}}         # Archive uses u1-service with this QoS
 PARTITION=${PARTITION:-u1-compute}
 # NCO keeps the production job sizes; EMC selects the smaller dev resources and the 52-node
 # forecast layouts, which is what fits Ursa's 75-node per-job limit.
@@ -88,7 +89,7 @@ DOMAIN=${DOMAIN:-RRFS_CONUS_13km}
 # Retro period and suite
 # ---------------------------------------------------------------------------------------------
 RETRO_START=${RETRO_START:-20240506}      # first retro day, and the day that cold starts
-RETRO_END=${RETRO_END:-20240506}          # last retro day
+RETRO_END=${RETRO_END:-20240512}          # last retro day
 # Cycles run at once; increasing beyond 2 could break satbias cycling
 # Chains run back to back below 13; 13 or more lets the next chain start alongside the current one
 CYCLE_THROTTLE=${CYCLE_THROTTLE:-2}
@@ -196,11 +197,29 @@ JCB_CONFIG_DBZ=${JCB_CONFIG_DBZ-rdas-atmosphere-templates-fv3_c13_dbz.yaml}
 DO_DACOLD=${DO_DACOLD:-FALSE}
 EXT_SONDE=${EXT_SONDE:-FALSE}
 # Job size. Nodes x tasks per node must match the template's layout,
+# Walltimes for the 13 km retro tasks. These config values override the task-card defaults.
+WALLTIME_ARCHIVE_RETRO=${WALLTIME_ARCHIVE_RETRO:-00:12:00}
+WALLTIME_CLEAN=${WALLTIME_CLEAN:-00:12:00}
+WALLTIME_CLEAN_EARLY=${WALLTIME_CLEAN_EARLY:-00:12:00}
+WALLTIME_DET_FORECAST=${WALLTIME_DET_FORECAST:-00:12:00}
+WALLTIME_DET_FORECAST_LONG=${WALLTIME_DET_FORECAST_LONG:-00:30:00}
+WALLTIME_DET_ANALYSIS_GSI=${WALLTIME_DET_ANALYSIS_GSI:-00:12:00}
+WALLTIME_DET_IODA_BUFR=${WALLTIME_DET_IODA_BUFR:-00:12:00}
+WALLTIME_DET_MAKE_ICS=${WALLTIME_DET_MAKE_ICS:-00:12:00}
+WALLTIME_DET_MAKE_LBCS=${WALLTIME_DET_MAKE_LBCS:-00:12:00}
+WALLTIME_DET_POST=${WALLTIME_DET_POST:-00:12:00}
+WALLTIME_DET_PRDGEN=${WALLTIME_DET_PRDGEN:-00:12:00}
+WALLTIME_DET_PREP_CYC=${WALLTIME_DET_PREP_CYC:-00:12:00}
+WALLTIME_DET_PROCESS_BUFR=${WALLTIME_DET_PROCESS_BUFR:-00:12:00}
+WALLTIME_DET_SAVE_RESTART=${WALLTIME_DET_SAVE_RESTART:-00:12:00}
+WALLTIME_DET_SAVE_RESTART_LONG=${WALLTIME_DET_SAVE_RESTART_LONG:-00:12:00}
+
+
 # the 14x14 layout in the c13 templates: 196 tasks
 NNODES_ANALYSIS_JEDI=${NNODES_ANALYSIS_JEDI:-2}
 PPN_ANALYSIS_JEDI=${PPN_ANALYSIS_JEDI:-98}
 TPP_ANALYSIS_JEDI=${TPP_ANALYSIS_JEDI:-1}
-WALLTIME_ANALYSIS_JEDI=${WALLTIME_ANALYSIS_JEDI:-00:50:00}
+WALLTIME_ANALYSIS_JEDI=${WALLTIME_ANALYSIS_JEDI:-00:05:00}
 # JEDI EnKF. DA_SYSTEM_ENKF picks which EnKF analysis runs, GSI or JEDI (GETKF), independent of
 # DA_SYSTEM_DET; the rest are read only when it is JEDI. setup_retro_links.sh writes them into
 # enkf/workflow.conf.
