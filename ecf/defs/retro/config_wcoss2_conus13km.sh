@@ -130,7 +130,7 @@ JCB_CONFIG_CONV=${JCB_CONFIG_CONV:-rdas-atmosphere-templates-fv3_c13.yaml}
 JCB_CONFIG_DBZ=${JCB_CONFIG_DBZ-rdas-atmosphere-templates-fv3_c13_dbz.yaml}
 # Whether the analysis also runs on cold-start cycles, and whether synthetic radiosonde
 # temperature and humidity levels are added the way GSI's sonde_ext does
-DO_DACOLD=${DO_DACOLD:-TRUE}
+DO_DACOLD=${DO_DACOLD:-FALSE}
 EXT_SONDE=${EXT_SONDE:-FALSE}
 # Job size. Nodes x tasks per node must match the template's layout,
 # the 14x14 layout in the c13 templates: 196 tasks
