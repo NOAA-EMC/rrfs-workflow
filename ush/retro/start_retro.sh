@@ -143,7 +143,7 @@ fi
 step "Running"
 cat <<EOF
 Suites /${RRFS_SUITE} and /${PRODCLONE_SUITE} are loaded and begun on ${ECF_HOST}:${ECF_PORT}.
-$( [ "${hold}" = YES ] && echo "/${RRFS_SUITE} is suspended (--hold); resume it to start submitting." || echo "The retro driver releases the first family within a minute." )
+$( [ "${hold}" = YES ] && echo "/${RRFS_SUITE} is suspended (--hold); resume it to start submitting." || { [ "${RETRO_LAYOUT:-families}" = chains ] && echo "The retro driver resumes the first ${CYCLE_THROTTLE:-1} cycles within a minute." || echo "The retro driver releases the first family within a minute."; } )
 
 Watch it:  ${repo}/ush/retro/rrfsstat --suite ${RRFS_SUITE}  (or ${ECF_HOME}/${RRFS_SUITE}/rrfs_status.txt)
      GUI:  ecflow_ui, server ${ECF_HOST} port ${ECF_PORT}

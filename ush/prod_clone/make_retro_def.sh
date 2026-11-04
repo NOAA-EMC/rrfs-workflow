@@ -29,7 +29,9 @@ fi
 awk -v q="'" -v ph="${PACKAGEHOME}" -v eh="${ECF_HOME}" -v com="${RETRO_DATA_ROOT}/com" \
     -v start="${RETRO_START}" -v end="${RETRO_END}" -v suite="${RRFS_SUITE}" \
     -v clone="${PRODCLONE_SUITE}" -v ev="${ECFLOW_VER}" \
-    -v det_cold="${det_cold}" '
+    -v det_cold="${det_cold}" \
+    -v layout="${RETRO_LAYOUT:-families}" \
+    -v throttle="${CYCLE_THROTTLE:-1}" '
   function ed(name, value) { print "  edit " name " " q value q }
   $1 == "suite" {
     print "suite " clone
@@ -49,6 +51,9 @@ awk -v q="'" -v ph="${PACKAGEHOME}" -v eh="${ECF_HOME}" -v com="${RETRO_DATA_ROO
     ed("PRODCLONE_SUITE", clone)
     ed("ALWAYS_COMPLETE", "nosofs")
     ed("DET_COLD_HR", det_cold)
+    ed("RETRO_LAYOUT", layout)
+    # change it while the retro runs with ush/retro/ecflow_tools/throttle.sh
+    ed("CYCLE_THROTTLE", throttle)
     print ""
     # the poller runs on the ecflow host every minute; submitting it through Slurm would be 1440 jobs a day
     print "  task jretroprodclone"
@@ -70,6 +75,17 @@ awk -v q="'" -v ph="${PACKAGEHOME}" -v eh="${ECF_HOME}" -v com="${RETRO_DATA_ROO
   skip_top { next }
   { print }
 ' "${clone_dir}/ecf/defs.def" > "${out_def}"
+
+# The GFS forecast hour the cold starts read (EXTRN_MDL_ICS_OFFSET_HRS), if the mirror lacks it
+ics_fhr=$(printf 'f%03d' "${EXTRN_MDL_ICS_OFFSET_HRS:-3}")
+if ! grep -q "task jgfs_atmos_post_${ics_fhr}$" "${out_def}"; then
+  sed -i -E "s/^( *)task jgfs_atmos_post_f003$/&\n\1task jgfs_atmos_post_${ics_fhr}/" "${out_def}"
+fi
+if [ "${RETRO_LAYOUT:-families}" = "chains" ]; then
+  python3 "${PACKAGEHOME}/ecf/defs/retro/chain_suite.py" clone "${out_def}" \
+    --start "${RETRO_START}" \
+    --end "${RETRO_END}"
+fi
 
 echo "Wrote ${out_def}"
 echo "  PACKAGEHOME=${PACKAGEHOME}"

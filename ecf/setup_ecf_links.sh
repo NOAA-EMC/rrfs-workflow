@@ -641,7 +641,9 @@ fi
 
 # add created files/links to git info exclude
 cd $ECF_DIR
-exclude_path="${ECF_DIR}/../.git/info/exclude"
+# git rev-parse also finds it in a git worktree, where .git is a file
+exclude_path=$(git rev-parse --path-format=absolute --git-path info/exclude 2>/dev/null \
+               || echo "${ECF_DIR}/../.git/info/exclude")
 while read line; do
   tmpchkline=$(echo ${line} | sed "s|${ECF_DIR}|ecf|")
   # add line to git info exclude if not already present
