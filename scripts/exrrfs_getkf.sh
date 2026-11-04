@@ -67,7 +67,7 @@ nsoillevels=${NSOIL_LEVELS:-9}
 jedi_da=true #true
 pio_stride=${PIO_STRIDE:-${PPN}}
 pio_num_iotasks=$(( NODES * PPN / pio_stride ))
-do_sppt=${DO_SPPT:-'false'} 
+do_sppt=${DO_SPPT:-'false'}
 
 # We set dt, substeps, radt values to avoid errors in reading namelist.atmosphere
 # but they will NOT be used since no model integration in DA steps
@@ -141,9 +141,9 @@ if [[ ${START_TYPE} == "warm" ]] || [[ ${START_TYPE} == "cold" && ${COLDSTART_CY
   fi
 
   # Save analysis files if requested
-  if [[ "${GETKF_TYPE}" == "post" && "${SAVE_GETKF_ANL^^}" == "TRUE" ]]; then
+  if [[ "${GETKF_TYPE}" =~ ^(observer_solver|solver)$ && "${SAVE_GETKF_ANL^^}" == "TRUE" ]]; then
     #
-    export CMDFILE="${DATA}/poescript_getkfpost"
+    export CMDFILE="${DATA}/poescript_getkfsave"
 
     comoutdir=${COMOUT}/getkf_${GETKF_TYPE}/${WGF}
 
@@ -158,7 +158,7 @@ if [[ ${START_TYPE} == "warm" ]] || [[ ${START_TYPE} == "cold" && ${COLDSTART_CY
     export err=$?
 
     if (( err != 0 )) ; then
-      echo "Error: copying GETKF post files failed with error code ${err} "
+      echo "Error: copying GETKF analysis files failed with error code ${err} "
       err_exit
     fi
 

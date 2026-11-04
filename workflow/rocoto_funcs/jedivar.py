@@ -36,6 +36,7 @@ def jedivar(xmlFile, expdir, spinup_mode=0):
         'REFERENCE_TIME': '@Y-@m-@dT@H:00:00Z',
         'YAML_GEN_METHOD': os.getenv('YAML_GEN_METHOD', '1'),
         'COLDSTART_CYCS_DO_DA': os.getenv('COLDSTART_CYCS_DO_DA', 'TRUE').upper(),
+        'SAVE_JEDI_ANL': os.getenv('SAVE_JEDI_ANL', 'FALSE').upper(),
         'DO_RADAR_REF': os.getenv('DO_RADAR_REF', 'FALSE').upper(),
         'HYB_WGT_ENS': os.getenv('HYB_WGT_ENS', '0.85'),
         'HYB_WGT_STATIC': os.getenv('HYB_WGT_STATIC', '0.15'),

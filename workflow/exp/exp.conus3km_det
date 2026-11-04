@@ -79,6 +79,8 @@ export DO_GRAPHICS=true
 export GRAPHICS_TILES="full NE NC NW SE SC SW EastCO"
 export GRAPHICS_MODEL=${TAG}   # Model Name in the plots
 if [[ "${REALTIME^^}" == "TRUE" ]]; then
+  export SAVE_JEDI_ANL=false
+  export SAVE_NONVAR_CLOUD_ANA=false
   export GRAPHICS_ZIP=true
   export DO_ARCHIVE=true
   export ARCHIVE_HPSSDIR="/5year/BMC/wrfruc/${TAG}"
@@ -110,6 +112,8 @@ if [[ "${REALTIME^^}" == "TRUE" ]]; then
   export IC_EXTRN_MDL_FILENAME_PATTERN="gfs.@Y@m@d/@H/atmos/gfs.t@Hz.pgrb2.0p25.f^HHH^"
   export IC_EXTRN_MDL_FILENAME_PATTERN_B="gfs.@Y@m@d/@H/atmos/gfs.t@Hz.pgrb2b.0p25.f^HHH^"
 else  # ========== for retros ==========
+  export SAVE_JEDI_ANL=true
+  export SAVE_NONVAR_CLOUD_ANA=true
   #export DO_ARCHIVE=true
   #export ARCHIVE_HPSSDIR="/5year/BMC/wrfruc/${USER}/${EXP_NAME}"
   #export ARCHIVE_INTERVAL=1  # run the archive task every several hours
