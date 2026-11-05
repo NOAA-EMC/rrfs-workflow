@@ -229,15 +229,43 @@ def generate_cldamt_anchors(dcSatInfo, dcCldRadInfo, mysis, obstype, spaces=""):
     text = "\n".join(block_clear + block_cloudy) + "\n"
     return text
 
+# ---------------------------------------------------------------------------
+# Check if a jdiag NetCDF file exists and contains observations
+# ---------------------------------------------------------------------------
+def is_valid_jdiag(fpath):
+    if not os.path.isfile(fpath) or os.path.getsize(fpath) == 0:
+        return False
+    # Check dimension via netCDF4 if available
+    try:
+        import netCDF4 as nc
+        with nc.Dataset(fpath, "r") as ds:
+            for dim in ("Location", "nlocs"):
+                if dim in ds.dimensions:
+                    return len(ds.dimensions[dim]) > 0
+            return True
+    except Exception:
+        pass
+    # Check header via ncdump if available
+    try:
+        import subprocess
+        res = subprocess.run(["ncdump", "-h", fpath], capture_output=True, text=True, timeout=5)
+        if res.returncode == 0:
+            for line in res.stdout.splitlines():
+                line_s = line.strip()
+                for dim in ("Location", "nlocs"):
+                    if line_s.startswith(f"{dim} ="):
+                        val = line_s.split("=")[1].strip().rstrip(";")
+                        if val.isdigit():
+                            return int(val) > 0
+            return True
+    except Exception:
+        pass
+    return True
 
 # tweak observers for getkf solver or post:
 #  1. if solver, change the distribution from RoundRobin to Halo
 #  2. transfer the obsdataout obsfile to obsdatain
-#  3. if post, remove the "reduce obs space" actions and "temporal thinning" filters
-#
-# WARNING: This function modifies `data` IN-PLACE.
-#   You MUST pass the actual list object, NOT a slice.
-#   A slice like data[i:j] creates a COPY — mutations won't propagate back.
+#  3. if post, check and drop empty or missing observers
 def getkf_observer_tweak(data, getkf_type):
     if getkf_type == "solver":  # solver cannot use RoundRobin
         for i in range(0, len(data)):
@@ -251,6 +279,16 @@ def getkf_observer_tweak(data, getkf_type):
     spaces = hy.strip_indentations(data[pos])[1]
     data[pos] = f"{spaces}obsfile: data/jdiag/{diagfile}"
 
+    # For getkf post: drop observers whose prior jdiag file is missing or has 0 obs
+    if getkf_type == "post":
+        jdiag_dir = "data/jdiag"
+        diagpath = os.path.join(jdiag_dir, diagfile)
+        if os.path.isdir(jdiag_dir) and any(f.endswith((".nc", ".nc4")) for f in os.listdir(jdiag_dir)):
+            if not is_valid_jdiag(diagpath):
+                sys.stderr.write(f"INFO: GETKF post: dropping empty/missing observer {diagfile}\n")
+                return False
+
+    return True
 
 # get all filters given a line range(pos1, pos2)
 def get_all_filters(data, pos1, pos2):
