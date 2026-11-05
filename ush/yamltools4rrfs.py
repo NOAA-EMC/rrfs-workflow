@@ -229,6 +229,7 @@ def generate_cldamt_anchors(dcSatInfo, dcCldRadInfo, mysis, obstype, spaces=""):
     text = "\n".join(block_clear + block_cloudy) + "\n"
     return text
 
+
 # ---------------------------------------------------------------------------
 # Check if a jdiag NetCDF file exists and contains observations
 # ---------------------------------------------------------------------------
@@ -262,6 +263,7 @@ def is_valid_jdiag(fpath):
         pass
     return True
 
+
 # tweak observers for getkf solver or post:
 #  1. if solver, change the distribution from RoundRobin to Halo
 #  2. transfer the obsdataout obsfile to obsdatain
@@ -289,6 +291,7 @@ def getkf_observer_tweak(data, getkf_type):
                 return False
 
     return True
+
 
 # get all filters given a line range(pos1, pos2)
 def get_all_filters(data, pos1, pos2):
