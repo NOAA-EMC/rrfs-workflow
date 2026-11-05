@@ -21998,7 +21998,7 @@ suite prod
               family prep
                 trigger :TIME >= 0920 and :TIME < 1520
                 task jrrfs_det_prep_cyc
-                  trigger /prod/primary/06/rrfs/v1.0/08z/det/forecast/jrrfs_det_save_restart_f1==complete or /prod/primary/06/rrfs/v1.0/07z/det/forecast/jrrfs_det_save_restart_f2==complete or /prod/primary/06/rrfs/v1.0/06z/det/forecast/jrrfs_det_save_restart_long_3==complete
+                  trigger /prod/primary/06/rrfs/v1.0/08z/det/forecast/jrrfs_det_save_restart_spinup_f001==complete or /prod/primary/06/rrfs/v1.0/08z/det/forecast/jrrfs_det_save_restart_f1==complete or /prod/primary/06/rrfs/v1.0/07z/det/forecast/jrrfs_det_save_restart_f2==complete or /prod/primary/06/rrfs/v1.0/06z/det/forecast/jrrfs_det_save_restart_long_3==complete
               endfamily
               family analysis
                 edit MEM_TYPE 'MEMBER'
@@ -47242,7 +47242,7 @@ suite prod
               family prep
                 trigger (:TIME >= 2120 and :TIME < 2359 ) or :TIME < 0320
                 task jrrfs_det_prep_cyc
-                  trigger /prod/primary/18/rrfs/v1.0/20z/det/forecast/jrrfs_det_save_restart_f1==complete or /prod/primary/18/rrfs/v1.0/19z/det/forecast/jrrfs_det_save_restart_f2==complete or /prod/primary/18/rrfs/v1.0/18z/det/forecast/jrrfs_det_save_restart_long_3==complete
+                  trigger /prod/primary/18/rrfs/v1.0/20z/det/forecast/jrrfs_det_save_restart_spinup_f001==complete or /prod/primary/18/rrfs/v1.0/20z/det/forecast/jrrfs_det_save_restart_f1==complete or /prod/primary/18/rrfs/v1.0/19z/det/forecast/jrrfs_det_save_restart_f2==complete or /prod/primary/18/rrfs/v1.0/18z/det/forecast/jrrfs_det_save_restart_long_3==complete
               endfamily
               family analysis
                 edit MEM_TYPE 'MEMBER'
