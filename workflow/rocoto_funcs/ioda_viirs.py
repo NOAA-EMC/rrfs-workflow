@@ -7,7 +7,7 @@ from rocoto_funcs.base import xml_task, get_cascade_env
 
 def ioda_viirs(xmlFile, expdir):
     task_id = 'ioda_viirs'
-    cycledefs = 'prod'
+    cycledefs = 'viirs'
     if os.getenv("DO_SPINUP", "FALSE").upper() == "TRUE":
         cycledefs = 'prod,spinup'
     OBSPATH_VIIRS = os.getenv("OBSPATH_VIIRS", 'OBSPATH_VIIRS_not_defined')
@@ -20,7 +20,7 @@ def ioda_viirs(xmlFile, expdir):
 
     dcTaskEnv['KEEPDATA'] = get_cascade_env(f"KEEPDATA_{task_id}".upper()).upper()
     # dependencies
-    fpath = f'{OBSPATH_VIIRS}/VIIRS_AOD_CONUS_@Y@m@d_@H.nc}'
+    fpath = f'{OBSPATH_VIIRS}/VIIRS_AOD_CONUS_@Y@m@d_@H.nc'
 
     timedep = ""
     realtime = os.getenv("REALTIME", "false")
