@@ -24,7 +24,7 @@ def recenter(xmlFile, expdir):
     realtime = os.getenv("REALTIME", "false")
     if realtime.upper() == "TRUE":
         starttime = get_cascade_env(f"STARTTIME_{task_id}".upper())
-        timedep = f'\n    <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
+        timedep = f'\n     <timedep><cyclestr offset="{starttime}">@Y@m@d@H@M00</cyclestr></timedep>'
 
     if det_recentercycs_do_da.upper() == "TRUE":
         if det_nonvar_cldana.upper() == "TRUE":
@@ -42,11 +42,13 @@ def recenter(xmlFile, expdir):
 
     dependencies = f'''
   <dependency>
-  <and>{timedep}
+  <and>
     <and>
      <or>{streqs}
      </or>
+     <or>{timedep}
      {datadep}
+     </or>
     </and>
     <taskdep task="prep_ic"/>
   </and>
