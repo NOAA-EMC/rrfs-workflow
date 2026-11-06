@@ -110,6 +110,7 @@ if [[ "${REALTIME^^}" == "TRUE" ]]; then
 else # ========== for retros ==========
   export DO_GETKF_POST=true
   export SAVE_GETKF_ANL=true
+  export SAVE_NONVAR_CLOUD_ANA=true
   export IC_EXTRN_MDL_FILENAME_PATTERN="gefs.@Y@m@d/@H/pgrb2ap5/gep#gmem#.t@Hz.pgrb2a.0p50.f^HHH^"
   export IC_EXTRN_MDL_FILENAME_PATTERN_B="gefs.@Y@m@d/@H/pgrb2bp5/gep#gmem#.t@Hz.pgrb2b.0p50.f^HHH^"
 fi
