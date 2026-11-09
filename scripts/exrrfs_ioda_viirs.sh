@@ -66,14 +66,17 @@ python3 ./viirs_aod2ioda.py \
   -n "${THIN}" \
   --error_method nesdis
 
+export err=$?
+err_chk
+
+if [[ ! -s "${OUTFILE}" ]]; then
+    echo "FATAL: Output file ${OUTFILE} was not created"
+    err_exit
+fi
 #-----------------------------------------------------------------------
 # Sanity check and copy to COMOUT
 #-----------------------------------------------------------------------
-if ls ./VIIRS_AOD_CONUS_"${PDY}"_"${cyc}".nc >/dev/null 2>&1; then
-  ${cpreq} ./VIIRS_AOD_CONUS_"${PDY}"_"${cyc}".nc \
-    "${COMOUT}/ioda_viirs/${WGF}"
-else
-  echo "FATAL ERROR: no VIIRS IODA files generated for NEXT_CDATE=${PREV_CDATE}"
-  err_exit
-fi
+${cpreq} "${OUTFILE}" "${COMOUT}/ioda_viirs/${WGF}"
 
+export err=$?
+err_chk
