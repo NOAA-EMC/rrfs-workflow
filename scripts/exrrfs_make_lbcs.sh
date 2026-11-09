@@ -130,18 +130,19 @@ fcst_mn="00"
 case "${extrn_mdl_name}" in
 
   "GFS")
-    sysdir="${COMINgfs}/gfs.${yyyymmdd}/${hh}/atmos"
     sysdir2=""
     fcst_hhh=( $( printf "%03d " "${lbc_spec_fhrs[@]}" ) )
 
     if [ "${gfs_file_fmt}" = "grib2" ]; then
       prefix="gfs.t${hh}z.pgrb2.0p25.f"
       fns_on_disk=( "${fcst_hhh[@]/#/$prefix}" )
+      sysdir="${COMINgfs}/gfs.${yyyymmdd}/${hh}/products/atmos/grib2/0p25"
     elif [ "${gfs_file_fmt}" = "netcdf" ]; then
-      prefix="gfs.t${hh}z.atmf"
+      prefix="gfs.t${hh}z.atm.f"
       suffix=".nc"
       fns_on_disk_tmp=( "${fcst_hhh[@]/#/${prefix}}" )
       fns_on_disk=( "${fns_on_disk_tmp[@]/%/${suffix}}" )
+      sysdir="${COMINgfs}/gfs.${yyyymmdd}/${hh}/model/atmos/history"
     fi
     ;;
 
