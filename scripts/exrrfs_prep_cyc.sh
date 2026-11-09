@@ -787,9 +787,9 @@ if [ "${CYCLE_TYPE}" = "spinup" ]; then
 fi
 if [ ${Update_GVF} -ge 1 ]; then
    shopt -s nullglob
-   latestGVF_array=(${DCOMINgvf}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm1}_c${YYYYMMDD}*.grib2)
-   latestGVF2_array=(${DCOMINgvf}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm2}_c${YYYYMMDDm1}*.grib2)
-   latestGVF3_array=(${DCOMINgvf}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm3}_c${YYYYMMDDm2}*.grib2)
+   latestGVF_array=(${DCOMINgvf}/GVF-WKL-GLB_v?r?_j01_s*_e${YYYYMMDDm1}_c${YYYYMMDD}*.grib2)
+   latestGVF2_array=(${DCOMINgvf}/GVF-WKL-GLB_v?r?_j01_s*_e${YYYYMMDDm2}_c${YYYYMMDDm1}*.grib2)
+   latestGVF3_array=(${DCOMINgvf}/GVF-WKL-GLB_v?r?_j01_s*_e${YYYYMMDDm3}_c${YYYYMMDDm2}*.grib2)
    shopt -u nullglob
    if [ ! ${#latestGVF_array[@]} -gt 0 ]; then
      if [ ${#latestGVF2_array[@]} -gt 0 ]; then
@@ -802,9 +802,9 @@ if [ ${Update_GVF} -ge 1 ]; then
          if [ ${HH} -eq "15" ]; then
            missing_data_flag=true
            echo "Cannot find viirs GVF observation data matching the below filenames:" >> missing_file_list
-           echo "${DCOMINgvf}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm1}_c${YYYYMMDD}*.grib2" >> missing_file_list
-           echo "${DCOMINgvf}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm2}_c${YYYYMMDDm1}*.grib2" >> missing_file_list
-           echo "${DCOMINgvf}/GVF-WKL-GLB_v?r?_npp_s*_e${YYYYMMDDm3}_c${YYYYMMDDm2}*.grib2" >> missing_file_list
+           echo "${DCOMINgvf}/GVF-WKL-GLB_v?r?_j01_s*_e${YYYYMMDDm1}_c${YYYYMMDD}*.grib2" >> missing_file_list
+           echo "${DCOMINgvf}/GVF-WKL-GLB_v?r?_j01_s*_e${YYYYMMDDm2}_c${YYYYMMDDm1}*.grib2" >> missing_file_list
+           echo "${DCOMINgvf}/GVF-WKL-GLB_v?r?_j01_s*_e${YYYYMMDDm3}_c${YYYYMMDDm2}*.grib2" >> missing_file_list
            echo "" >> missing_file_list
          fi
        fi
