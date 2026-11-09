@@ -49,12 +49,11 @@ if [[ ${MACHINE,,} == "ursa" ]]; then # special needs at ursa
   export I_MPI_ADJUST_SCATTERV=2
 #  export I_MPI_COLL_INTRANODE=pt2pt
 elif [[ ${MACHINE,,} == "gaeac7" ]]; then # special needs at gaeac7
-  export LD_PRELOAD="/gpfs/f7/arfs-gsl/world-shared/gge/world/noCopyFileRange/nocfr.so:${LD_PRELOAD}"
-  # workaround for CMA permission error and LE resource exhaustion on C7 RHEL 9 (yama/ptrace_scope=2)
-  export MPICH_SMP_SINGLE_COPY_MODE=NONE
   export FI_CXI_RX_MATCH_MODE=hybrid
-  export FI_MR_CACHE_MONITOR=memhooks
-  export FI_CXI_DEFAULT_CQ_SIZE=131072
+  # Enable CQ backoff only for dense rank tasks (>= 300 PPN)
+  if [[ "${PPN:-0}" -ge 300 ]]; then
+     export MPICH_OFI_CQ_STALL=1
+  fi
 fi
 #
 echo "load rrfs-workflow modules by default"
