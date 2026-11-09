@@ -19,6 +19,7 @@ ln -snf ../../ush/hifiyaml4rrfs.py .
 ln -snf ../../fix/jedi/convinfo.rrfs convinfo
 ln -snf ../../fix/jedi/satinfo.rrfs satinfo
 
+export YAML_CI_TEST=true
 export ANALYSIS_DATE="2024-05-06T02:00:00Z"
 export BEGIN_DATE="2024-05-06T00:00:00Z"
 export HYB_WGT_STATIC=0.5
