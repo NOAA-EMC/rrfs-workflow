@@ -93,7 +93,7 @@ mm=${OFFSETDATE:4:2}
 dd=${OFFSETDATE:6:2}
 hh=${OFFSETDATE:8:2}
 mn="00"
-yyymmdd=${OFFSETDATE:0:8}
+yyyymmdd=${OFFSETDATE:0:8}
 
 fcst_hh=$( printf "%02d" "${ic_spec_fhrs}" )
 fcst_mn="00"

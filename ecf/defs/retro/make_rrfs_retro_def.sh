@@ -467,6 +467,62 @@ for i, line in enumerate(lines):
 open(path, "w").write("\n".join(lines))
 print(f"  cold start: {n} prep_cyc task(s) pointed at their own ics family")
 EOF
+    # Operations cold starts only in the 03z and 15z spin-up, so other cold start hours (the
+    # Rocoto retros' 00z and 12z) are given a make_ics of their own. Each reads the GFS cycle
+    # EXTRN_MDL_ICS_OFFSET_HRS earlier, so its trigger is set from that too.
+    stale=$(python3 - "${out_def}" "${PRODCLONE_SUITE}" "${EXTRN_MDL_ICS_OFFSET_HRS:-3}" \
+                      ${DET_COLD_START_HRS:-03 15} <<'EOF'
+import re, sys
+path, clone, offset = sys.argv[1], sys.argv[2], int(sys.argv[3])
+hours = [int(h) for h in sys.argv[4:]]
+lines = open(path).read().split("\n")
+for h in hours:
+    if (h - offset) % 6:
+        sys.exit(f"ERROR: cold start hour {h:02d} minus EXTRN_MDL_ICS_OFFSET_HRS={offset} is not a GFS cycle")
+have, cyc = set(), None
+for line in lines:
+    m = re.fullmatch(r"family (\d\d)z", line.strip())
+    if m:
+        cyc = int(m.group(1))
+    if line.strip() == "task jrrfs_det_make_ics":
+        have.add(cyc)
+cyc, wgf, added, pending = None, None, 0, None
+out = []
+for line in lines:
+    t = line.strip()
+    # the new task goes after the ics family's own attributes, before its first child
+    if pending and re.match(r"(family|task|endfamily)\b", t):
+        out += pending
+        pending = None
+    m = re.fullmatch(r"family (\d\d)z", t)
+    if m:
+        cyc = int(m.group(1))
+    m = re.fullmatch(r"family (det|enkf|ensf|firewx)", t)
+    if m:
+        wgf = m.group(1)
+    ind = line[:len(line) - len(line.lstrip())]
+    gfs = (f"/{clone}/primary/{(cyc - offset) % 24:02d}/gfs/v16.3/gfs/atmos/post/"
+           f"jgfs_atmos_post_f{offset:03d}==complete") if cyc is not None else ""
+    if t.startswith("trigger ") and out and out[-1].strip() == "task jrrfs_det_make_ics" and cyc in hours:
+        line = f"{ind}trigger {gfs}"
+    out.append(line)
+    if t == "family ics" and wgf == "det" and cyc in hours and cyc not in have:
+        pending = [f"{ind}  task jrrfs_det_make_ics", f"{ind}    trigger {gfs}"]
+        have.add(cyc)
+        added += 1
+missing = [h for h in hours if h not in have]
+if missing:
+    sys.exit(f"ERROR: no det ics family at cold start hour(s) {missing}")
+open(path, "w").write("\n".join(out))
+print(f"  cold start: make_ics added at {added} hour(s), reading GFS f{offset:03d}", file=sys.stderr)
+# the make_ics tasks at hours that no longer cold start
+print("|".join(f"{h:02d}z" for h in sorted(have - set(hours))))
+EOF
+)
+    if [ -n "${stale}" ]; then
+      ${skip} --mode ignore --label "make_ics outside DET_COLD_START_HRS" \
+              --path "/(${stale})/det/ics/jrrfs_det_make_ics$"
+    fi
   fi
 
   # Retro jobs must use the immediately previous cycle's background. Production OR branches
@@ -566,13 +622,16 @@ for i, line in enumerate(lines):
         restart = f"{prev_cycle}/enkf/forecast/jrrfs_enkf_save_restart_mem{member.group(1)}_f1"
     elif task_name == "jrrfs_det_prep_cyc" and cyc in prod_start:
         restart = f"{prev_cycle}/det/forecast/jrrfs_det_save_restart_spinup_f001"
+    elif task_name == "jrrfs_det_analysis_gsi":
+        # gsi_diag rewrites the radstat the next analysis copies, so a race changes the radiance bias
+        restart = f"{prev_cycle}/det/analysis/jrrfs_det_analysis_gsi_diag"
     if restart in tasks:
         lines[i] += f" and {restart}==complete"
         waits += 1
 
 open(path, "w").write("\n".join(lines))
-print(f"  strict backgrounds: {waits} blend_ics and det production start trigger(s) wait on a "
-      "previous-cycle restart")
+print(f"  strict backgrounds: {waits} blend_ics, det production start and det analysis trigger(s) "
+      "wait on a previous-cycle task")
 EOF
 
   # With older-cycle trigger alternatives removed, these restart saves are not needed by a retro.
@@ -696,6 +755,18 @@ for line in open(path).read().split("\n"):
 open(path, "w").write("\n".join(out))
 print(f"{n} tasks given job sizes and configured walltimes")
 EOF
+
+# The whole retro in one suite, a family per day and cold-start chain (RETRO_LAYOUT=chains); see
+# chain_suite.py. Each chain cold starts, so nothing may link one chain to the next.
+if [ "${RETRO_LAYOUT}" = "chains" ]; then
+  python3 "${defs_dir}/chain_suite.py" rrfs "${out_def}" \
+    --suite "${RRFS_SUITE}" \
+    --clone "${PRODCLONE_SUITE}" \
+    --start "${RETRO_START}" \
+    --end "${RETRO_END}" \
+    --chains "${DET_COLD_START_HRS:-03 15}" \
+    --dataroot "${DEV_DATAROOT}"
+fi
 
 echo "Wrote ${out_def} from ${BASE_DEF}"
 echo "  PACKAGEHOME=${PACKAGEHOME}"

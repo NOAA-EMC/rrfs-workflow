@@ -1005,6 +1005,12 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
+# Skip GSI for cold-start cycles when DO_DACOLD is disabled in the retro workflow config.
+if [[ "${DO_DACOLD}" = "FALSE" && "${BKTYPE}" -eq 1 ]]; then
+  echo "Not performing DA for cold cycles - do early clean exit"
+  exit 0
+fi
+
 gsi_exec="${EXECrrfs}/gsi.x"
 cpreq -p ${gsi_exec} ${DATA}/gsi.x
 

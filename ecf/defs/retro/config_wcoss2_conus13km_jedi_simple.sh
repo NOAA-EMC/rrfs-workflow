@@ -106,6 +106,9 @@ DOMAIN=${DOMAIN:-RRFS_CONUS_13km}
 # ---------------------------------------------------------------------------------------------
 RETRO_START=${RETRO_START:-20240506}      # first retro day, and the day that cold starts
 RETRO_END=${RETRO_END:-20240512}          # last retro day
+# Cycles run at once; increasing beyond 2 could break satbias cycling
+# Chains run back to back below 13; 13 or more lets the next chain start alongside the current one
+CYCLE_THROTTLE=${CYCLE_THROTTLE:-2}
 # YES relaxes the suite's 399 clock-time triggers so cycles are not gated on the wall clock
 RETRO=${RETRO:-YES}
 
@@ -156,13 +159,11 @@ DO_LONG_FORECAST=${DO_LONG_FORECAST:-TRUE}
 # With them off, the cold start moves into the production cycle at DET_COLD_START_HRS, which
 # exrrfs_prep_cyc.sh and exrrfs_process_radar.sh already do when DO_SPINUP is FALSE.
 DO_SPINUP=${DO_SPINUP:-FALSE}
-# Which cycles cold start from GFS. They have to be hours that have a make_ics task in the suite,
-# which means 03z and 15z: the initial conditions come from the GFS cycle 3 h earlier
-# (EXTRN_MDL_ICS_OFFSET_HRS) and only gfs.tHHz.atmf003.nc from the 00, 06, 12 and 18z cycles is
-# staged. The Rocoto configurations cold start at 00z and 12z instead, which here would need
-# atmf006 and sfcf006 staged from the 18z and 06z GFS and the make_ics task moved into the
-# previous primary family, whose date the retro driver has already stepped past.
 DET_COLD_START_HRS=${DET_COLD_START_HRS:-"03 15"}
+# Cold starts read the GFS cycle 3 h earlier (6 for 00/12z); grib2 reads gfs.tHHz.pgrb2.0p25.fHHH
+EXTRN_MDL_ICS_OFFSET_HRS=${EXTRN_MDL_ICS_OFFSET_HRS:-3}
+GFS_FILE_FMT_ICS=${GFS_FILE_FMT_ICS:-}
+DO_SURFACE_CYCLE=${DO_SURFACE_CYCLE:-FALSE}
 
 # Forecast length in hours: the hourly cycles, and the 00, 06, 12 and 18z cycles. Operations runs
 # 18 and 84. The post, product generation and boundary jobs past the end of the forecast come out

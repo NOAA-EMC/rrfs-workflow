@@ -436,6 +436,8 @@ if [ "${BUILD_WORKAROUND}" = true ] && [ "${BUILD_RDASAPP}" = "on" ]; then
      "${SORC_DIR}/RDASApp/sorc/gsibec/src/gsibec/gsi/constants.f90"
   cp "${SORC_DIR}/_workaround_/gsibec/mod_fv3_lola.f90" \
      "${SORC_DIR}/RDASApp/sorc/gsibec/src/gsibec/gsi/mod_fv3_lola.f90"
+  cp "${SORC_DIR}/_workaround_/gsibec/gsimod.F90" \
+     "${SORC_DIR}/RDASApp/sorc/gsibec/src/gsibec/gsi/gsimod.F90"
   # JEDI reads this template from parm/jedi, so overwrite that runtime template with the full workaround file.
   mkdir -p "${HOME_DIR}/parm/jedi"
   cp "${SORC_DIR}/_workaround_/parm/jedi/rdas-atmosphere-templates-fv3_c13.yaml" \

@@ -23,6 +23,7 @@ gsi_namelist="
    l_obsprvdiag=${l_obsprvdiag},
    lwrite_peakwt=.true.,
    innov_use_model_fed=${innov_use_model_fed},
+   lnobalance=.false.,
  /     
  &GRIDOPTS
    fv3_regional=.true.,grid_ratio_fv3_regional=${grid_ratio_fv3},nvege_type=20,

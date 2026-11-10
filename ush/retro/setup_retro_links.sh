@@ -77,6 +77,13 @@ cd "${fix_dir}/workflow"
 if [ "${RETRO:-NO}" = "YES" ]; then
   echo "Retro: deterministic LBCs from GFS grib2, no Great Lakes FVCOM..."
   sed -i "s|^export GFS_FILE_FMT_LBCS=.*|export GFS_FILE_FMT_LBCS='grib2'|" ./det/workflow.conf
+  # Cold start ICs (retro/config.sh): the GFS cycle that many hours earlier, and its file format
+  if [ -n "${EXTRN_MDL_ICS_OFFSET_HRS:-}" ]; then
+    sed -i "s|^export EXTRN_MDL_ICS_OFFSET_HRS=.*|export EXTRN_MDL_ICS_OFFSET_HRS='${EXTRN_MDL_ICS_OFFSET_HRS}'|" ./det/workflow.conf
+  fi
+  if [ -n "${GFS_FILE_FMT_ICS:-}" ]; then
+    sed -i "s|^export GFS_FILE_FMT_ICS=.*|export GFS_FILE_FMT_ICS='${GFS_FILE_FMT_ICS}'|" ./det/workflow.conf
+  fi
   # No Great Lakes FVCOM (nosofs) data is staged for retros, and warm starts abort without it; the
   # Rocoto retros run without it too (PREP_FVCOM=FALSE)
   sed -i "s|^export USE_FVCOM=.*|export USE_FVCOM='FALSE'|; s|^export PREP_FVCOM=.*|export PREP_FVCOM='FALSE'|" ./det/workflow.conf
@@ -238,7 +245,7 @@ EOF
 # Runtime analysis and post settings from retro/config.sh go last, so they win over earlier
 # workflow values. The post script uses RUN_SUBHOURLY_POST to match task selection in the definition.
 # Carry this experiment's radiance DA switch into the regenerated runtime workflow config.
-for name in DO_RADDA RUN_RADAR OB_TYPE RUN_SUBHOURLY_POST JCB_CONFIG_CONV JCB_CONFIG_DBZ DO_DACOLD EXT_SONDE \
+for name in DO_RADDA RUN_RADAR OB_TYPE RUN_SUBHOURLY_POST JCB_CONFIG_CONV JCB_CONFIG_DBZ DO_DACOLD EXT_SONDE DO_SURFACE_CYCLE \
             NNODES_ANALYSIS_JEDI PPN_ANALYSIS_JEDI TPP_ANALYSIS_JEDI; do
   if [ -n "${!name+x}" ]; then
     echo "export ${name}='${!name}'" >> ./det/workflow.conf
