@@ -8,8 +8,7 @@ step here puts back, as a trigger, an ordering the clock used to give.
 import re
 import sys
 
-from .deftree import CYCLE_NAME, indent_of
-from .expr import Prim, leaves, parse_expr, unparse
+from .core import CYCLE_NAME, Prim, indent_of, leaves, parse_expr, unparse
 
 
 def remove_clock_conditions(d):

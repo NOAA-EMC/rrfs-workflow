@@ -40,8 +40,7 @@ if __name__ == "__main__" and not __package__:
     sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
     __package__ = "retro_def"
 
-from .deftree import Def  # noqa: E402
-from .expr import FALSE, TRUE, Prim, fold, parse_expr, refs, resolve, unparse  # noqa: E402
+from .core import FALSE, TRUE, Def, Prim, fold, parse_expr, refs, resolve, unparse  # noqa: E402
 
 
 def parent_of(path):

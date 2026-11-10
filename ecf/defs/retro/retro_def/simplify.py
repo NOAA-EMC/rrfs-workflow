@@ -2,14 +2,13 @@
 
 Each skip gives the tasks "defstatus complete", which ecflow treats as finished without
 submitting it, and rewrites every trigger that named them so the order of what is left is
-unchanged (skip.py; its docstring explains the two ways a reference can be rewritten and when
-each applies).
+unchanged (core.skip_tasks; the core.py docstring explains the two ways a reference can be
+rewritten and when each applies).
 """
 
 import sys
 
-from .deftree import indent_of
-from .skip import skip_tasks
+from .core import indent_of, skip_tasks
 
 # Steps inside a cycle that a simplified retro leaves out (the FALSE switches in the Rocoto
 # workflow's ush/config.sh): the RUN_ switch in retro/config.sh, and the task names it covers

@@ -4,7 +4,7 @@ import fnmatch
 import re
 import sys
 
-from .deftree import indent_of
+from .core import indent_of
 
 
 def _edit(indent, name, value):
@@ -33,7 +33,8 @@ def set_suite_settings(d, cfg, packagehome):
     ]
     if cfg.get("ARCHIVEDIR"):
         suite_vars.append(("ARCHIVEDIR", cfg.get("ARCHIVEDIR")))
-    suite_vars.append(("RETRO", cfg["RETRO"]))
+    # RETRO=YES turns on the retro workarounds in the ex-scripts (ecf/include/head.h)
+    suite_vars.append(("RETRO", "YES"))
     if cfg["FIX_RRFS_JEDI"]:
         suite_vars.append(("FIX_RRFS_JEDI", cfg["FIX_RRFS_JEDI"]))
     # set here, and again wherever the NCO definition sets them further down, since those WCOSS2
