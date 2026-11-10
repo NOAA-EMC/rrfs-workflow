@@ -1,14 +1,24 @@
 #!/usr/bin/env python3
-"""Make a developer copy of an RRFS suite definition for the machine in retro/config.sh (MACHINE):
-its locations, its job submission commands, and, for a retro (RETRO=YES), triggers that step
-through past dates instead of following the clock. The task tree is unchanged.
+"""Make a retro copy of an RRFS suite definition for the machine in retro/config.sh (MACHINE):
+its locations, its job submission commands, and triggers that step through past dates instead of
+following the clock. The task tree is unchanged.
 
 Usage: [VAR=value ...] ./make_rrfs_retro_def.py [output_def]
 Any of the settings in retro/config.sh can be overridden from the environment.
 
 main() below is the list of changes made to the NCO definition, in order; each is a function in
-the retro_def package, which describes why it is needed. To add one, write a function that takes
-the definition (a retro_def.deftree.Def) and the settings it needs, and call it from main().
+the retro_def package, which describes why it is needed. To add one, such as a task switched off
+or a dependency changed to match the Rocoto workflow, write a function in simplify.py (tasks a
+retro does not run) or ordering.py (triggers) that takes the definition (a retro_def.core.Def)
+and the settings it needs, and call it from main(). core.py is the toolbox they are built on.
+
+  retro_def/core.py      the toolbox the steps are built on: the settings, the definition (its
+                         lines, a node tree over them and queued line edits), trigger expressions,
+                         and skip_tasks(), which switches tasks off and repairs their triggers
+  retro_def/settings.py  suite variables, job commands and job sizes
+  retro_def/ordering.py  retro triggers that replace the clock
+  retro_def/simplify.py  the tasks a retro leaves out, and the cold starts that replace spin-up
+  retro_def/chains.py    the whole retro in one suite, a family per day and cold-start chain
 """
 
 import argparse
@@ -17,8 +27,7 @@ import re
 import sys
 
 from retro_def import chains, ordering, settings, simplify
-from retro_def.config import load_config, package_home
-from retro_def.deftree import Def
+from retro_def.core import Def, load_config, package_home
 
 DEFS_DIR = os.path.dirname(os.path.realpath(__file__))
 
@@ -38,8 +47,6 @@ def check_settings(cfg):
     for name in (cfg["RRFS_SUITE"], cfg["PRODCLONE_SUITE"]):
         if not re.fullmatch(r"[A-Za-z0-9_]+", name):
             sys.exit(f"ERROR: ecFlow suite names may contain only letters, numbers, and underscores: {name}")
-    if cfg["RETRO"] != "YES":
-        return
     # Fire weather reads the long forecast's post for its initial and boundary conditions, so the
     # two settings cannot disagree. Say so here rather than let 464 fire weather tasks a day fail
     # on a natlev file the suite was told not to make.
@@ -83,39 +90,38 @@ def main():
     settings.set_suite_settings(d, cfg, packagehome)
     settings.rename_suites(d, suite, clone)
 
-    if cfg["RETRO"] == "YES":
-        # the clock, and the orderings it gave
-        ordering.remove_clock_conditions(d)
-        ordering.wait_for_preclean(d)
-        ordering.disable_cycle_end(d)
-        if cfg.get("KEEPDATA"):
-            settings.set_keepdata(d, cfg.get("KEEPDATA"))
-        settings.set_da_systems(d, cfg.get("DA_SYSTEM_DET", "GSI"), cfg.get("DA_SYSTEM_ENKF", "GSI"))
-        ordering.point_managers_at_forecast(d)
-        ordering.prep_waits_for_lbcs(d)
+    # the clock, and the orderings it gave
+    ordering.remove_clock_conditions(d)
+    ordering.wait_for_preclean(d)
+    ordering.disable_cycle_end(d)
+    if cfg.get("KEEPDATA"):
+        settings.set_keepdata(d, cfg.get("KEEPDATA"))
+    settings.set_da_systems(d, cfg.get("DA_SYSTEM_DET", "GSI"), cfg.get("DA_SYSTEM_ENKF", "GSI"))
+    ordering.point_managers_at_forecast(d)
+    ordering.prep_waits_for_lbcs(d)
 
-        # what this retro does not run
-        fcst_len = cfg.int("FCST_LEN_HRS", 18)
-        fcst_len_long = cfg.int("FCST_LEN_HRS_LONG", 84)
-        simplify.skip_groups(d, cfg)
-        simplify.skip_task_types(d, cfg)
-        simplify.skip_simplified_steps(d, cfg)
-        simplify.skip_hour0_subhourly(d, domain_dt_atmos(cfg["DOMAIN"]))
-        simplify.skip_subhourly_posts(d, cfg)
-        simplify.skip_long_forecast(d, cfg)
-        simplify.truncate_forecasts(d, fcst_len, fcst_len_long)
-        simplify.trim_lbcs(d, fcst_len, fcst_len_long)
-        simplify.skip_extra_tasks(d, cfg)
-        if cfg.is_false("DO_SPINUP"):
-            simplify.remove_spinup(d)
-            simplify.change_cold_start_hours(d, cfg.hours("DET_COLD_START_HRS", "03 15"),
-                                             cfg.int("EXTRN_MDL_ICS_OFFSET_HRS", 3), clone)
+    # what this retro does not run
+    fcst_len = cfg.int("FCST_LEN_HRS", 18)
+    fcst_len_long = cfg.int("FCST_LEN_HRS_LONG", 84)
+    simplify.skip_groups(d, cfg)
+    simplify.skip_task_types(d, cfg)
+    simplify.skip_simplified_steps(d, cfg)
+    simplify.skip_hour0_subhourly(d, domain_dt_atmos(cfg["DOMAIN"]))
+    simplify.skip_subhourly_posts(d, cfg)
+    simplify.skip_long_forecast(d, cfg)
+    simplify.truncate_forecasts(d, fcst_len, fcst_len_long)
+    simplify.trim_lbcs(d, fcst_len, fcst_len_long)
+    simplify.skip_extra_tasks(d, cfg)
+    if cfg.is_false("DO_SPINUP"):
+        simplify.remove_spinup(d)
+        simplify.change_cold_start_hours(d, cfg.hours("DET_COLD_START_HRS", "03 15"),
+                                         cfg.int("EXTRN_MDL_ICS_OFFSET_HRS", 3), clone)
 
-        # each cycle from the one before it, and nothing else
-        ordering.use_newest_background_only(d, suite, cfg.hours("DET_PROD_START_HRS", "09 21"))
-        simplify.skip_older_restart_saves(d)
-        if cfg.is_true("DO_ARCHIVE_RETRO"):
-            ordering.add_archive_tasks(d)
+    # each cycle from the one before it, and nothing else
+    ordering.use_newest_background_only(d, suite, cfg.hours("DET_PROD_START_HRS", "09 21"))
+    simplify.skip_older_restart_saves(d)
+    if cfg.is_true("DO_ARCHIVE_RETRO"):
+        ordering.add_archive_tasks(d)
 
     settings.set_job_sizes(d, cfg)
 

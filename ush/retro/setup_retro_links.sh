@@ -74,20 +74,18 @@ cd "${fix_dir}/workflow"
 
 # Retros read the staged GFS GRIB2 files for the deterministic boundaries; the netcdf files
 # operations uses (hourly out to f102, four cycles a day) are far too large to stage.
-if [ "${RETRO:-NO}" = "YES" ]; then
-  echo "Retro: deterministic LBCs from GFS grib2, no Great Lakes FVCOM..."
-  sed -i "s|^export GFS_FILE_FMT_LBCS=.*|export GFS_FILE_FMT_LBCS='grib2'|" ./det/workflow.conf
-  # Cold start ICs (retro/config.sh): the GFS cycle that many hours earlier, and its file format
-  if [ -n "${EXTRN_MDL_ICS_OFFSET_HRS:-}" ]; then
-    sed -i "s|^export EXTRN_MDL_ICS_OFFSET_HRS=.*|export EXTRN_MDL_ICS_OFFSET_HRS='${EXTRN_MDL_ICS_OFFSET_HRS}'|" ./det/workflow.conf
-  fi
-  if [ -n "${GFS_FILE_FMT_ICS:-}" ]; then
-    sed -i "s|^export GFS_FILE_FMT_ICS=.*|export GFS_FILE_FMT_ICS='${GFS_FILE_FMT_ICS}'|" ./det/workflow.conf
-  fi
-  # No Great Lakes FVCOM (nosofs) data is staged for retros, and warm starts abort without it; the
-  # Rocoto retros run without it too (PREP_FVCOM=FALSE)
-  sed -i "s|^export USE_FVCOM=.*|export USE_FVCOM='FALSE'|; s|^export PREP_FVCOM=.*|export PREP_FVCOM='FALSE'|" ./det/workflow.conf
+echo "Retro: deterministic LBCs from GFS grib2, no Great Lakes FVCOM..."
+sed -i "s|^export GFS_FILE_FMT_LBCS=.*|export GFS_FILE_FMT_LBCS='grib2'|" ./det/workflow.conf
+# Cold start ICs (retro/config.sh): the GFS cycle that many hours earlier, and its file format
+if [ -n "${EXTRN_MDL_ICS_OFFSET_HRS:-}" ]; then
+  sed -i "s|^export EXTRN_MDL_ICS_OFFSET_HRS=.*|export EXTRN_MDL_ICS_OFFSET_HRS='${EXTRN_MDL_ICS_OFFSET_HRS}'|" ./det/workflow.conf
 fi
+if [ -n "${GFS_FILE_FMT_ICS:-}" ]; then
+  sed -i "s|^export GFS_FILE_FMT_ICS=.*|export GFS_FILE_FMT_ICS='${GFS_FILE_FMT_ICS}'|" ./det/workflow.conf
+fi
+# No Great Lakes FVCOM (nosofs) data is staged for retros, and warm starts abort without it; the
+# Rocoto retros run without it too (PREP_FVCOM=FALSE)
+sed -i "s|^export USE_FVCOM=.*|export USE_FVCOM='FALSE'|; s|^export PREP_FVCOM=.*|export PREP_FVCOM='FALSE'|" ./det/workflow.conf
 
 # The domain (DOMAIN in retro/config.sh): its grid, fix files and job sizes.
 domain_file=${ecf_dir}/defs/retro/domains/${DOMAIN}.sh
