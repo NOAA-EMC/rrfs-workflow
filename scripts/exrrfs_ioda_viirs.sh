@@ -49,7 +49,7 @@ printf '  %s\n' ${FILES}
 #-----------------------------------------------------------------------
 # Run VIIRS AOD → IODA for this single DA cycle
 #-----------------------------------------------------------------------
-THIN="0.94"
+
 OUTFILE="VIIRS_AOD_CONUS_${PDY}_${cyc}.nc"
 
 echo "Running VIIRS AOD → IODA:"

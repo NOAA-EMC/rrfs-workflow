@@ -29,7 +29,6 @@ mkdir -p "${DATA}"
 export COMINrrfs=${COMINrrfs:-$(compath.py "${envir}/rrfs/${rrfs_ver}")}
 
 export COMOUT=${COMOUT:-$(compath.py -o "${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}")}
-#export COMOUT=/gpfs/f6/wrfruc/scratch/Steven.Fletcher/rrfs-data/com/${RUN}.${PDY}/${cyc}
 mkdir -p "${COMOUT}/ioda_viirs/${WGF}"
 
 #-----------------------------------------------------------------------
