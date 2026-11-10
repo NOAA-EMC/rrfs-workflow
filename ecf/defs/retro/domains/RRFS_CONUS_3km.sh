@@ -7,7 +7,7 @@
 # spacing as the operational NA domain over about a fifth of the area. Grid and write-component
 # values come from dev-sci's ush/set_predef_grid_params.sh; job sizes from the WCOSS2 block of its
 # ush/set_rrfs_config_general.sh, adjusted for Ursa's smaller per-node memory. Sourced by
-# ush/retro/setup_retro_links.sh and ecf/defs/retro/make_rrfs_retro_def.sh when DOMAIN=RRFS_CONUS_3km.
+# ush/retro/setup_retro_links.sh and ecf/defs/retro/make_rrfs_retro_def.py when DOMAIN=RRFS_CONUS_3km.
 #
 
 # Fix files for this grid, from dev-sci's shared fix tree (FIX_RRFS_SHARED in retro/config.sh).

@@ -7,12 +7,12 @@
 # ecf/defs/retro/config.sh and change the paths and server in the first blocks to your own.
 #
 # This is the ecflow equivalent of the Rocoto workflow's ush/config.sh, for the parts we control.
-# It is sourced by ush/retro/setup_retro_links.sh, ecf/defs/retro/make_rrfs_retro_def.sh,
+# It is sourced by ush/retro/setup_retro_links.sh, ecf/defs/retro/make_rrfs_retro_def.py,
 # ush/prod_clone/make_retro_def.sh and ush/retro/start_retro.sh, so edit values here instead of
 # passing them on every command line. Anything already set in the environment wins, so one-off runs
 # can still say e.g.
 #
-#   RETRO_START=20240510 ./make_rrfs_retro_def.sh
+#   RETRO_START=20240510 ./make_rrfs_retro_def.py
 #
 # What is NOT here, because the suite reads it at run time rather than at generation time:
 #   fix/workflow/<WGF>/workflow.conf   job resources (NNODES_*, PPN_*, TPP_*) and science switches;
@@ -108,7 +108,7 @@ RUN_BUFRSND=${RUN_BUFRSND:-FALSE}
 # FCST_LEN_HRS_LONG (see the simplified samples, config_*_simple.sh).
 # JEDI analysis, the Rocoto config.sh "JEDI options". DA_SYSTEM_DET picks which det analysis
 # runs, GSI (the operational route) or JEDI; the rest are read only when it is JEDI.
-# setup_retro_links.sh writes them into det/workflow.conf and make_rrfs_retro_def.sh sizes the
+# setup_retro_links.sh writes them into det/workflow.conf and make_rrfs_retro_def.py sizes the
 # job from them.
 DA_SYSTEM_DET=${DA_SYSTEM_DET:-GSI}
 # JCB templates in parm/jedi that the analysis renders its yaml from, conventional and
