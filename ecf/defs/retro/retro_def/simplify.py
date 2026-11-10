@@ -130,7 +130,7 @@ def skip_extra_tasks(d, cfg):
 
 
 def skip_older_restart_saves(d):
-    """With older-cycle trigger alternatives removed (ordering.use_newest_background_only), these
+    """With older-cycle trigger alternatives removed (dependencies.use_newest_background_only), these
     restart saves are not needed by a retro. Keep the task nodes visible as set-aside, and rewrite
     references so they cannot enable fallback."""
     skip_tasks(d, "older-cycle restart saves (retro)", mode="ignore",

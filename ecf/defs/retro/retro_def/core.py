@@ -1,6 +1,6 @@
 """The toolbox the retro steps are built on. The steps themselves, the changes made to the NCO
-definition, are in settings.py, ordering.py, simplify.py and chains.py; adding or changing a
-retro option should only need those. Nothing here knows about a particular task.
+definition, are in settings.py, dependencies.py, simplify.py and chains.py; adding or changing
+a retro option should only need those. Nothing here knows about a particular task.
 
 Settings (Config, load_config)
     retro/config.sh (through load_config.sh) and the domain file are bash, shared with

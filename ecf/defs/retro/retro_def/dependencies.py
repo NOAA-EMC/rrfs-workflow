@@ -1,4 +1,4 @@
-"""Retro triggers: step through past dates instead of following the clock.
+"""Retro dependencies (triggers): step through past dates instead of following the clock.
 
 In real time the clock orders much of each cycle's work. A retro makes every clock condition
 always true (the retro prod_clone steps the dates, ush/prod_clone/make_retro_def.sh), so each
