@@ -109,8 +109,6 @@ RETRO_END=${RETRO_END:-20240512}          # last retro day
 # Cycles run at once; increasing beyond 2 could break satbias cycling
 # Chains run back to back below 13; 13 or more lets the next chain start alongside the current one
 CYCLE_THROTTLE=${CYCLE_THROTTLE:-2}
-# YES relaxes the suite's 399 clock-time triggers so cycles are not gated on the wall clock
-RETRO=${RETRO:-YES}
 
 # Which workflow groups to run. FALSE gives that group's families defstatus complete, so they
 # never run and nothing waiting on them blocks. Operations runs all of them.

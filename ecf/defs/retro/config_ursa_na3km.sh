@@ -74,8 +74,6 @@ RETRO_DATA_ROOT=${RETRO_DATA_ROOT:-/scratch4/BMC/zrtrr/Samuel.Degelia/RRFS_RETRO
 # ---------------------------------------------------------------------------------------------
 RETRO_START=${RETRO_START:-20240506}      # first retro day, and the day that cold starts
 RETRO_END=${RETRO_END:-20240512}          # last retro day
-# YES relaxes the suite's 399 clock-time triggers so cycles are not gated on the wall clock
-RETRO=${RETRO:-YES}
 
 # Which workflow groups to run. FALSE gives that group's families defstatus complete, so they
 # never run and nothing waiting on them blocks. Operations runs all of them.
