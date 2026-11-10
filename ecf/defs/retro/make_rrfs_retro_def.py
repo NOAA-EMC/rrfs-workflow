@@ -125,13 +125,19 @@ def main():
 
     settings.set_job_sizes(d, cfg)
 
+    d.write(args.output_def)
+
     # The whole retro in one suite, a family per day and cold-start chain (RETRO_LAYOUT=chains);
     # see retro_def/chains.py. Each chain cold starts, so nothing may link one chain to the next.
     if cfg["RETRO_LAYOUT"] == "chains":
-        chains.lay_out_chains(d, suite, clone, cfg["RETRO_START"], cfg["RETRO_END"],
-                              cfg.hours("DET_COLD_START_HRS", "03 15"), cfg["DEV_DATAROOT"])
-
-    d.write(args.output_def)
+        chains.expand_rrfs(argparse.Namespace(
+            deffile=args.output_def,
+            suite=suite,
+            clone=clone,
+            start=cfg["RETRO_START"],
+            end=cfg["RETRO_END"],
+            chains=cfg.get("DET_COLD_START_HRS", "03 15"),
+            dataroot=cfg["DEV_DATAROOT"]))
     print(f"Wrote {args.output_def} from {cfg['BASE_DEF']}")
     print(f"  PACKAGEHOME={packagehome}")
     print(f"  ECF_HOME={cfg['ECF_HOME']}  (create it before loading the suite)")

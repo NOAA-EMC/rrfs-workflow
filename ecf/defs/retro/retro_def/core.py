@@ -280,9 +280,6 @@ class Def:
                 and (name_re is None or name_re.fullmatch(n.name))
                 and (path_re is None or path_re.search(n.path))]
 
-    def suite(self):
-        return next(n for n in self.nodes.values() if n.kind == "suite")
-
     # -----------------------------------------------------------------------------------------
     # Attributes
     # -----------------------------------------------------------------------------------------
@@ -353,10 +350,6 @@ class Def:
         self._replace.clear()
         self._before.clear()
         self._after.clear()
-        self._nodes = None
-
-    def changed(self):
-        """Say that self.lines was replaced wholesale; the tree is parsed again when next read."""
         self._nodes = None
 
     def sub(self, pattern, repl, line_filter=None):
@@ -544,11 +537,6 @@ def leaves(node):
     elif node not in (TRUE, FALSE):
         for child in node[1]:
             yield from leaves(child)
-
-
-def refs(expr, base):
-    """(absolute path, prim) for each node reference in an expression."""
-    return [(resolve(p.ref, base), p) for p in leaves(parse_expr(expr, base)) if p.ref is not None]
 
 
 # =================================================================================================

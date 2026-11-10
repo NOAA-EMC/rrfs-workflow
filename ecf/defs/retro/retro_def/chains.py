@@ -25,9 +25,10 @@ References between the old families are rewritten for each day:
 cycle_end tasks go, and so do tasks that never run (defstatus complete) and families left empty,
 unless something waits on one of their events.
 
-lay_out_chains() makes the RRFS suite's families and lay_out_clone_chains() the prod_clone's.
-Run as a script for the prod_clone one (ush/prod_clone/make_retro_def.sh):
-  retro_def/chains.py clone <def> --start YYYYMMDD --end YYYYMMDD
+Usage:
+  chains.py rrfs  <def> --suite S --clone C --start YYYYMMDD --end YYYYMMDD
+                        --chains "03 15" --dataroot DIR
+  chains.py clone <def> --start YYYYMMDD --end YYYYMMDD
 """
 
 import argparse
@@ -36,11 +37,67 @@ import os
 import re
 import sys
 
-if __name__ == "__main__" and not __package__:
-    sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    __package__ = "retro_def"
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from core import FALSE, TRUE, Prim, fold, parse, resolve, tokenize, unparse  # noqa: E402
 
-from .core import FALSE, TRUE, Def, Prim, fold, parse_expr, refs, resolve, unparse  # noqa: E402
+NODE_KW = ("suite", "family", "task")
+
+
+class Block:
+    """A node of the definition and the lines it spans, [start, end)."""
+
+    def __init__(self, kind, name, path, start):
+        self.kind, self.name, self.path, self.start = kind, name, path, start
+        self.end = None
+        self.children = []
+        self.defstatus_complete = False
+
+
+def read_blocks(lines):
+    """Every node of the definition by path, and for each line the path of the node it is in.
+    Tasks end where the next node or endfamily starts."""
+    nodes, stack, task, owner = {}, [], None, [None] * len(lines)
+    for i, line in enumerate(lines):
+        words = line.split()
+        if not words:
+            continue
+        kw = words[0]
+        if kw in NODE_KW or kw in ("endfamily", "endsuite"):
+            if task:
+                task.end = i
+                task = None
+        if kw in NODE_KW:
+            parent = stack[-1] if stack else None
+            node = Block(kw, words[1], (parent.path if parent else "") + "/" + words[1], i)
+            nodes[node.path] = node
+            if parent:
+                parent.children.append(node)
+            if kw == "task":
+                task = node
+            else:
+                stack.append(node)
+        elif kw in ("endfamily", "endsuite"):
+            stack.pop().end = i + 1
+        elif kw == "defstatus" and words[1:2] == ["complete"]:
+            (task or stack[-1]).defstatus_complete = True
+        if kw not in ("endfamily", "endsuite") and (task or stack):
+            owner[i] = (task or stack[-1]).path
+    return nodes, owner
+
+
+def expr_refs(expr, base):
+    """(absolute path, prim) for each node reference in an expression."""
+    out = []
+
+    def walk(node):
+        if isinstance(node, Prim):
+            if node.ref is not None:
+                out.append((resolve(node.ref, base), node))
+        elif node not in (TRUE, FALSE):
+            for child in node[1]:
+                walk(child)
+    walk(parse(tokenize(expr), base))
+    return out
 
 
 def parent_of(path):
@@ -63,18 +120,17 @@ def days(start, end):
         day += datetime.timedelta(days=1)
 
 
-def lay_out_chains(d, suite, clone, start, end, chains, dataroot):
-    """Write the RRFS suite out as one family per day and cold-start chain (module docstring).
-    start and end are the retro's first and last day (YYYYMMDD), chains the cold start hours."""
-    d.commit()
-    lines, nodes = d.lines, d.nodes
-    chains = sorted(chains)
+def expand_rrfs(args):
+    lines = open(args.deffile).read().split("\n")
+    nodes, owner = read_blocks(lines)
+    suite, clone = args.suite, args.clone
+    chains = sorted(int(h) for h in args.chains.split())
     if not chains or any(h < 0 or h > 23 for h in chains):
-        sys.exit(f"chains: chain start hours must be 00-23, not {chains}")
+        sys.exit(f"chain_suite.py: chain start hours must be 00-23, not '{args.chains}'")
     primary = nodes[f"/{suite}/primary"]
     fams = {f.name: f for f in primary.children}
     if sorted(fams) != ["00", "06", "12", "18"]:
-        sys.exit(f"chains: expected /{suite}/primary/00, 06, 12 and 18, found {sorted(fams)}")
+        sys.exit(f"chain_suite.py: expected /{suite}/primary/00, 06, 12 and 18, found {sorted(fams)}")
 
     def chain_start(hour):
         return max([h for h in chains if h <= hour] or [chains[-1] - 24])
@@ -93,16 +149,16 @@ def lay_out_chains(d, suite, clone, start, end, chains, dataroot):
     # Tasks that never run, and families with nothing else in them. An event of a task that never
     # runs is never set, so a task something that does run waits on through one has to stay.
     events = []
-    for node in nodes.values():
-        for i in node.attrs:
-            words = lines[i].split(None, 1)
-            if words[:1] in (["trigger"], ["complete"]):
-                events += [(node.path, target) for target, prim in refs(words[1], parent_of(node.path))
-                           if prim.event]
+    for i, line in enumerate(lines):
+        words = line.split(None, 1)
+        if words[:1] not in (["trigger"], ["complete"]) or owner[i] is None:
+            continue
+        events += [(owner[i], target) for target, prim in expr_refs(words[1], parent_of(owner[i]))
+                   if prim.event]
 
     def prune(node, keep, pruned):
         if node.kind == "task":
-            gone = ("complete" in node.defstatus and node.path not in keep) or node.name == "cycle_end"
+            gone = (node.defstatus_complete and node.path not in keep) or node.name == "cycle_end"
         else:
             kids = [prune(c, keep, pruned) for c in node.children]
             gone = bool(node.children) and all(kids) and node.path not in keep
@@ -128,9 +184,9 @@ def lay_out_chains(d, suite, clone, start, end, chains, dataroot):
 
     # The retro runs from RETRO_START 00z to RETRO_END 23z. Cycles before the first cold start
     # only make the LBCs it reads (det/ics); a chain past RETRO_END 23z stops there.
-    first = datetime.datetime.strptime(start, "%Y%m%d")
+    first = datetime.datetime.strptime(args.start, "%Y%m%d")
     first_cold = first + datetime.timedelta(hours=chains[0])
-    retro_last = datetime.datetime.strptime(end, "%Y%m%d") + datetime.timedelta(hours=23)
+    retro_last = datetime.datetime.strptime(args.end, "%Y%m%d") + datetime.timedelta(hours=23)
 
     def lbc_only(path):
         """True if path is a cycle's det/ics family, inside it, or one of the families above it."""
@@ -212,10 +268,10 @@ def lay_out_chains(d, suite, clone, start, end, chains, dataroot):
                 externs.add(path)
                 return new_prim(node, path)
             if target.startswith(f"/{suite}/"):
-                sys.exit(f"chains: cannot place the reference {node.ref} from {base_old}")
+                sys.exit(f"chain_suite.py: cannot place the reference {node.ref} from {base_old}")
             return node
 
-        new = fold(walk(parse_expr(expr, base_old)))
+        new = fold(walk(parse(tokenize(expr), base_old)))
         return new if touched[0] else None
 
     def emit_node(node, out, src_fam, src_dt, chain_day):
@@ -232,7 +288,7 @@ def lay_out_chains(d, suite, clone, start, end, chains, dataroot):
                     if new == TRUE:
                         continue
                     if new == FALSE:
-                        sys.exit(f"chains: the {words[0]} of {node.path} can never be met")
+                        sys.exit(f"chain_suite.py: the {words[0]} of {node.path} can never be met")
                     line = line[:len(line) - len(line.lstrip())] + f"{words[0]} {unparse(new)}"
             out.append(line)
             if i == node.start and re.fullmatch(r"\d\dz", node.name):
@@ -248,13 +304,13 @@ def lay_out_chains(d, suite, clone, start, end, chains, dataroot):
     out_primary, ncycles, nchains = [], 0, 0
     fam_indent = lines[fams["00"].start][:len(lines[fams["00"].start]) - len(lines[fams["00"].start].lstrip())]
     # from the day before, whose last chain may run into RETRO_START (15z to 02z)
-    for day in days((first - datetime.timedelta(days=1)).strftime("%Y%m%d"), end):
+    for day in days((first - datetime.timedelta(days=1)).strftime("%Y%m%d"), args.end):
         pdy = day.strftime("%Y%m%d")
-        for chain in chains:
-            cdt = day + datetime.timedelta(hours=chain)
+        for start in chains:
+            cdt = day + datetime.timedelta(hours=start)
             body = []
-            for h in chain_cycles(chain):
-                hdt = cdt + datetime.timedelta(hours=h - chain)
+            for h in chain_cycles(start):
+                hdt = cdt + datetime.timedelta(hours=h - start)
                 src = fams[f"{h % 24 // 6 * 6:02d}"]
                 cyc = nodes[f"{src.path}/rrfs/v1.0/{h % 24:02d}z"]
                 if hdt < first or hdt > retro_last:
@@ -267,13 +323,13 @@ def lay_out_chains(d, suite, clone, start, end, chains, dataroot):
                 ncycles += len(body) > n
             if not body:
                 continue
-            fam = fams[f"{chain // 6 * 6:02d}"]
+            fam = fams[f"{start // 6 * 6:02d}"]
             rrfs = nodes[f"{fam.path}/rrfs"]
             v10 = nodes[f"{rrfs.path}/v1.0"]
             nchains += 1
             out_primary.append(f"{fam_indent}family {chain_name(cdt)}")
             out_primary.append(f"{fam_indent}  edit PDY '{pdy}'")
-            out_primary.append(f"{fam_indent}  edit DEV_DATAROOT '{dataroot}/{pdy}'")
+            out_primary.append(f"{fam_indent}  edit DEV_DATAROOT '{args.dataroot}/{pdy}'")
             out_primary.extend(lines[rrfs.start:v10.start + 1])
             for i in range(v10.start + 1, v10.children[0].start):
                 if lines[i].split()[:2] != ["defstatus", "complete"]:
@@ -286,23 +342,23 @@ def lay_out_chains(d, suite, clone, start, end, chains, dataroot):
     head = [ln for ln in lines[:primary.start + 1] if not ln.startswith(f"extern /{clone}/")]
     suite_at = next(i for i, ln in enumerate(head) if ln.startswith("suite "))
     head[suite_at:suite_at] = [f"extern {p}" for p in sorted(externs)] + [""]
-    d.lines = head + out_primary + lines[primary.end - 1:]
-    d.changed()
+    text = head + out_primary + lines[primary.end - 1:]
+    with open(args.deffile, "w") as f:
+        f.write("\n".join(text))
     ntasks = sum(1 for ln in out_primary if ln.split()[:1] == ["task"])
     print(f"  chains: {ncycles} cycles in {nchains} chain families, {ntasks} tasks ({len([p for p in pruned if nodes[p].kind == 'task'])} never-run"
           f" tasks of the one-day definition left out)")
     print("  chains: references " + ", ".join(f"{k} {v}" for k, v in stats.items()))
 
 
-def lay_out_clone_chains(d, start, end):
-    """Write the prod_clone suite out as one family per GFS cycle and day, from the day before
-    start to end, for the chain families to wait on."""
-    d.commit()
-    lines, nodes = d.lines, d.nodes
-    primary = nodes[f"{d.suite().path}/primary"]
+def expand_clone(args):
+    lines = open(args.deffile).read().split("\n")
+    nodes, _ = read_blocks(lines)
+    suite = next(p for p, n in nodes.items() if n.kind == "suite")
+    primary = nodes[f"{suite}/primary"]
     out = []
-    first = datetime.datetime.strptime(start, "%Y%m%d") - datetime.timedelta(days=1)
-    for day in days(first.strftime("%Y%m%d"), end):
+    first = datetime.datetime.strptime(args.start, "%Y%m%d") - datetime.timedelta(days=1)
+    for day in days(first.strftime("%Y%m%d"), args.end):
         pdy = day.strftime("%Y%m%d")
         for fam in primary.children:
             head = lines[fam.start]
@@ -310,21 +366,26 @@ def lay_out_clone_chains(d, start, end):
             out.append(f"{indent}family {pdy}_{fam.name}")
             out.append(f"{indent}  edit PDY '{pdy}'")
             out.extend(lines[fam.start + 1:fam.end])
-    d.lines = lines[:primary.start + 1] + out + lines[primary.end - 1:]
-    d.changed()
-    print(f"  chains: /prod_clone families for {first.strftime('%Y%m%d')} to {end}")
+    with open(args.deffile, "w") as f:
+        f.write("\n".join(lines[:primary.start + 1] + out + lines[primary.end - 1:]))
+    print(f"  chains: /prod_clone families for {first.strftime('%Y%m%d')} to {args.end}")
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Lay a generated prod_clone definition out by day.")
-    ap.add_argument("which", choices=("clone",))
+    ap = argparse.ArgumentParser()
+    ap.add_argument("which", choices=("rrfs", "clone"))
     ap.add_argument("deffile")
+    ap.add_argument("--suite")
+    ap.add_argument("--clone")
     ap.add_argument("--start", required=True)
     ap.add_argument("--end", required=True)
+    ap.add_argument("--chains", default="03 15")
+    ap.add_argument("--dataroot")
     args = ap.parse_args()
-    d = Def.read(args.deffile)
-    lay_out_clone_chains(d, args.start, args.end)
-    d.write(args.deffile)
+    if args.which == "rrfs":
+        expand_rrfs(args)
+    else:
+        expand_clone(args)
 
 
 if __name__ == "__main__":
