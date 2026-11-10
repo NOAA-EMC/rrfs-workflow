@@ -7,7 +7,7 @@
 # Grid and write-component values come from dev-sci's ush/set_predef_grid_params.sh; job sizes
 # and science settings from its ush/set_rrfs_config_general.sh (WCOSS2/Ursa block) and the
 # RRFS_v1.2 13 km retro sample configs. Sourced by ush/retro/setup_retro_links.sh and
-# ecf/defs/retro/make_rrfs_retro_def.sh when DOMAIN=RRFS_CONUS_13km in retro/config.sh.
+# ecf/defs/retro/make_rrfs_retro_def.py when DOMAIN=RRFS_CONUS_13km in retro/config.sh.
 #
 
 # Fix files for this grid, from dev-sci's shared fix tree (FIX_RRFS_SHARED in retro/config.sh).

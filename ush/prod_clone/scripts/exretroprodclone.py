@@ -12,9 +12,10 @@ script does two things each time it runs (once a minute from jretroprodclone.ecf
      released one at a time (00, 06, 12, 18, then 00 of the next day), because each family's first
      cycles depend on the restarts of the family before it.
 
-With RETRO_LAYOUT=chains the suites already hold every retro day (ecf/defs/retro/chain_suite.py),
-so step 2 becomes a throttle: the cycle families start suspended, and each pass resumes them oldest
-first while fewer than CYCLE_THROTTLE resumed cycles are incomplete, as Rocoto's cyclethrottle does.
+With RETRO_LAYOUT=chains the suites already hold every retro day
+(ecf/defs/retro/retro_def/chains.py), so step 2 becomes a throttle: the cycle families start
+suspended, and each pass resumes them oldest first while fewer than CYCLE_THROTTLE resumed cycles
+are incomplete, as Rocoto's cyclethrottle does.
 
 Settings (environment):
   ECF_HOST, ECF_PORT      ecflow server
