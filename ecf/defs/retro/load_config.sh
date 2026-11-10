@@ -27,6 +27,12 @@ else
   exit 1
 fi
 unset _retro_dir _retro_config
+# Simplified retros (no spin-up, EnKF or ensemble forecast) run as cold-start chains, see
+# chain_suite.py; full ones keep the operational families.
+RETRO_LAYOUT=families
+if [ "${DO_SPINUP:-TRUE}" = FALSE ] && [ "${RUN_ENKF:-TRUE}" = FALSE ] && [ "${RUN_ENSF:-TRUE}" = FALSE ]; then
+  RETRO_LAYOUT=chains
+fi
 # Each run can use its own pair of top-level suites on a shared ecFlow server.
 RRFS_SUITE=${RRFS_SUITE:-para}
 PRODCLONE_SUITE=${PRODCLONE_SUITE:-prod_clone}
