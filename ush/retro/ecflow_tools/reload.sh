@@ -42,7 +42,7 @@ fi
 # Keep the generated definition outside the repository; only ecFlow's in-memory suite is replaced.
 generated_def=$(mktemp "${ECF_HOME}/rrfs_retro.reload.XXXXXX")
 echo "Generating retro definition: ${generated_def}"
-"${repo}/ecf/defs/retro/make_rrfs_retro_def.sh" "${generated_def}"
+"${repo}/ecf/defs/retro/make_rrfs_retro_def.py" "${generated_def}"
 
 # Pause submissions before replacement and keep the suite paused for inspection afterward.
 ecflow_client --suspend "${suite_path}"

@@ -157,7 +157,7 @@ done
 
 # ---------------------------------------------------------------------------------------------
 # A simplified retro: the same switches the Rocoto workflow's ush/config.sh turns off for a short
-# cycling or DA run. ecf/defs/retro/make_rrfs_retro_def.sh reads the same settings out of
+# cycling or DA run. ecf/defs/retro/make_rrfs_retro_def.py reads the same settings out of
 # retro/config.sh and takes the matching tasks out of the suite definition; what is set here is
 # the half the jobs themselves read.
 # ---------------------------------------------------------------------------------------------

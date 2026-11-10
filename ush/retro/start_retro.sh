@@ -88,7 +88,7 @@ fi
 # Do not pipe these into head: the generators print several progress lines, and head closing the
 # pipe after the first one SIGPIPEs them part way through, which silently drops later steps (the
 # per-domain job sizes, for one). Capture the output instead, then show the first line.
-gen_out=$(cd "${repo}/ecf" && ./defs/retro/make_rrfs_retro_def.sh) || die "make_rrfs_retro_def.sh failed"
+gen_out=$(cd "${repo}/ecf" && ./defs/retro/make_rrfs_retro_def.py) || die "make_rrfs_retro_def.py failed"
 printf '%s\n' "${gen_out}" | grep -E "^(Wrote|  [a-z]+:|[0-9]+ )" || true
 gen_out=$("${repo}/ush/prod_clone/make_retro_def.sh") || die "make_retro_def.sh failed"
 printf '%s\n' "${gen_out}" | head -1
