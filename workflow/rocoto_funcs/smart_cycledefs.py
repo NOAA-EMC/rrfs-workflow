@@ -84,7 +84,7 @@ def smart_cycledefs():
     #
     dcCycledef['viirs'] = {'valid_hours': '17 18 19 20 21 22', 'cycledef': f'{cycledef_prod}'}
     if spinup:
-        viirs_spinup_hrs = [h for h in spinup_hrs if h in [17,18,19,20,21,22]]
+        viirs_spinup_hrs = [h for h in spinup_hrs if h in [17, 18, 19, 20, 21, 22]]
         if viirs_spinup_hrs:
             valid_str = " ".join(str(h) for h in viirs_spinup_hrs)
 
