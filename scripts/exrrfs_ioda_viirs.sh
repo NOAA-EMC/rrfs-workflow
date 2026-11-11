@@ -59,7 +59,7 @@ echo "  Thinning    : ${THIN}"
 echo "  Provider    : noaa"
 echo "  Error method: nesdis"
 
-python3 ./viirs_aod2ioda.py \
+./viirs_aod2ioda.py \
   -i ${FILES} \
   -o "${OUTFILE}" \
   --provider noaa \
