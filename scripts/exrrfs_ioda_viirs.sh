@@ -55,7 +55,7 @@ OUTFILE="VIIRS_AOD_CONUS_${PDY}_${cyc}.nc"
 echo "Running VIIRS AOD → IODA:"
 echo "  Input files : ${FILES}"
 echo "  Output file : ${OUTFILE}"
-echo "  Thinning    : ${THIN}"
+echo "  Thinning    : ${AOD_VIIRS_THIN}"
 echo "  Provider    : noaa"
 echo "  Error method: nesdis"
 
@@ -63,7 +63,7 @@ echo "  Error method: nesdis"
   -i ${FILES} \
   -o "${OUTFILE}" \
   --provider noaa \
-  -n "${THIN}" \
+  -n "${AOD_VIIRS_THIN}" \
   --error_method nesdis
 
 export err=$?

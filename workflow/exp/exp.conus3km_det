@@ -16,7 +16,6 @@ export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed i
 export REALTIME=false
 export ZETA_LEVELS="L60.txt"
 export USE_MERRA2=false  # false: default GOCART aerosol climatology; true: MERRA2 aerosol climatology
-export THIN=0.75
 #
 export DO_IODA=true
 export DO_JEDI=true
