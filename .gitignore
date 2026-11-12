@@ -25,3 +25,6 @@ logs/
 ecf/defs/retro/rrfs_retro.def
 ush/prod_clone/ecf/defs_retro.def
 ecf/defs/retro/config.sh
+
+# VS Code settings
+.vscode/

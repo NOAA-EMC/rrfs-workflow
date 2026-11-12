@@ -1,0 +1,6 @@
+./.github/*
+./sorc/app_build.sh
+./sorc/_workaround_/*
+./ush/rocoto/*
+./ush/retro/*
+./ecf/*

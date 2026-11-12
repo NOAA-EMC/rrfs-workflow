@@ -1,0 +1,71 @@
+RRFS CI Design and Usage Guide
+Lin Gan
+
+This document outlines the design pattern and usage of the automated GitHub Actions CI pipelines established to enforce NCEP Central Operations (NCO) Implementation Standards.
+
+Core Design Pattern
+
+Every new CI test adheres to a strict standard to maintain uniformity:
+
+Workflow File (.yml): Named NCO_Consistency_${CI_Test_Job_Name}.yml. Controls the GitHub Action runner.
+
+Exclusion List (.lst): Named exclude_file_list_${CI_Test_Job_Name}.lst. Used by repository admins to permanently bypass specific files from tests.
+
+Regression Test (.sh): Named regression_test_${CI_Test_Job_Name}.sh. Verifies that the testing logic works correctly on known bad data.
+
+Zero-Match Logic: If a repository branch lacks matching target files, the CI completes successfully (exit 0) but clearly logs "No files found to check. Exiting gracefully" in ci_run.log.
+
+Artifact Generation: Output is logged to ci_run.log and uploaded as an artifact, as well as displayed in the $GITHUB_STEP_SUMMARY.
+
+Available Pipelines
+
+1. Yamllint (NCO_Consistency_Yamllint)
+
+Target: .yml, .yaml files.
+
+Purpose: Validates basic syntax, indentation, format constraints (120 character line length max), trailing spaces.
+
+2. Yamllint Scientific Hierarchical (NCO_Consistency_Yamllint_Scientific_Hierarchical)
+
+Target: .yml, .yaml files.
+
+Purpose: Utilizes a custom Python PyYAML wrapper (check_hierarchical_yaml.py) to enforce scientific structural standards, specifically throwing hard errors if duplicate keys are detected within a block (which normally overwrite silently).
+
+3. Implementation Standard (NCO_Consistency_Implementation_Standard)
+
+Target: Bash scripts (.sh) in ./jobs, ./scripts, ./ush.
+
+Purpose: Enforces NCO EE2 checklist requirements via linter_nco_implementation_standard.py.
+
+No hardcoded paths (/lfs, /gpfs).
+
+No redirecting to > /dev/null.
+
+Enforces directory structure (./jobs must be uppercase, ./scripts lowercase ex*.sh).
+
+Validates err_chk follows mpiexec/aprun.
+
+Prevents rm -rf $DATA outside of the j-job conditional logic.
+
+Skipping & Disabling Checks
+
+1. Global Skip (via Commit/PR Message)
+
+You can disable an entire CI job globally by including ci-ignore: <job_name> in your commit message or PR description.
+
+Example: git commit -m "Updating docs. ci-ignore: yamllint"
+
+Available tags: yamllint, yamllint_scientific, implementation_standard.
+
+2. File-level Skip (via Inline Comment)
+
+Place a comment in the specific file to bypass checks for that file only.
+
+Example in YAML: # ci-ignore: yamllint_scientific
+
+Example in Bash: # ci-ignore: implementation_standard
+
+3. Repository-level Skip (via List)
+
+
+Admins can permanently exclude files or directories by adding their relative paths to the corresponding .lst file in .github/workflows/.
