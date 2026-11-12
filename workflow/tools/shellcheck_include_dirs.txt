@@ -5,7 +5,6 @@
 ../../ush
 ../../workflow/config_resources
 ../../workflow/exp
-../../workflow/exp/rt_jet
 ../../workflow/rocoto_funcs
 ../../workflow/sideload
 ../../workflow/tools

@@ -48,6 +48,12 @@ if [[ ${MACHINE,,} == "ursa" ]]; then # special needs at ursa
   export I_MPI_ADJUST_SCATTER=2
   export I_MPI_ADJUST_SCATTERV=2
 #  export I_MPI_COLL_INTRANODE=pt2pt
+elif [[ ${MACHINE,,} == "gaeac7" ]]; then # special needs at gaeac7
+  export FI_CXI_RX_MATCH_MODE=hybrid
+  # Enable CQ backoff only for dense rank tasks (>= 300 PPN)
+  if [[ "${PPN:-0}" -ge 300 ]]; then
+     export MPICH_OFI_CQ_STALL=1
+  fi
 fi
 #
 echo "load rrfs-workflow modules by default"
