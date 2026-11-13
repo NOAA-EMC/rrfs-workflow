@@ -18,6 +18,9 @@ export CONFIG_MIE_AOD_OPT=0
 export USE_EXTERNAL_CHEM_LBCS=false
 export USE_EXTERNAL_CHEM_ICS=false
 #
+#export AOD_VIIRS_THIN=0.96 #12km thinning
+export AOD_VIIRS_THIN=0.75 #3km thinning
+
 export WALLTIME_PREP_CHEM="00:45:00"
 #
 # add mesh dependent logic when needed, such as case ${MESH_NAME} in "conus12km", etc
