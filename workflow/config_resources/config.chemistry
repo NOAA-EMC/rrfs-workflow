@@ -18,8 +18,11 @@ export CONFIG_MIE_AOD_OPT=0
 export USE_EXTERNAL_CHEM_LBCS=false
 export USE_EXTERNAL_CHEM_ICS=false
 #
-#export AOD_VIIRS_THIN=0.96 #12km thinning
-export AOD_VIIRS_THIN=0.75 #3km thinning
+if [[ ${MESH_NAME} == *"12km"* ]]; then
+  export AOD_VIIRS_THIN=0.96
+else # 3km and other
+  export AOD_VIIRS_THIN=0.75
+fi
 
 export WALLTIME_PREP_CHEM="00:45:00"
 #
