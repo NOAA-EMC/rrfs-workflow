@@ -325,8 +325,7 @@ if [[ "${WGF}" = "det" ]] || [[ "${WGF}" = "ensf" ]]; then
   export CMDFILE="${DATAprdgen}/poescript_${fhr}"
   # cfp only exists on WCOSS2, so run the subpieces serially on other machines
   if [[ "${MACHINE}" = "WCOSS2" ]]; then
-    # ci-skip: launcher_trap
-    mpiexec -np 12 --cpu-bind core cfp "${CMDFILE}" >>"${pgmout}" 2>errfile
+    mpiexec -np 12 --cpu-bind core cfp "${CMDFILE}" >>"${pgmout}" 2>errfile  # ci-skip: launcher_trap
   else
     bash "${CMDFILE}" >>"${pgmout}" 2>errfile
   fi
@@ -739,7 +738,7 @@ EOF
 
   # Calculate the wgrib2 gridspecs for the fire weather grid
   # shellcheck disable=SC2086
-  $APRUN "${EXECrrfs}/rrfs_util_firewx_gridspecs.exe" >> "${pgmout}" 2>errfile
+  ${APRUN} "${EXECrrfs}/rrfs_util_firewx_gridspecs.exe" >> "${pgmout}" 2>errfile
   export err=$?; err_chk
 
   grid_specs_firewx=$(head "${DATA}/copygb_gridnavfw.txt")
