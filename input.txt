@@ -1,6 +1,0 @@
-line-1
-TEMP
-xTEMPx
-line-4
-line-5
-line-6
