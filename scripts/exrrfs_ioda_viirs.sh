@@ -44,7 +44,7 @@ if [[ -z "${FILES}" ]]; then
 fi
 
 echo "Found VIIRS granules for CDATE=${PREV_CDATE}:"
-printf '  %s\n' ${FILES}
+printf '  %s\n' "${FILES}"
 
 #-----------------------------------------------------------------------
 # Run VIIRS AOD → IODA for this single DA cycle
@@ -60,7 +60,7 @@ echo "  Provider    : noaa"
 echo "  Error method: nesdis"
 
 ./viirs_aod2ioda.py \
-  -i ${FILES} \
+  -i "${FILES}" \
   -o "${OUTFILE}" \
   --provider noaa \
   -n "${AOD_VIIRS_THIN}" \
