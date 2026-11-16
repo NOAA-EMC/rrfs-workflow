@@ -28,6 +28,7 @@ mappings["ioda_vadwnd.nc"]="${obspath}/ioda_vadwnd.nc"
 mappings["ioda_gnss_ztd.nc"]="${obspath}/ioda_gnss_ztd.nc"
 mappings["ioda_satwnd.abi_goes-16.nc"]="${obspath}/ioda_satwnd.abi_goes-16.nc"
 mappings["ioda_satwnd.abi_goes-18.nc"]="${obspath}/ioda_satwnd.abi_goes-18.nc"
+mappings["ioda_satwnd.abi_goes-19.nc"]="${obspath}/ioda_satwnd.abi_goes-19.nc"
 # satellite observations
 mappings["ioda_abi_g16.nc"]="${obspath}/ioda_abi_g16.nc"
 mappings["ioda_abi_g18.nc"]="${obspath}/ioda_abi_g18.nc"
