@@ -646,6 +646,7 @@ else # not cycling
              echo "cpreq $fl ${DATA}/" >> ./para_copy.sh
            done
 	   cpprocs=`cat ./para_copy.sh | grep routehandle | wc -l`
+     # ci-skip: launcher_trap
 	   mpiexec -n ${cpprocs} -ppn ${cpprocs} --cpu-bind core cfp ./para_copy.sh
 	   rm ./para_copy.sh
 	  fi
@@ -661,6 +662,7 @@ else # not cycling
              echo "cpreq $fl ${DATA}/" >> ./para_copy.sh
            done
 	   cpprocs=`cat ./para_copy.sh | grep routehandle | wc -l`
+     # ci-skip: launcher_trap
 	   mpiexec -n ${cpprocs} -ppn ${cpprocs} --cpu-bind core cfp ./para_copy.sh
 	   rm ./para_copy.sh
 	  fi

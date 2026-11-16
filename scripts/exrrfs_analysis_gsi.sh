@@ -878,7 +878,8 @@ if [[ ! -r "./satinfo" ]]; then
 fi
 
 # Safely read the sorted awk output directly into an array in memory
-mapfile -t satellite_files < <(awk '$1 !~ /^!/ {print $1}' ./satinfo | sort -u)
+sat_list=$(awk '$1 !~ /^!/ {print $1}' ./satinfo | sort -u)
+mapfile -t satellite_files <<< "${sat_list}"
 
 for file in "${satellite_files[@]}"; do
    ln -s "${CRTM_FIX}/${file}.SpcCoeff.bin" ./crtm_coeffs/
@@ -947,22 +948,22 @@ if [ "${DO_RADDA}" = "TRUE" ]; then
   fi
 
   if [ -r radstat.rrfs ]; then
-    # Extract and parse entirely in memory, with error handling
+    tar_out=$(tar -xvf radstat.rrfs) || err_exit "Cannot extract radstat.rrfs"
     while IFS= read -r type; do
       # Extract the second column (filename) safely
       read -r _ type _ <<< "${type}"
       [[ "${type}" == *_ges* ]] || continue
-  
+
       # Fast, in-memory string manipulation
       diag_file="${type%%,*}"
       fname="${diag_file%%.*}"
       date="${diag_file#*.}"
       date="${date%%.*}"
-  
+    
       gunzip "${diag_file}"
       fnameanl="${fname/_ges/}"
       mv "${fname}.${date}"* "${fnameanl}"
-    done < <(tar -xvf radstat.rrfs || err_exit "Cannot extract radstat.rrfs")
+    done <<< "${tar_out}"
   fi
 fi
 

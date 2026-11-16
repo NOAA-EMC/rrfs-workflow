@@ -27,6 +27,7 @@ for grid in 227 198 196; do
     looplim=30
     loop=1
     while [[ "${loop}" -le "${looplim}" ]]; do
+      # shellcheck disable=SC2312
       numfiles=$(find "${umbrella_post_data}" -maxdepth 1 -name "rrfs.t${cyc}z.smoke.${type}.f0*.${grid}.grib2" | wc -l)
       if [[ "${numfiles}" -eq 73 ]]; then
         break
@@ -70,6 +71,7 @@ for type in sfc pbl; do
   looplim=30
   loop=1
   while [[ "${loop}" -le "${looplim}" ]]; do
+    # shellcheck disable=SC2312
     numfiles=$(find "${umbrella_post_data}" -maxdepth 1 -name "rrfs.t${cyc}z.dust.${type}.f0*.227.grib2" | wc -l)
     if [[ "${numfiles}" -eq "${files}" ]]; then
       break

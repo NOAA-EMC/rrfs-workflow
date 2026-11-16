@@ -40,18 +40,13 @@ if echo "${runRRFS}" | grep -q -w "${fhr}"; then
   read -r -a grid_args <<< "${gridspecs}"
 
   # Only grab records that need WMO headers for AWIPS
- 
+  # shellcheck disable=SC2086
   "${WGRIB2}" "${INPUTfile}" | grep -F -f "${PARMrrfs}/wmo/rrfsparams_${gridspacing}" | "${WGRIB2}" -i "${INPUTfile}" -new_grid_winds grid -set_grib_type same -grib "input.t${cyc}z.${inputfile}.${gridspacing}.f${fhr}.na.grib2"
-
+  # shellcheck disable=SC2086
   "${WGRIB2}" "input.t${cyc}z.${inputfile}.${gridspacing}.f${fhr}.na.grib2" -set_bitmap 1 -set_grib_type "${compress_type}" \
-  # shellcheck disable=SC2215
   -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
-  # shellcheck disable=SC2215
   -new_grid_interpolation neighbor \
-  # shellcheck disable=SC2215
   -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
-  # shellcheck disable=SC2215
-  # shellcheck disable=SC2128
   -new_grid "${grid_args}" "rrfs.t${cyc}z.${inputfile}.${gridspacing}.f${fhr}.na.grib2"
 
   if [[ "${gridspacing}" == "3km" ]]; then
