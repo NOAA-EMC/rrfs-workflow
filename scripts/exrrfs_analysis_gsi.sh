@@ -261,40 +261,39 @@ if  [[ ${regional_ensemble_option:-1} -eq 1 || ${l_both_fv3sar_gfs_ens} = ".true
 
     for loop in $loops; do
       shopt -s nullglob
-      file_list=(${COMINgfs}/enkfgdas.*/*/atmos/mem080/gdas*.atmf${loop}.${ftype})
+      file_list=(${COMINgfs}/enkfgdas.*/??/mem080/model/atmos/history/enkfgdas*.atm.f${loop}.${ftype})
       shopt -u nullglob
 
       if [ ${#file_list[@]} -eq 0 ]; then
-        echo "WARNING: Missing ${COMINgfs}/enkfgdas.*/*/atmos/mem080/gdas*.atmf${loop}.${ftype} files"
-
+        echo "WARNING: Missing ${COMINgfs}/enkfgdas.*/??/mem080/model/atmos/history/enkfgdas*.atm.f${loop}.${ftype} files"
       else
-      for timelist in "${file_list[@]}"; do
-        availtimeyyyymmdd=$(echo ${timelist} | cut -d'/' -f9 | cut -c 10-17)
-        availtimehh=$(echo ${timelist} | cut -d'/' -f10)
-        availtime=${availtimeyyyymmdd}${availtimehh}
+        for timelist in "${file_list[@]}"; do
+          availtimeyyyymmdd=$(echo ${timelist} | cut -d'/' -f9 | cut -c 10-17)
+          availtimehh=$(echo ${timelist} | cut -d'/' -f10)
+          availtime=${availtimeyyyymmdd}${availtimehh}
 
-        loopfcst=$(echo ${loop}| cut -c 1-3)      # for nemsio 009s to get 009
-        stamp_avail=$(date -d "${availtimeyyyymmdd} ${availtimehh} ${loopfcst} hours" +%s)
+          loopfcst=$(echo ${loop}| cut -c 1-3)      # for nemsio 009s to get 009
+          stamp_avail=$(date -d "${availtimeyyyymmdd} ${availtimehh} ${loopfcst} hours" +%s)
 
-        hourDiff=$(echo "($stampcycle - $stamp_avail) / (60 * 60 )" | bc);
-        if [[ ${stampcycle} -lt ${stamp_avail} ]]; then
-           hourDiff=$(echo "($stamp_avail - $stampcycle) / (60 * 60 )" | bc);
-        fi
+          hourDiff=$(echo "($stampcycle - $stamp_avail) / (60 * 60 )" | bc);
+          if [[ ${stampcycle} -lt ${stamp_avail} ]]; then
+             hourDiff=$(echo "($stamp_avail - $stampcycle) / (60 * 60 )" | bc);
+          fi
 
-        if [[ ${hourDiff} -lt ${minHourDiff} ]]; then
-           minHourDiff=${hourDiff}
-           enkfcstname=gdas.t${availtimehh}z.atmf${loop}
-           eyyyymmdd=$(echo ${availtime} | cut -c1-8)
-           ehh=$(echo ${availtime} | cut -c9-10)
-           foundgdasens="true"
-        fi
-      done
+          if [[ ${hourDiff} -lt ${minHourDiff} ]]; then
+             minHourDiff=${hourDiff}
+             enkfcstname=enkfgdas.t${availtimehh}z.atm.f${loop}
+             eyyyymmdd=$(echo ${availtime} | cut -c1-8)
+             ehh=$(echo ${availtime} | cut -c9-10)
+             foundgdasens="true"
+          fi
+        done
       fi
     done
 
     if [ ${foundgdasens} = "true" ]
     then
-      ls ${COMINgfs}/enkfgdas.${eyyyymmdd}/${ehh}/atmos/mem???/${enkfcstname}.nc > filelist03
+      ls ${COMINgfs}/enkfgdas.${eyyyymmdd}/${ehh}/mem???/model/atmos/history/${enkfcstname}.nc > filelist03
     fi
 
     ;;
@@ -357,7 +356,7 @@ i_use_2mQ4B=2
 i_use_2mT4B=1
 
 # Determine if hybrid option is available
-memname='atmf009'
+memname='atm.f009'
 grid_ratio_ens=${grid_ratio_ens:-"3"}
 ens_fast_read=${ens_fast_read:-".false."}
 HYBENSMEM_NMIN=${HYBENSMEM_NMIN:-"66"}
