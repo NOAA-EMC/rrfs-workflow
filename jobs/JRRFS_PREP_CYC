@@ -14,16 +14,16 @@ export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
 export PARMrrfs=${PARMrrfs:-${HOMErrfs}/parm}
 export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 
-export COMINobsproc="${COMINobsproc:-$(compath.py obsproc/${obsproc_ver})}"
-export COMINnosofs="${COMINnosofs:-$(compath.py nosofs/${nosofs_ver})}"
-export COMINnsst="${COMINnsst:-$(compath.py nsst/${nsst_ver})}"
-export COMINhrrr="${COMINhrrr:-$(compath.py hrrr/${hrrr_ver})}"
-export COMINrap="${COMINrap:-$(compath.py rap/${rap_ver})}"
+export COMINobsproc="${COMINobsproc:-$(compath.py obsproc/"${obsproc_ver}")}"
+export COMINnosofs="${COMINnosofs:-$(compath.py nosofs/"${nosofs_ver}")}"
+export COMINnsst="${COMINnsst:-$(compath.py nsst/"${nsst_ver}")}"
+export COMINhrrr="${COMINhrrr:-$(compath.py hrrr/"${hrrr_ver}")}"
+export COMINrap="${COMINrap:-$(compath.py rap/"${rap_ver}")}"
 #-----------------------------------------------------------------------
 # RRFS Prep Cyc
 #-----------------------------------------------------------------------
 export pid=${pid:-$$}
-export outid=${outid:-"LL$job"}
+export outid=${outid:-"LL${job}"}
 case "${WGF}" in
   "det")
     export RUN="rrfs"
@@ -38,8 +38,8 @@ case "${WGF}" in
     export RUN="firewx"
     ;;
 esac
-if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
-  if [ ${MEMBER_NAME} = "ensmean" ] ; then
+if [ "${WGF}" = "enkf" ] || [ "${WGF}" = "ensf" ]; then
+  if [ "${MEMBER_NAME}" = "ensmean" ] ; then
     export ENSMEM_INDX='001'
   else
     export ENSMEM_INDX=${MEMBER_NAME}
@@ -65,8 +65,8 @@ export shared_output_data_ics=${umbrella_ics_data}/ics
 # Define data directories
 #-----------------------------------------------------------------------
 export DATA=${DATA:-${DATAROOT}/${jobid}}
-mkdir -p ${DATA} ${shared_output_data_ics}
-cd ${DATA}
+mkdir -p "${DATA}" "${shared_output_data_ics}"
+cd "${DATA}"
 
 export cycle="t${cyc}z"
 setpdy.sh
@@ -77,7 +77,7 @@ export CDATE="${PDY}${cyc}"
 # Source the bash utility functions.
 #-----------------------------------------------------------------------
 
-. $USHrrfs/source_util_funcs.sh
+. "${USHrrfs}"/source_util_funcs.sh
 
 #-----------------------------------------------------------------------
 # Get the full path to the file in which this script/function is located 
@@ -106,7 +106,7 @@ export CYCLE_SUBTYPE=${CYCLE_SUBTYPE:-empty}
 #-----------------------------------------------------------------------
 # Define COM directories
 #-----------------------------------------------------------------------
-export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/${rrfs_ver})}
+export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/"${rrfs_ver}")}
 export COMOUT=${COMOUT:-${COMrrfs}/${RUN}.${PDY}/${cyc}}
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
   export COMOUT=${COMOUT}_spinup
@@ -116,19 +116,19 @@ else
 fi
 export umbrella_prep_cyc_fallback=${DATAROOT}/rrfs_prep_cyc_alert_email_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}
 if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
-  if [ ${MEMBER_NAME} = "ensmean" ] ; then
+  if [ "${MEMBER_NAME}" = "ensmean" ] ; then
     export COMOUT=${COMOUT}/${MEMBER_NAME}
   else
     export COMOUT=${COMOUT}/${mem_num}
   fi
   if [ "${CYCLE_TYPE}" = "spinup" ]; then
-    if [ ${MEMBER_NAME} = "ensmean" ] ; then
+    if [ "${MEMBER_NAME}" = "ensmean" ] ; then
       export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}/${MEMBER_NAME}
     else
       export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}/${mem_num}
     fi
   else
-    if [ ${MEMBER_NAME} = "ensmean" ] ; then
+    if [ "${MEMBER_NAME}" = "ensmean" ] ; then
       export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}/${MEMBER_NAME}
     else
       export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}/${mem_num}
@@ -136,11 +136,11 @@ if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
   fi
 fi
 export FORECAST_INPUT_PRODUCT=${umbrella_forecast_data}/INPUT
-if [ -d ${FORECAST_INPUT_PRODUCT} ]; then
+if [ -d "${FORECAST_INPUT_PRODUCT}" ]; then
   echo "The forecast Umbrella INPUT directory exist. This is a rerun. Save the previous INPUT directory."
-  mv ${FORECAST_INPUT_PRODUCT} ${FORECAST_INPUT_PRODUCT}_$$
+  mv "${FORECAST_INPUT_PRODUCT}" "${FORECAST_INPUT_PRODUCT}"_$$
 fi
-mkdir -p ${COMOUT} ${FORECAST_INPUT_PRODUCT}
+mkdir -p "${COMOUT}" "${FORECAST_INPUT_PRODUCT}"
 
 #-----------------------------------------------------------------------
 # Execute the script.
@@ -149,11 +149,11 @@ mkdir -p ${COMOUT} ${FORECAST_INPUT_PRODUCT}
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-${HOMErrfs}/scripts/exrrfs_prep_cyc.sh
+"${HOMErrfs}"/scripts/exrrfs_prep_cyc.sh
 export err=$?; err_chk
 
-if [ -e "$pgmout" ]; then
-  cat $pgmout
+if [ -e "${pgmout}" ]; then
+  cat "${pgmout}"
 fi
 
 #-----------------------------------------------------------------------
@@ -170,6 +170,6 @@ In directory:    \"${scrfunc_dir}\"
 # Remove the Temporary working directory
 ##################################################
 if [ "${KEEPDATA^^}" != YES ]; then
-  cd $DATAROOT
-  rm -rf $DATA
+  cd "${DATAROOT}"
+  rm -rf "${DATA}"
 fi

@@ -1,3 +1,5 @@
+#!/bin/bash
+set -x
 #
 #-----------------------------------------------------------------------
 #
@@ -172,7 +174,7 @@ where the arguments are defined as follows:
 #
   array_name_valid_arg_names="$1"
   valid_arg_names_0th="${array_name_valid_arg_names}[0]"
-  if [ ${!valid_arg_names_0th:-"__unset__"} = "__unset__" ]; then
+  if [ "${!valid_arg_names_0th:-"__unset__"}" = "__unset__" ]; then
     valid_arg_names=()
   else
     valid_arg_names_at="${array_name_valid_arg_names}[@]"
@@ -187,7 +189,7 @@ where the arguments are defined as follows:
 #-----------------------------------------------------------------------
 #
   num_valid_args=${#valid_arg_names[@]}
-  if [ ${num_valid_args} -eq 0 ]; then
+  if [ "${num_valid_args}" -eq 0 ]; then
     valid_arg_names_str=""
   else
     valid_arg_names_str=$( printf "\"%s\" " "${valid_arg_names[@]}" )
@@ -237,7 +239,7 @@ ments (num_valid_args) specified in the array valid_arg_names:
 #
 #-----------------------------------------------------------------------
 #
-  if [ ${num_valid_args} -eq 0 ]; then
+  if [ "${num_valid_args}" -eq 0 ]; then
     return
   fi
 #
@@ -248,9 +250,9 @@ ments (num_valid_args) specified in the array valid_arg_names:
 #
 #-----------------------------------------------------------------------
 #
-  for (( i=0; i<${num_valid_args}; i++ )); do
+  for (( i=0; i<num_valid_args; i++ )); do
 
-    valid_arg_name="${valid_arg_names[$i]}"
+    valid_arg_name="${valid_arg_names[${i}]}"
 
 # Remove spaces (if any exist) from the current valid argument name.
     valid_arg_name_no_spaces=$( \
@@ -262,15 +264,15 @@ The name of an argument in the list of valid arguments (valid_arg_names)
 cannot contain any spaces, but the element with index i=${i} contains at
 least one space:
   valid_arg_names = ( ${valid_arg_names_str})
-  valid_arg_names[$i] = \"${valid_arg_names[$i]}\""
+  valid_arg_names[${i}] = \"${valid_arg_names[${i}]}\""
     fi
 
-    if [ -z ${valid_arg_name} ]; then
+    if [ -z "${valid_arg_name}" ]; then
       print_err_msg_exit "\
 The list of valid arguments (valid_arg_names) cannot contain empty elements, 
 but the element with index i=${i} is empty:
   valid_arg_names = ( ${valid_arg_names_str})
-  valid_arg_names[$i] = \"${valid_arg_names[$i]}\""
+  valid_arg_names[${i}] = \"${valid_arg_names[${i}]}\""
     fi
 
   done
@@ -286,10 +288,10 @@ but the element with index i=${i} is empty:
 #
 #-----------------------------------------------------------------------
 #
-  for (( i=0; i<${num_valid_args}; i++ )); do
-    valid_arg_name="${valid_arg_names[$i]}"
-    eval ${valid_arg_name}=""
-    arg_already_specified[$i]="false"
+  for (( i=0; i<num_valid_args; i++ )); do
+    valid_arg_name="${valid_arg_names[${i}]}"
+    eval "${valid_arg_name}"=""
+    arg_already_specified[i]="false"
   done
 #
 #-----------------------------------------------------------------------
@@ -310,8 +312,8 @@ but the element with index i=${i} is empty:
 # operator deletes the shortest leading portion of arg_val_pair that
 # matches the pattern that follows #.
 #
-    arg_name=${arg_val_pair%%"$sep"*}
-    arg_value=${arg_val_pair#*"$sep"}
+    arg_name=${arg_val_pair%%"${sep}"*}
+    arg_value=${arg_val_pair#*"${sep}"}
 #
 # If the first character of the argument's value is an opening parenthe-
 # sis and its last character is a closing parenthesis, then the argument
@@ -345,9 +347,9 @@ pair (arg_val_pair) is not valid:
 #
 #-----------------------------------------------------------------------
 #
-    for (( i=0; i<${num_valid_args}; i++ )); do
+    for (( i=0; i<num_valid_args; i++ )); do
 
-      valid_arg_name="${valid_arg_names[$i]}"
+      valid_arg_name="${valid_arg_names[${i}]}"
       if [ "${arg_name}" = "${valid_arg_name}" ]; then
 #
 # Check whether the current argument has already been set by a previous
@@ -355,12 +357,12 @@ pair (arg_val_pair) is not valid:
 # to the specified value.  If so, print out an error message and exit 
 # the calling script.
 #
-        if [ "${arg_already_specified[$i]}" = "false" ]; then
-          arg_already_specified[$i]="true"
+        if [ "${arg_already_specified[${i}]}" = "false" ]; then
+          arg_already_specified[i]="true"
           if [ "${is_array}" = "true" ]; then
-            eval ${arg_name}=${arg_value}
+            eval "${arg_name}"="${arg_value}"
           else
-            eval ${arg_name}=\"${arg_value}\"
+            eval "${arg_name}"=\""${arg_value}"\"
           fi
         else
           cmd_line=$( printf "\'%s\' " "${@:1}" )
@@ -378,4 +380,3 @@ Please assign values to arguments only once on the command line."
   done
 #
 }
-

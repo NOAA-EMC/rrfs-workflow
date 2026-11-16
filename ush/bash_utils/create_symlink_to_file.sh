@@ -1,3 +1,5 @@
+#!/bin/bash
+set -x
 #
 #-----------------------------------------------------------------------
 #
@@ -71,14 +73,14 @@ set -x
     print_err_msg_exit "\
 The argument \"target\" specifying the target of the symbolic link that
 this function will create was not specified in the call to this function:
-  target = \"$target\""
+  target = \"${target}\""
   fi
 
   if [ -z "${symlink}" ]; then
     print_err_msg_exit "\
 The argument \"symlink\" specifying the symbolic link that this function
 will create was not specified in the call to this function:
-  symlink = \"$symlink\""
+  symlink = \"${symlink}\""
   fi
 #
 #-----------------------------------------------------------------------
@@ -113,7 +115,7 @@ will create was not specified in the call to this function:
     print_err_msg_exit "\
 Cannot create symlink to specified target file because the latter does
 not exist or is not a file:
-    target = \"$target\""
+    target = \"${target}\""
   fi
 #
 #-----------------------------------------------------------------------
@@ -134,7 +136,7 @@ not exist or is not a file:
 #
 #-----------------------------------------------------------------------
 #
-  ln -sf ${relative_flag} "$target" "$symlink"
+  ln -sf "${relative_flag}" "${target}" "${symlink}"
 #
 }
 

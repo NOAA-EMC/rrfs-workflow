@@ -1,4 +1,5 @@
 #!/bin/bash
+set -x
 
 ################################################################
 #  radmon_err_rpt.sh
@@ -15,30 +16,29 @@
 echo "-->  radmon_err_rpt.sh"
 
 #  Command line arguments.
-file1=${1:-${file1:?}}
-file2=${2:-${file2:?}}
-type=${3:-${type:?}}
-cycle1=${4:-${cycle1:?}}
-cycle2=${5:-${cycle2:?}}
-diag_rpt=${6:-${diag_rpt:?}}
-outfile=${7:-${outfile:?}}
+file1="${1:-${file1:?}}"
+file2="${2:-${file2:?}}"
+type="${3:-${type:?}}"
+cycle1="${4:-${cycle1:?}}"
+cycle2="${5:-${cycle2:?}}"
+diag_rpt="${6:-${diag_rpt:?}}"
+outfile="${7:-${outfile:?}}"
 
 # Directories
-HOMEradmon=${HOMEradmon:-$(pwd)}
+HOMEradmon="${HOMEradmon:-$(pwd)}"
 
 # Other variables
-VERBOSE=${VERBOSE:-NO}
+VERBOSE="${VERBOSE:-NO}"
 err=0
-RADMON_SUFFIX=${RADMON_SUFFIX}
 
-if [[ "$VERBOSE" = "YES" ]]; then
-   echo EXECUTING $0 $* >&2
+if [[ "${VERBOSE}" == "YES" ]]; then
+   echo "EXECUTING $0 $*" >&2
    set -ax
 fi
 
 
 have_diag_rpt=0
-if [[ -s $diag_rpt ]]; then
+if [[ -s "${diag_rpt}" ]]; then
    have_diag_rpt=1
 else
    err=1
@@ -49,16 +49,16 @@ fi
 #  search $file2 for the same satname, channel, and region 
 #  if same combination is in both files, add the values to the output file
 #  
-{ while read myline; do
-   echo "myline = $myline"
+{ while read -r myline || [[ -n "${myline}" ]]; do
+   echo "myline = ${myline}"
    bound=""
 
-   echo $myline
-   satname=`echo $myline | gawk '{print $1}'`
-   channel=`echo $myline | gawk '{print $3}'`
-   region=`echo $myline | gawk '{print $5}'`
-   value1=`echo $myline | gawk '{print $7}'`
-   bound=`echo $myline | gawk '{print $9}'`
+   echo "${myline}"
+   satname=$(echo "${myline}" | gawk '{print $1}')
+   channel=$(echo "${myline}" | gawk '{print $3}')
+   region=$(echo "${myline}" | gawk '{print $5}')
+   value1=$(echo "${myline}" | gawk '{print $7}')
+   bound=$(echo "${myline}" | gawk '{print $9}')
 
 #
 #     Check findings against diag_report.  If the satellite/instrument is on the 
@@ -70,105 +70,104 @@ fi
    diag_match=""
    diag_match_len=0 
 
-   if [[ $have_diag_rpt == 1 ]]; then
-      diag_match=`gawk "/$satname/" $diag_rpt`
-      diag_match_len=`echo ${#diag_match}`
+   if [[ "${have_diag_rpt}" -eq 1 ]]; then
+      diag_match=$(gawk "/${satname}/" "${diag_rpt}")
+      diag_match_len="${#diag_match}"
    fi
 
 
-   if [[ $diag_match_len == 0 ]]; then  
+   if [[ "${diag_match_len}" -eq 0 ]]; then  
 
-      if [[ $type == "chan" ]]; then
-         echo "looking for match for $satname and $channel"
-         { while read myline2; do
-            satname2=`echo $myline2 | gawk '{print $1}'`
-            channel2=`echo $myline2 | gawk '{print $3}'`
+      if [[ "${type}" == "chan" ]]; then
+         echo "looking for match for ${satname} and ${channel}"
+         { while read -r myline2 || [[ -n "${myline2}" ]]; do
+            satname2=$(echo "${myline2}" | gawk '{print $1}')
+            channel2=$(echo "${myline2}" | gawk '{print $3}')
 
-            if [[ $satname == $satname2 && $channel == $channel2 ]]; then
-               match="$satname  channel=  $channel" 
-               echo "match from gawk = $match"
-	       break;
+            if [[ "${satname}" == "${satname2}" && "${channel}" == "${channel2}" ]]; then
+               match="${satname}  channel=  ${channel}" 
+               echo "match from gawk = ${match}"
+               break
             else 
-	       match=""
+               match=""
             fi
 
-         done } < $file2
+         done } < "${file2}"
      
 
       else
-         match=`gawk "/$satname/ && /channel= $channel / && /region= $region /" $file2`
-         echo match = $match
+         match=$(gawk "/${satname}/ && /channel= ${channel} / && /region= ${region} /" "${file2}")
+         echo "match = ${match}"
 
-         match_len=`echo ${#match}`
-         if [[ $match_len > 0 ]]; then
-            channel2=`echo $match | gawk '{print $3}'`
+         match_len="${#match}"
+         if [[ "${match_len}" -gt 0 ]]; then
+            channel2=$(echo "${match}" | gawk '{print $3}')
 
-            if [[ $channel2 != $channel ]]; then
+            if [[ "${channel2}" != "${channel}" ]]; then
                match=""
             fi
          fi            
 
       fi
-      match_len=`echo ${#match}`
+      match_len="${#match}"
          
-      if [[ $match_len > 0 ]]; then
+      if [[ "${match_len}" -gt 0 ]]; then
 
-         value2=`echo $match | gawk '{print $7}'`
-         bound2=`echo $match | gawk '{print $9}'`
+         value2=$(echo "${match}" | gawk '{print $7}')
+         bound2=$(echo "${match}" | gawk '{print $9}')
 
-         if [[ $type == "chan" ]]; then
-            tmpa="    $satname              channel= $channel"
+         if [[ "${type}" == "chan" ]]; then
+            tmpa="    ${satname}              channel= ${channel}"
             tmpb=""
 
-         elif [[ $type == "pen" ]]; then
-            tmpa="$satname  channel= $channel region= $region"
-            tmpb="$cycle1         	$value1	$bound"
+         elif [[ "${type}" == "pen" ]]; then
+            tmpa="${satname}  channel= ${channel} region= ${region}"
+            tmpb="${cycle1}         	${value1}	${bound}"
 
-         elif [[ $type == "cnt" ]]; then
-            tmpa="$satname  channel= $channel region= $region"
-            tmpb="$cycle1         	$value1	$bound"
+         elif [[ "${type}" == "cnt" ]]; then
+            tmpa="${satname}  channel= ${channel} region= ${region}"
+            tmpb="${cycle1}         	${value1}	${bound}"
 
          else
-            tmpa="$satname  channel= $channel region= $region"
-            tmpb="$cycle1: $type= $value1"
+            tmpa="${satname}  channel= ${channel} region= ${region}"
+            tmpb="${cycle1}: ${type}= ${value1}"
          fi
 
-         line1="$tmpa $tmpb"
-         echo "$line1" >> $outfile
+         line1="${tmpa} ${tmpb}"
+         echo "${line1}" >> "${outfile}"
 
-         if [[ $type != "chan" ]]; then
-            tmpc=`echo $tmpa |sed 's/[a-z]/ /g' | sed 's/[0-9]/ /g' | sed 's/=/ /g' | sed 's/_/ /g' | sed 's/-/ /g'`
+         if [[ "${type}" != "chan" ]]; then
+            tmpc=$(echo "${tmpa}" | sed 's/[a-z]/ /g; s/[0-9]/ /g; s/=/ /g; s/_/ /g; s/-/ /g')
 
-            if [[ $type == "pen" || $type == "cnt" ]]; then
-               line2=" $tmpc $cycle2         	$value2	$bound2"
+            if [[ "${type}" == "pen" || "${type}" == "cnt" ]]; then
+               line2=" ${tmpc} ${cycle2}         	${value2}	${bound2}"
             else
-               line2=" $tmpc $cycle2: $type= $value2"
+               line2=" ${tmpc} ${cycle2}: ${type}= ${value2}"
             fi 
 
-            echo "$line2" >> $outfile
+            echo "${line2}" >> "${outfile}"
          fi
 
          #-----------------------------------------
          # add hyperlink to warning entry
          #
          line3="   http://www.emc.ncep.noaa.gov/gmb/gdas/radiance/es_rad/${RADMON_SUFFIX}/index.html?sat=${satname}&region=${region}&channel=${channel}&stat=${type}"
-         if [[ $channel -gt 0 ]]; then
-            echo "$line3" >> $outfile
-            echo "" >> $outfile
+         if [[ "${channel}" -gt 0 ]]; then
+            echo "${line3}" >> "${outfile}"
+            echo "" >> "${outfile}"
          fi
       fi
    fi
-done } < $file1
+done } < "${file1}"
 
 
 ################################################################################
 #  Post processing
-if [[ "$VERBOSE" = "YES" ]]; then
-   echo $(date) EXITING $0 with error code ${err} >&2
+if [[ "${VERBOSE}" == "YES" ]]; then
+   current_time=$(date)
+   printf '%s EXITING %s with error code %s\n' "${current_time}" "$0" "${err}" >&2
 fi
 
 echo "<--  radmon_err_rpt.sh"
 
-set +x
-exit ${err}
-
+exit "${err}"

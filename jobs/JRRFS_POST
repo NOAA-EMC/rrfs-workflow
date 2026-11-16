@@ -18,7 +18,7 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 # RRFS Post-Processing
 #-----------------------------------------------------------------------
 export pid=${pid:-$$}
-export outid=${outid:-"LL$job"}
+export outid=${outid:-"LL${job}"}
 case "${WGF}" in
   "det")
     export RUN="rrfs"
@@ -35,8 +35,8 @@ case "${WGF}" in
 esac
 
 export DATA=${DATA:-${DATAROOT}/${jobid}}
-mkdir -p ${DATA}
-cd ${DATA}
+mkdir -p "${DATA}"
+cd "${DATA}"
 
 export cycle="t${cyc}z"
 setpdy.sh
@@ -47,7 +47,7 @@ export CDATE="${PDY}${cyc}"
 # Source the bash utility functions.
 #-----------------------------------------------------------------------
 
-. $USHrrfs/source_util_funcs.sh
+. "${USHrrfs}"/source_util_funcs.sh
 
 #-----------------------------------------------------------------------
 # Get the full path to the file in which this script/function is located 
@@ -76,34 +76,34 @@ on the output files corresponding to a specified forecast hour.
 # Define the umbrella data and COM directories.
 #-----------------------------------------------------------------------
 
-if [ $WGF = "ensf" ]; then
+if [ "${WGF}" = "ensf" ]; then
   export ENSMEM_INDX=${MEMBER_NAME}
   DO_ENSFCST="TRUE"
-elif [ $WGF = "det" ]; then
+elif [ "${WGF}" = "det" ]; then
   export ENSMEM_INDX=""
 fi
 export mem_num=m$(echo "${ENSMEM_INDX}")
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 export DO_ENSFCST=${DO_ENSFCST:-"FALSE"}
-export COMrrfs=${COMrrfs:-$(compath.py -o rrfs/${rrfs_ver})}
-export COMOUT=${COMOUT:-$(compath.py -o rrfs/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
+export COMrrfs=${COMrrfs:-$(compath.py -o rrfs/"${rrfs_ver}")}
+export COMOUT=${COMOUT:-$(compath.py -o rrfs/"${rrfs_ver}"/"${RUN}"."${PDY}"/"${cyc}")}
 export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}
 
 # Output from 15-min, 30-min, 45-min subhourly post jobs goes to umbrella data
 export umbrella_post_data=${DATAROOT}/rrfs_post_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}
 
 # Post jobs do not run for spinup cycles, subhourly post jobs are only for deterministic runs
-if [ ${DO_ENSFCST} = "TRUE" ]; then
+if [ "${DO_ENSFCST}" = "TRUE" ]; then
   export COMOUT=${COMOUT}/${mem_num}
   export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}/${mem_num}
-elif [ ${WGF} = "firewx" ]; then
+elif [ "${WGF}" = "firewx" ]; then
   export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}
 fi
 
 # FSM job copies dyn/phy netcdf output and log files into shared_forecast_output_data directory
 export shared_forecast_output_data=${umbrella_forecast_data}/output
 
-mkdir -p ${COMOUT} ${shared_forecast_output_data} ${umbrella_post_data}
+mkdir -p "${COMOUT}" "${shared_forecast_output_data}" "${umbrella_post_data}"
 
 #-----------------------------------------------------------------------
 # Execute the script.
@@ -112,11 +112,11 @@ mkdir -p ${COMOUT} ${shared_forecast_output_data} ${umbrella_post_data}
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-${HOMErrfs}/scripts/exrrfs_post.sh
+"${HOMErrfs}"/scripts/exrrfs_post.sh
 export err=$?; err_chk
 
-if [ -e "$pgmout" ]; then
-  cat $pgmout
+if [ -e "${pgmout}" ]; then
+  cat "${pgmout}"
 fi
 
 #-----------------------------------------------------------------------
@@ -133,6 +133,6 @@ In directory:    \"${scrfunc_dir}\"
 # Remove the Temporary working directory
 ##################################################
 if [ "${KEEPDATA^^}" != YES ]; then
-  cd $DATAROOT
-  rm -rf $DATA
+  cd "${DATAROOT}"
+  rm -rf "${DATA}"
 fi

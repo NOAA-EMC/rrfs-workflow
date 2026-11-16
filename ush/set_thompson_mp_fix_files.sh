@@ -128,15 +128,15 @@ string."
       "qr_acr_qsV2.dat" \
       )
 
-    if [ "${EXTRN_MDL_NAME_ICS}" != "HRRR" -a "${EXTRN_MDL_NAME_ICS}" != "RAP" ] || \
-       [ "${EXTRN_MDL_NAME_LBCS}" != "HRRR" -a "${EXTRN_MDL_NAME_LBCS}" != "RAP" ]; then
+    if [[ "${EXTRN_MDL_NAME_ICS}" != "HRRR" && "${EXTRN_MDL_NAME_ICS}" != "RAP" ]] || \
+       [[ "${EXTRN_MDL_NAME_LBCS}" != "HRRR" && "${EXTRN_MDL_NAME_LBCS}" != "RAP" ]]; then
       thompson_mp_fix_files+=( "${thompson_mp_climo_fn}" )
-    fi  
+    fi
 
     FIXgsm_FILES_TO_COPY_TO_FIXam+=( "${thompson_mp_fix_files[@]}" )
 
-    num_files=${#thompson_mp_fix_files[@]} 
-    for (( i=0; i<${num_files}; i++ )); do
+    num_files=${#thompson_mp_fix_files[@]}
+    for (( i=0; i<num_files; i++ )); do
       mapping="${thompson_mp_fix_files[i]} | ${thompson_mp_fix_files[i]}"
       CYCLEDIR_LINKS_TO_FIXam_FILES_MAPPING+=( "${mapping}" )
     done
@@ -154,15 +154,15 @@ values of these parameters are as follows:
 
   FIXgsm_FILES_TO_COPY_TO_FIXam = ( \\
 "
-    msg="$msg"$( printf "\"%s\" \\\\\n" "${FIXgsm_FILES_TO_COPY_TO_FIXam[@]}" )
-    msg="$msg"$( printf "\n)" )
-    msg="$msg
+    msg="${msg}"$( printf "\"%s\" \\\\\n" "${FIXgsm_FILES_TO_COPY_TO_FIXam[@]}" )
+    msg="${msg}"$( printf "\n)" )
+    msg="${msg}
 
   CYCLEDIR_LINKS_TO_FIXam_FILES_MAPPING = ( \\
 "
-    msg="$msg"$( printf "\"%s\" \\\\\n" "${CYCLEDIR_LINKS_TO_FIXam_FILES_MAPPING[@]}" )
-    msg="$msg"$( printf "\n)" )
-    print_info_msg "$msg"
+    msg="${msg}"$( printf "\"%s\" \\\\\n" "${CYCLEDIR_LINKS_TO_FIXam_FILES_MAPPING[@]}" )
+    msg="${msg}"$( printf "\n)" )
+    print_info_msg "${msg}"
 
   fi
 #
@@ -172,6 +172,5 @@ values of these parameters are as follows:
 #
 #-----------------------------------------------------------------------
 #
-  eval ${output_varname_sdf_uses_thompson_mp}="${sdf_uses_thompson_mp}"
+  printf -v "${output_varname_sdf_uses_thompson_mp}" '%s' "${sdf_uses_thompson_mp}"
 }
-

@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 
-source ${FIXrrfs}/workflow/${WGF}/workflow.conf
+source "${FIXrrfs}"/workflow/"${WGF}"/workflow.conf
 
 export SFC_CLIMO_INPUT_DIR="${FIXrrfs}/fix_sfc_climo"
 
@@ -12,7 +12,7 @@ export SFC_CLIMO_INPUT_DIR="${FIXrrfs}/fix_sfc_climo"
 #
 #-----------------------------------------------------------------------
 #
-. $USHrrfs/source_util_funcs.sh
+. "${USHrrfs}"/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -59,12 +59,24 @@ nprocs=$(( NNODES_MAKE_SFC_CLIMO * PPN_MAKE_SFC_CLIMO ))
 #
 #-----------------------------------------------------------------------
 #
-if [ ${WGF} = "firewx" ]; then
+if [ "${WGF}" = "firewx" ]; then
   hh="${CDATE:8:2}"
   firewx_loc="${COMrrfs}/firewx_input/rrfs_firewx_loc"
-  if [ -s ${firewx_loc} ]; then
-    LAT_CTR=`grep ${hh}z $firewx_loc | awk '{print $2}'`
-    LON_CTR=`grep ${hh}z $firewx_loc | awk '{print $3}'`
+  if [ -s "${firewx_loc}" ]; then
+    LAT_CTR=""
+    LON_CTR=""
+    if [[ -s "${firewx_loc}" ]]; then
+      # Replaced dual awk subprocesses with a single native Bash read loop (Zero Subprocess Rule).
+      while read -r target_hh lat lon _rest; do
+        # Exact match on the first column strictly prevents false positives from the 'index' flaw.
+        if [[ "${target_hh}" == "${hh}z" ]]; then
+          LAT_CTR="${lat}"
+          LON_CTR="${lon}"
+          # Break immediately stops the loop, preventing multi-line variable corruption.
+          break 
+        fi
+      done < "${firewx_loc}"
+    fi
   else
     echo "WARNING:  Did not find firewx_loc to to set center point.  Will default to DC region"
     LAT_CTR=38.9
@@ -122,7 +134,7 @@ EOF
 #
 ulimit -a
 
-case $MACHINE in
+case ${MACHINE} in
 
   "WCOSS2")
     APRUN="mpiexec -n ${nprocs}"
@@ -150,8 +162,8 @@ case $MACHINE in
   *)
     err_exit "\
 Run command has not been specified for this machine:
-  MACHINE = \"$MACHINE\"
-  APRUN = \"$APRUN\""
+  MACHINE = \"${MACHINE}\"
+  APRUN = \"${APRUN}\""
     ;;
 
 esac
@@ -165,7 +177,7 @@ esac
 export pgm="ufs_util_sfc_climo_gen"
 . prep_step
 
-$APRUN $EXECrrfs/$pgm >>$pgmout 2>errfile
+${APRUN} "${EXECrrfs}"/${pgm} >>"${pgmout}" 2>errfile
 export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
@@ -174,7 +186,7 @@ export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
 #
-case "$GTYPE" in
+case "${GTYPE}" in
 
 #
 # Consider, global, stetched, and nested grids.
@@ -186,8 +198,8 @@ case "$GTYPE" in
 # resolution (followed by an underscore).
 #
   for fn in *.nc; do
-    if [[ -f $fn ]]; then
-      cpreq -p $fn ${firewx_input}/${CRES}_${fn}
+    if [[ -f ${fn} ]]; then
+      cpreq -p "${fn}" "${firewx_input}"/"${CRES}"_"${fn}"
     fi
   done
   ;;
@@ -204,9 +216,9 @@ case "$GTYPE" in
 # zero) halo width (in units of number of grid cells).
 #
   for fn in *.halo.nc; do
-    if [ -f $fn ]; then
+    if [ -f "${fn}" ]; then
       bn="${fn%.halo.nc}"
-      cpreq -p $fn ${firewx_input}/${CRES}.${bn}.halo${NH4}.nc
+      cpreq -p "${fn}" "${firewx_input}"/"${CRES}"."${bn}".halo"${NH4}".nc
     fi
   done
 #
@@ -217,9 +229,9 @@ case "$GTYPE" in
 # cate that the grids in these files do not contain a halo.
 #
   for fn in *.nc; do
-    if [ -f $fn ]; then
+    if [ -f "${fn}" ]; then
       bn="${fn%.nc}"
-      cpreq -p $fn ${firewx_input}/${CRES}.${bn}.halo${NH0}.nc
+      cpreq -p "${fn}" "${firewx_input}"/"${CRES}"."${bn}".halo"${NH0}".nc
     fi
   done
   ;;
@@ -233,19 +245,19 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-if [ $vegsoilt_frac = .true. ]; then
-  ncrename -d nx,lon -d ny,lat ${firewx_input}/${CRES}.soil_type.tile7.halo0.nc
-  ncrename -d nx,lon -d ny,lat ${firewx_input}/${CRES}.soil_type.tile7.halo4.nc
-  ncrename -d nx,lon -d ny,lat ${firewx_input}/${CRES}.vegetation_type.tile7.halo0.nc
-  ncrename -d nx,lon -d ny,lat ${firewx_input}/${CRES}.vegetation_type.tile7.halo4.nc
-  ncrename -d num_categories,num_veg_cat ${firewx_input}/${CRES}.vegetation_type.tile7.halo0.nc
-  ncrename -d num_categories,num_veg_cat ${firewx_input}/${CRES}.vegetation_type.tile7.halo4.nc
-  ncrename -d num_categories,num_soil_cat ${firewx_input}/${CRES}.soil_type.tile7.halo0.nc
-  ncrename -d num_categories,num_soil_cat ${firewx_input}/${CRES}.soil_type.tile7.halo4.nc
-  ncks -v vegetation_type_pct ${firewx_input}/${CRES}.vegetation_type.tile7.halo0.nc -A ${firewx_input}/${CRES}_oro_data.tile7.halo0.nc
-  ncks -v vegetation_type_pct ${firewx_input}/${CRES}.vegetation_type.tile7.halo4.nc -A ${firewx_input}/${CRES}_oro_data.tile7.halo4.nc
-  ncks -v soil_type_pct ${firewx_input}/${CRES}.soil_type.tile7.halo0.nc -A ${firewx_input}/${CRES}_oro_data.tile7.halo0.nc
-  ncks -v soil_type_pct ${firewx_input}/${CRES}.soil_type.tile7.halo4.nc -A ${firewx_input}/${CRES}_oro_data.tile7.halo4.nc
+if [ ${vegsoilt_frac} = .true. ]; then
+  ncrename -d nx,lon -d ny,lat "${firewx_input}"/"${CRES}".soil_type.tile7.halo0.nc
+  ncrename -d nx,lon -d ny,lat "${firewx_input}"/"${CRES}".soil_type.tile7.halo4.nc
+  ncrename -d nx,lon -d ny,lat "${firewx_input}"/"${CRES}".vegetation_type.tile7.halo0.nc
+  ncrename -d nx,lon -d ny,lat "${firewx_input}"/"${CRES}".vegetation_type.tile7.halo4.nc
+  ncrename -d num_categories,num_veg_cat "${firewx_input}"/"${CRES}".vegetation_type.tile7.halo0.nc
+  ncrename -d num_categories,num_veg_cat "${firewx_input}"/"${CRES}".vegetation_type.tile7.halo4.nc
+  ncrename -d num_categories,num_soil_cat "${firewx_input}"/"${CRES}".soil_type.tile7.halo0.nc
+  ncrename -d num_categories,num_soil_cat "${firewx_input}"/"${CRES}".soil_type.tile7.halo4.nc
+  ncks -v vegetation_type_pct "${firewx_input}"/"${CRES}".vegetation_type.tile7.halo0.nc -A "${firewx_input}"/"${CRES}"_oro_data.tile7.halo0.nc
+  ncks -v vegetation_type_pct "${firewx_input}"/"${CRES}".vegetation_type.tile7.halo4.nc -A "${firewx_input}"/"${CRES}"_oro_data.tile7.halo4.nc
+  ncks -v soil_type_pct "${firewx_input}"/"${CRES}".soil_type.tile7.halo0.nc -A "${firewx_input}"/"${CRES}"_oro_data.tile7.halo0.nc
+  ncks -v soil_type_pct "${firewx_input}"/"${CRES}".soil_type.tile7.halo4.nc -A "${firewx_input}"/"${CRES}"_oro_data.tile7.halo4.nc
 fi
 #
 #-----------------------------------------------------------------------
@@ -255,14 +267,14 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-cpreq -p ${firewx_input}/${CRES}.facsf.tile7.halo4.nc ${firewx_input}/${CRES}.facsf.tile7.nc
-cpreq -p ${firewx_input}/${CRES}.maximum_snow_albedo.tile7.halo4.nc ${firewx_input}/${CRES}.maximum_snow_albedo.tile7.nc
-cpreq -p ${firewx_input}/${CRES}.slope_type.tile7.halo4.nc ${firewx_input}/${CRES}.slope_type.tile7.nc
-cpreq -p ${firewx_input}/${CRES}.snowfree_albedo.tile7.halo4.nc ${firewx_input}/${CRES}.snowfree_albedo.tile7.nc
-cpreq -p ${firewx_input}/${CRES}.soil_type.tile7.halo4.nc ${firewx_input}/${CRES}.soil_type.tile7.nc
-cpreq -p ${firewx_input}/${CRES}.substrate_temperature.tile7.halo4.nc ${firewx_input}/${CRES}.substrate_temperature.tile7.nc
-cpreq -p ${firewx_input}/${CRES}.vegetation_greenness.tile7.halo4.nc ${firewx_input}/${CRES}.vegetation_greenness.tile7.nc
-cpreq -p ${firewx_input}/${CRES}.vegetation_type.tile7.halo4.nc ${firewx_input}/${CRES}.vegetation_type.tile7.nc
+cpreq -p "${firewx_input}"/"${CRES}".facsf.tile7.halo4.nc "${firewx_input}"/"${CRES}".facsf.tile7.nc
+cpreq -p "${firewx_input}"/"${CRES}".maximum_snow_albedo.tile7.halo4.nc "${firewx_input}"/"${CRES}".maximum_snow_albedo.tile7.nc
+cpreq -p "${firewx_input}"/"${CRES}".slope_type.tile7.halo4.nc "${firewx_input}"/"${CRES}".slope_type.tile7.nc
+cpreq -p "${firewx_input}"/"${CRES}".snowfree_albedo.tile7.halo4.nc "${firewx_input}"/"${CRES}".snowfree_albedo.tile7.nc
+cpreq -p "${firewx_input}"/"${CRES}".soil_type.tile7.halo4.nc "${firewx_input}"/"${CRES}".soil_type.tile7.nc
+cpreq -p "${firewx_input}"/"${CRES}".substrate_temperature.tile7.halo4.nc "${firewx_input}"/"${CRES}".substrate_temperature.tile7.nc
+cpreq -p "${firewx_input}"/"${CRES}".vegetation_greenness.tile7.halo4.nc "${firewx_input}"/"${CRES}".vegetation_greenness.tile7.nc
+cpreq -p "${firewx_input}"/"${CRES}".vegetation_type.tile7.halo4.nc "${firewx_input}"/"${CRES}".vegetation_type.tile7.nc
 
 #
 #-----------------------------------------------------------------------

@@ -18,7 +18,7 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 # RRFS Product Generation
 #-----------------------------------------------------------------------
 export pid=${pid:-$$}
-export outid=${outid:-"LL$job"}
+export outid=${outid:-"LL${job}"}
 case "${WGF}" in
   "det")
     export RUN="rrfs"
@@ -35,8 +35,8 @@ case "${WGF}" in
 esac
 
 export DATA=${DATA:-${DATAROOT}/${jobid}}
-mkdir -p ${DATA}
-cd ${DATA}
+mkdir -p "${DATA}"
+cd "${DATA}"
 
 export cycle="t${cyc}z"
 setpdy.sh
@@ -47,7 +47,7 @@ export CDATE="${PDY}${cyc}"
 # Source the bash utility functions.
 #-----------------------------------------------------------------------
 
-. $USHrrfs/source_util_funcs.sh
+. "${USHrrfs}"/source_util_funcs.sh
 
 #-----------------------------------------------------------------------
 # Get the full path to the file in which this script/function is located 
@@ -76,17 +76,17 @@ files corresponding to a specified forecast hour.
 # Define COM directories.
 #-----------------------------------------------------------------------
 
-if [ $WGF = "ensf" ]; then
+if [ "${WGF}" = "ensf" ]; then
   export ENSMEM_INDX=${MEMBER_NAME}
   DO_ENSFCST="TRUE"
-elif [ $WGF = "det" ]; then
+elif [ "${WGF}" = "det" ]; then
   export ENSMEM_INDX=""
 fi
 export mem_num=m$(echo "${ENSMEM_INDX}")
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 export DO_ENSFCST=${DO_ENSFCST:-"FALSE"}
-export COMrrfs=${COMrrfs:-$(compath.py -o rrfs/${rrfs_ver})}
-export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
+export COMrrfs=${COMrrfs:-$(compath.py -o rrfs/"${rrfs_ver}")}
+export COMOUT=${COMOUT:-$(compath.py -o ${NET}/"${rrfs_ver}"/"${RUN}"."${PDY}"/"${cyc}")}
 
 # Output from smoke and dust goes to umbrella data
 export umbrella_post_data=${DATAROOT}/rrfs_post_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}
@@ -104,11 +104,11 @@ mkdir -p "${COMOUT}" "${COMOUT}/wmo"
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-${HOMErrfs}/scripts/exrrfs_prdgen.sh
+"${HOMErrfs}"/scripts/exrrfs_prdgen.sh
 export err=$?; err_chk
 
-if [ -e "$pgmout" ]; then
-  cat $pgmout
+if [ -e "${pgmout}" ]; then
+  cat "${pgmout}"
 fi
 
 #-----------------------------------------------------------------------
@@ -125,6 +125,6 @@ In directory:    \"${scrfunc_dir}\"
 # Remove the Temporary working directory
 ##################################################
 if [ "${KEEPDATA^^}" != YES ]; then
-  cd $DATAROOT
-  rm -rf $DATA
+  cd "${DATAROOT}"
+  rm -rf "${DATA}"
 fi

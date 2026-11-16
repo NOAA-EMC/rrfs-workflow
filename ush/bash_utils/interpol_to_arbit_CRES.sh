@@ -1,3 +1,5 @@
+#!/bin/bash
+set -x
 #
 #-----------------------------------------------------------------------
 #
@@ -100,29 +102,29 @@ where the arguments are defined as follows:
   num_valid_RESes="${#RES_array[@]}"
 
   i_min=0
-  i_max=$( bc -l <<< "$num_valid_RESes - 1" )
+  i_max=$( bc -l <<< "${num_valid_RESes} - 1" )
 
-  if [ "${RES}" -le "${RES_array[$i_min]}" ]; then
+  if [ "${RES}" -le "${RES_array[${i_min}]}" ]; then
 
-    prop="${prop_array[$i_min]}"
+    prop="${prop_array[${i_min}]}"
 
-  elif [ "${RES}" -gt "${RES_array[$i_max]}" ]; then
+  elif [ "${RES}" -gt "${RES_array[${i_max}]}" ]; then
 
-    prop="${prop_array[$i_max]}"
+    prop="${prop_array[${i_max}]}"
 
   else
 
     for (( i=0; i<$((num_valid_RESes-1)); i++ )); do
     
-      if [ "$RES" -gt "${RES_array[$i]}" ] && \
-         [ "$RES" -le "${RES_array[$i+1]}" ]; then
-        RES1="${RES_array[$i]}"
-        RES2="${RES_array[$i+1]}"
-        prop1="${prop_array[$i]}"
-        prop2="${prop_array[$i+1]}"
-        m_slope=$( bc -l <<< "($prop2 - $prop1)/($RES2 - $RES1)" )
-        y_intcpt=$( bc -l <<< "($RES2*$prop1 - $RES1*$prop2)/($RES2 - $RES1)" )
-        prop=$( bc -l <<< "$m_slope*$RES + $y_intcpt" )
+      if [ "${RES}" -gt "${RES_array[${i}]}" ] && \
+         [ "${RES}" -le "${RES_array[${i}+1]}" ]; then
+        RES1="${RES_array[${i}]}"
+        RES2="${RES_array[${i}+1]}"
+        prop1="${prop_array[${i}]}"
+        prop2="${prop_array[${i}+1]}"
+        m_slope=$( bc -l <<< "(${prop2} - ${prop1})/(${RES2} - ${RES1})" )
+        y_intcpt=$( bc -l <<< "(${RES2}*${prop1} - ${RES1}*${prop2})/(${RES2} - ${RES1})" )
+        prop=$( bc -l <<< "${m_slope}*${RES} + ${y_intcpt}" )
         break
       fi
     
@@ -130,8 +132,8 @@ where the arguments are defined as follows:
 
   fi
 
-  prop=$( printf "%e\n" $prop )
-  echo "$prop"
+  prop=$( printf "%e\n" "${prop}" )
+  echo "${prop}"
 #
 }
 

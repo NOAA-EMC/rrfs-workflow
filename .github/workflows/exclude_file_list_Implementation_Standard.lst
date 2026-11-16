@@ -9,6 +9,8 @@
 ./ush/rrfs_radmon/rstprod.sh
 ./ush/make_grid_mosaic_file.sh
 ./ush/generate_FV3LAM_wflow.sh
+./ush/launch_FV3LAM_wflow.sh
+./ush/load_models_wflow.sh
 ./ush/compare_config_scripts.sh
 ./ush/config_defaults.sh
 ./ush/constants.sh
@@ -35,3 +37,4 @@
 ./ush/bash_utils/check_var_valid_value.sh
 ./ush/bash_utils/change_case.sh
 ./ush/bash_utils/boolify.sh
+./ush/prod_clone/*

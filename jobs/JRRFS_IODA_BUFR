@@ -18,7 +18,7 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 # RRFS BUFR to IODA conversion
 #-----------------------------------------------------------------------
 export pid=${pid:-$$}
-export outid=${outid:-"LL$job"}
+export outid=${outid:-"LL${job}"}
 case "${WGF}" in
   "det")
     export RUN="rrfs"
@@ -36,9 +36,9 @@ esac
 #-----------------------------------------------------------------------
 # Define umbrella data directories
 #-----------------------------------------------------------------------
-export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/${rrfs_ver})}
+export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/"${rrfs_ver}")}
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
-export COMINobsproc="${COMINobsproc:-$(compath.py obsproc/${obsproc_ver})}"
+export COMINobsproc="${COMINobsproc:-$(compath.py obsproc/"${obsproc_ver}")}"
 
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
   export umbrella_init_data=${umbrella_init_data:-${DATAROOT}/rrfs_init_spinup_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}}
@@ -51,8 +51,8 @@ export shared_output_data=${umbrella_init_data}/output
 # Define and make data directories
 #-----------------------------------------------------------------------
 export DATA=${DATA:-${umbrella_init_data}/${jobid}}
-mkdir -p ${DATA} ${shared_output_data}
-cd ${DATA}
+mkdir -p "${DATA}" "${shared_output_data}"
+cd "${DATA}"
 
 #-----------------------------------------------------------------------
 # Set PDY; define and make COMOUT_ANALYSIS directories
@@ -67,13 +67,13 @@ if [ "${CYCLE_TYPE}" = "spinup" ]; then
 else
   export COMOUT_ANALYSIS=${COMrrfs}/${RUN}.${PDY}/${cyc}/analysis
 fi
-mkdir -p ${COMOUT_ANALYSIS}
+mkdir -p "${COMOUT_ANALYSIS}"
 
 #-----------------------------------------------------------------------
 # Source the bash utility functions.
 #-----------------------------------------------------------------------
 
-. $USHrrfs/source_util_funcs.sh
+. "${USHrrfs}"/source_util_funcs.sh
 
 #-----------------------------------------------------------------------
 # Get the full path to the file in which this script/function is located
@@ -105,11 +105,11 @@ to IODA format for the specified cycle.
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-${HOMErrfs}/scripts/exrrfs_ioda_bufr.sh
+"${HOMErrfs}"/scripts/exrrfs_ioda_bufr.sh
 export err=$?; err_chk
 
-if [ -e "$pgmout" ]; then
-  cat $pgmout
+if [ -e "${pgmout}" ]; then
+  cat "${pgmout}"
 fi
 
 #-----------------------------------------------------------------------
@@ -126,6 +126,6 @@ In directory:    \"${scrfunc_dir}\"
 # Remove the Temporary working directory
 ##################################################
 if [ "${KEEPDATA^^}" != YES ]; then
-  cd $DATAROOT
-  rm -rf $DATA
+  cd "${DATAROOT}"
+  rm -rf "${DATA}"
 fi

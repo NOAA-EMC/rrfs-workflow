@@ -1,3 +1,5 @@
+#!/bin/bash
+set -x
 #
 #-----------------------------------------------------------------------
 #
@@ -62,7 +64,7 @@ rent directory that end with \".${file_extension}\".
 #
   local file_extension="$1"
   local glob_pattern="*.${file_extension}"
-  local num_files=$( ls -1 ${glob_pattern} 2>/dev/null | wc -l )
+  local num_files=$( ls -1 "${glob_pattern}" 2>/dev/null | wc -l )
   print_info_msg "${num_files}"
 #
 }

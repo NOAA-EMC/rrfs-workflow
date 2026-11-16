@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 
-source ${FIXrrfs}/workflow/${WGF}/workflow.conf
+source "${FIXrrfs}"/workflow/"${WGF}"/workflow.conf
 
 export FIXam=${FIXam:-${HOMErrfs}/fix/am}
 export FIXLAM=${FIXLAM:-${HOMErrfs}/fix/lam/RRFS_NA_3km}
@@ -16,7 +16,7 @@ export GLMFED_WEST_ROOT="${DCOMROOT}/ldmdata/obs/GOES-18/GLM/tiles"
 #
 #-----------------------------------------------------------------------
 #
-. $USHrrfs/source_util_funcs.sh
+. "${USHrrfs}"/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -49,9 +49,9 @@ data preprocessing with RRFS for the specified cycle.
 #
 print_input_args valid_args
 
-export OBS_EAST=$GLMFED_EAST_ROOT
-export OBS_WEST=$GLMFED_WEST_ROOT
-export MODE=$GLMFED_DATA_MODE
+export OBS_EAST=${GLMFED_EAST_ROOT}
+export OBS_WEST=${GLMFED_WEST_ROOT}
+export MODE=${GLMFED_DATA_MODE}
 export PREP_MODEL=${PREP_MODEL:-0}
 #
 #-----------------------------------------------------------------------
@@ -61,12 +61,12 @@ export PREP_MODEL=${PREP_MODEL:-0}
 #
 #-----------------------------------------------------------------------
 # 
-python -u ${HOMErrfs}/ush/process_lightning.py
-if [ -f ${shared_output_data}/fedobs.nc ] && [ -s ${DATA}/fedobs.nc ]; then
-  rm -f ${shared_output_data}/fedobs.nc
+python -u "${HOMErrfs}"/ush/process_lightning.py
+if [ -f "${shared_output_data}"/fedobs.nc ] && [ -s "${DATA}"/fedobs.nc ]; then
+  rm -f "${shared_output_data}"/fedobs.nc
 fi
-cpreq ${DATA}/fedobs.nc ${shared_output_data}/fedobs.nc
-cpreq -p fedobs.nc ${COMOUT_ANALYSIS}/fedobs.nc
+cpreq "${DATA}"/fedobs.nc "${shared_output_data}"/fedobs.nc
+cpreq -p fedobs.nc "${COMOUT_ANALYSIS}"/fedobs.nc
 
 #
 #-----------------------------------------------------------------------

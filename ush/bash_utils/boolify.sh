@@ -1,3 +1,5 @@
+#!/bin/bash
+set -x
 #
 #-----------------------------------------------------------------------
 #
@@ -40,12 +42,12 @@ where:
 "
   fi
 
-  uc_input=$(echo_uppercase $input)
-  if [ "$uc_input" = "TRUE" ] || \
-       [ "$uc_input" = "YES" ]; then
+  uc_input=$(echo_uppercase "${input}")
+  if [ "${uc_input}" = "TRUE" ] || \
+       [ "${uc_input}" = "YES" ]; then
     echo "TRUE"
-  elif [ "$uc_input" = "FALSE" ] || \
-         [ "$uc_input" = "NO" ]; then
+  elif [ "${uc_input}" = "FALSE" ] || \
+         [ "${uc_input}" = "NO" ]; then
     echo "FALSE"
   fi
 

@@ -9,7 +9,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-function make_grid_mosaic_file() {
+make_grid_mosaic_file() {
 #
 #-----------------------------------------------------------------------
 #
@@ -40,9 +40,9 @@ function make_grid_mosaic_file() {
 #-----------------------------------------------------------------------
 #
   local valid_args=( \
-"grid_dir" \
-"grid_fn" \
-"mosaic_fn" \
+    "grid_dir" \
+    "grid_fn" \
+    "mosaic_fn" \
   )
   process_args valid_args "$@"
 #
@@ -76,8 +76,8 @@ function make_grid_mosaic_file() {
 #-----------------------------------------------------------------------
 #
   exec_fn="ufs_util_make_solo_mosaic"
-  exec_fp="$HOMErrfs/exec/${exec_fn}"
-  if [ ! -f "${exec_fp}" ]; then
+  exec_fp="${HOMErrfs}/exec/${exec_fn}"
+  if [[ ! -f "${exec_fp}" ]]; then
     print_err_msg_exit "\
 The executable (exec_fp) for generating the grid mosaic file does not 
 exist:
@@ -158,7 +158,7 @@ Please ensure that you've built this executable."
 #    directory /abc/def and named ghi.nc.nc -- note the double ".nc" 
 #    extensions).
 #
-    $APRUN "${exec_fp}" \
+    ${APRUN} "${exec_fp}" \
       --num_tiles 1 \
       --dir "${grid_dir}" \
       --tile_file "${grid_fn}" \
@@ -168,4 +168,3 @@ Call to executable (exec_fp) that generates a grid mosaic file for a
 regional grid returned with nonzero exit code:
   exec_fp = \"${exec_fp}\"" 
 }
-

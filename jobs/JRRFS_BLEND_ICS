@@ -18,8 +18,8 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 # RRFS Blend ICs
 #-----------------------------------------------------------------------
 export pid=${pid:-$$}
-export outid=${outid:-"LL$job"}
-if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
+export outid=${outid:-"LL${job}"}
+if [ "${WGF}" = "enkf" ] || [ "${WGF}" = "ensf" ]; then
   export ENSMEM_INDX=${MEMBER_NAME}
   DO_ENSEMBLE="TRUE"
 else
@@ -38,8 +38,8 @@ export shared_output_data=${umbrella_ics_data}/ics
 # Define data directories
 #-----------------------------------------------------------------------
 export DATA=${DATA:-${umbrella_ics_data}/${jobid}}
-mkdir -p ${DATA}
-cd ${DATA}
+mkdir -p "${DATA}"
+cd "${DATA}"
 
 export cycle="t${cyc}z"
 setpdy.sh
@@ -50,7 +50,7 @@ export CDATE="${PDY}${cyc}"
 # Source the bash utility functions.
 #-----------------------------------------------------------------------
 
-. $USHrrfs/source_util_funcs.sh
+. "${USHrrfs}"/source_util_funcs.sh
 
 #-----------------------------------------------------------------------
 # Get the full path to the file in which this script/function is located 
@@ -79,7 +79,7 @@ on the RRFS initial conditions.
 # RRFS Blending
 #-----------------------------------------------------------------------
 export pid=${pid:-$$}
-export outid=${outid:-"LL$job"}
+export outid=${outid:-"LL${job}"}
 case "${WGF}" in
   "det")
     export RUN="rrfs"
@@ -94,7 +94,7 @@ case "${WGF}" in
     export RUN="firewx"
     ;;
 esac
-if [ $WGF = "enkf" ] && [ "${DO_ENSEMBLE}" = "TRUE" ]; then
+if [ "${WGF}" = "enkf" ] && [ "${DO_ENSEMBLE}" = "TRUE" ]; then
   export ENSMEM_INDX=${MEMBER_NAME}
   export mem_num=m$(echo "${ENSMEM_INDX}")
   export DO_ENSEMBLE="TRUE"
@@ -109,7 +109,7 @@ export shared_output_data=${umbrella_ics_data}/ics
 #-----------------------------------------------------------------------
 # Define COM directories
 #-----------------------------------------------------------------------
-export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/${rrfs_ver})}
+export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/"${rrfs_ver}")}
 
 #-----------------------------------------------------------------------
 # Execute the script.
@@ -117,11 +117,11 @@ export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/${rrfs_ver})}
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-$HOMErrfs/scripts/exrrfs_blend_ics.sh
+"${HOMErrfs}"/scripts/exrrfs_blend_ics.sh
 export err=$?; err_chk
 
-if [ -e "$pgmout" ]; then
-  cat $pgmout
+if [ -e "${pgmout}" ]; then
+  cat "${pgmout}"
 fi
 
 #-----------------------------------------------------------------------
@@ -138,6 +138,6 @@ In directory:    \"${scrfunc_dir}\"
 # Remove the Temporary working directory
 ##################################################
 if [ "${KEEPDATA^^}" != YES ]; then
-  cd $DATAROOT
-  rm -rf $DATA
+  cd "${DATAROOT}"
+  rm -rf "${DATA}"
 fi

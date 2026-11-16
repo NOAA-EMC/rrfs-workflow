@@ -18,10 +18,10 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 # RRFS Make LBCs
 #-----------------------------------------------------------------------
 export pid=${pid:-$$}
-export outid=${outid:-"LL$job"}
+export outid=${outid:-"LL${job}"}
 export DATA=${DATA:-${DATAROOT}/${jobid}}
-mkdir -p ${DATA}
-cd ${DATA}
+mkdir -p "${DATA}"
+cd "${DATA}"
 export cycle="t${cyc}z"
 setpdy.sh
 . ./PDY
@@ -45,7 +45,7 @@ esac
 # Source the bash utility functions.
 #-----------------------------------------------------------------------
 
-. $USHrrfs/source_util_funcs.sh
+. "${USHrrfs}"/source_util_funcs.sh
 
 #-----------------------------------------------------------------------
 # Get the full path to the file in which this script/function is located 
@@ -77,26 +77,26 @@ hour zero).
 # Send data to COMOUT since the LBCs jobs share data with other jobs
 # outside of the current cycle
 
-export COMINgfs=${COMINgfs:-$(compath.py gfs/${gfs_ver})}
-export COMINgefs=${COMINgefs:-$(compath.py gefs/${gefs_ver})}
+export COMINgfs=${COMINgfs:-$(compath.py gfs/"${gfs_ver}")}
+export COMINgefs=${COMINgefs:-$(compath.py gefs/"${gefs_ver}")}
 
-export COMrrfs=${COMrrfs:-$(compath.py rrfs/${rrfs_ver})}
-export COMIN=${COMIN:-$(compath.py rrfs/${rrfs_ver})}
+export COMrrfs=${COMrrfs:-$(compath.py rrfs/"${rrfs_ver}")}
+export COMIN=${COMIN:-$(compath.py rrfs/"${rrfs_ver}")}
 
-if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
+if [ "${WGF}" = "enkf" ] || [ "${WGF}" = "ensf" ]; then
   export ENSMEM_INDX=${MEMBER_NAME}
   export mem_num=m$(echo "${ENSMEM_INDX}")
-  export COMOUT="${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/${mem_num}/lbcs)}"
+  export COMOUT="${COMOUT:-$(compath.py -o ${NET}/"${rrfs_ver}"/"${RUN}"."${PDY}"/"${cyc}"/"${mem_num}"/lbcs)}"
 else
   export ENSMEM_INDX=""
-  export COMOUT="${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}/lbcs)}"
+  export COMOUT="${COMOUT:-$(compath.py -o ${NET}/"${rrfs_ver}"/"${RUN}"."${PDY}"/"${cyc}"/lbcs)}"
   export umbrella_lbcops_data=${umbrella_ops_data:-${DATAROOT}/rrfs_lbcops_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}}
-  if [ -d ${umbrella_lbcops_data} ] && [ ${BCGRP} = "00" ]; then
-    mv ${umbrella_lbcops_data} ${umbrella_lbcops_data}_$$
+  if [ -d "${umbrella_lbcops_data}" ] && [ "${BCGRP}" = "00" ]; then
+    mv "${umbrella_lbcops_data}" "${umbrella_lbcops_data}"_$$
   fi
-  mkdir -p ${umbrella_lbcops_data}
+  mkdir -p "${umbrella_lbcops_data}"
 fi
-mkdir -p ${COMOUT}
+mkdir -p "${COMOUT}"
 
 #-----------------------------------------------------------------------
 # Execute the script.
@@ -105,11 +105,11 @@ mkdir -p ${COMOUT}
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-${HOMErrfs}/scripts/exrrfs_make_lbcs.sh
+"${HOMErrfs}"/scripts/exrrfs_make_lbcs.sh
 export err=$?; err_chk
 
-if [ -e "$pgmout" ]; then
-  cat $pgmout
+if [ -e "${pgmout}" ]; then
+  cat "${pgmout}"
 fi
 
 #-----------------------------------------------------------------------
@@ -126,6 +126,6 @@ In directory:    \"${scrfunc_dir}\"
 # Remove the Temporary working directory
 ##################################################
 if [ "${KEEPDATA^^}" != YES ]; then
-  cd $DATAROOT
-  rm -rf $DATA
+  cd "${DATAROOT}"
+  rm -rf "${DATA}"
 fi

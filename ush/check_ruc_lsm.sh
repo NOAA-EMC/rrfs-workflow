@@ -100,6 +100,6 @@ string."
 #
 #-----------------------------------------------------------------------
 #
-  eval ${output_varname_sdf_uses_ruc_lsm}="${sdf_uses_ruc_lsm}"
+  eval "${output_varname_sdf_uses_ruc_lsm}=\"\${sdf_uses_ruc_lsm}\""
 }
 

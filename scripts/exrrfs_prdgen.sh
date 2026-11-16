@@ -2,7 +2,7 @@
 set -x
 set -o pipefail
 
-source ${FIXrrfs}/workflow/${WGF}/workflow.conf
+source "${FIXrrfs}/workflow/${WGF}/workflow.conf"
 
 export FIX_UPP="${FIXrrfs}/upp"
 
@@ -13,7 +13,7 @@ export FIX_UPP="${FIXrrfs}/upp"
 #
 #-----------------------------------------------------------------------
 #
-. $USHrrfs/source_util_funcs.sh
+. "$USHrrfs/source_util_funcs.sh"
 #
 #-----------------------------------------------------------------------
 #
@@ -50,7 +50,7 @@ the output files corresponding to a specified forecast hour.
 #
 ulimit -a
 
-case $MACHINE in
+case "$MACHINE" in
 
   "WCOSS2")
     export OMP_NUM_THREADS=1
@@ -99,10 +99,10 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-yyyymmdd=${CDATE:0:8}
-hh=${CDATE:8:2}
-cyc=$hh
-fhr=${FHR:-}
+yyyymmdd="${CDATE:0:8}"
+hh="${CDATE:8:2}"
+cyc="$hh"
+fhr="${FHR:-}"
 #
 #-----------------------------------------------------------------------
 #
@@ -112,35 +112,35 @@ fhr=${FHR:-}
 #
 #-----------------------------------------------------------------------
 #
-len_fhr=${#fhr}
-if [ ${len_fhr} -eq 9 ]; then
-  post_min=${fhr:4:2}
-  if [ ${post_min} -lt 15 ]; then
+len_fhr="${#fhr}"
+if [ "${len_fhr}" -eq 9 ]; then
+  post_min="${fhr:4:2}"
+  if [ "${post_min}" -lt 15 ]; then
     post_min=00
   fi
 else
   post_min=00
 fi
 
-subh_fhr=${fhr}
-if [ ${len_fhr} -eq 2 ]; then
-  post_fhr=${fhr}00
-elif [ ${len_fhr} -eq 3 ]; then
+subh_fhr="${fhr}"
+if [ "${len_fhr}" -eq 2 ]; then
+  post_fhr="${fhr}00"
+elif [ "${len_fhr}" -eq 3 ]; then
   if [ "${fhr:0:1}" = "0" ]; then
     post_fhr="${fhr:1}00"
   else
-    post_fhr=${fhr}00
+    post_fhr="${fhr}00"
   fi
-elif [ ${len_fhr} -eq 9 ]; then
+elif [ "${len_fhr}" -eq 9 ]; then
   if [ "${fhr:0:1}" = "0" ]; then
-    if [ ${post_min} -eq 00 ]; then
+    if [ "${post_min}" -eq 00 ]; then
       post_fhr="${fhr:1:2}00"
       subh_fhr="${fhr:0:3}"
     else
       post_fhr="${fhr:1:2}${fhr:4:2}"
     fi
   else
-    if [ ${post_min} -eq 00 ]; then
+    if [ "${post_min}" -eq 00 ]; then
       post_fhr="${fhr:0:3}00"
       subh_fhr="${fhr:0:3}"
     else
@@ -155,7 +155,7 @@ fi
 
 # replace fhr with subh_fhr
 echo "fhr=${fhr} and subh_fhr=${subh_fhr}"
-fhr=${subh_fhr}
+fhr="${subh_fhr}"
 #
 gridname=""
 gridspacing=""
@@ -173,106 +173,117 @@ elif [ -n "${PRDGEN_GRIDNAME:-}" ]; then
   gridspacing="${PRDGEN_GRIDSPACING}"
 fi
 #
-net4=$(echo ${NET:0:4} | tr '[:upper:]' '[:lower:]')
+net4=$(echo "${NET:0:4}" | tr '[:upper:]' '[:lower:]')
 #
 # Include member number with ensemble forecast output
-if [ ${DO_ENSFCST} = "TRUE" ]; then
-  prslev=${net4}.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.${gridname}.grib2
-  natlev=${net4}.t${cyc}z.${mem_num}.natlev.${gridspacing}.f${fhr}.${gridname}.grib2
-  fld2d=${net4}.t${cyc}z.${mem_num}.2dfld.${gridspacing}.f${fhr}.${gridname}.grib2
-  subset=${net4}.t${cyc}z.${mem_num}.subset.${gridspacing}.f${fhr}.${gridname}.grib2
+if [ "${DO_ENSFCST}" = "TRUE" ]; then
+  prslev="${net4}.t${cyc}z.${mem_num}.prslev.${gridspacing}.f${fhr}.${gridname}.grib2"
+  natlev="${net4}.t${cyc}z.${mem_num}.natlev.${gridspacing}.f${fhr}.${gridname}.grib2"
+  fld2d="${net4}.t${cyc}z.${mem_num}.2dfld.${gridspacing}.f${fhr}.${gridname}.grib2"
+  subset="${net4}.t${cyc}z.${mem_num}.subset.${gridspacing}.f${fhr}.${gridname}.grib2"
 else
-  prslev=${net4}.t${cyc}z.prslev.${gridspacing}.f${fhr}.${gridname}.grib2
-  natlev=${net4}.t${cyc}z.natlev.${gridspacing}.f${fhr}.${gridname}.grib2
-  fld2d=${net4}.t${cyc}z.2dfld.${gridspacing}.f${fhr}.${gridname}.grib2
-  subset=${net4}.t${cyc}z.subset.${gridspacing}.f${fhr}.${gridname}.grib2
-  fld2d_subh=${net4}.t${cyc}z.2dfld.${gridspacing}.subh.f${fhr}.${gridname}.grib2
+  prslev="${net4}.t${cyc}z.prslev.${gridspacing}.f${fhr}.${gridname}.grib2"
+  natlev="${net4}.t${cyc}z.natlev.${gridspacing}.f${fhr}.${gridname}.grib2"
+  fld2d="${net4}.t${cyc}z.2dfld.${gridspacing}.f${fhr}.${gridname}.grib2"
+  subset="${net4}.t${cyc}z.subset.${gridspacing}.f${fhr}.${gridname}.grib2"
+  fld2d_subh="${net4}.t${cyc}z.2dfld.${gridspacing}.subh.f${fhr}.${gridname}.grib2"
 fi
 
 # extract the output fields for the subset files
 if [ "${PREDEF_GRID_NAME}" != "RRFS_FIREWX_1.5km" ]; then
+  # shellcheck disable=SC2086
   wgrib2 ${COMOUT}/${fld2d} | grep -F -f ${FIX_UPP}/subset_fields_2dfld.txt | wgrib2 -i -grib ${DATA}/${subset} ${COMOUT}/${fld2d} >>$pgmout 2>>errfile
   export err=$?; err_chk
+  
+  # shellcheck disable=SC2086
   wgrib2 ${COMOUT}/${prslev} | grep -F -f ${FIX_UPP}/subset_fields_prslev.txt | wgrib2 -i -append -grib ${DATA}/${subset} ${COMOUT}/${prslev} >>$pgmout 2>>errfile
   export err=$?; err_chk
 
-  if [ ${DO_ENSFCST} != "TRUE" ]; then
+  if [ "${DO_ENSFCST}" != "TRUE" ]; then
+    # shellcheck disable=SC2086
     wgrib2 ${COMOUT}/${natlev} | grep -F -f ${FIX_UPP}/subset_fields_natlev.txt | wgrib2 -i -append -grib ${DATA}/${subset} ${COMOUT}/${natlev} >>$pgmout 2>>errfile
     export err=$?; err_chk
   fi
 
-  cpreq ${DATA}/${subset}  ${COMOUT}/${subset}
+  cpreq "${DATA}/${subset}" "${COMOUT}/${subset}"
 fi
 
 # create index files
-if [ -s ${COMOUT}/${prslev} ]; then
+if [ -s "${COMOUT}/${prslev}" ]; then
+  # shellcheck disable=SC2086
   wgrib2 ${COMOUT}/${prslev} -s > ${COMOUT}/${prslev}.idx
-  if [[ ${SENDDBN} = "YES" ]]; then
-    if [[ "${DO_ENSFCST}" = "TRUE" ]] && [[ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]]; then
-      $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_NA $job \
-          ${COMOUT}/${prslev}
-      $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_NA_IDX $job \
-          ${COMOUT}/${prslev}.idx
+  if [[ "${SENDDBN}" == "YES" ]]; then
+    if [[ "${DO_ENSFCST}" == "TRUE" ]] && [[ "${PREDEF_GRID_NAME}" == "RRFS_NA_3km" ]]; then
+      "$DBNROOT/bin/dbn_alert" MODEL RRFS_ENS_NA "$job" \
+          "${COMOUT}/${prslev}"
+      "$DBNROOT/bin/dbn_alert" MODEL RRFS_ENS_NA_IDX "$job" \
+          "${COMOUT}/${prslev}.idx"
     fi
   fi
 fi
-if [ -s ${COMOUT}/${natlev} ]; then
+if [ -s "${COMOUT}/${natlev}" ]; then
+  # shellcheck disable=SC2086
   wgrib2 ${COMOUT}/${natlev} -s > ${COMOUT}/${natlev}.idx
-  if [[ ${SENDDBN} = "YES" ]]; then
-    if [[ "${DO_ENSFCST}" != "TRUE" ]] && [[ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]]; then
-      $DBNROOT/bin/dbn_alert MODEL RRFS_DET_NATLEV_NA $job \
-          ${COMOUT}/${natlev}
-      $DBNROOT/bin/dbn_alert MODEL RRFS_DET_NATLEV_NA_IDX $job \
-          ${COMOUT}/${natlev}.idx
+  if [[ "${SENDDBN}" == "YES" ]]; then
+    if [[ "${DO_ENSFCST}" != "TRUE" ]] && [[ "${PREDEF_GRID_NAME}" == "RRFS_NA_3km" ]]; then
+      "$DBNROOT/bin/dbn_alert" MODEL RRFS_DET_NATLEV_NA "$job" \
+          "${COMOUT}/${natlev}"
+      "$DBNROOT/bin/dbn_alert" MODEL RRFS_DET_NATLEV_NA_IDX "$job" \
+          "${COMOUT}/${natlev}.idx"
     fi
   fi
 fi
-if [ -s ${COMOUT}/${fld2d} ]; then
+if [ -s "${COMOUT}/${fld2d}" ]; then
+  # shellcheck disable=SC2086
   wgrib2 ${COMOUT}/${fld2d} -s > ${COMOUT}/${fld2d}.idx
-  if [[ ${SENDDBN} = "YES" ]]; then
-    if [[ "${DO_ENSFCST}" = "TRUE" ]] && [[ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]]; then
-      $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_2DFLD_NA $job \
-          ${COMOUT}/${fld2d}
-      $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_2DFLD_NA_IDX $job \
-          ${COMOUT}/${fld2d}.idx
+  if [[ "${SENDDBN}" == "YES" ]]; then
+    if [[ "${DO_ENSFCST}" == "TRUE" ]] && [[ "${PREDEF_GRID_NAME}" == "RRFS_NA_3km" ]]; then
+      "$DBNROOT/bin/dbn_alert" MODEL RRFS_ENS_2DFLD_NA "$job" \
+          "${COMOUT}/${fld2d}"
+      "$DBNROOT/bin/dbn_alert" MODEL RRFS_ENS_2DFLD_NA_IDX "$job" \
+          "${COMOUT}/${fld2d}.idx"
     fi
   fi
 fi
-if [ -s ${COMOUT}/${subset} ]; then
+if [ -s "${COMOUT}/${subset}" ]; then
+  # shellcheck disable=SC2086
   wgrib2 ${COMOUT}/${subset} -s > ${COMOUT}/${subset}.idx
 fi
 
-if [ "${DO_ENSFCST}" != "TRUE" ] && [ ${fhr} != '000' ] && [ -e $COMOUT/${fld2d_subh} ]; then
+if [ "${DO_ENSFCST}" != "TRUE" ] && [ "${fhr}" != '000' ] && [ -e "$COMOUT/${fld2d_subh}" ]; then
+  # shellcheck disable=SC2086
   wgrib2 ${COMOUT}/${fld2d_subh} -s > ${COMOUT}/${fld2d_subh}.idx
-  if [[ ${SENDDBN} = "YES" ]] && [[ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]]; then
-      $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBH_NA $job \
-          ${COMOUT}/${fld2d_subh}
-      $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBH_NA_IDX $job \
-          ${COMOUT}/${fld2d_subh}.idx
+  if [[ "${SENDDBN}" == "YES" ]] && [[ "${PREDEF_GRID_NAME}" == "RRFS_NA_3km" ]]; then
+      "$DBNROOT/bin/dbn_alert" MODEL RRFS_DET_SUBH_NA "$job" \
+          "${COMOUT}/${fld2d_subh}"
+      "$DBNROOT/bin/dbn_alert" MODEL RRFS_DET_SUBH_NA_IDX "$job" \
+          "${COMOUT}/${fld2d_subh}.idx"
   fi
 fi
 
 #  Generate products
-if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
+if [ "${WGF}" = "det" ] || [ "${WGF}" = "ensf" ]; then
   #
   # Processing for the RRFS deterministic and ensemble forecasts
   #
-  DATAprdgen=$DATA/prdgen_${fhr}
-  mkdir -p $DATAprdgen
+  DATAprdgen="$DATA/prdgen_${fhr}"
+  mkdir -p "$DATAprdgen"
 
+  # shellcheck disable=SC2086
   wgrib2 ${COMOUT}/${prslev} >& $DATAprdgen/prslevf${fhr}.txt
+  # shellcheck disable=SC2086
   wgrib2 ${COMOUT}/${fld2d} >& $DATAprdgen/2dfldf${fhr}.txt
 
   # Create parm files for subsetting on the fly - do it for each forecast hour
   # 3 prslev subpieces for CONUS and Alaska grids
-  sed -n -e '1,225p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/conus_ak_1.txt
-  sed -n -e '226,450p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/conus_ak_2.txt
-  sed -n -e '451,$p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/conus_ak_3.txt
+  sed -n -e '1,225p' "$DATAprdgen/prslevf${fhr}.txt" > "$DATAprdgen/conus_ak_1.txt" 2>&1
+  sed -n -e '226,450p' "$DATAprdgen/prslevf${fhr}.txt" > "$DATAprdgen/conus_ak_2.txt" 2>&1
+  sed -n -e '451,$p' "$DATAprdgen/prslevf${fhr}.txt" > "$DATAprdgen/conus_ak_3.txt" 2>&1
   # 1 prslev subpiece for Hawaii and Puerto Rico grids
-  sed -n -e '1,$p' $DATAprdgen/prslevf${fhr}.txt >& $DATAprdgen/hi_pr_1.txt
+  sed -n -e '1,$p' "$DATAprdgen/prslevf${fhr}.txt" > "$DATAprdgen/hi_pr_1.txt" 2>&1
   # 1 2dfld subpiece for all grids
-  sed -n -e '1,$p' $DATAprdgen/2dfldf${fhr}.txt >& $DATAprdgen/conus_ak_4.txt
-  sed -n -e '1,$p' $DATAprdgen/2dfldf${fhr}.txt >& $DATAprdgen/hi_pr_2.txt
+  sed -n -e '1,$p' "$DATAprdgen/2dfldf${fhr}.txt" > "$DATAprdgen/conus_ak_4.txt" 2>&1
+  sed -n -e '1,$p' "$DATAprdgen/2dfldf${fhr}.txt" > "$DATAprdgen/hi_pr_2.txt" 2>&1
 
   # Create script to execute production generation tasks in parallel using CFP
   tasks=(3 3 1 1)
@@ -284,41 +295,41 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
     RRFS_CONUS_*) tasks=(3); domains=(conus) ;;
   esac
   count=0
-  for domain in ${domains[@]}
+  for domain in "${domains[@]}"
   do
-    for task in $(seq ${tasks[count]})
+    for task in $(seq "${tasks[count]}")
     do
-      mkdir -p $DATAprdgen/prdgen_${domain}_${task}
-      echo "$USHrrfs/prdgen/rrfs_prdgen_subpiece.sh $fhr $cyc $task $domain $prslev ${DATAprdgen} ${COMOUT}" >> $DATAprdgen/poescript_${fhr}
+      mkdir -p "$DATAprdgen/prdgen_${domain}_${task}"
+      echo "$USHrrfs/prdgen/rrfs_prdgen_subpiece.sh $fhr $cyc $task $domain $prslev ${DATAprdgen} ${COMOUT}" >> "$DATAprdgen/poescript_${fhr}"
     done
-    count=$count+1
+    count=$((count+1))
   done
 # Add 2dfld tasks to the parallel script
-  mkdir -p $DATAprdgen/prdgen_conus_4
-  echo "$USHrrfs/prdgen/rrfs_prdgen_subpiece.sh $fhr $cyc 4 conus $fld2d ${DATAprdgen} ${COMOUT}" >> $DATAprdgen/poescript_${fhr}
+  mkdir -p "$DATAprdgen/prdgen_conus_4"
+  echo "$USHrrfs/prdgen/rrfs_prdgen_subpiece.sh $fhr $cyc 4 conus $fld2d ${DATAprdgen} ${COMOUT}" >> "$DATAprdgen/poescript_${fhr}"
   # Coarser domains (strip when merging to the nco branch): same as above, the Alaska,
   # Hawaii and Puerto Rico 2dfld pieces are outside a CONUS domain
   case "${PREDEF_GRID_NAME}" in
     RRFS_CONUS_*) ;;
     *)
-  mkdir -p $DATAprdgen/prdgen_ak_4
-  echo "$USHrrfs/prdgen/rrfs_prdgen_subpiece.sh $fhr $cyc 4 ak $fld2d ${DATAprdgen} ${COMOUT}" >> $DATAprdgen/poescript_${fhr}
-  mkdir -p $DATAprdgen/prdgen_hi_2
-  echo "$USHrrfs/prdgen/rrfs_prdgen_subpiece.sh $fhr $cyc 2 hi $fld2d ${DATAprdgen} ${COMOUT}" >> $DATAprdgen/poescript_${fhr}
-  mkdir -p $DATAprdgen/prdgen_pr_2
-  echo "$USHrrfs/prdgen/rrfs_prdgen_subpiece.sh $fhr $cyc 2 pr $fld2d ${DATAprdgen} ${COMOUT}" >> $DATAprdgen/poescript_${fhr}
+  mkdir -p "$DATAprdgen/prdgen_ak_4"
+  echo "$USHrrfs/prdgen/rrfs_prdgen_subpiece.sh $fhr $cyc 4 ak $fld2d ${DATAprdgen} ${COMOUT}" >> "$DATAprdgen/poescript_${fhr}"
+  mkdir -p "$DATAprdgen/prdgen_hi_2"
+  echo "$USHrrfs/prdgen/rrfs_prdgen_subpiece.sh $fhr $cyc 2 hi $fld2d ${DATAprdgen} ${COMOUT}" >> "$DATAprdgen/poescript_${fhr}"
+  mkdir -p "$DATAprdgen/prdgen_pr_2"
+  echo "$USHrrfs/prdgen/rrfs_prdgen_subpiece.sh $fhr $cyc 2 pr $fld2d ${DATAprdgen} ${COMOUT}" >> "$DATAprdgen/poescript_${fhr}"
       ;;
   esac
 
-  chmod 775 $DATAprdgen/poescript_${fhr}
+  chmod 775 "$DATAprdgen/poescript_${fhr}"
 
   # Execute the script
-  export CMDFILE=$DATAprdgen/poescript_${fhr}
+  export CMDFILE="$DATAprdgen/poescript_${fhr}"
   # cfp only exists on WCOSS2, so run the subpieces serially on other machines
   if [ "${MACHINE}" = "WCOSS2" ]; then
-    mpiexec -np 12 --cpu-bind core cfp $CMDFILE >>$pgmout 2>errfile
+    mpiexec -np 12 --cpu-bind core cfp "$CMDFILE" >>"$pgmout" 2>errfile
   else
-    bash $CMDFILE >>$pgmout 2>errfile
+    bash "$CMDFILE" >>"$pgmout" 2>errfile
   fi
   export err=$?; err_chk
 
@@ -331,46 +342,48 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
     RRFS_CONUS_*) tasks=(3); domains=(conus) ;;
   esac
   count=0
-  for domain in ${domains[@]}
+  for domain in "${domains[@]}"
   do
 
     DBNDOM="${domain^^}"
-    outspacing=${gridspacing}
-    if [ ${DO_ENSFCST} = "TRUE" ]; then
-      for task in $(seq ${tasks[count]})
+    outspacing="${gridspacing}"
+    if [ "${DO_ENSFCST}" = "TRUE" ]; then
+      for task in $(seq "${tasks[count]}")
       do
-        cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${DATAprdgen}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2
+        cat "$DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2" >> "${DATAprdgen}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2"
       done
-      if [[ $SENDCOM = 'YES' ]]; then
-        cpreq ${DATAprdgen}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2 ${COMOUT}
+      if [[ "$SENDCOM" == 'YES' ]]; then
+        cpreq "${DATAprdgen}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2" "${COMOUT}"
+        # shellcheck disable=SC2086
         wgrib2 ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
       fi
-      if [[ ${SENDDBN} = "YES" ]] ; then
-        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_${DBNDOM} $job \
-            ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2
-        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_${DBNDOM}_IDX $job \
-            ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
+      if [[ "${SENDDBN}" == "YES" ]] ; then
+        "$DBNROOT/bin/dbn_alert" MODEL "RRFS_ENS_${DBNDOM}" "$job" \
+            "${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2"
+        "$DBNROOT/bin/dbn_alert" MODEL "RRFS_ENS_${DBNDOM}_IDX" "$job" \
+            "${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx"
       fi  #SENDDBN
     else
-      for task in $(seq ${tasks[count]})
+      for task in $(seq "${tasks[count]}")
       do
-        cat $DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2 >> ${DATAprdgen}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2
+        cat "$DATAprdgen/prdgen_${domain}_${task}/${domain}_${task}.grib2" >> "${DATAprdgen}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2"
       done
-      if [[ $SENDCOM = 'YES' ]]; then
-        cpreq ${DATAprdgen}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2 ${COMOUT}
+      if [[ "$SENDCOM" == 'YES' ]]; then
+        cpreq "${DATAprdgen}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2" "${COMOUT}"
+        # shellcheck disable=SC2086
         wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
       fi
 
-      if [[ ${SENDDBN} = "YES" ]] ; then
+      if [[ "${SENDDBN}" == "YES" ]] ; then
         if (( 10#$cyc % 3 == 0 )); then
-            $DBNROOT/bin/dbn_alert MODEL RRFS_DET_${DBNDOM} $job \
-                ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2
-	    $DBNROOT/bin/dbn_alert MODEL RRFS_DET_${DBNDOM}_IDX $job \
-                ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
+            "$DBNROOT/bin/dbn_alert" MODEL "RRFS_DET_${DBNDOM}" "$job" \
+                "${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2"
+	    "$DBNROOT/bin/dbn_alert" MODEL "RRFS_DET_${DBNDOM}_IDX" "$job" \
+                "${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx"
         fi
       fi  #SENDDBN
     fi
-    count=$count+1
+    count=$((count+1))
   done
 
   # Send Hawaii/Puerto Rico prslev output to COM
@@ -380,32 +393,34 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
   case "${PREDEF_GRID_NAME}" in
     RRFS_CONUS_*) domains=() ;;
   esac
-  for domain in ${domains[@]}
+  for domain in "${domains[@]}"
   do
     DBNDOM="${domain^^}"
     outspacing="2p5km"
-    if [ ${DO_ENSFCST} = "TRUE" ]; then
-      if [[ $SENDCOM = 'YES' ]]; then
-        cpreq ${DATAprdgen}/prdgen_${domain}_1/${domain}_1.grib2 ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2
+    if [ "${DO_ENSFCST}" = "TRUE" ]; then
+      if [[ "$SENDCOM" == 'YES' ]]; then
+        cpreq "${DATAprdgen}/prdgen_${domain}_1/${domain}_1.grib2" "${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2"
+        # shellcheck disable=SC2086
         wgrib2 ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
       fi
-      if [[ ${SENDDBN} = "YES" ]] ; then
-        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_${DBNDOM} $job \
-            ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2
-        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_${DBNDOM}_IDX $job \
-            ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
+      if [[ "${SENDDBN}" == "YES" ]] ; then
+        "$DBNROOT/bin/dbn_alert" MODEL "RRFS_ENS_${DBNDOM}" "$job" \
+            "${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2"
+        "$DBNROOT/bin/dbn_alert" MODEL "RRFS_ENS_${DBNDOM}_IDX" "$job" \
+            "${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx"
       fi  #SENDDBN
     else
-      if [[ $SENDCOM = 'YES' ]]; then
-        cpreq ${DATAprdgen}/prdgen_${domain}_1/${domain}_1.grib2 ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2
+      if [[ "$SENDCOM" == 'YES' ]]; then
+        cpreq "${DATAprdgen}/prdgen_${domain}_1/${domain}_1.grib2" "${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2"
+        # shellcheck disable=SC2086
         wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
       fi
-      if [[ ${SENDDBN} = "YES" ]] ; then
+      if [[ "${SENDDBN}" == "YES" ]] ; then
         if (( 10#$cyc % 3 == 0 )); then
-            $DBNROOT/bin/dbn_alert MODEL RRFS_DET_${DBNDOM} $job \
-                ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2
-            $DBNROOT/bin/dbn_alert MODEL RRFS_DET_${DBNDOM}_IDX $job \
-                ${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx
+            "$DBNROOT/bin/dbn_alert" MODEL "RRFS_DET_${DBNDOM}" "$job" \
+                "${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2"
+            "$DBNROOT/bin/dbn_alert" MODEL "RRFS_DET_${DBNDOM}_IDX" "$job" \
+                "${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx"
         fi
       fi  #SENDDBN
     fi
@@ -418,183 +433,200 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
   case "${PREDEF_GRID_NAME}" in
     RRFS_CONUS_*) domains=(conus) ;;
   esac
-  for domain in ${domains[@]}
+  for domain in "${domains[@]}"
   do
     DBNDOM="${domain^^}"
-    if [[ $domain = "conus" || $domain = "ak" ]]; then
+    if [[ "$domain" == "conus" || "$domain" == "ak" ]]; then
       # Coarser domains (strip when merging to the nco branch): the grid spacing is in the
       # product names; it is 3km only on the NA and CONUS 3 km grids
       outspacing="${gridspacing}"
       task="4"
-    elif [[ $domain = "hi" || $domain = "pr" ]]; then
+    elif [[ "$domain" == "hi" || "$domain" == "pr" ]]; then
       outspacing="2p5km"
       task="2"
     fi
 
-    if [ ${DO_ENSFCST} = "TRUE" ]; then
-      if [[ $SENDCOM = 'YES' ]]; then
-        cpreq ${DATAprdgen}/prdgen_${domain}_${task}/${domain}_${task}.grib2 ${COMOUT}/rrfs.t${cyc}z.${mem_num}.2dfld.${outspacing}.f${fhr}.${domain}.grib2
+    if [ "${DO_ENSFCST}" = "TRUE" ]; then
+      if [[ "$SENDCOM" == 'YES' ]]; then
+        cpreq "${DATAprdgen}/prdgen_${domain}_${task}/${domain}_${task}.grib2" "${COMOUT}/rrfs.t${cyc}z.${mem_num}.2dfld.${outspacing}.f${fhr}.${domain}.grib2"
+        # shellcheck disable=SC2086
         wgrib2 ${COMOUT}/rrfs.t${cyc}z.${mem_num}.2dfld.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.${mem_num}.2dfld.${outspacing}.f${fhr}.${domain}.grib2.idx
       fi
-      if [[ ${SENDDBN} = "YES" ]] ; then
-        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_2DFLD_${DBNDOM} $job \
-            ${COMOUT}/rrfs.t${cyc}z.${mem_num}.2dfld.${outspacing}.f${fhr}.${domain}.grib2
-        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_2DFLD_${DBNDOM}_IDX $job \
-            ${COMOUT}/rrfs.t${cyc}z.${mem_num}.2dfld.${outspacing}.f${fhr}.${domain}.grib2.idx
+      if [[ "${SENDDBN}" == "YES" ]] ; then
+        "$DBNROOT/bin/dbn_alert" MODEL "RRFS_ENS_2DFLD_${DBNDOM}" "$job" \
+            "${COMOUT}/rrfs.t${cyc}z.${mem_num}.2dfld.${outspacing}.f${fhr}.${domain}.grib2"
+        "$DBNROOT/bin/dbn_alert" MODEL "RRFS_ENS_2DFLD_${DBNDOM}_IDX" "$job" \
+            "${COMOUT}/rrfs.t${cyc}z.${mem_num}.2dfld.${outspacing}.f${fhr}.${domain}.grib2.idx"
       fi  #SENDDBN
     else
-      if [[ $SENDCOM = 'YES' ]]; then
-        cpreq ${DATAprdgen}/prdgen_${domain}_${task}/${domain}_${task}.grib2 ${COMOUT}/rrfs.t${cyc}z.2dfld.${outspacing}.f${fhr}.${domain}.grib2
+      if [[ "$SENDCOM" == 'YES' ]]; then
+        cpreq "${DATAprdgen}/prdgen_${domain}_${task}/${domain}_${task}.grib2" "${COMOUT}/rrfs.t${cyc}z.2dfld.${outspacing}.f${fhr}.${domain}.grib2"
+        # shellcheck disable=SC2086
         wgrib2 ${COMOUT}/rrfs.t${cyc}z.2dfld.${outspacing}.f${fhr}.${domain}.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.2dfld.${outspacing}.f${fhr}.${domain}.grib2.idx
       fi
-      if [[ ${SENDDBN} = "YES" ]] ; then
+      if [[ "${SENDDBN}" == "YES" ]] ; then
         if (( 10#$cyc % 3 == 0 )); then
-            $DBNROOT/bin/dbn_alert MODEL RRFS_DET_2DFLD_${DBNDOM} $job \
-                ${COMOUT}/rrfs.t${cyc}z.2dfld.${outspacing}.f${fhr}.${domain}.grib2
-            $DBNROOT/bin/dbn_alert MODEL RRFS_DET_2DFLD_${DBNDOM}_IDX $job \
-                ${COMOUT}/rrfs.t${cyc}z.2dfld.${outspacing}.f${fhr}.${domain}.grib2.idx
+            "$DBNROOT/bin/dbn_alert" MODEL "RRFS_DET_2DFLD_${DBNDOM}" "$job" \
+                "${COMOUT}/rrfs.t${cyc}z.2dfld.${outspacing}.f${fhr}.${domain}.grib2"
+            "$DBNROOT/bin/dbn_alert" MODEL "RRFS_DET_2DFLD_${DBNDOM}_IDX" "$job" \
+                "${COMOUT}/rrfs.t${cyc}z.2dfld.${outspacing}.f${fhr}.${domain}.grib2.idx"
         fi
       fi  #SENDDBN
     fi
   done
 
   # create subhourly files for CONUS, Alaska, Hawaii, Puerto Rico grids
-  if [ "${DO_ENSFCST}" != "TRUE" ] && [ ${fhr} != '000' ] && [ -e $COMOUT/${fld2d_subh} ]; then
-    for domain in ${domains[@]}
+  if [ "${DO_ENSFCST}" != "TRUE" ] && [ "${fhr}" != '000' ] && [ -e "$COMOUT/${fld2d_subh}" ]; then
+    for domain in "${domains[@]}"
     do
 
     DBNDOM="${domain^^}"
-    outspacing=${gridspacing}
-    if [[ $domain = "hi" || $domain = "pr" ]]
+    outspacing="${gridspacing}"
+    if [[ "$domain" == "hi" || "$domain" == "pr" ]]
      then
       outspacing="2p5km"
     fi
-      fld2d_subh_dom=${net4}.t${cyc}z.2dfld.${outspacing}.subh.f${fhr}.${domain}.grib2
-      if [ $domain == "conus" ]; then
+      fld2d_subh_dom="${net4}.t${cyc}z.2dfld.${outspacing}.subh.f${fhr}.${domain}.grib2"
+      if [ "$domain" = "conus" ]; then
         # 3-km Lambert Conformal CONUS domain
         gridspecs="lambert:262.5:38.5:38.5 237.280472:1799:3000 21.138123:1059:3000"
-      elif [ $domain == "ak" ]; then
+      elif [ "$domain" = "ak" ]; then
         # 3-km NPS Alaska domain
         gridspecs="nps:210.0:60.0 181.429:1649:2976.0 40.530:1105:2976.0"
-      elif [ $domain == "hi" ]; then
+      elif [ "$domain" = "hi" ]; then
         # 2.5 km Mercator Hawaii domain
         gridspecs="mercator:20.00 198.474999:321:2500.0:206.13099 18.072699:225:2500.0:23.087799"
-      elif [ $domain == "pr" ]; then
+      elif [ "$domain" = "pr" ]; then
         # 2.5 km Mercator Puerto Rico domain
         gridspecs="mercator:20 284.5:544:2500:297.491 15.0:310:2500:22.005"
       fi
 
-      if [[ $SENDCOM = 'YES' ]]; then
+      if [[ "$SENDCOM" == 'YES' ]]; then
         
+        # shellcheck disable=SC2086
         wgrib2 ${COMOUT}/${fld2d_subh} -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv inputs.grib${domain}.uv
+        
+        # shellcheck disable=SC2086
         wgrib2 inputs.grib${domain}.uv -set_bitmap 1 -set_grib_type c3 \
           -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
           -new_grid_interpolation neighbor \
           -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
           -new_grid ${gridspecs} ${COMOUT}/${fld2d_subh_dom} >>$pgmout 2>>errfile
         export err=$?; err_chk
+        
+        # shellcheck disable=SC2086
         wgrib2 ${COMOUT}/${fld2d_subh_dom} -s > ${COMOUT}/${fld2d_subh_dom}.idx
 
-	if [[ $SENDDBN = 'YES' ]]; then
-             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBH_${DBNDOM} $job \
-                  ${COMOUT}/rrfs.t${cyc}z.2dfld.${outspacing}.subh.f${fhr}.${domain}.grib2
-             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBH_${DBNDOM}_IDX $job \
-                  ${COMOUT}/rrfs.t${cyc}z.2dfld.${outspacing}.subh.f${fhr}.${domain}.grib2.idx
+	if [[ "$SENDDBN" == 'YES' ]]; then
+             "$DBNROOT/bin/dbn_alert" MODEL "RRFS_DET_SUBH_${DBNDOM}" "$job" \
+                  "${COMOUT}/rrfs.t${cyc}z.2dfld.${outspacing}.subh.f${fhr}.${domain}.grib2"
+             "$DBNROOT/bin/dbn_alert" MODEL "RRFS_DET_SUBH_${DBNDOM}_IDX" "$job" \
+                  "${COMOUT}/rrfs.t${cyc}z.2dfld.${outspacing}.subh.f${fhr}.${domain}.grib2.idx"
 	fi
       fi
     done
   fi
 
   # create subset files on 3-km CONUS grid
-  if [ ${DO_ENSFCST} = "TRUE" ]; then
-    subset_conus=${net4}.t${cyc}z.${mem_num}.subset.${gridspacing}.f${fhr}.conus.grib2
+  if [ "${DO_ENSFCST}" = "TRUE" ]; then
+    subset_conus="${net4}.t${cyc}z.${mem_num}.subset.${gridspacing}.f${fhr}.conus.grib2"
   else
-    subset_conus=${net4}.t${cyc}z.subset.${gridspacing}.f${fhr}.conus.grib2
+    subset_conus="${net4}.t${cyc}z.subset.${gridspacing}.f${fhr}.conus.grib2"
   fi
 
-  if [[ $SENDCOM = 'YES' ]]; then
+  if [[ "$SENDCOM" == 'YES' ]]; then
     export gridspecs="lambert:262.5:38.5:38.5 237.280472:1799:3000 21.138123:1059:3000"
+    
+    # shellcheck disable=SC2086
     wgrib2 ${DATA}/${subset} -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv inputs.gribsubset.uv
+    
+    # shellcheck disable=SC2086
     wgrib2 inputs.gribsubset.uv -set_bitmap 1 -set_grib_type c3 \
       -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
       -new_grid_interpolation neighbor \
       -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
       -new_grid ${gridspecs} ${COMOUT}/${subset_conus} >>$pgmout 2>>errfile
     export err=$?; err_chk
+    
+    # shellcheck disable=SC2086
     wgrib2 ${COMOUT}/${subset_conus} -s > ${COMOUT}/${subset_conus}.idx
 
     if [ "${SENDDBN}" = "YES" ] ; then
       if [ "${DO_ENSFCST}" = "TRUE" ]; then
-             $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_SUBSET_CONUS $job \
-                  ${COMOUT}/rrfs.t${cyc}z.${mem_num}.subset.${gridspacing}.f${fhr}.conus.grib2
-             $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_SUBSET_CONUS_IDX $job \
-                  ${COMOUT}/rrfs.t${cyc}z.${mem_num}.subset.${gridspacing}.f${fhr}.conus.grib2.idx
-             $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_SUBSET_NA $job \
-                  ${COMOUT}/rrfs.t${cyc}z.${mem_num}.subset.${gridspacing}.f${fhr}.na.grib2
-             $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_SUBSET_NA_IDX $job \
-                  ${COMOUT}/rrfs.t${cyc}z.${mem_num}.subset.${gridspacing}.f${fhr}.na.grib2.idx
+             "$DBNROOT/bin/dbn_alert" MODEL RRFS_ENS_SUBSET_CONUS "$job" \
+                  "${COMOUT}/rrfs.t${cyc}z.${mem_num}.subset.${gridspacing}.f${fhr}.conus.grib2"
+             "$DBNROOT/bin/dbn_alert" MODEL RRFS_ENS_SUBSET_CONUS_IDX "$job" \
+                  "${COMOUT}/rrfs.t${cyc}z.${mem_num}.subset.${gridspacing}.f${fhr}.conus.grib2.idx"
+             "$DBNROOT/bin/dbn_alert" MODEL RRFS_ENS_SUBSET_NA "$job" \
+                  "${COMOUT}/rrfs.t${cyc}z.${mem_num}.subset.${gridspacing}.f${fhr}.na.grib2"
+             "$DBNROOT/bin/dbn_alert" MODEL RRFS_ENS_SUBSET_NA_IDX "$job" \
+                  "${COMOUT}/rrfs.t${cyc}z.${mem_num}.subset.${gridspacing}.f${fhr}.na.grib2.idx"
       else
-             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBSET_CONUS $job \
-                  ${COMOUT}/rrfs.t${cyc}z.subset.${gridspacing}.f${fhr}.conus.grib2
-             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBSET_CONUS_IDX $job \
-                  ${COMOUT}/rrfs.t${cyc}z.subset.${gridspacing}.f${fhr}.conus.grib2.idx
-             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBSET_NA $job \
-                  ${COMOUT}/rrfs.t${cyc}z.subset.${gridspacing}.f${fhr}.na.grib2
-             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SUBSET_NA_IDX $job \
-                  ${COMOUT}/rrfs.t${cyc}z.subset.${gridspacing}.f${fhr}.na.grib2.idx
+             "$DBNROOT/bin/dbn_alert" MODEL RRFS_DET_SUBSET_CONUS "$job" \
+                  "${COMOUT}/rrfs.t${cyc}z.subset.${gridspacing}.f${fhr}.conus.grib2"
+             "$DBNROOT/bin/dbn_alert" MODEL RRFS_DET_SUBSET_CONUS_IDX "$job" \
+                  "${COMOUT}/rrfs.t${cyc}z.subset.${gridspacing}.f${fhr}.conus.grib2.idx"
+             "$DBNROOT/bin/dbn_alert" MODEL RRFS_DET_SUBSET_NA "$job" \
+                  "${COMOUT}/rrfs.t${cyc}z.subset.${gridspacing}.f${fhr}.na.grib2"
+             "$DBNROOT/bin/dbn_alert" MODEL RRFS_DET_SUBSET_NA_IDX "$job" \
+                  "${COMOUT}/rrfs.t${cyc}z.subset.${gridspacing}.f${fhr}.na.grib2.idx"
       fi 
     fi
 
   fi
 
   # extract subset of ensemble files for NOMADS
-  if [ ${DO_ENSFCST} = "TRUE" ]; then
-    for domain in ${domains[@]}
+  if [ "${DO_ENSFCST}" = "TRUE" ]; then
+    for domain in "${domains[@]}"
     do
       DBNDOM="${domain^^}"
 
-      if [[ $domain = "conus" || $domain = "ak" ]]; then
+      if [[ "$domain" == "conus" || "$domain" == "ak" ]]; then
         # Coarser domains (strip when merging to the nco branch): as above, the NOMADS
         # products this reads were written with the domain's own spacing
         outspacing="${gridspacing}"
-      elif [[  $domain = "hi" || $domain = "pr" ]]; then
+      elif [[  "$domain" == "hi" || "$domain" == "pr" ]]; then
         outspacing=2p5km
       fi
 
-      fld2d_loc=${COMOUT}/${net4}.t${cyc}z.${mem_num}.2dfld.${outspacing}.f${fhr}.${domain}.grib2
-      prslev_loc=${COMOUT}/${net4}.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2
-      fld2d_nomads=${net4}.t${cyc}z.${mem_num}.2dfldnomads.${outspacing}.f${fhr}.${domain}.grib2
-      prslev_nomads=${net4}.t${cyc}z.${mem_num}.prslevnomads.${outspacing}.f${fhr}.${domain}.grib2
+      fld2d_loc="${COMOUT}/${net4}.t${cyc}z.${mem_num}.2dfld.${outspacing}.f${fhr}.${domain}.grib2"
+      prslev_loc="${COMOUT}/${net4}.t${cyc}z.${mem_num}.prslev.${outspacing}.f${fhr}.${domain}.grib2"
+      fld2d_nomads="${net4}.t${cyc}z.${mem_num}.2dfldnomads.${outspacing}.f${fhr}.${domain}.grib2"
+      prslev_nomads="${net4}.t${cyc}z.${mem_num}.prslevnomads.${outspacing}.f${fhr}.${domain}.grib2"
 
+      # shellcheck disable=SC2086
       wgrib2 ${fld2d_loc} | grep -F -f ${FIX_UPP}/nomadsensf_fields_2dfld.txt | wgrib2 -i -grib ${DATA}/${fld2d_nomads} ${fld2d_loc} >>$pgmout 2>>errfile
       export err=$?; err_chk
 
-      cpreq ${DATA}/${fld2d_nomads} ${COMOUT}/${fld2d_nomads}
+      cpreq "${DATA}/${fld2d_nomads}" "${COMOUT}/${fld2d_nomads}"
 
+      # shellcheck disable=SC2086
       wgrib2 ${prslev_loc} -match "(HGT|PRES|TMP|RH|DPT|VVEL|ABSV|CLWMR|UGRD|VGRD|SPFH)" \
         -match "(1000 mb:|975 mb:|950 mb:|925 mb:|900 mb:|850 mb:|800 mb:|750 mb:|700 mb:|600 mb:|500 mb:|400 mb:|300 mb:|250 mb:)" \
         -grib ${DATA}/${prslev_nomads} >>$pgmout 2>>errfile
       export err=$?; err_chk
 
-      cpreq ${DATA}/${prslev_nomads} ${COMOUT}/${prslev_nomads}
+      cpreq "${DATA}/${prslev_nomads}" "${COMOUT}/${prslev_nomads}"
 
       # index files
-      if [ -s ${COMOUT}/${fld2d_nomads} ]; then
+      if [ -s "${COMOUT}/${fld2d_nomads}" ]; then
+        # shellcheck disable=SC2086
         wgrib2 ${COMOUT}/${fld2d_nomads} -s > ${COMOUT}/${fld2d_nomads}.idx
       fi
-      if [ -s ${COMOUT}/${prslev_nomads} ]; then
+      if [ -s "${COMOUT}/${prslev_nomads}" ]; then
+        # shellcheck disable=SC2086
         wgrib2 ${COMOUT}/${prslev_nomads} -s > ${COMOUT}/${prslev_nomads}.idx
       fi
 
       if [ "${SENDDBN}" = "YES" ] ; then
-        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_NOMADS_${DBNDOM} $job \
-            ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslevnomads.${outspacing}.f${fhr}.${domain}.grib2
-        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_NOMADS_${DBNDOM}_IDX $job \
-            ${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslevnomads.${outspacing}.f${fhr}.${domain}.grib2.idx
-        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_2DFLD_NOMADS_${DBNDOM} $job \
-            ${COMOUT}/rrfs.t${cyc}z.${mem_num}.2dfldnomads.${outspacing}.f${fhr}.${domain}.grib2
-        $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_2DFLD_NOMADS_${DBNDOM}_IDX $job \
-            ${COMOUT}/rrfs.t${cyc}z.${mem_num}.2dfldnomads.${outspacing}.f${fhr}.${domain}.grib2.idx
+        "$DBNROOT/bin/dbn_alert" MODEL "RRFS_ENS_NOMADS_${DBNDOM}" "$job" \
+            "${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslevnomads.${outspacing}.f${fhr}.${domain}.grib2"
+        "$DBNROOT/bin/dbn_alert" MODEL "RRFS_ENS_NOMADS_${DBNDOM}_IDX" "$job" \
+            "${COMOUT}/rrfs.t${cyc}z.${mem_num}.prslevnomads.${outspacing}.f${fhr}.${domain}.grib2.idx"
+        "$DBNROOT/bin/dbn_alert" MODEL "RRFS_ENS_2DFLD_NOMADS_${DBNDOM}" "$job" \
+            "${COMOUT}/rrfs.t${cyc}z.${mem_num}.2dfldnomads.${outspacing}.f${fhr}.${domain}.grib2"
+        "$DBNROOT/bin/dbn_alert" MODEL "RRFS_ENS_2DFLD_NOMADS_${DBNDOM}_IDX" "$job" \
+            "${COMOUT}/rrfs.t${cyc}z.${mem_num}.2dfldnomads.${outspacing}.f${fhr}.${domain}.grib2.idx"
       fi
     done
   fi
@@ -605,44 +637,52 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
   # output onto a fixed 13 km North America grid, so it has nothing to do on a CONUS domain
   na13km="TRUE"
   case "${PREDEF_GRID_NAME}" in RRFS_CONUS_*) na13km="FALSE" ;; esac
-  if [ ${DO_ENSFCST} = "FALSE" ] && [ ${na13km} = "TRUE" ]; then
-    prslev_na_13km=${net4}.t${cyc}z.prslev.13km.f${fhr}.na.grib2
-    fld2d_na_13km=${net4}.t${cyc}z.2dfld.13km.f${fhr}.na.grib2
+  if [ "${DO_ENSFCST}" = "FALSE" ] && [ "${na13km}" = "TRUE" ]; then
+    prslev_na_13km="${net4}.t${cyc}z.prslev.13km.f${fhr}.na.grib2"
+    fld2d_na_13km="${net4}.t${cyc}z.2dfld.13km.f${fhr}.na.grib2"
 
-    if [[ $SENDCOM = 'YES' ]]; then
+    if [[ "$SENDCOM" == 'YES' ]]; then
        export gridspecs_13="rot-ll:247.000000:-35.000000:0.000000 299.000000:1127:0.108300 -36.9303000:683:0.108300"
 
+      # shellcheck disable=SC2086
       wgrib2 ${COMOUT}/${prslev} -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv inputs.gribprslevna.uv
+      # shellcheck disable=SC2086
       wgrib2 ${COMOUT}/${fld2d} -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv inputs.grib2dfldna.uv
 
 # interpolate 13 km output
+      # shellcheck disable=SC2086
       wgrib2 inputs.gribprslevna.uv -set_bitmap 1 -set_grib_type c3 \
         -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
         -new_grid_interpolation neighbor \
         -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
         -new_grid ${gridspecs_13} ${COMOUT}/${prslev_na_13km} >>$pgmout 2>>errfile
       export err=$?; err_chk
+      
+      # shellcheck disable=SC2086
       wgrib2 ${COMOUT}/${prslev_na_13km} -s > ${COMOUT}/${prslev_na_13km}.idx
 
+      # shellcheck disable=SC2086
       wgrib2 inputs.grib2dfldna.uv -set_bitmap 1 -set_grib_type c3 \
         -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
         -new_grid_interpolation neighbor \
         -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
         -new_grid ${gridspecs_13} ${COMOUT}/${fld2d_na_13km} >>$pgmout 2>>errfile
       export err=$?; err_chk
+      
+      # shellcheck disable=SC2086
       wgrib2 ${COMOUT}/${fld2d_na_13km} -s > ${COMOUT}/${fld2d_na_13km}.idx
 
 
-      if [[ ${SENDDBN} = "YES" ]] ; then
-      if [ $cyc -eq 00 ] || [ $cyc -eq 06 ] || [ $cyc -eq 12 ] || [ $cyc -eq 18 ]; then
-             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_NA13 $job \
-                  ${COMOUT}/rrfs.t${cyc}z.prslev.13km.f${fhr}.na.grib2
-             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_NA13_IDX $job \
-                  ${COMOUT}/rrfs.t${cyc}z.prslev.13km.f${fhr}.na.grib2.idx
-             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_2DFLD_NA13 $job \
-                  ${COMOUT}/rrfs.t${cyc}z.2dfld.13km.f${fhr}.na.grib2
-             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_2DFLD_NA13_IDX $job \
-                  ${COMOUT}/rrfs.t${cyc}z.2dfld.13km.f${fhr}.na.grib2.idx
+      if [[ "${SENDDBN}" == "YES" ]] ; then
+      if [ "$cyc" -eq 00 ] || [ "$cyc" -eq 06 ] || [ "$cyc" -eq 12 ] || [ "$cyc" -eq 18 ]; then
+             "$DBNROOT/bin/dbn_alert" MODEL RRFS_DET_NA13 "$job" \
+                  "${COMOUT}/rrfs.t${cyc}z.prslev.13km.f${fhr}.na.grib2"
+             "$DBNROOT/bin/dbn_alert" MODEL RRFS_DET_NA13_IDX "$job" \
+                  "${COMOUT}/rrfs.t${cyc}z.prslev.13km.f${fhr}.na.grib2.idx"
+             "$DBNROOT/bin/dbn_alert" MODEL RRFS_DET_2DFLD_NA13 "$job" \
+                  "${COMOUT}/rrfs.t${cyc}z.2dfld.13km.f${fhr}.na.grib2"
+             "$DBNROOT/bin/dbn_alert" MODEL RRFS_DET_2DFLD_NA13_IDX "$job" \
+                  "${COMOUT}/rrfs.t${cyc}z.2dfld.13km.f${fhr}.na.grib2.idx"
       fi
       fi
 
@@ -655,15 +695,15 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
   #-- AWIPS/wmo products are not generated for ensemble member forecasts
   # Coarser domains (strip when merging to the nco branch): rrfs_mkawp.sh names every file
   # ".na." and accepts only 3km or 13km NA grid spacings, so it has nothing to do on a CONUS domain
-  if [ ${DO_ENSFCST} = "FALSE" ] && [ ${na13km} = "TRUE" ]; then
-    if [ $cyc -eq 00 ] || [ $cyc -eq 06 ] || [ $cyc -eq 12 ] || [ $cyc -eq 18 ]; then
+  if [ "${DO_ENSFCST}" = "FALSE" ] && [ "${na13km}" = "TRUE" ]; then
+    if [ "$cyc" -eq 00 ] || [ "$cyc" -eq 06 ] || [ "$cyc" -eq 12 ] || [ "$cyc" -eq 18 ]; then
       grids=(3km 13km)
-      for grid in ${grids[@]}
+      for grid in "${grids[@]}"
       do
-        if [ $grid == "3km" ]; then
-          ${USHrrfs}/prdgen/rrfs_mkawp.sh ${fhr} 2dfld ${grid}
-        elif [ $grid == "13km" ]; then
-          ${USHrrfs}/prdgen/rrfs_mkawp.sh ${fhr} prslev ${grid} 
+        if [ "$grid" = "3km" ]; then
+          "${USHrrfs}/prdgen/rrfs_mkawp.sh" "${fhr}" 2dfld "${grid}"
+        elif [ "$grid" = "13km" ]; then
+          "${USHrrfs}/prdgen/rrfs_mkawp.sh" "${fhr}" prslev "${grid}" 
         fi
       done
     fi
@@ -674,28 +714,28 @@ if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ]; then
   #-- Smoke/dust products are not generated for ensemble member forecasts
   # Coarser domains (strip when merging to the nco branch): skip them when the domain runs
   # without smoke/dust (DO_SMOKE_DUST=FALSE), else the f072 combine waits on files never written.
-  if [ ${DO_ENSFCST} = "FALSE" ] && [ "${DO_SMOKE_DUST:-TRUE}" = "TRUE" ]; then
-    if [ $cyc -eq 06 ] || [ $cyc -eq 12 ]; then
-      if (( 10#$fhr <= 72 )); then
-        $USHrrfs/prdgen/rrfs_smokedust.sh $fhr 227
-        $USHrrfs/prdgen/rrfs_smokedust.sh $fhr 198
-        $USHrrfs/prdgen/rrfs_smokedust.sh $fhr 196
+  if [ "${DO_ENSFCST}" = "FALSE" ] && [ "${DO_SMOKE_DUST:-TRUE}" = "TRUE" ]; then
+    if [ "$cyc" -eq 06 ] || [ "$cyc" -eq 12 ]; then
+      if (( 10#${fhr} <= 72 )); then
+        "$USHrrfs/prdgen/rrfs_smokedust.sh" "$fhr" 227
+        "$USHrrfs/prdgen/rrfs_smokedust.sh" "$fhr" 198
+        "$USHrrfs/prdgen/rrfs_smokedust.sh" "$fhr" 196
       fi
   #-- Files from forecast hours 0-72 are combined into one file
-      if (( 10#$fhr == 72 )); then
-        $USHrrfs/prdgen/rrfs_smokedust_combine.sh
+      if (( 10#${fhr} == 72 )); then
+        "$USHrrfs/prdgen/rrfs_smokedust_combine.sh"
       fi
     fi
   fi
 
 
-elif [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
+elif [ "${PREDEF_GRID_NAME}" = "RRFS_FIREWX_1.5km" ]; then
   #
   # Processing for the RRFS fire weather grid
   #
 
 
-. prep_step
+. "prep_step"
 
   # set GTYPE=2 for GRIB2
   GTYPE=2
@@ -706,19 +746,21 @@ $GTYPE
 EOF
 
   # Read in corner lat lons from UPP text file
-  export FORT11=${COMOUT}/latlons_corners.txt.f${fhr}
+  export FORT11="${COMOUT}/latlons_corners.txt.f${fhr}"
   export FORT45=itagfw
 
   # Calculate the wgrib2 gridspecs for the fire weather grid
-  $APRUN $EXECrrfs/rrfs_util_firewx_gridspecs.exe >> $pgmout 2>errfile
+  # shellcheck disable=SC2086
+  $APRUN "$EXECrrfs/rrfs_util_firewx_gridspecs.exe" >> "$pgmout" 2>errfile
   export err=$?; err_chk
 
-  grid_specs_firewx=`head $DATA/copygb_gridnavfw.txt`
+  grid_specs_firewx=$(head "$DATA/copygb_gridnavfw.txt")
 
-  eval infile=${COMOUT}/${net4}.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx.grib2
+  eval infile="${COMOUT}/${net4}.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx.grib2"
 
 # process firewx prslev file
 
+  # shellcheck disable=SC2086
   wgrib2 ${infile} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
    -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" \
    -new_grid_interpolation neighbor \
@@ -726,12 +768,14 @@ EOF
    -new_grid ${grid_specs_firewx} ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2 >>$pgmout 2>>errfile
   export err=$?; err_chk
 
+  # shellcheck disable=SC2086
   wgrib2 ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2.idx
 
 # process firewx 2dfld file
 
-  eval infile2d=${COMOUT}/${net4}.t${cyc}z.2dfld.${gridspacing}.f${fhr}.firewx.grib2
+  eval infile2d="${COMOUT}/${net4}.t${cyc}z.2dfld.${gridspacing}.f${fhr}.firewx.grib2"
 
+  # shellcheck disable=SC2086
   wgrib2 ${infile2d} -set_bitmap 1 -set_grib_type c3 -new_grid_winds grid \
    -new_grid_vectors "UGRD:VGRD:USTM:VSTM:VUCSH:VVCSH" \
    -new_grid_interpolation neighbor \
@@ -739,18 +783,19 @@ EOF
    -new_grid ${grid_specs_firewx} ${COMOUT}/rrfs.t${cyc}z.2dfld.${gridspacing}.f${fhr}.firewx_lcc.grib2 >>$pgmout 2>>errfile
   export err=$?; err_chk
 
+  # shellcheck disable=SC2086
   wgrib2 ${COMOUT}/rrfs.t${cyc}z.2dfld.${gridspacing}.f${fhr}.firewx_lcc.grib2 -s > ${COMOUT}/rrfs.t${cyc}z.2dfld.${gridspacing}.f${fhr}.firewx_lcc.grib2.idx
 
 
-  if [[ ${SENDDBN} = "YES" ]] ; then
-             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_FIREWX $job \
-                  ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2
-             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_FIREWX_IDX $job \
-                  ${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2.idx
-             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_2DFLD_FIREWX $job \
-                  ${COMOUT}/rrfs.t${cyc}z.2dfld.${gridspacing}.f${fhr}.firewx_lcc.grib2
-             $DBNROOT/bin/dbn_alert MODEL RRFS_DET_2DFLD_FIREWX_IDX $job \
-                  ${COMOUT}/rrfs.t${cyc}z.2dfld.${gridspacing}.f${fhr}.firewx_lcc.grib2.idx
+  if [[ "${SENDDBN}" == "YES" ]] ; then
+             "$DBNROOT/bin/dbn_alert" MODEL RRFS_DET_FIREWX "$job" \
+                  "${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2"
+             "$DBNROOT/bin/dbn_alert" MODEL RRFS_DET_FIREWX_IDX "$job" \
+                  "${COMOUT}/rrfs.t${cyc}z.prslev.${gridspacing}.f${fhr}.firewx_lcc.grib2.idx"
+             "$DBNROOT/bin/dbn_alert" MODEL RRFS_DET_2DFLD_FIREWX "$job" \
+                  "${COMOUT}/rrfs.t${cyc}z.2dfld.${gridspacing}.f${fhr}.firewx_lcc.grib2"
+             "$DBNROOT/bin/dbn_alert" MODEL RRFS_DET_2DFLD_FIREWX_IDX "$job" \
+                  "${COMOUT}/rrfs.t${cyc}z.2dfld.${gridspacing}.f${fhr}.firewx_lcc.grib2.idx"
   fi
 
 
@@ -777,4 +822,3 @@ In directory:    \"${scrfunc_dir}\"
 #-----------------------------------------------------------------------
 #
 #tmp { restore_shell_opts; } > /dev/null 2>&1
-

@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 
-source ${FIXrrfs}/workflow/${WGF}/workflow.conf
+source "${FIXrrfs}"/workflow/"${WGF}"/workflow.conf
 
 export FIXam=${FIXam:-${HOMErrfs}/fix/am}
 export FIXLAM=${FIXLAM:-${HOMErrfs}/fix/lam/RRFS_NA_3km}
@@ -17,7 +17,7 @@ export DO_IODA_MRMS=${DO_IODA_MRMS:-"FALSE"}
 #
 #-----------------------------------------------------------------------
 #
-. $USHrrfs/source_util_funcs.sh
+. "${USHrrfs}"/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -52,7 +52,7 @@ preprocessing with RRFS for the specified cycle.
 #
 #-----------------------------------------------------------------------
 #
-if [ ${RUN} == "enkfrrfs" ]; then
+if [ "${RUN}" == "enkfrrfs" ]; then
   export RADAR_REF_THINNING="2"
 else
   export RADAR_REF_THINNING="1"
@@ -70,7 +70,7 @@ print_input_args valid_args
 #
 ulimit -a
 
-case $MACHINE in
+case ${MACHINE} in
 #
 "WCOSS2")
   ncores=$(( NNODES_PROCESS_RADAR*PPN_PROCESS_RADAR))
@@ -109,7 +109,7 @@ esac
 #-----------------------------------------------------------------------
 #
 START_DATE=$(echo "${CDATE}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
-YYYYMMDDHH=$CDATE
+YYYYMMDDHH=${CDATE}
 JJJ=$(date +%j -d "${START_DATE}")
 
 YYYY=${YYYYMMDDHH:0:4}
@@ -130,21 +130,21 @@ BKTYPE=0
 if [ "${DO_SPINUP}" = "TRUE" ]; then
   if [ "${CYCLE_TYPE}" = "spinup" ]; then
     for cyc_start in "${CYCL_HRS_SPINSTART[@]}"; do
-      if [ ${HH} -eq ${cyc_start} ]; then
+      if [ "${HH}" -eq "${cyc_start}" ]; then
         BKTYPE=1
       fi
     done
   fi
 else
   for cyc_start in "${CYCL_HRS_PRODSTART[@]}"; do
-    if [ ${HH} -eq ${cyc_start} ]; then
+    if [ "${HH}" -eq "${cyc_start}" ]; then
         BKTYPE=1
     fi
   done
 fi
 
-n_iolayouty=$(($IO_LAYOUT_Y-1))
-list_iolayout=$(seq 0 $n_iolayouty)
+n_iolayouty=$((IO_LAYOUT_Y - 1))
+list_iolayout=$(seq 0 ${n_iolayouty})
 #
 #-----------------------------------------------------------------------
 #
@@ -153,22 +153,22 @@ list_iolayout=$(seq 0 $n_iolayouty)
 #
 #-----------------------------------------------------------------------
 #
-print_info_msg "$VERBOSE" "
+print_info_msg "${VERBOSE}" "
 Getting into working directory for radar reflectivity process ..."
 
 export pgm="rrfs_util_process_NSSL_mosaic.exe"
 . prep_step
 
-for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
-  bigmin=$( printf %2.2i $bigmin )
-  mkdir ${DATA}/${bigmin}
-  cd ${DATA}/${bigmin}
+for bigmin in "${RADARREFL_TIMELEVEL[@]}"; do
+  bigmin=$( printf %2.2i "${bigmin}" )
+  mkdir "${DATA}"/"${bigmin}"
+  cd "${DATA}"/"${bigmin}"
 
-  fixdir=$FIX_GSI/
-  fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
+  fixdir=${FIX_GSI}/
+  fixgriddir=${FIX_GSI}/${PREDEF_GRID_NAME}
 
-  print_info_msg "$VERBOSE" "fixdir is $fixdir"
-  print_info_msg "$VERBOSE" "fixgriddir is $fixgriddir"
+  print_info_msg "${VERBOSE}" "fixdir is ${fixdir}"
+  print_info_msg "${VERBOSE}" "fixgriddir is ${fixgriddir}"
   #
   #-----------------------------------------------------------------------
   #  
@@ -176,7 +176,7 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
   #
   #-----------------------------------------------------------------------
   #
-  cpreq -p ${fixgriddir}/fv3_grid_spec  fv3sar_grid_spec.nc
+  cpreq -p "${fixgriddir}"/fv3_grid_spec  fv3sar_grid_spec.nc
   #
   #-----------------------------------------------------------------------
   #
@@ -184,7 +184,7 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
   #
   #-----------------------------------------------------------------------
   #
-  case $MACHINE in
+  case ${MACHINE} in
   "WCOSS2")
     obs_appendix=grib2.gz
     ;;
@@ -203,7 +203,7 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
   #-----------------------------------------------------------------------
   #
   echo "bigmin = ${bigmin}"
-  echo "RADARREFL_MINS = ${RADARREFL_MINS[@]}"
+  echo "RADARREFL_MINS = ${RADARREFL_MINS[*]}"
   #
   #-----------------------------------------------------------------------
   #
@@ -211,22 +211,22 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
   #
   #-----------------------------------------------------------------------
   #
-  for min in ${RADARREFL_MINS[@]}
+  for min in "${RADARREFL_MINS[@]}"
   do
     min=$( printf %2.2i $((bigmin+min)) )
-    echo "Looking for data valid:"${YYYY}"-"${MM}"-"${DD}" "${HH}":"${min}
+    echo "Looking for data valid:""${YYYY}""-""${MM}""-""${DD}"" ""${HH}"":""${min}"
     s=0
-    while [[ $s -le 59 ]]; do
+    while [[ ${s} -le 59 ]]; do
       ss=$(printf %2.2i ${s})
-      nsslfile=${NSSL}/*${mrms}_00.50_${YYYY}${MM}${DD}-${HH}${min}${ss}.${obs_appendix}
-      if [ -s $nsslfile ]; then
-        echo 'Found '${nsslfile}
-        nsslfile1=*${mrms}_*_${YYYY}${MM}${DD}-${HH}${min}*.${obs_appendix}
-        numgrib2=$(ls ${NSSL}/${nsslfile1} | wc -l)
-        echo 'Number of GRIB-2 files: '${numgrib2}
-        if [ ${numgrib2} -ge 10 ] && [ ! -e filelist_mrms ]; then
-          cpreq -p ${NSSL}/${nsslfile1} . 
-          ls ${nsslfile1} > filelist_mrms 
+      nsslfiles=( "${NSSL}"/*"${mrms}"_00.50_"${YYYY}${MM}${DD}-${HH}${min}${ss}.${obs_appendix}" )
+      if [ -s "${nsslfiles[0]}" ]; then
+        echo 'Found '"${nsslfiles[0]}"
+        nsslfiles=( "${NSSL}"/*"${mrms}"_*_"${YYYY}${MM}${DD}-${HH}${min}"*."${obs_appendix}" )
+        numgrib2=${#nsslfiles[@]}
+        echo 'Number of GRIB-2 files: '"${numgrib2}"
+        if [ "${numgrib2}" -ge 10 ] && [ ! -e filelist_mrms ]; then
+          cpreq -p "${nsslfiles[@]}" .
+          printf '%s\n' "${nsslfiles[@]##*/}" > filelist_mrms
           echo 'Creating links for ${YYYY}${MM}${DD}-${HH}${min}'
         fi
       fi
@@ -245,20 +245,22 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
   fi
 
   if [ -s filelist_mrms ]; then
-     if [ ${obs_appendix} == "grib2.gz" ]; then
-        gzip -d *.gz
+     if [ "${obs_appendix}" == "grib2.gz" ]; then
+        gzip -d -- ./*.gz
         mv filelist_mrms filelist_mrms_org
-        ls MergedReflectivityQC_*_${YYYY}${MM}${DD}-${HH}????.grib2 > filelist_mrms
+        ls MergedReflectivityQC_*_"${YYYY}""${MM}""${DD}"-"${HH}"????.grib2 > filelist_mrms
      fi
 
-     numgrib2=$(more filelist_mrms | wc -l)
-     print_info_msg "$VERBOSE" "Using radar data from: `head -1 filelist_mrms | cut -c10-15`"
-     print_info_msg "$VERBOSE" "NSSL grib2 file levels = $numgrib2"
+     numgrib2=$(wc -l < filelist_mrms)
+     first_radar_file=$(head -n 1 filelist_mrms)
+     radar_timestamp=${first_radar_file:9:6}
+     print_info_msg "${VERBOSE}" "Using radar data from: ${radar_timestamp}"
+     print_info_msg "${VERBOSE}" "NSSL grib2 file levels = ${numgrib2}"
   else
      echo "WARNING: Not enough radar reflectivity files in ${NSSL} available for loop ${bigmin}.  Will continue without it (radar data not critical)"
      # only email for det system twice per day
-     if [[ "$WGF" == "det" && "$CYCLE_TYPE" == "prod" ]]; then
-        if [[ "$cyc" == "13" || "$cyc" == "19" ]]; then
+     if [[ "${WGF}" == "det" && "${CYCLE_TYPE}" == "prod" ]]; then
+        if [[ "${cyc}" == "13" || "${cyc}" == "19" ]]; then
            cat << EOF > radar_warning.txt
 WARNING: Not enough radar reflectivity files are available at the below path:
 ${NSSL}
@@ -269,7 +271,7 @@ No immediate impact to integrity of delivered products.
 
 Ops action: identify cause of missing radar data at the above path.
 EOF
-           mail.py -s "Missing Radar Data of Opportunity for RRFS" -v ${MAIL_TO} < radar_warning.txt
+           mail.py -s "Missing Radar Data of Opportunity for RRFS" -v "${MAIL_TO}" < radar_warning.txt
         fi
      fi
      continue
@@ -282,7 +284,7 @@ EOF
   #-----------------------------------------------------------------------
   BUFR_TABLE=${fixdir}/prepobs_prep_RAP.bufrtable
 
-  cpreq -p $BUFR_TABLE prepobs_prep.bufrtable
+  cpreq -p "${BUFR_TABLE}" prepobs_prep.bufrtable
   #
   #-----------------------------------------------------------------------
   #
@@ -301,7 +303,7 @@ EOF
   if [ ${BKTYPE} -eq 1 ]; then
     n_iolayouty=1
   else
-    n_iolayouty=$(($IO_LAYOUT_Y))
+    n_iolayouty=${IO_LAYOUT_Y}
   fi
 
 cat << EOF > namelist.mosaic
@@ -356,23 +358,23 @@ EOF
   #
   #-----------------------------------------------------------------------
   # 
-  $APRUN ${EXECrrfs}/$pgm >>$pgmout 2>errfile
+  ${APRUN} "${EXECrrfs}"/${pgm} >>"${pgmout}" 2>errfile
   export err=$?; err_chk
-  if [ -f ${shared_output_data}/rrfs.t${HH}z.RefInGSI3D.bin.${bigmin} ] && [ -s ${DATA}/${bigmin}/RefInGSI3D.dat ]; then 
-    rm -f ${shared_output_data}/rrfs.t${HH}z.RefInGSI3D.bin.${bigmin}
+  if [ -f "${shared_output_data}"/rrfs.t"${HH}"z.RefInGSI3D.bin."${bigmin}" ] && [ -s "${DATA}"/"${bigmin}"/RefInGSI3D.dat ]; then
+    rm -f "${shared_output_data}"/rrfs.t"${HH}"z.RefInGSI3D.bin."${bigmin}"
   fi
-  cpreq ${DATA}/${bigmin}/RefInGSI3D.dat ${shared_output_data}/rrfs.t${HH}z.RefInGSI3D.bin.${bigmin}
-  cpreq -p RefInGSI3D.dat  ${COMOUT_ANALYSIS}/rrfs.t${HH}z.RefInGSI3D.bin.${bigmin}
-  if [ -f ${shared_output_data}/Gridded_ref.nc ] && [ -s ${DATA}/${bigmin}/Gridded_ref.nc ]; then
-    rm -f ${shared_output_data}/Gridded_ref.nc
+  cpreq "${DATA}"/"${bigmin}"/RefInGSI3D.dat "${shared_output_data}"/rrfs.t"${HH}"z.RefInGSI3D.bin."${bigmin}"
+  cpreq -p RefInGSI3D.dat  "${COMOUT_ANALYSIS}"/rrfs.t"${HH}"z.RefInGSI3D.bin."${bigmin}"
+  if [ -f "${shared_output_data}"/Gridded_ref.nc ] && [ -s "${DATA}"/"${bigmin}"/Gridded_ref.nc ]; then
+    rm -f "${shared_output_data}"/Gridded_ref.nc
   fi
-  cpreq ${DATA}/${bigmin}/Gridded_ref.nc ${shared_output_data}/Gridded_ref.nc
-  cpreq -p Gridded_ref.nc ${COMOUT_ANALYSIS}/Gridded_ref.nc
-  if [ -f ${shared_output_data}/rrfs.t${HH}z.Gridded_ref.nc.${bigmin} ] && [ -s ${DATA}/${bigmin}/Gridded_ref.nc ]; then
-    rm -f ${shared_output_data}/rrfs.t${HH}z.Gridded_ref.nc.${bigmin}
+  cpreq "${DATA}"/"${bigmin}"/Gridded_ref.nc "${shared_output_data}"/Gridded_ref.nc
+  cpreq -p Gridded_ref.nc "${COMOUT_ANALYSIS}"/Gridded_ref.nc
+  if [ -f "${shared_output_data}"/rrfs.t"${HH}"z.Gridded_ref.nc."${bigmin}" ] && [ -s "${DATA}"/"${bigmin}"/Gridded_ref.nc ]; then
+    rm -f "${shared_output_data}"/rrfs.t"${HH}"z.Gridded_ref.nc."${bigmin}"
   fi
-  cpreq ${DATA}/${bigmin}/Gridded_ref.nc ${shared_output_data}/rrfs.t${HH}z.Gridded_ref.nc.${bigmin}
-  cpreq -p Gridded_ref.nc ${COMOUT_ANALYSIS}/rrfs.t${HH}z.Gridded_ref.nc.${bigmin}
+  cpreq "${DATA}"/"${bigmin}"/Gridded_ref.nc "${shared_output_data}"/rrfs.t"${HH}"z.Gridded_ref.nc."${bigmin}"
+  cpreq -p Gridded_ref.nc "${COMOUT_ANALYSIS}"/rrfs.t"${HH}"z.Gridded_ref.nc."${bigmin}"
 
   # Convert the gridded reflectivity to IODA for the JEDI analyses, which read
   # ioda_mrms_refl.nc from the analysis COM directory. JEDI warns and goes on
@@ -383,9 +385,9 @@ EOF
     PYIODALIB=${dirs[0]}
     shopt -u nullglob
     export PYTHONPATH="${PYIODALIB}:${PYIODALIB}/site-packages:${PYTHONPATH:-}"
-    python ${USHrrfs}/MRMS2ioda.py -i ./Gridded_ref.nc -c "${YYYY}-${MM}-${DD}T${HH}:${bigmin}:00" -o ioda_mrms_refl.nc
+    python "${USHrrfs}"/MRMS2ioda.py -i ./Gridded_ref.nc -c "${YYYY}-${MM}-${DD}T${HH}:${bigmin}:00" -o ioda_mrms_refl.nc
     if [ -s ioda_mrms_refl.nc ]; then
-      cpreq -p ioda_mrms_refl.nc ${COMOUT_ANALYSIS}/ioda_mrms_refl.nc
+      cpreq -p ioda_mrms_refl.nc "${COMOUT_ANALYSIS}"/ioda_mrms_refl.nc
     else
       echo "WARNING: no IODA MRMS file made for loop ${bigmin}"
     fi

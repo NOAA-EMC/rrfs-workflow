@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 
-source ${FIXrrfs}/workflow/${WGF}/workflow.conf
+source "${FIXrrfs}"/workflow/"${WGF}"/workflow.conf
 
 #
 #-----------------------------------------------------------------------
@@ -10,10 +10,21 @@ source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 #
 #-----------------------------------------------------------------------
 #
-. $USHrrfs/source_util_funcs.sh
+. "${USHrrfs}"/source_util_funcs.sh
 
-function ncvarlst_noaxis_time { ncks --trd -m ${1} | grep -E ': type' | cut -f 1 -d ' ' | sed 's/://' | sort |grep -v -i -E "axis|time" ;  }
-function ncvarlst_noaxis_time_new { ncks -m  ${1} | grep -E 'float' | cut -d "(" -f 1 | cut -c 10- ;  }
+function ncvarlst_noaxis_time {
+  local ncks_output
+  ncks_output=$(ncks --trd -m "${1}") || return
+  local variable_names
+  variable_names=$(awk '/: type/ { gsub(/:/, "", $1); if ($1 !~ /axis|time/i) print $1 }' <<< "${ncks_output}") || return
+  [[ -n "${variable_names}" ]] || return 1
+  sort <<< "${variable_names}"
+}
+function ncvarlst_noaxis_time_new {
+  local ncks_output
+  ncks_output=$(ncks -m "${1}") || return
+  awk '/float/ { name=$0; sub(/\(.*/, "", name); print substr(name, 10) }' <<< "${ncks_output}"
+}
 export HDF5_USE_FILE_LOCKING=FALSE #clt to avoild recenter's error "NetCDF: HDF error"
 export MPICH_COLL_OPT_OFF=1  # to fix non-physical EnKF analysis increments
 #
@@ -46,7 +57,7 @@ specified cycle.
 
 ulimit -a
 
-case $MACHINE in
+case ${MACHINE} in
 #
 "WCOSS2")
 #
@@ -104,9 +115,9 @@ nens=${NUM_ENS_MEMBERS:-"30"}
 #
 START_DATE=$(echo "${CDATE}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
 
-YYYYMMDDHH=$CDATE
+YYYYMMDDHH=${CDATE}
 netcdf_diag=${netcdf_diag:-".true."}
-vlddate=$CDATE
+vlddate=${CDATE}
 l_fv3reg_filecombined=.false.
 #
 #-----------------------------------------------------------------------
@@ -118,9 +129,9 @@ l_fv3reg_filecombined=.false.
 FIX_GSI="${FIXrrfs}/gsi"
 fixgriddir=${FIX_GSI}/${PREDEF_GRID_NAME}
 
-cpreq -p ${fixgriddir}/fv3_coupler.res    coupler.res
-cpreq -p ${fixgriddir}/fv3_akbk           fv3sar_tile1_akbk.nc
-cpreq -p ${fixgriddir}/fv3_grid_spec      fv3sar_tile1_grid_spec.nc
+cpreq -p "${fixgriddir}"/fv3_coupler.res    coupler.res
+cpreq -p "${fixgriddir}"/fv3_akbk           fv3sar_tile1_akbk.nc
+cpreq -p "${fixgriddir}"/fv3_grid_spec      fv3sar_tile1_grid_spec.nc
 #
 #-----------------------------------------------------------------------
 #
@@ -129,27 +140,27 @@ cpreq -p ${fixgriddir}/fv3_grid_spec      fv3sar_tile1_grid_spec.nc
 #
 #-----------------------------------------------------------------------
 #
-for imem in  $(seq 1 $nens) ensmean; do
+for imem in  $(seq 1 "${nens}") ensmean; do
 
   if [ "${imem}" = "ensmean" ]; then
     memchar="ensmean"
     memcharv0="ensmean"
   else
-    memchar="m"$(printf %03i $imem)
-    memcharv0="mem"$( printf "%03d" $imem )
+    memchar="m"$(printf %03i "${imem}")
+    memcharv0="mem"$( printf "%03d" "${imem}" )
   fi
   bkpath=${FORECAST_INPUT_PRODUCT}/${memchar}/INPUT
-  mkdir -p ${bkpath}
+  mkdir -p "${bkpath}"
   if [ "${imem}" = "ensmean" ]; then
-    ln -snf  ${bkpath}/fv_core.res.tile1.nc      fv3sar_tile1_${memcharv0}_dynvars
-    ln -snf  ${bkpath}/fv_tracer.res.tile1.nc    fv3sar_tile1_${memcharv0}_tracer
-    ln -snf  ${bkpath}/sfc_data.nc               fv3sar_tile1_${memcharv0}_sfcdata
-    ln -snf  ${bkpath}/phy_data.nc               fv3sar_tile1_${memcharv0}_phyvar
+    ln -snf  "${bkpath}"/fv_core.res.tile1.nc      fv3sar_tile1_"${memcharv0}"_dynvars
+    ln -snf  "${bkpath}"/fv_tracer.res.tile1.nc    fv3sar_tile1_"${memcharv0}"_tracer
+    ln -snf  "${bkpath}"/sfc_data.nc               fv3sar_tile1_"${memcharv0}"_sfcdata
+    ln -snf  "${bkpath}"/phy_data.nc               fv3sar_tile1_"${memcharv0}"_phyvar
   else
-    ln -snf  ${bkpath}/fv_core.res.tile1.nc      fv3sar_tile1_${memcharv0}_dynvars
-    ln -snf  ${bkpath}/fv_tracer.res.tile1.nc    fv3sar_tile1_${memcharv0}_tracer
-    ln -snf  ${bkpath}/sfc_data.nc               fv3sar_tile1_${memcharv0}_sfcdata
-    ln -snf  ${bkpath}/phy_data.nc               fv3sar_tile1_${memcharv0}_phyvar
+    ln -snf  "${bkpath}"/fv_core.res.tile1.nc      fv3sar_tile1_"${memcharv0}"_dynvars
+    ln -snf  "${bkpath}"/fv_tracer.res.tile1.nc    fv3sar_tile1_"${memcharv0}"_tracer
+    ln -snf  "${bkpath}"/sfc_data.nc               fv3sar_tile1_"${memcharv0}"_sfcdata
+    ln -snf  "${bkpath}"/phy_data.nc               fv3sar_tile1_"${memcharv0}"_phyvar
   fi
 #
 #-----------------------------------------------------------------------
@@ -166,12 +177,12 @@ for imem in  $(seq 1 $nens) ensmean; do
       list_ob_type="conv_ps conv_q conv_t conv_uv conv_pw conv_rw conv_sst"	
 
       if [ "${DO_ENS_RADDA}" = "TRUE" ]; then
-        list_ob_type="$list_ob_type $listall_rad"
+        list_ob_type="${list_ob_type} ${listall_rad}"
       fi	
     fi
 	
     if [ "${OB_TYPE}" = "radardbz" ]; then
-      if [ ${DO_GLM_FED_DA} == "TRUE" ]; then
+      if [ "${DO_GLM_FED_DA}" == "TRUE" ]; then
         list_ob_type="conv_dbz conv_fed"
       else
         list_ob_type="conv_dbz"
@@ -179,20 +190,20 @@ for imem in  $(seq 1 $nens) ensmean; do
     fi
     for sub_ob_type in ${list_ob_type} ; do
       diagfile0=${COMOUT}/${memchar}/analysis/diag_${sub_ob_type}_ges.${YYYYMMDDHH}.nc4.gz
-      if [ -s $diagfile0 ]; then
-        diagfile=$(basename  $diagfile0)
-        cpreq -p  $diagfile0  $diagfile
-        gzip -d $diagfile && rm -f $diagfile
-        ncfile0=$(basename -s .gz $diagfile)
-        ncfile=$(basename -s .nc4 $ncfile0)
-        mv $ncfile0 ${ncfile}_${memcharv0}.nc4
+      if [ -s "${diagfile0}" ]; then
+        diagfile=$(basename  "${diagfile0}")
+        cpreq -p  "${diagfile0}"  "${diagfile}"
+        gzip -d "${diagfile}" && rm -f "${diagfile}"
+        ncfile0=$(basename -s .gz "${diagfile}")
+        ncfile=$(basename -s .nc4 "${ncfile0}")
+        mv "${ncfile0}" "${ncfile}"_"${memcharv0}".nc4
       fi
     done
   else
-    for diagfile0 in $(ls  ${COMOUT}/${memchar}/analysis/diag*${OB_TYPE}*ges* ) ; do
-      if [ -s $diagfile0 ]; then
-         diagfile=$(basename  $diagfile0)
-         cpreq -p  $diagfile0   diag_conv_ges.$memcharv0
+    for diagfile0 in $(ls  "${COMOUT}"/"${memchar}"/analysis/diag*"${OB_TYPE}"*ges* ) ; do
+      if [ -s "${diagfile0}" ]; then
+         diagfile=$(basename  "${diagfile0}")
+         cpreq -p  "${diagfile0}"   diag_conv_ges."${memcharv0}"
       fi
     done
   fi
@@ -232,10 +243,10 @@ stderr_name=stderr.${OB_TYPE}
 SATINFO=${FIX_GSI}/global_satinfo.txt
 OZINFO=${FIX_GSI}/global_ozinfo.txt
 
-cpreq -p ${ANAVINFO} anavinfo
-cpreq -p $SATINFO    satinfo
-cpreq -p $CONVINFO   convinfo
-cpreq -p $OZINFO     ozinfo
+cpreq -p "${ANAVINFO}" anavinfo
+cpreq -p "${SATINFO}"    satinfo
+cpreq -p "${CONVINFO}"   convinfo
+cpreq -p "${OZINFO}"     ozinfo
 
 #
 #-----------------------------------------------------------------------
@@ -244,9 +255,11 @@ cpreq -p $OZINFO     ozinfo
 #
 #-----------------------------------------------------------------------
 #
-NX_RES=$(ncdump -h fv3sar_tile1_grid_spec.nc | grep "grid_xt =" | cut -f3 -d" " )
-NY_RES=$(ncdump -h fv3sar_tile1_grid_spec.nc | grep "grid_yt =" | cut -f3 -d" " )
-nlevs=$(ncdump -h fv3sar_tile1_mem001_tracer | grep "zaxis_1 =" | cut -f3 -d" " )
+grid_header=$(ncdump -h fv3sar_tile1_grid_spec.nc) || err_exit "Cannot read FV3 grid header"
+tracer_header=$(ncdump -h fv3sar_tile1_mem001_tracer) || err_exit "Cannot read FV3 tracer header"
+NX_RES=$(awk '/grid_xt =/ {gsub(/[;,]/, "", $3); print $3}' <<< "${grid_header}")
+NY_RES=$(awk '/grid_yt =/ {gsub(/[;,]/, "", $3); print $3}' <<< "${grid_header}")
+nlevs=$(awk '/zaxis_1 =/ {gsub(/[;,]/, "", $3); print $3}' <<< "${tracer_header}")
 #
 #----------------------------------------------------------------------
 #
@@ -275,17 +288,17 @@ use_gfs_nemsio=.true.,
 #
 	cat > enkf.nml << EOFnml
 	&nam_enkf
-	datestring="$vlddate",datapath="$DATA/",
+	datestring="${vlddate}",datapath="${DATA}/",
 	analpertwtnh=1.10,analpertwtsh=1.10,analpertwttr=1.10,
 	covinflatemax=1.e2,covinflatemin=1,pseudo_rh=.true.,iassim_order=0,
-        corrlengthnh=$CORRLENGTH,corrlengthsh=$CORRLENGTH,corrlengthtr=$CORRLENGTH,
-        lnsigcutoffnh=$LNSIGCUTOFF,lnsigcutoffsh=$LNSIGCUTOFF,lnsigcutofftr=$LNSIGCUTOFF,
-        lnsigcutoffpsnh=$LNSIGCUTOFF,lnsigcutoffpssh=$LNSIGCUTOFF,lnsigcutoffpstr=$LNSIGCUTOFF,
-        lnsigcutoffsatnh=$LNSIGCUTOFF,lnsigcutoffsatsh=$LNSIGCUTOFF,lnsigcutoffsattr=$LNSIGCUTOFF,
+        corrlengthnh=${CORRLENGTH},corrlengthsh=${CORRLENGTH},corrlengthtr=${CORRLENGTH},
+        lnsigcutoffnh=${LNSIGCUTOFF},lnsigcutoffsh=${LNSIGCUTOFF},lnsigcutofftr=${LNSIGCUTOFF},
+        lnsigcutoffpsnh=${LNSIGCUTOFF},lnsigcutoffpssh=${LNSIGCUTOFF},lnsigcutoffpstr=${LNSIGCUTOFF},
+        lnsigcutoffsatnh=${LNSIGCUTOFF},lnsigcutoffsatsh=${LNSIGCUTOFF},lnsigcutoffsattr=${LNSIGCUTOFF},
 	obtimelnh=1.e30,obtimelsh=1.e30,obtimeltr=1.e30,
 	saterrfact=1.0,numiter=1,
 	sprd_tol=1.e30,paoverpb_thresh=0.98,
-	nlons=${NX_RES:-396},nlats= ${NY_RES:-232}, nlevs= ${nlevs:-65},nanals=$nens,
+	nlons=${NX_RES:-396},nlats= ${NY_RES:-232}, nlevs= ${nlevs:-65},nanals=${nens},
 	deterministic=.true.,sortinc=.true.,lupd_satbiasc=.false.,
 	reducedgrid=.true.,readin_localization=.false.,
 	use_gfs_nemsio=.true.,imp_physics=99,lupp=.false.,
@@ -401,12 +414,15 @@ EOFnml
 export pgm="gsi_enkf.x"
 . prep_step
 
-countdiag=$(ls diag*conv* 2>/dev/null | wc -l)
-if [ $countdiag -gt $nens ]; then
-  ${APRUN} ${EXECrrfs}/$pgm < enkf.nml >>$pgmout 2>errfile
+shopt -s nullglob
+diag_files=( diag*conv* )
+countdiag=${#diag_files[@]}
+shopt -u nullglob
+if [ "${countdiag}" -gt "${nens}" ]; then
+  ${APRUN} "${EXECrrfs}"/${pgm} < enkf.nml >>"${pgmout}" 2>errfile
   export err=$?; err_chk
 else
-  echo "WARNING: EnKF not running due to lack of ${OB_TYPE} obs for cycle $vlddate !!!"
+  echo "WARNING: EnKF not running due to lack of ${OB_TYPE} obs for cycle ${vlddate} !!!"
 fi
 
 print_info_msg "

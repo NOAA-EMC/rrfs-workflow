@@ -1,3 +1,5 @@
+#!/bin/bash
+set -x
 #
 #-----------------------------------------------------------------------
 #
@@ -105,7 +107,7 @@ The arguments to this function are defined as follows:
     inds_to_return="$3"
   fi
 
-  array_name_at="$array_name[@]"
+  array_name_at="${array_name}[@]"
   array=("${!array_name_at}")
 #
 #-----------------------------------------------------------------------
@@ -115,7 +117,7 @@ The arguments to this function are defined as follows:
 #
 #-----------------------------------------------------------------------
 #
-  inds_to_return=$(echo_lowercase $inds_to_return)
+  inds_to_return=$(echo_lowercase "${inds_to_return}")
   valid_vals_inds_to_return=( "first" "last" "all" )
   check_var_valid_value "inds_to_return" "valid_vals_inds_to_return"
 #
@@ -134,9 +136,9 @@ The arguments to this function are defined as follows:
   num_matches=0
 
   num_elems=${#array[@]}
-  for (( n=0; n<${num_elems}; n++ )); do
-    if [ "${array[$n]}" = "${str_to_match}" ]; then
-      match_inds[${num_matches}]=$n
+  for (( n=0; n<num_elems; n++ )); do
+    if [ "${array[${n}]}" = "${str_to_match}" ]; then
+      match_inds[num_matches]=n
       num_matches=$((num_matches+1))
       if [ "${inds_to_return}" = "first" ]; then
         break
@@ -152,7 +154,7 @@ The arguments to this function are defined as follows:
 #-----------------------------------------------------------------------
 #
   num_matches=${#match_inds[@]}
-  if [ ${num_matches} -gt 0 ]; then
+  if [ "${num_matches}" -gt 0 ]; then
     if [ "${inds_to_return}" = "last" ]; then
       printf "%s\n" "${match_inds[-1]}"
     else

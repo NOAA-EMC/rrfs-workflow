@@ -1,3 +1,5 @@
+#!/bin/bash
+set -x
 #
 #-----------------------------------------------------------------------
 #
@@ -66,9 +68,9 @@ or not it is an array.
 #-----------------------------------------------------------------------
 #
   local var_name="$1"
-  local declare_output=$( declare -p "$var_name" 2> /dev/null )
+  local declare_output=$( declare -p "${var_name}" 2> /dev/null )
   local regex="^declare -[aA] ${var_name}(=|$)"
-  printf "%s" "$declare_output" | grep --extended-regexp "$regex" >/dev/null 
+  printf "%s" "${declare_output}" | grep --extended-regexp "${regex}" >/dev/null
   is_an_array="$?"
 #
 #
@@ -81,4 +83,3 @@ or not it is an array.
   return ${is_an_array}
 
 }
-

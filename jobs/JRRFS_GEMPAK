@@ -18,7 +18,7 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 # RRFS Product Generation
 #-----------------------------------------------------------------------
 export pid=${pid:-$$}
-export outid=${outid:-"LL$job"}
+export outid=${outid:-"LL${job}"}
 case "${WGF}" in
   "det")
     export RUN="rrfs"
@@ -35,25 +35,26 @@ case "${WGF}" in
 esac
 
 export DATA=${DATA:-${DATAROOT}/${jobid}}
-mkdir -p ${DATA}
-cd ${DATA}
+mkdir -p "${DATA}"
+cd "${DATA}"
 
 #-----------------------------------------------------------------------
 # Source the bash utility functions.
 #-----------------------------------------------------------------------
 
-. $USHrrfs/source_util_funcs.sh
+. "${USHrrfs}"/source_util_funcs.sh
 
 export cycle="t${cyc}z"
 setpdy.sh
 . ./PDY
 export CDATE="${PDY}${cyc}"
 
-export COMrrfs=${COMrrfs:-$(compath.py -o rrfs/${rrfs_ver})}
+export COMrrfs=${COMrrfs:-$(compath.py -o rrfs/"${rrfs_ver}")}
 export COMIN=${COMrrfs}/${RUN}.${PDY}/${cyc}
-export COMOUT=${COMOUT:-$(compath.py -o rrfs/${rrfs_ver}/${RUN}.${PDY}/${cyc}/gempak)}
-if [ ! -f ${COMOUT} ] ; then
-	mkdir -p -m 775 ${COMOUT}
+export COMOUT=${COMOUT:-$(compath.py -o rrfs/"${rrfs_ver}"/"${RUN}"."${PDY}"/"${cyc}"/gempak)}
+if [ ! -f "${COMOUT}" ] ; then
+	mkdir -p "${COMOUT}"
+	chmod 775 "${COMOUT}"
 fi
 
 #-----------------------------------------------------------------------
@@ -63,17 +64,17 @@ fi
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-${HOMErrfs}/scripts/exrrfs_gempak.sh
+"${HOMErrfs}"/scripts/exrrfs_gempak.sh
 export err=$?; err_chk
 
-if [ -e "$pgmout" ]; then
-  cat $pgmout
+if [ -e "${pgmout}" ]; then
+  cat "${pgmout}"
 fi
 
 ##################################################
 # Remove the Temporary working directory
 ##################################################
 if [ "${KEEPDATA^^}" != YES ]; then
-  cd $DATAROOT
-  rm -rf $DATA
+  cd "${DATAROOT}"
+  rm -rf "${DATA}"
 fi

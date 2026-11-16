@@ -24,47 +24,46 @@ DATA=$6
 comout=$7
 export compress_type=c3
 
-cd $DATA/prdgen_${domain}_${subpiece}
+cd "${DATA}/prdgen_${domain}_${subpiece}" || exit 1
 
-if [ $domain == "conus" ]; then
+if [[ "${domain}" == "conus" ]]; then
   # 3-km Lambert Conformal CONUS domain
   gridspecs="lambert:262.5:38.5:38.5 237.280472:1799:3000 21.138123:1059:3000"
-  parmfile=${DATA}/conus_ak_${subpiece}.txt 
-elif [ $domain == "ak" ]; then
+  parmfile="${DATA}/conus_ak_${subpiece}.txt"
+elif [[ "${domain}" == "ak" ]]; then
   # 3-km NPS Alaska domain
   gridspecs="nps:210.0:60.0 181.429:1649:2976.0 40.530:1105:2976.0"
-  parmfile=${DATA}/conus_ak_${subpiece}.txt
-elif [ $domain == "hi" ]; then
+  parmfile="${DATA}/conus_ak_${subpiece}.txt"
+elif [[ "${domain}" == "hi" ]]; then
   # 2.5 km Mercator Hawaii domain
   gridspecs="mercator:20.00 198.474999:321:2500.0:206.13099 18.072699:225:2500.0:23.087799"
-  parmfile=${DATA}/hi_pr_${subpiece}.txt
-elif [ $domain == "pr" ]; then
+  parmfile="${DATA}/hi_pr_${subpiece}.txt"
+elif [[ "${domain}" == "pr" ]]; then
   # 2.5 km Mercator Puerto Rico domain
   gridspecs="mercator:20 284.5:544:2500:297.491 15.0:310:2500:22.005"
-  parmfile=${DATA}/hi_pr_${subpiece}.txt
+  parmfile="${DATA}/hi_pr_${subpiece}.txt"
 fi
 
 set -o pipefail
 
 # Use different parm file for each subpiece
-if [[ "$inputfile" =~ "prslev" ]]; then
-  wgrib2 $comout/${inputfile} | grep -F -f ${parmfile} | wgrib2 -i -grib inputs.grib${domain} $comout/${inputfile} >>$pgmout 2>>errfile
+if [[ "${inputfile}" =~ prslev ]]; then
+  wgrib2 "${comout}/${inputfile}" | grep -F -f "${parmfile}" | wgrib2 -i -grib "inputs.grib${domain}" "${comout}/${inputfile}" >>"${pgmout}" 2>>errfile
   export err=$?; err_chk
-  wgrib2 inputs.grib${domain} -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv inputs.grib${domain}.uv
+  wgrib2 "inputs.grib${domain}" -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv "inputs.grib${domain}.uv"
 else
-  wgrib2 $comout/${inputfile} -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv inputs.grib${domain}.uv
+  wgrib2 "${comout}/${inputfile}" -new_grid_vectors "UGRD:VGRD:USTM:VSTM" -submsg_uv "inputs.grib${domain}.uv"
 fi
 
-wgrib2 inputs.grib${domain}.uv -set_bitmap 1 -set_grib_type ${compress_type} \
+# shellcheck disable=SC2086
+wgrib2 "inputs.grib${domain}.uv" -set_bitmap 1 -set_grib_type "${compress_type}" \
   -new_grid_winds grid -new_grid_vectors "UGRD:VGRD:USTM:VSTM" \
   -new_grid_interpolation neighbor \
   -if ":(WEASD|APCP|NCPCP|ACPCP|SNOD):" -new_grid_interpolation budget -fi \
-  -new_grid ${gridspecs} ${domain}_${subpiece}.grib2 >>$pgmout 2>>errfile
+  -new_grid ${gridspecs} "${domain}_${subpiece}.grib2" >>"${pgmout}" 2>>errfile
 
 export err=$?; err_chk
 
 set +o pipefail
 
 # Send data to COMOUT in the ex-script after the grid is re-assembled
-
-exit

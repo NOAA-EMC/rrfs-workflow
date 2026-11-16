@@ -25,7 +25,7 @@ set -x
       subdir=${RUN}
    fi
 
-   dirs=`ls ${TANKverf}`
+   dirs=`ls "${TANKverf}"`
 
    if [[ ${area} = 'rgn' ]]; then
       #----------------------------------------------- 
@@ -34,12 +34,12 @@ set -x
       #  that this expects the directories to be in
       #  the format of ${RUN}.yyyymmdd. 
       #
-      for dir in $dirs; do
+      for dir in ${dirs}; do
          file_name="${dir##*/}"
          file="${file_name%.*}"
          file_extension="${file_name##*.}"
 
-         if [ ${file} = ${subdir} ]; then
+         if [ "${file}" = "${subdir}" ]; then
 
             #----------------------------------------------
             # Use date utility to determine number of days 
@@ -47,18 +47,18 @@ set -x
             # calculated in seconds, hence the division 
             # by the number of seconds/day.
             #
-            days=$(( ($(date --date=${PDY} +%s) - $(date --date=${file_extension} +%s) )/(60*60*24) ))
+            days=$(( ($(date --date="${PDY}" +%s) - $(date --date="${file_extension}" +%s) )/(60*60*24) ))
 
             #----------------------------------------
             #  rm anything older than $days_to_keep
             #
-            if [ $days -gt ${days_to_keep} ]; then
+            if [ ${days} -gt "${days_to_keep}" ]; then
                 
                cycle_dir="${TANKverf}/${dir}"
 
                if [[ -d ${cycle_dir} ]]; then
                   echo "RM ${cycle_dir}"
-                  rm -rf ${cycle_dir}
+                  rm -rf "${cycle_dir}"
                fi
             fi
 
@@ -73,12 +73,12 @@ set -x
       #  that this expects the directories to be in
       #  the format of ${RUN}.yyyymmdd. 
       #
-      for dir in $dirs; do
+      for dir in ${dirs}; do
          file_name="${dir##*/}"
          file="${file_name%.*}"
          file_extension="${file_name##*.}"
 
-         if [ ${file} = ${subdir} ]; then
+         if [ "${file}" = "${subdir}" ]; then
 
             #----------------------------------------------
             # Use date utility to determine number of days 
@@ -86,19 +86,19 @@ set -x
             # calculated in seconds, hence the division 
             # by the number of seconds/day.
             #
-            days=$(( ($(date --date=${PDY} +%s) - $(date --date=${file_extension} +%s) )/(60*60*24) ))
+            days=$(( ($(date --date="${PDY}" +%s) - $(date --date="${file_extension}" +%s) )/(60*60*24) ))
 
             #----------------------------------------
             #  rm anything older than $days_to_keep
             #
-            if [ $days -gt ${days_to_keep} ]; then
+            if [ ${days} -gt "${days_to_keep}" ]; then
                cycles="00 06 12 18"
  
-               for cyc in $cycles; do
+               for cyc in ${cycles}; do
                   cycle_dir="${TANKverf}/${dir}/${cyc}/radmon"
                   if [[ -d ${cycle_dir} ]]; then
                      echo "RM ${cycle_dir}"
-                     rm -rf ${cycle_dir}
+                     rm -rf "${cycle_dir}"
                   fi
                done
 

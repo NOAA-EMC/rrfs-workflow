@@ -1,4 +1,5 @@
-#!/bin/sh -l
+#!/bin/bash
+set -x
 #-----------------------------------------------------------------------
 #  Description:  Compare experiment to a baseline.  Can be run with one
 #                or two command line arguments.  With one argument, it
@@ -38,7 +39,7 @@ scrfunc_dir=$( dirname "${scrfunc_fp}" )
 #
 #-----------------------------------------------------------------------
 #
-. ${scrfunc_dir}/source_util_funcs.sh
+. "${scrfunc_dir}"/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -81,7 +82,7 @@ expt_dir="$1"
 if [ ! -d "${expt_dir}" ]; then
   print_err_msg_exit "\
 The specified experiment directory (expt_dir) does not exist:
-  expt_dir = \"$expt_dir\"
+  expt_dir = \"${expt_dir}\"
 Exiting script with nonzero return code."
 fi
 #
@@ -91,7 +92,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-. ${expt_dir}/var_defns.sh
+. "${expt_dir}"/var_defns.sh
 CDATE="${DATE_FIRST_CYCL[0]}${CYCL_HRS[0]}"
 #
 #-----------------------------------------------------------------------
@@ -111,7 +112,7 @@ if [ $# -eq 2 ]; then
 else
 
   baseline_dir="/scratch2/BMC/det/regional_FV3/regr_baselines"
-  if [ -n ${PREDEF_GRID_NAME} ]; then
+  if [ -n "${PREDEF_GRID_NAME}" ]; then
     baseline_dir="${baseline_dir}/${PREDEF_GRID_NAME}"
   else
     printf "\
@@ -124,7 +125,7 @@ Exiting script with nonzero return code.
   fi
   baseline_dir="${baseline_dir}/${CCPP_PHYS_SUITE}phys"
   baseline_dir="${baseline_dir}/ICs-${EXTRN_MDL_NAME_ICS}_LBCs-${EXTRN_MDL_NAME_LBCS}"
-  baseline_dir="${baseline_dir}/$CDATE"
+  baseline_dir="${baseline_dir}/${CDATE}"
 
 fi
 #
@@ -134,8 +135,8 @@ if [ ! -d "${baseline_dir}" ]; then
   printf "\n
 A baseline directory corresponding to the configuration used in the ex-
 periment directory (expt_dir) does not exist:
-  expt_dir = \"$expt_dir\"
-  baseline_dir (missing) = \"$baseline_dir\"
+  expt_dir = \"${expt_dir}\"
+  baseline_dir (missing) = \"${baseline_dir}\"
 Exiting script with nonzero return code."
   exit 1
 fi
@@ -148,8 +149,8 @@ fi
 #
 print_info_msg "
 The experiment and baseline directories are:
-  expt_dir = \"$expt_dir\"
-  baseline_dir = \"$baseline_dir\""
+  expt_dir = \"${expt_dir}\"
+  baseline_dir = \"${baseline_dir}\""
 #
 #-----------------------------------------------------------------------
 #
@@ -166,11 +167,11 @@ The experiment and baseline directories are:
 #          "sfc_climo" \
 subdirs=( "." \
           "fix_lam" \
-          "$CDATE/${EXTRN_MDL_NAME_ICS}/ICS" \
-          "$CDATE/${EXTRN_MDL_NAME_LBCS}/LBCS" \
-          "$CDATE/INPUT" \
-          "$CDATE/RESTART" \
-          "$CDATE" \
+          "${CDATE}/${EXTRN_MDL_NAME_ICS}/ICS" \
+          "${CDATE}/${EXTRN_MDL_NAME_LBCS}/LBCS" \
+          "${CDATE}/INPUT" \
+          "${CDATE}/RESTART" \
+          "${CDATE}" \
           )
 #
 #-----------------------------------------------------------------------
@@ -216,20 +217,21 @@ nfiles_different=0
 #
 for subdir in "${subdirs[@]}"; do
 
-  msg="Comparing files in subdirectory \"$subdir\" ..."
+  msg="Comparing files in subdirectory \"${subdir}\" ..."
   msglen=${#msg}
-  printf "\n%s\n" "$msg"
-  printf "%0.s=" $(seq 1 $msglen)
-  printf "\n"
+  printf "\n%s\n" "${msg}"
+  # Create a variable 'pad' containing $msglen spaces
+  printf -v pad '%*s' "${msglen}" ''
+  # Use Bash parameter expansion to replace all spaces with equals signs
+  printf '%s\n' "${pad// /=}"
 
   for file_ext in "${file_extensions[@]}"; do
 
     msg="Comparing files with extension \"${file_ext}\" ..."
     msglen=${#msg}
-    printf "\n%s\n" "  $msg"
+    printf "\n%s\n" "  ${msg}"
     printf "  "
-    printf "%0.s~" $(seq 1 $msglen)
-    printf "\n"
+    printf '%*s\n' "${msglen}" '' | tr ' ' '~'
 
 #    cmp_files_btwn_dirs "$expt_dir/$subdir" "${baseline_dir}/$subdir" "${ext}" || { \
 #    printf "
@@ -242,9 +244,9 @@ for subdir in "${subdirs[@]}"; do
 #
 #-----------------------------------------------------------------------
 #
-    if [ "$file_ext" = "nemsio" ] || [ "$file_ext" = "grb" ]; then
+    if [ "${file_ext}" = "nemsio" ] || [ "${file_ext}" = "grb" ]; then
       compare_tool="cmp"
-    elif [ "$file_ext" = "nc" ]; then
+    elif [ "${file_ext}" = "nc" ]; then
       compare_tool="nccmp -d"
     else
       printf "\
@@ -262,11 +264,16 @@ Exiting script with nonzero exit code.
 #
 #-----------------------------------------------------------------------
 #
-    cd ${expt_dir}/$subdir
-    num_files=$( ls -1 *.${file_ext} 2>/dev/null | wc -l )
+    cd "${expt_dir}"/"${subdir}"
+    # Enable nullglob so non-matching globs vanish
+    shopt -s nullglob
+    matching_files=( *."${file_ext}" )
+    num_files=${#matching_files[@]}
+    # Revert nullglob to default behavior if needed
+    shopt -u nullglob
 #   num_files=$( count_files *.${file_ext} 2>/dev/null | wc -l )
     printf "
-    Number of files with extension \"${file_ext}\" in subdirectory \"$subdir\" 
+    Number of files with extension \"${file_ext}\" in subdirectory \"${subdir}\"
     of the experiment directory is:  ${num_files}
 "
 
@@ -277,42 +284,45 @@ Exiting script with nonzero exit code.
     else
 
       fn_len_max=0
-      for fn in *.${file_ext}; do
+      for fn in *."${file_ext}"; do
         fn_len=${#fn}
-        if [ ${fn_len} -gt ${fn_len_max} ]; then
+        if [ "${fn_len}" -gt "${fn_len_max}" ]; then
           fn_len_max=${fn_len}
         fi
       done
       compare_msg_pre="      Comparing file "
       msg_len_max=$(( fn_len_max + ${#compare_msg_pre} ))
   
-      for fn in *.${file_ext}; do
+      for fn in *."${file_ext}"; do
   
-        nfiles_total=$(( $nfiles_total + 1 ))
+        nfiles_total=$(( nfiles_total + 1 ))
   
-        fn1="$fn" 
-        fn2="${baseline_dir}/$subdir/$fn"
-        if [ ! -e "$fn2" ]; then  # Check if file exists in baseline directory.
+        fn1="${fn}"
+        fn2="${baseline_dir}/${subdir}/${fn}"
+        if [ ! -e "${fn2}" ]; then  # Check if file exists in baseline directory.
   
           printf "
-        File specified by fn exists in subdirectory \"$subdir\" of the
+        File specified by fn exists in subdirectory \"${subdir}\" of the
         experiment directory but not in that of the the baseline directory:
-          fn = \"$fn\"
-          subdir = \"$subdir\"
+          fn = \"${fn}\"
+          subdir = \"${subdir}\"
         Incrementing missing file count and moving to next file or sub-
         directory.\n"
           nfiles_missing=$(( nfiles_missing + 1 ))
   
         else
   
-          msg="${compare_msg_pre}\"$fn\""
+          msg="${compare_msg_pre}\"${fn}\""
           msg_len="${#msg}"
           num_dots=$(( msg_len_max - msg_len + 7 ))
-          dots_str=$( printf "%0.s." $(seq 1 ${num_dots} ) )
+          # 1. Create a variable 'dots_str' containing $num_dots spaces
+          printf -v dots_str '%*s' "${num_dots}" ''
+          # 2. Use Bash parameter expansion to replace all spaces with dots
+          dots_str="${dots_str// /.}"
           msg="${msg} ${dots_str}"
   
-          printf "$msg"
-          eval_output=$( eval ${compare_tool} $fn1 $fn2 2>&1 ) 
+          printf "%s" "${msg}"
+          eval_output=$( eval "${compare_tool}" "${fn1}" "${fn2}" 2>&1 )
   
           if [ $? -eq 0 ]; then
             printf " Files are identical.\n"
@@ -322,7 +332,7 @@ Exiting script with nonzero exit code.
         Error message from \"${compare_tool}\" command is:
 ${eval_output}
 "
-            nfiles_different=$(( $nfiles_different + 1 ))
+            nfiles_different=$(( nfiles_different + 1 ))
           fi
     
         fi
@@ -343,17 +353,18 @@ done # Loop over subdirectories.
 #
 msg="Summary of regression test:"
 msglen=${#msg}
-msg="$msg"
-printf "\n%s\n" "$msg"
-printf "%0.s=" $(seq 1 $msglen)
-printf "\n"
+printf "\n%s\n" "${msg}"
+# Safely generate a string of spaces of length $msglen
+printf -v pad '%*s' "${msglen}" ''
+# Natively replace all spaces with equals signs
+printf '%s\n' "${pad// /=}"
 
 file_extensions_str=$(printf "\"%s\" " "${file_extensions[@]}");
 file_extensions_str="( ${file_extensions_str})"
 
 printf "
-  expt_dir = \"$expt_dir\"
-  baseline_dir = \"$baseline_dir\"
+  expt_dir = \"${expt_dir}\"
+  baseline_dir = \"${baseline_dir}\"
 
   file_extensions = ${file_extensions_str}
   nfiles_total = ${nfiles_total}
@@ -408,4 +419,3 @@ printf "Final result of regression test:  ${result_str}\n"
 { restore_shell_opts; } > /dev/null 2>&1
 
 exit ${exit_code}
-

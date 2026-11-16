@@ -1,3 +1,5 @@
+#!/bin/bash
+set -x
 #
 #-----------------------------------------------------------------------
 #
@@ -1664,13 +1666,13 @@ FNSMCC="global_soilmgldas.t126.384.190.grb"
 FNMSKH="seaice_newland.grb"
 
 FIXgsm_FILES_TO_COPY_TO_FIXam=( \
-"$FNGLAC" \
-"$FNMXIC" \
-"$FNTSFC" \
-"$FNSNOC" \
-"$FNAISC" \
-"$FNSMCC" \
-"$FNMSKH" \
+"${FNGLAC}" \
+"${FNMXIC}" \
+"${FNTSFC}" \
+"${FNSNOC}" \
+"${FNAISC}" \
+"${FNSMCC}" \
+"${FNMSKH}" \
 "global_climaeropac_global.txt" \
 "fix_co2_proj/global_co2historicaldata_2010.txt" \
 "fix_co2_proj/global_co2historicaldata_2011.txt" \
@@ -1702,13 +1704,13 @@ FIXgsm_FILES_TO_COPY_TO_FIXam=( \
 # a local one since it is used in only one script.
 #
 FV3_NML_VARNAME_TO_FIXam_FILES_MAPPING=( \
-"FNGLAC | $FNGLAC" \
-"FNMXIC | $FNMXIC" \
-"FNTSFC | $FNTSFC" \
-"FNSNOC | $FNSNOC" \
-"FNAISC | $FNAISC" \
-"FNSMCC | $FNSMCC" \
-"FNMSKH | $FNMSKH" \
+"FNGLAC | ${FNGLAC}" \
+"FNMXIC | ${FNMXIC}" \
+"FNTSFC | ${FNTSFC}" \
+"FNSNOC | ${FNSNOC}" \
+"FNAISC | ${FNAISC}" \
+"FNSMCC | ${FNSMCC}" \
+"FNMSKH | ${FNMSKH}" \
 )
 #"FNZORC | $FNZORC" \
 

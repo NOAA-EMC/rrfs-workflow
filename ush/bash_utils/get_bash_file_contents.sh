@@ -1,3 +1,5 @@
+#!/bin/bash
+set -x
 #
 #-----------------------------------------------------------------------
 #
@@ -27,11 +29,11 @@ set -x
   # Verify that the required arguments to this function have been specified.
   # If not, print out an error message and exit.
   #
-  if [ -z "$fp" ]; then
+  if [ -z "${fp}" ]; then
     print_err_msg_exit "\
 The argument \"fp\" specifying the relative or full path to the file to
 read was not specified in the call to this function:
-  fp = \"$fp\""
+  fp = \"${fp}\""
   fi
 
   local contents \
@@ -47,10 +49,11 @@ read was not specified in the call to this function:
   # utility in the while-loop below.
   #
   contents=""
+  # shellcheck disable=SC2162
   while read crnt_line; do
     contents="${contents}${crnt_line}
 "
-  done < "$fp"
+  done < "${fp}"
   #
   # Strip out any comment and empty lines from contents.
   #
@@ -61,6 +64,5 @@ read was not specified in the call to this function:
   #
   # Set output variables.
   #
-  printf -v ${outvarname_contents} "%s" "${contents}"
+  printf -v "${outvarname_contents}" "%s" "${contents}"
 }
-

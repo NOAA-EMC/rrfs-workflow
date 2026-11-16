@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 
-source ${FIXrrfs}/workflow/${WGF}/workflow.conf
+source "${FIXrrfs}"/workflow/"${WGF}"/workflow.conf
 
 export FIX_GSI="${FIXrrfs}/gsi"
 export FIX_JEDI="${FIX_RRFS_JEDI:-${FIXrrfs}/jedi}"
@@ -18,7 +18,7 @@ export PARM_IODACONV="${RDASAPP_DIR}/rrfs-test/IODA/yaml"
 #
 #-----------------------------------------------------------------------
 #
-. $USHrrfs/source_util_funcs.sh
+. "${USHrrfs}"/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -56,7 +56,7 @@ IODA format for the specified cycle.
 ulimit -s unlimited
 ulimit -a
 
-case $MACHINE in
+case ${MACHINE} in
 #
 "WCOSS2")
   APRUN="mpiexec -n 1 -ppn 1"
@@ -113,7 +113,7 @@ if [[ ${HH} -eq '00' || ${HH} -eq '12' ]]; then
   obs_source=${OBSTYPE_SOURCE}_e
 fi
 
-case $MACHINE in
+case ${MACHINE} in
 
 "WCOSS2" | "URSA")
 
@@ -150,7 +150,7 @@ copy_obs_file() {       # copy_obs_file <dump type> <local name>
 run_process_prepbufr=false
 obs_file=${obspath_tmp}/${obsfileprefix}.t${HH}z.prepbufr.tm00
 if [ -r "${obs_file}" ]; then
-  print_info_msg "$VERBOSE" "Found ${obs_file}; Use it as observation "
+  print_info_msg "${VERBOSE}" "Found ${obs_file}; Use it as observation "
   cp -p "${obs_file}" prepbufr
   run_process_prepbufr=true
 else
@@ -192,25 +192,25 @@ yaml_list=(
 formatted_time=$(date -d"${YYYYMMDD} ${HH}" '+%Y-%m-%dT%H:%M:%SZ')
 
 for yamlfile in "${yaml_list[@]}"; do
-  message_type=$(basename "$yamlfile" .yaml | awk -F'_' '{print $NF}')
+  message_type=$(basename "${yamlfile}" .yaml | awk -F'_' '{print $NF}')
 
-  cpreq -p ${PARM_IODACONV}/${yamlfile} .
+  cpreq -p "${PARM_IODACONV}"/"${yamlfile}" .
   # the RDASApp templates read the prepbufr from ./bufr/, but it is staged in the run directory
   sed -i -e "s/@REFERENCETIME@/${formatted_time}/" -e "s|\./bufr/prepbufr|./prepbufr|" "${yamlfile}"
 
-  cpreq -p ${FIX_JEDI}/ioda_empty.nc ioda_${message_type}.nc
+  cpreq -p "${FIX_JEDI}"/ioda_empty.nc ioda_"${message_type}".nc
 
   if [[ ${run_process_prepbufr} == true ]]; then
-    ${EXECrrfs}/$pgm ${yamlfile} >> $pgmout 2>errfile
+    "${EXECrrfs}"/${pgm} "${yamlfile}" >> "${pgmout}" 2>errfile
     export err=$?
-    if [ $err -ne 0 ]; then
+    if [ ${err} -ne 0 ]; then
       if grep -qF "No valid BUFR subsets were found" errfile; then
         echo "WARNING: ${message_type}: no valid BUFR subsets in input. Skipping this type." >> "${pgmout}"
         export err=0
       fi
     fi
     err_chk
-    mv errfile errfile_${message_type}
+    mv errfile errfile_"${message_type}"
   fi
 done
 #
@@ -224,7 +224,7 @@ export PYTHONUNBUFFERED=1
 
 # pyioda libraries
 shopt -s nullglob
-dirs=("$RDASAPP_DIR"/build/lib/python3.*)
+dirs=("${RDASAPP_DIR}"/build/lib/python3.*)
 PYIODALIB=${dirs[0]}
 WXFLOWLIB=${RDASAPP_DIR}/sorc/wxflow/src
 export PYTHONPATH="${WXFLOWLIB}:${PYIODALIB}:${PYIODALIB}/site-packages:${PYTHONPATH}"
@@ -239,8 +239,8 @@ satwnd_list=(
 "viirs"
 )
 for sensor in "${satwnd_list[@]}"; do
-  cpreq "${RDASAPP_DIR}"/rrfs-test/IODA/python/bufr2ioda_satwnd_amv_${sensor}.json .
-  cpreq "${RDASAPP_DIR}"/rrfs-test/IODA/python/bufr2ioda_satwnd_amv_${sensor}.py .
+  cpreq "${RDASAPP_DIR}"/rrfs-test/IODA/python/bufr2ioda_satwnd_amv_"${sensor}".json .
+  cpreq "${RDASAPP_DIR}"/rrfs-test/IODA/python/bufr2ioda_satwnd_amv_"${sensor}".py .
 done
 
 cpreq "${RDASAPP_DIR}"/rrfs-test/IODA/python/bufr2ioda_adpupa_prepbufr.json .
@@ -255,9 +255,9 @@ cpreq "${RDASAPP_DIR}"/rrfs-test/IODA/python/gen_bufr2ioda_json.py .
 # ADPUPA (surface pressure)
 if [[ ${run_process_prepbufr} == true ]]; then
   export pgm="bufr2ioda_adpupa_prepbufr.py"
-  cpreq -p ${FIX_JEDI}/ioda_empty.nc ioda_adpupa.nc
+  cpreq -p "${FIX_JEDI}"/ioda_empty.nc ioda_adpupa.nc
   ./gen_bufr2ioda_json.py -t bufr2ioda_adpupa_prepbufr.json -o bufr2ioda_adpupa_prepbufr_0.json
-  ./bufr2ioda_adpupa_prepbufr.py -c bufr2ioda_adpupa_prepbufr_0.json >> $pgmout
+  ./bufr2ioda_adpupa_prepbufr.py -c bufr2ioda_adpupa_prepbufr_0.json >> "${pgmout}"
   export err=$?; err_chk
 fi
 
@@ -265,8 +265,8 @@ fi
 if [[ -f satwndbufr ]]; then
   for sensor in "${satwnd_list[@]}"; do
     export pgm="bufr2ioda_satwnd_amv_${sensor}.py"
-    ./gen_bufr2ioda_json.py -t bufr2ioda_satwnd_amv_${sensor}.json -o bufr2ioda_satwnd_amv_${sensor}_0.json
-    ./bufr2ioda_satwnd_amv_${sensor}.py -c bufr2ioda_satwnd_amv_${sensor}_0.json >> $pgmout
+    ./gen_bufr2ioda_json.py -t bufr2ioda_satwnd_amv_"${sensor}".json -o bufr2ioda_satwnd_amv_"${sensor}"_0.json
+    ./bufr2ioda_satwnd_amv_"${sensor}".py -c bufr2ioda_satwnd_amv_"${sensor}"_0.json >> "${pgmout}"
     export err=$?; err_chk
   done
 fi
@@ -280,7 +280,7 @@ fi
 if [[ -f abibufr ]]; then
   export pgm="bufr2ioda_gsrcsr.py"
   ./gen_bufr2ioda_json.py -t bufr2ioda_gsrcsr.json -o bufr2ioda_gsrcsr_0.json
-  ./bufr2ioda_gsrcsr.py -c bufr2ioda_gsrcsr_0.json >> $pgmout
+  ./bufr2ioda_gsrcsr.py -c bufr2ioda_gsrcsr_0.json >> "${pgmout}"
   export err=$?; err_chk
 fi
 
@@ -293,12 +293,12 @@ cpreq "${PARM_IODACONV}/bufr_atms_mapping.yaml" .
 input_file="atmsbufr"
 output_file="ioda_atms_{splits/satId}.nc"
 yaml="bufr_atms_mapping.yaml"
-if [[ -f "$input_file" ]]; then
+if [[ -f "${input_file}" ]]; then
   export pgm="bufr2netcdf.x"
-  ${EXECrrfs}/bufr2netcdf.x "$input_file" "$yaml" "$output_file"
+  "${EXECrrfs}"/bufr2netcdf.x "${input_file}" "${yaml}" "${output_file}"
   export err=$?; err_chk
 else
-  echo "Input file $input_file does not exist."
+  echo "Input file ${input_file} does not exist."
 fi
 
 #3 AMSUA
@@ -313,12 +313,12 @@ yaml_es="bufr_esamua_mapping.yaml"
 input_1b="1bamsuabufr"
 input_es="esamsuabufr"
 output_file="ioda_amsua_{splits/satId}.nc"
-if [[ -f "$input_1b" && -f "$input_es" ]]; then
+if [[ -f "${input_1b}" && -f "${input_es}" ]]; then
   export pgm="bufr2ioda_amsua.py"
-  python bufr2ioda_amsua.py $input_1b $input_es $yaml_es $yaml_1b $output_file
+  python bufr2ioda_amsua.py ${input_1b} ${input_es} ${yaml_es} ${yaml_1b} ${output_file}
   export err=$?; err_chk
 else
-  echo "Input files $input_1b and/or $input_es do not exist."
+  echo "Input files ${input_1b} and/or ${input_es} do not exist."
 fi
 
 #4 CRIS
@@ -330,12 +330,12 @@ input_file="crisfsbufr"
 output_file="ioda_crisf4_{splits/satId}.nc"
 yaml="bufr2netcdf_cris-fsr.yaml"
 
-if [[ -f "$input_file" ]]; then
+if [[ -f "${input_file}" ]]; then
   export pgm="bufr2netcdf.x"
-  ${EXECrrfs}/bufr2netcdf.x "$input_file" "$yaml" "$output_file"
+  "${EXECrrfs}"/bufr2netcdf.x "${input_file}" "${yaml}" "${output_file}"
   export err=$?; err_chk
 else
-  echo "Input file $input_file does not exist."
+  echo "Input file ${input_file} does not exist."
 fi
 #
 #-----------------------------------------------------------------------
@@ -377,13 +377,23 @@ fi
 #
 is_empty_ioda() {
     local f="$1"
-    # Robust check: look at Location dimension
-    local loc
-    loc=$(ncdump -h "$f" 2>/dev/null | awk '/Location =/ {print $3}' | tr -d ';')
-    if [ -z "$loc" ]; then
+    # Return empty immediately if file is missing or zero-sized
+    if [ ! -s "${f}" ]; then
         return 0
     fi
-    if [ "$loc" -le 1 ]; then
+    # Robust check: look at Location dimension
+    local loc
+    local header
+    header=$(ncdump -h "${f}") || return 1
+
+    # Use native Bash regex to find "Location = " followed by the value, capturing the value
+    if [[ "${header}" =~ Location[[:space:]]=[[:space:]]([^;[:space:]]+) ]]; then
+      loc="${BASH_REMATCH[1]}"
+    fi
+    if [ -z "${loc}" ]; then
+        return 0
+    fi
+    if [ "${loc}" -le 1 ]; then
         return 0  # empty
     fi
     return 1  # not empty
@@ -397,16 +407,16 @@ cpreq "${RDASAPP_DIR}"/rrfs-test/IODA/offline_vad_thinning.py .
 # offline domain check & patch
 for ioda_file in ioda*.nc; do
   # skip empty files
-  if is_empty_ioda "$ioda_file"; then
-    echo "Skipping domain check & patch: $ioda_file is empty"
+  if is_empty_ioda "${ioda_file}"; then
+    echo "Skipping domain check & patch: ${ioda_file} is empty"
     continue
   fi
   if [[ "${ioda_file}" == *abi* && "${ioda_file}" != *satwnd* ]]; then
     echo " ${ioda_file} ioda file detected: running offline_domain_check_satrad.py"
     export pgm="offline_domain_check_satrad.py"
-    ./offline_domain_check_satrad.py -o "${ioda_file}" -g "${grid_file}" -s 0.005 >> $pgmout
+    ./offline_domain_check_satrad.py -o "${ioda_file}" -g "${grid_file}" -s 0.005 >> "${pgmout}"
     export err=$?; err_chk
-    base_name=$(basename "$ioda_file" .nc)
+    base_name=$(basename "${ioda_file}" .nc)
     mv  "${base_name}_dc.nc" "${base_name}.nc"
   elif [[ "${ioda_file}" == *atms* || "${ioda_file}" == *cris* || "${ioda_file}" == *amsua* ]]; then
     echo " ${ioda_file} ioda file detected: temporarily skipping offline domain check"
@@ -414,18 +424,18 @@ for ioda_file in ioda*.nc; do
     export pgm="offline_domain_check.py"
     ./offline_domain_check.py -o "${ioda_file}" -g "${grid_file}" -s 0.005
     export err=$?; err_chk
-    base_name=$(basename "$ioda_file" .nc)
+    base_name=$(basename "${ioda_file}" .nc)
     mv  "${base_name}_dc.nc" "${base_name}.nc"
     export pgm="offline_ioda_patch.py"
     if [[ "${ioda_file}" == *nexrad* ]]; then
       echo "Skipping ioda_patch for ${ioda_file}"
     elif [[ "${ioda_file}" == *adpupa* ]]; then
-      ./offline_ioda_patch.py -o "${ioda_file}" --patch-timeoffset >> $pgmout
+      ./offline_ioda_patch.py -o "${ioda_file}" --patch-timeoffset >> "${pgmout}"
     else
-      ./offline_ioda_patch.py -o "${ioda_file}" >> $pgmout
+      ./offline_ioda_patch.py -o "${ioda_file}" >> "${pgmout}"
     fi
     export err=$?; err_chk
-    base_name=$(basename "$ioda_file" .nc)
+    base_name=$(basename "${ioda_file}" .nc)
     mv  "${base_name}_llp.nc" "${base_name}.nc"
   fi
 done
@@ -433,7 +443,7 @@ done
 # vadwnd thinning & superobbing
 if [[ -f ioda_vadwnd.nc ]]; then
   export pgm="offline_vad_thinning.py"
-  ./offline_vad_thinning.py -i ioda_vadwnd.nc -o ioda_vadwnd_thinned.nc >> $pgmout
+  ./offline_vad_thinning.py -i ioda_vadwnd.nc -o ioda_vadwnd_thinned.nc >> "${pgmout}"
   export err=$?; err_chk
   mv ioda_vadwnd_thinned.nc ioda_vadwnd.nc
 fi
@@ -447,7 +457,7 @@ fi
 #
 ioda_files=(ioda_*.nc)
 if [ ${#ioda_files[@]} -gt 0 ]; then
-  cp "${ioda_files[@]}" ${COMOUT_ANALYSIS}/.
+  cp "${ioda_files[@]}" "${COMOUT_ANALYSIS}"/.
 else
   print_info_msg "WARNING: no IODA files were produced for ${CDATE}"
 fi

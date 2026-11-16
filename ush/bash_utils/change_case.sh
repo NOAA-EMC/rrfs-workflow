@@ -1,3 +1,5 @@
+#!/bin/bash
+set -x
 #
 #-----------------------------------------------------------------------
 #
@@ -74,7 +76,7 @@ where:
 
 # Echo the input string as upperercase
 
-echo $input| tr '[a-z]' '[A-Z]'
+echo "${input}" | tr '[:lower:]' '[:upper:]'
 
 #
 }
@@ -147,7 +149,7 @@ where:
 
 # Echo the input string as lowercase
 
-echo $input| tr '[A-Z]' '[a-z]'
+echo "${input}" | tr '[:upper:]' '[:lower:]'
 
 #
 }

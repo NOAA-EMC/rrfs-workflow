@@ -51,7 +51,7 @@ USHrrfs="${scrfunc_dir}"
 #
 #-----------------------------------------------------------------------
 #
-. $USHrrfs/source_util_funcs.sh
+. "${USHrrfs}"/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -59,13 +59,13 @@ USHrrfs="${scrfunc_dir}"
 #
 #-----------------------------------------------------------------------
 #
-. $USHrrfs/set_cycle_dates.sh
-. $USHrrfs/set_gridparams_GFDLgrid.sh
-. $USHrrfs/set_gridparams_ESGgrid.sh
-. $USHrrfs/link_fix.sh
-. $USHrrfs/set_ozone_param.sh
-. $USHrrfs/set_thompson_mp_fix_files.sh
-. $USHrrfs/check_ruc_lsm.sh
+. "${USHrrfs}"/set_cycle_dates.sh
+. "${USHrrfs}"/set_gridparams_GFDLgrid.sh
+. "${USHrrfs}"/set_gridparams_ESGgrid.sh
+. "${USHrrfs}"/link_fix.sh
+. "${USHrrfs}"/set_ozone_param.sh
+. "${USHrrfs}"/set_thompson_mp_fix_files.sh
+. "${USHrrfs}"/check_ruc_lsm.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -84,7 +84,7 @@ USHrrfs="${scrfunc_dir}"
 #-----------------------------------------------------------------------
 #
 EXPT_DEFAULT_CONFIG_FN="config_defaults.sh"
-. $USHrrfs/${EXPT_DEFAULT_CONFIG_FN}
+. "${USHrrfs}"/${EXPT_DEFAULT_CONFIG_FN}
 #
 #-----------------------------------------------------------------------
 #
@@ -107,11 +107,11 @@ if [ -f "${EXPT_CONFIG_FN}" ]; then
 # configuration file are also assigned default values in the default 
 # configuration file.
 #
-  . $USHrrfs/compare_config_scripts.sh
+  . "${USHrrfs}"/compare_config_scripts.sh
 #
 # Now source the user-specified configuration file.
 #
-  . $USHrrfs/${EXPT_CONFIG_FN}
+  . "${USHrrfs}"/"${EXPT_CONFIG_FN}"
 #
 fi
 #
@@ -121,7 +121,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-. $USHrrfs/valid_param_vals.sh
+. "${USHrrfs}"/valid_param_vals.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -135,11 +135,11 @@ check_var_valid_value "VERBOSE" "valid_vals_VERBOSE"
 # other valid values later on.
 #
 VERBOSE=${VERBOSE^^}
-if [ "$VERBOSE" = "TRUE" ] || \
-   [ "$VERBOSE" = "YES" ]; then
+if [ "${VERBOSE}" = "TRUE" ] || \
+   [ "${VERBOSE}" = "YES" ]; then
   VERBOSE="TRUE"
-elif [ "$VERBOSE" = "FALSE" ] || \
-     [ "$VERBOSE" = "NO" ]; then
+elif [ "${VERBOSE}" = "FALSE" ] || \
+     [ "${VERBOSE}" = "NO" ]; then
   VERBOSE="FALSE"
 fi
 #
@@ -457,11 +457,11 @@ check_var_valid_value "USE_FVCOM" "valid_vals_USE_FVCOM"
 # other valid values later on.
 #
 USE_FVCOM=${USE_FVCOM^^}
-if [ "$USE_FVCOM" = "TRUE" ] || \
-   [ "$USE_FVCOM" = "YES" ]; then
+if [ "${USE_FVCOM}" = "TRUE" ] || \
+   [ "${USE_FVCOM}" = "YES" ]; then
   USE_FVCOM="TRUE"
-elif [ "$USE_FVCOM" = "FALSE" ] || \
-     [ "$USE_FVCOM" = "NO" ]; then
+elif [ "${USE_FVCOM}" = "FALSE" ] || \
+     [ "${USE_FVCOM}" = "NO" ]; then
   USE_FVCOM="FALSE"
 fi
 #
@@ -512,11 +512,11 @@ optionList[27]=EBB_DCYCLE
 optionList[28]=PREP_MODEL_FOR_FED
 
 obs_number=${#optionList[@]}
-for (( i=0; i<${obs_number}; i++ ));
+for (( i=0; i<obs_number; i++ ));
 do
-  value2check=${optionList[$i]}
-  check_var_valid_value "$value2check" "valid_vals_$value2check"
-  eval value2change=\$$value2check
+  value2check=${optionList[${i}]}
+  check_var_valid_value "${value2check}" "valid_vals_${value2check}"
+  eval value2change=\$"${value2check}"
   value2change=${value2change^^}
   if [ "${value2change}" = "TRUE" ] ||
      [ "${value2change}" = "YES" ]; then
@@ -525,7 +525,7 @@ do
        [ "${value2change}" = "NO" ]; then
     value2change="FALSE"
   fi
-  eval ${value2check}=${value2change}
+  eval "${value2check}"="${value2change}"
 done
 
 #
@@ -536,7 +536,7 @@ done
 #
 #-----------------------------------------------------------------------
 #
-MACHINE=$( printf "%s" "$MACHINE" | sed -e 's/\(.*\)/\U\1/' )
+MACHINE=$( printf "%s" "${MACHINE}" | sed -e 's/\(.*\)/\U\1/' )
 check_var_valid_value "MACHINE" "valid_vals_MACHINE"
 #
 #-----------------------------------------------------------------------
@@ -547,7 +547,7 @@ check_var_valid_value "MACHINE" "valid_vals_MACHINE"
 #
 #-----------------------------------------------------------------------
 #
-case $MACHINE in
+case ${MACHINE} in
 
   "WCOSS2")
     NCORES_PER_NODE=128
@@ -596,7 +596,6 @@ case $MACHINE in
     ;;
 
   "JET")
-    NCORES_PER_NODE=${NCORES_PER_NODE}
     SCHED="${SCHED:-slurm}"
     PARTITION_DEFAULT=${PARTITION_DEFAULT:-"sjet,vjet,kjet,xjet"}
     QUEUE_DEFAULT=${QUEUE_DEFAULT:-"batch"}
@@ -630,10 +629,10 @@ check_var_valid_value "SCHED" "valid_vals_SCHED"
 #
 #-----------------------------------------------------------------------
 #
-if [ -z "$ACCOUNT" ]; then
+if [ -z "${ACCOUNT}" ]; then
   print_err_msg_exit "\
 The variable ACCOUNT cannot be empty:
-  ACCOUNT = \"$ACCOUNT\""
+  ACCOUNT = \"${ACCOUNT}\""
 fi
 #
 #-----------------------------------------------------------------------
@@ -664,7 +663,7 @@ check_var_valid_value "GTYPE" "valid_vals_GTYPE"
 #
 #-----------------------------------------------------------------------
 #
-if [ ! -z ${PREDEF_GRID_NAME} ]; then
+if [ ! -z "${PREDEF_GRID_NAME}" ]; then
   err_msg="\
 The predefined regional grid specified in PREDEF_GRID_NAME is not sup-
 ported:
@@ -729,21 +728,21 @@ fi
 #-----------------------------------------------------------------------
 #
 CYCL_HRS_str=$(printf "\"%s\" " "${CYCL_HRS[@]}")
-CYCL_HRS_str="( $CYCL_HRS_str)"
+CYCL_HRS_str="( ${CYCL_HRS_str})"
 
 i=0
 for CYCL in "${CYCL_HRS[@]}"; do
 
-  CYCL_OR_NULL=$( printf "%s" "$CYCL" | sed -n -r -e "s/^([0-9]{2})$/\1/p" )
+  CYCL_OR_NULL=$( printf "%s" "${CYCL}" | sed -n -r -e "s/^([0-9]{2})$/\1/p" )
 
   if [ -z "${CYCL_OR_NULL}" ]; then
     print_err_msg_exit "\
 Each element of CYCL_HRS must be a string consisting of exactly 2 digits
 (including a leading \"0\", if necessary) specifying an hour-of-day.  Ele-
-ment #$i of CYCL_HRS (where the index of the first element is 0) does not
+ment #${i} of CYCL_HRS (where the index of the first element is 0) does not
 have this form:
-  CYCL_HRS = $CYCL_HRS_str
-  CYCL_HRS[$i] = \"${CYCL_HRS[$i]}\""
+  CYCL_HRS = ${CYCL_HRS_str}
+  CYCL_HRS[${i}] = \"${CYCL_HRS[${i}]}\""
   fi
 
   if [ "${CYCL_OR_NULL}" -lt "0" ] || \
@@ -751,13 +750,13 @@ have this form:
     print_err_msg_exit "\
 Each element of CYCL_HRS must be an integer between \"00\" and \"23\", in-
 clusive (including a leading \"0\", if necessary), specifying an hour-of-
-day.  Element #$i of CYCL_HRS (where the index of the first element is 0) 
+day.  Element #${i} of CYCL_HRS (where the index of the first element is 0)
 does not have this form:
-  CYCL_HRS = $CYCL_HRS_str
-  CYCL_HRS[$i] = \"${CYCL_HRS[$i]}\""
+  CYCL_HRS = ${CYCL_HRS_str}
+  CYCL_HRS[${i}] = \"${CYCL_HRS[${i}]}\""
   fi
 
-  i=$(( $i+1 ))
+  i=$(( i+1 ))
 
 done
 #
@@ -804,19 +803,19 @@ NUM_CYCLES="${#ALL_CDATES[@]}"
 #-----------------------------------------------------------------------
 #
 HOMErrfs=${scrfunc_dir%/*}
-FIXrrfs="$HOMErrfs/fix"
-USHrrfs="$HOMErrfs/ush"
-SORCrrfs="$HOMErrfs/sorc"
-PARMrrfs="$HOMErrfs/parm"
-MODULES_DIR="$HOMErrfs/modulefiles"
-LIB64dir="$HOMErrfs/sorc/build/lib64"
+FIXrrfs="${HOMErrfs}/fix"
+USHrrfs="${HOMErrfs}/ush"
+SORCrrfs="${HOMErrfs}/sorc"
+PARMrrfs="${HOMErrfs}/parm"
+MODULES_DIR="${HOMErrfs}/modulefiles"
+LIB64dir="${HOMErrfs}/sorc/build/lib64"
 
-FIXgsm=${FIXgsm:-"$HOMErrfs/fix/am"}
-FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"$HOMErrfs/fix/lam"}
+FIXgsm=${FIXgsm:-"${HOMErrfs}/fix/am"}
+FIXLAM_NCO_BASEDIR=${FIXLAM_NCO_BASEDIR:-"${HOMErrfs}/fix/lam"}
 AIRCRAFT_REJECT=${AIRCRAFT_REJECT:-"${FIXrrfs/gsi}"}
 SFCOBS_USELIST=${SFCOBS_USELIST:-"${FIXrrfs/gsi}"}
 
-case $MACHINE in
+case ${MACHINE} in
 
   "WCOSS2")
     FIXgsm=${FIXgsm:-"/lfs/h2/emc/lam/noscrub/RRFS_input/fix/fix_am"}
@@ -849,7 +848,7 @@ case $MACHINE in
   *)
     print_err_msg_exit "\
 One or more fix file directories have not been specified for this machine:
-  MACHINE = \"$MACHINE\"
+  MACHINE = \"${MACHINE}\"
   FIXgsm = \"${FIXgsm:-\"\"}
   TOPO_DIR = \"${TOPO_DIR:-\"\"}
   SFC_CLIMO_INPUT_DIR = \"${SFC_CLIMO_INPUT_DIR:-\"\"}
@@ -924,11 +923,11 @@ check_var_valid_value \
 # have to consider other valid values later on.
 #
 USE_CUSTOM_POST_CONFIG_FILE=${USE_CUSTOM_POST_CONFIG_FILE^^}
-if [ "$USE_CUSTOM_POST_CONFIG_FILE" = "TRUE" ] || \
-   [ "$USE_CUSTOM_POST_CONFIG_FILE" = "YES" ]; then
+if [ "${USE_CUSTOM_POST_CONFIG_FILE}" = "TRUE" ] || \
+   [ "${USE_CUSTOM_POST_CONFIG_FILE}" = "YES" ]; then
   USE_CUSTOM_POST_CONFIG_FILE="TRUE"
-elif [ "$USE_CUSTOM_POST_CONFIG_FILE" = "FALSE" ] || \
-     [ "$USE_CUSTOM_POST_CONFIG_FILE" = "NO" ]; then
+elif [ "${USE_CUSTOM_POST_CONFIG_FILE}" = "FALSE" ] || \
+     [ "${USE_CUSTOM_POST_CONFIG_FILE}" = "NO" ]; then
   USE_CUSTOM_POST_CONFIG_FILE="FALSE"
 fi
 #
@@ -939,7 +938,7 @@ fi
 #-----------------------------------------------------------------------
 #
 if [ ${#ADDNL_OUTPUT_GRIDS[@]} -ne 0 ]; then
-  for grid in ${ADDNL_OUTPUT_GRIDS[@]} ; do
+  for grid in "${ADDNL_OUTPUT_GRIDS[@]}" ; do
     TILE_SETS="${TILE_SETS} ${grid}"
     TILE_LABELS="${TILE_LABELS} ${grid}"
   done
@@ -951,7 +950,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-if [ ${USE_CUSTOM_POST_CONFIG_FILE} = "TRUE" ]; then
+if [ "${USE_CUSTOM_POST_CONFIG_FILE}" = "TRUE" ]; then
   if [ ! -f "${CUSTOM_POST_CONFIG_FP}" ]; then
     print_err_msg_exit "
 The custom post configuration specified by CUSTOM_POST_CONFIG_FP does not 
@@ -986,15 +985,15 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-rem=$(( ${FCST_LEN_HRS}%${LBC_SPEC_INTVL_HRS} ))
+rem=$(( FCST_LEN_HRS%LBC_SPEC_INTVL_HRS ))
 
-if [ "$rem" -ne "0" ]; then
+if [ "${rem}" -ne "0" ]; then
   print_err_msg_exit "\
 The forecast length (FCST_LEN_HRS) is not evenly divisible by the lateral
 boundary conditions update interval (LBC_SPEC_INTVL_HRS):
   FCST_LEN_HRS = ${FCST_LEN_HRS}
   LBC_SPEC_INTVL_HRS = ${LBC_SPEC_INTVL_HRS}
-  rem = FCST_LEN_HRS%%LBC_SPEC_INTVL_HRS = $rem"
+  rem = FCST_LEN_HRS%%LBC_SPEC_INTVL_HRS = ${rem}"
 fi
 #
 #-----------------------------------------------------------------------
@@ -1006,10 +1005,10 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-LBC_SPEC_FCST_HRS=($( seq 0 ${LBC_SPEC_INTVL_HRS} \
-                          ${BOUNDARY_LEN_HRS} ))
-LBC_SPEC_FCST_LONG_HRS=($( seq 0 ${LBC_SPEC_INTVL_HRS} \
-                          ${BOUNDARY_LONG_LEN_HRS} ))
+LBC_SPEC_FCST_HRS=($( seq 0 "${LBC_SPEC_INTVL_HRS}" \
+                          "${BOUNDARY_LEN_HRS}" ))
+LBC_SPEC_FCST_LONG_HRS=($( seq 0 "${LBC_SPEC_INTVL_HRS}" \
+                          "${BOUNDARY_LONG_LEN_HRS}" ))
 #
 #-----------------------------------------------------------------------
 #
@@ -1019,7 +1018,7 @@ LBC_SPEC_FCST_LONG_HRS=($( seq 0 ${LBC_SPEC_INTVL_HRS} \
 #-----------------------------------------------------------------------
 #
 if [ ! -z "${PREDEF_GRID_NAME}" ]; then
-  . $USHrrfs/set_predef_grid_params.sh
+  . "${USHrrfs}"/set_predef_grid_params.sh
 fi
 #
 #-----------------------------------------------------------------------
@@ -1169,7 +1168,11 @@ the FV3_HRRR/FV3_RAP physics suites:
 The directory (GWD_HRRRsuite_DIR) that should contain the gravity wave 
 drag-related orography files for the FV3_HRRR/FV3_RAP suites does not exist:
   GWD_HRRRsuite_DIR = \"${GWD_HRRRsuite_DIR}\""
-    elif [ ! "$( ls -A ${GWD_HRRRsuite_DIR} )" ]; then
+    elif ! gwd_hrrrsuite_entry=$(find "${GWD_HRRRsuite_DIR}" -mindepth 1 -maxdepth 1 -print -quit); then
+      print_err_msg_exit "\
+Unable to inspect the directory (GWD_HRRRsuite_DIR):
+  GWD_HRRRsuite_DIR = \"${GWD_HRRRsuite_DIR}\""
+    elif [ -z "${gwd_hrrrsuite_entry}" ]; then
       print_err_msg_exit "\
 The directory (GWD_HRRRsuite_DIR) that should contain the gravity wave 
 drag related orography files for the FV3_HRRR/FV3_RAP suites is empty:
@@ -1197,7 +1200,7 @@ fi
 if [ "${EXPT_BASEDIR:0:1}" != "/" ]; then
   EXPT_BASEDIR="${HOMErrfs}/../expt_dirs/${EXPT_BASEDIR}"
 fi
-EXPT_BASEDIR="$( readlink -m ${EXPT_BASEDIR} )"
+EXPT_BASEDIR="$( readlink -m "${EXPT_BASEDIR}" )"
 mkdir -p "${EXPT_BASEDIR}"
 #
 #-----------------------------------------------------------------------
@@ -1221,7 +1224,7 @@ fi
 #-----------------------------------------------------------------------
 #
 EXPTDIR="${EXPT_BASEDIR}/${EXPT_SUBDIR}"
-check_for_preexist_dir_file "$EXPTDIR" "${PREEXISTING_DIR_METHOD}"
+check_for_preexist_dir_file "${EXPTDIR}" "${PREEXISTING_DIR_METHOD}"
 #
 #-----------------------------------------------------------------------
 #
@@ -1282,9 +1285,7 @@ FIXcrtm="${EXPTDIR}/fix_crtm"
 FIXuppcrtm="${EXPTDIR}/fix_upp_crtm"
 FIXsmokedust="${EXPTDIR}/fix_smoke_dust"
 FIXbufrsnd="${EXPTDIR}/fix_bufrsnd"
-SST_ROOT="${SST_ROOT}"
-
-DATAROOT="$STMP"
+DATAROOT="${STMP}"
 check_for_preexist_dir_file "${DATAROOT}" "${PREEXISTING_DIR_METHOD}"
 ENSCTRL_DATAROOT="${ENSCTRL_STMP}"
 COMROOT="${PTMP}/com"
@@ -1520,10 +1521,10 @@ if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
 # the version of NUM_ENS_MEMBERS with any leading zeros stripped away.
   NUM_ENS_MEMBERS="$((10#${NUM_ENS_MEMBERS}))"  
   fmt="%0${NDIGITS_ENSMEM_NAMES}d"
-  for (( i=0; i<${NUM_ENS_MEMBERS}; i++ )); do
-    ip1=$( printf "$fmt" $((i+1)) )
-    ENSMEM_NAMES[$i]="mem${ip1}"
-    FV3_NML_ENSMEM_FPS[$i]="$EXPTDIR/${FV3_NML_FN}_${ENSMEM_NAMES[$i]}"
+  for (( i=0; i<NUM_ENS_MEMBERS; i++ )); do
+    ip1=$( printf "${fmt}" $((i+1)) )
+    ENSMEM_NAMES[i]="mem${ip1}"
+    FV3_NML_ENSMEM_FPS[i]="${EXPTDIR}/${FV3_NML_FN}_${ENSMEM_NAMES[i]}"
   done
 fi
 #
@@ -1545,10 +1546,10 @@ FV3_EXEC_FP="${HOMErrfs}/exec/${FV3_EXEC_FN}"
 #
 #-----------------------------------------------------------------------
 #
-WFLOW_LAUNCH_SCRIPT_FP="$USHrrfs/${WFLOW_LAUNCH_SCRIPT_FN}"
-WFLOW_LAUNCH_LOG_FP="$EXPTDIR/${WFLOW_LAUNCH_LOG_FN}"
+WFLOW_LAUNCH_SCRIPT_FP="${USHrrfs}/${WFLOW_LAUNCH_SCRIPT_FN}"
+WFLOW_LAUNCH_LOG_FP="${EXPTDIR}/${WFLOW_LAUNCH_LOG_FN}"
 if [ "${USE_CRON_TO_RELAUNCH}" = "TRUE" ]; then
-  CRONTAB_LINE="*/${CRON_RELAUNCH_INTVL_MNTS} * * * * cd $EXPTDIR && \
+  CRONTAB_LINE="*/${CRON_RELAUNCH_INTVL_MNTS} * * * * cd ${EXPTDIR} && \
 ./${WFLOW_LAUNCH_SCRIPT_FN} >> ./${WFLOW_LAUNCH_LOG_FN} 2>&1"
 else
   CRONTAB_LINE=""
@@ -1561,7 +1562,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-LOAD_MODULES_RUN_TASK_FP="$USHrrfs/load_modules_run_task.sh"
+LOAD_MODULES_RUN_TASK_FP="${USHrrfs}/load_modules_run_task.sh"
 #
 #-----------------------------------------------------------------------
 #
@@ -1614,7 +1615,7 @@ does not exist:
   GRID_DIR = \"${GRID_DIR}\""
   fi
 else
-  GRID_DIR="$EXPTDIR/grid"
+  GRID_DIR="${EXPTDIR}/grid"
 fi
 #
 # If RUN_TASK_MAKE_OROG is set to "FALSE", the workflow will look for 
@@ -1630,7 +1631,7 @@ files does not exist:
   OROG_DIR = \"${OROG_DIR}\""
   fi
 else
-  OROG_DIR="$EXPTDIR/orog"
+  OROG_DIR="${EXPTDIR}/orog"
 fi
 #
 # If RUN_TASK_MAKE_SFC_CLIMO is set to "FALSE", the workflow will look 
@@ -1646,7 +1647,7 @@ climatology files does not exist:
   SFC_CLIMO_DIR = \"${SFC_CLIMO_DIR}\""
   fi
 else
-  SFC_CLIMO_DIR="$EXPTDIR/sfc_climo"
+  SFC_CLIMO_DIR="${EXPTDIR}/sfc_climo"
 fi
 #
 #-----------------------------------------------------------------------
@@ -1712,7 +1713,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-. $USHrrfs/set_extrn_mdl_params.sh
+. "${USHrrfs}"/set_extrn_mdl_params.sh
 
 #
 #-----------------------------------------------------------------------
@@ -1823,7 +1824,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-mkdir -p "$EXPTDIR"
+mkdir -p "${EXPTDIR}"
 
 
 #
@@ -1838,7 +1839,7 @@ mkdir -p "$EXPTDIR"
 #
 #-----------------------------------------------------------------------
 #
-mkdir -p "$FIXLAM"
+mkdir -p "${FIXLAM}"
 RES_IN_FIXLAM_FILENAMES=""
 #
 #-----------------------------------------------------------------------
@@ -1853,7 +1854,7 @@ res_in_grid_fns=""
 if [ "${RUN_TASK_MAKE_GRID}" = "FALSE" ]; then
 
   link_fix \
-    verbose="$VERBOSE" \
+    verbose="${VERBOSE}" \
     file_group="grid" \
     output_varname_res_in_filenames="res_in_grid_fns" || \
   print_err_msg_exit "\
@@ -1875,7 +1876,7 @@ res_in_orog_fns=""
 if [ "${RUN_TASK_MAKE_OROG}" = "FALSE" ]; then
 
   link_fix \
-    verbose="$VERBOSE" \
+    verbose="${VERBOSE}" \
     file_group="orog" \
     output_varname_res_in_filenames="res_in_orog_fns" || \
   print_err_msg_exit "\
@@ -1908,7 +1909,7 @@ res_in_sfc_climo_fns=""
 if [ "${RUN_TASK_MAKE_SFC_CLIMO}" = "FALSE" ]; then
 
   link_fix \
-    verbose="$VERBOSE" \
+    verbose="${VERBOSE}" \
     file_group="sfc_climo" \
     output_varname_res_in_filenames="res_in_sfc_climo_fns" || \
   print_err_msg_exit "\
@@ -1954,11 +1955,11 @@ check_var_valid_value "QUILTING" "valid_vals_QUILTING"
 # other valid values later on.
 #
 QUILTING=${QUILTING^^}
-if [ "$QUILTING" = "TRUE" ] || \
-   [ "$QUILTING" = "YES" ]; then
+if [ "${QUILTING}" = "TRUE" ] || \
+   [ "${QUILTING}" = "YES" ]; then
   QUILTING="TRUE"
-elif [ "$QUILTING" = "FALSE" ] || \
-     [ "$QUILTING" = "NO" ]; then
+elif [ "${QUILTING}" = "FALSE" ] || \
+     [ "${QUILTING}" = "NO" ]; then
   QUILTING="FALSE"
 fi
 #
@@ -1991,11 +1992,11 @@ fi
 #-----------------------------------------------------------------------
 #
 PE_MEMBER01=$(( LAYOUT_X*LAYOUT_Y ))
-if [ "$QUILTING" = "TRUE" ]; then
-  PE_MEMBER01=$(( ${PE_MEMBER01} + ${WRTCMP_write_groups}*${WRTCMP_write_tasks_per_group} ))
+if [ "${QUILTING}" = "TRUE" ]; then
+  PE_MEMBER01=$(( PE_MEMBER01 + WRTCMP_write_groups*WRTCMP_write_tasks_per_group ))
 fi
 
-print_info_msg "$VERBOSE" "
+print_info_msg "${VERBOSE}" "
 The number of MPI tasks for the forecast (including those for the write
 component if it is being used) are:
   PE_MEMBER01 = ${PE_MEMBER01}"
@@ -2008,7 +2009,7 @@ component if it is being used) are:
 #
 #-----------------------------------------------------------------------
 #
-if [ "$QUILTING" = "TRUE" ]; then
+if [ "${QUILTING}" = "TRUE" ]; then
   err_msg="\
 The coordinate system used by the write-component output grid specified
 in WRTCMP_output_grid is not supported:
@@ -2065,7 +2066,7 @@ check_ruc_lsm \
 #-----------------------------------------------------------------------
 #
 THOMPSON_MP_CLIMO_FN="Thompson_MP_MONTHLY_CLIMO.nc"
-THOMPSON_MP_CLIMO_FP="$FIXam/${THOMPSON_MP_CLIMO_FN}"
+THOMPSON_MP_CLIMO_FP="${FIXam}/${THOMPSON_MP_CLIMO_FN}"
 #
 #-----------------------------------------------------------------------
 #
@@ -2113,8 +2114,8 @@ set_thompson_mp_fix_files \
 #
 #-----------------------------------------------------------------------
 #
-GLOBAL_VAR_DEFNS_FP="$EXPTDIR/$GLOBAL_VAR_DEFNS_FN"
-cp $USHrrfs/${EXPT_DEFAULT_CONFIG_FN} ${GLOBAL_VAR_DEFNS_FP}
+GLOBAL_VAR_DEFNS_FP="${EXPTDIR}/${GLOBAL_VAR_DEFNS_FN}"
+cp "${USHrrfs}"/${EXPT_DEFAULT_CONFIG_FN} "${GLOBAL_VAR_DEFNS_FP}"
 #
 #-----------------------------------------------------------------------
 #
@@ -2124,14 +2125,16 @@ cp $USHrrfs/${EXPT_DEFAULT_CONFIG_FN} ${GLOBAL_VAR_DEFNS_FP}
 #
 
 # Read all lines of GLOBAL_VAR_DEFNS file into the variable line_list.
-line_list=$( sed -r -e "s/(.*)/\1/g" ${GLOBAL_VAR_DEFNS_FP} )
+line_list=$( sed -r -e "s/(.*)/\1/g" "${GLOBAL_VAR_DEFNS_FP}" )
 #
 # Loop through the lines in line_list and concatenate lines ending with
 # the line bash continuation character "\".
 #
-rm ${GLOBAL_VAR_DEFNS_FP}
+rm "${GLOBAL_VAR_DEFNS_FP}"
+# Preserve backslash-newline joining for continued configuration lines.
+# shellcheck disable=SC2162
 while read crnt_line; do
-  printf "%s\n" "${crnt_line}" >> ${GLOBAL_VAR_DEFNS_FP}
+  printf "%s\n" "${crnt_line}" >> "${GLOBAL_VAR_DEFNS_FP}"
 done <<< "${line_list}"
 #
 #-----------------------------------------------------------------------
@@ -2169,9 +2172,9 @@ line_list=$( sed -r \
              -e "s/^([ ]*)([^ ]+.*)/\2/g" \
              -e "/^#.*/d" \
              -e "/^$/d" \
-             ${GLOBAL_VAR_DEFNS_FP} )
+             "${GLOBAL_VAR_DEFNS_FP}" )
 
-print_info_msg "$VERBOSE" "
+print_info_msg "${VERBOSE}" "
 The variable \"line_list\" contains:
 
 ${line_list}
@@ -2213,12 +2216,12 @@ str_to_insert=${str_to_insert//$'\n'/\\n}
 # the string "#!", e.g. "#!/bin/bash").
 #
 regexp="(^#!.*)"
-sed -i -r -e "s|$regexp|\1\n\n${str_to_insert}\n|g" ${GLOBAL_VAR_DEFNS_FP}
+sed -i -r -e "s|${regexp}|\1\n\n${str_to_insert}\n|g" "${GLOBAL_VAR_DEFNS_FP}"
 
 #
 # Loop through the lines in line_list.
 #
-while read crnt_line; do
+while IFS= read -r crnt_line; do
 #
 # Try to obtain the name of the variable being set on the current line.
 # This will be successful only if the line consists of one or more char-
@@ -2236,9 +2239,9 @@ while read crnt_line; do
 # If var_name is not empty, then a variable name was found in the cur-
 # rent line in line_list.
 #
-  if [ ! -z $var_name ]; then
+  if [ ! -z "${var_name}" ]; then
 
-    print_info_msg "$VERBOSE" "
+    print_info_msg "${VERBOSE}" "
 var_name = \"${var_name}\""
 #
 # If the variable specified in var_name is set in the current environ-
@@ -2272,7 +2275,7 @@ var_name = \"${var_name}\""
 # lar.)  In this case, we enclose its value in double quotes and save
 # the result in var_value.
 #
-      if [ "$num_elems" -eq 1 ]; then
+      if [ "${num_elems}" -eq 1 ]; then
         var_value="${!var_name}"
         var_value="\"${var_value}\""
 #
@@ -2298,13 +2301,13 @@ var_name = \"${var_name}\""
         else
 #          var_value=$(printf "%s" "\\\\\\n")
           var_value="\\\\\n"
-          for (( i=0; i<${num_elems}; i++ )); do
-#            var_value=$(printf "%s\"%s\" %s" "${var_value}" "${array[$i]}" "\\\\\\n")
-            var_value="${var_value}\"${array[$i]}\" \\\\\n"
+          for (( i=0; i<num_elems; i++ )); do
+#            var_value=$(printf "%s\"%s\" %s" "${var_value}" "${array[i]}" "\\\\\\n")
+            var_value="${var_value}\"${array[i]}\" \\\\\n"
 #            var_value="${var_value}\"${array[$i]}\" "
           done
         fi
-        var_value="( $var_value)"
+        var_value="( ${var_value})"
 
       fi
 #
@@ -2357,7 +2360,7 @@ done <<< "${line_list}"
 #
 #-----------------------------------------------------------------------
 #
-{ cat << EOM >> ${GLOBAL_VAR_DEFNS_FP}
+{ cat << EOM >> "${GLOBAL_VAR_DEFNS_FP}"
 
 #
 #-----------------------------------------------------------------------
@@ -2390,16 +2393,16 @@ CRONTAB_LINE="${CRONTAB_LINE}"
 #
 #-----------------------------------------------------------------------
 #
-HOMErrfs="$HOMErrfs"
-USHrrfs="$USHrrfs"
-SORCrrfs="$SORCrrfs"
-PARMrrfs="$PARMrrfs"
+HOMErrfs="${HOMErrfs}"
+USHrrfs="${USHrrfs}"
+SORCrrfs="${SORCrrfs}"
+PARMrrfs="${PARMrrfs}"
 MODULES_DIR="${MODULES_DIR}"
-LIB64dir="$LIB64dir"
-FIXam="$FIXam"
-FIXLAM="$FIXLAM"
-FIXgsm="$FIXgsm"
-COMROOT="$COMROOT"
+LIB64dir="${LIB64dir}"
+FIXam="${FIXam}"
+FIXLAM="${FIXLAM}"
+FIXgsm="${FIXgsm}"
+COMROOT="${COMROOT}"
 GESROOT="${GESROOT}"
 UFS_WTHR_MDL_DIR="${UFS_WTHR_MDL_DIR}"
 UFS_UTILS_DIR="${UFS_UTILS_DIR}"
@@ -2409,7 +2412,7 @@ UPP_DIR="${UPP_DIR}"
 
 MODEL="${MODEL}"
 
-EXPTDIR="$EXPTDIR"
+EXPTDIR="${EXPTDIR}"
 LOG_BASEDIR="${LOG_BASEDIR}"
 DATAROOT="${DATAROOT}"
 GRID_DIR="${GRID_DIR}"
@@ -2433,9 +2436,15 @@ ENKF_FCST="${ENKF_FCST}"
 AIRCRAFT_REJECT="${AIRCRAFT_REJECT}"
 SFCOBS_USELIST="${SFCOBS_USELIST}"
 
-RADARREFL_MINS=( $(printf "\"%s\" " "${RADARREFL_MINS[@]}" ))
-RADARREFL_TIMELEVEL=( $(printf "\"%s\" " "${RADARREFL_TIMELEVEL[@]}" ))
-ADDNL_OUTPUT_GRIDS=( $(printf "\"%s\" " "${ADDNL_OUTPUT_GRIDS[@]}" ))
+for i in "${!RADARREFL_MINS[@]}"; do
+  RADARREFL_MINS[i]="\"${RADARREFL_MINS[i]}\""
+done
+for i in "${!RADARREFL_TIMELEVEL[@]}"; do
+  RADARREFL_TIMELEVEL[i]="\"${RADARREFL_TIMELEVEL[i]}\""
+done
+for i in "${!ADDNL_OUTPUT_GRIDS[@]}"; do
+  ADDNL_OUTPUT_GRIDS[i]="\"${ADDNL_OUTPUT_GRIDS[i]}\""
+done
 #
 #-----------------------------------------------------------------------
 #
@@ -2444,9 +2453,7 @@ ADDNL_OUTPUT_GRIDS=( $(printf "\"%s\" " "${ADDNL_OUTPUT_GRIDS[@]}" ))
 #-----------------------------------------------------------------------
 #
 GLOBAL_VAR_DEFNS_FP="${GLOBAL_VAR_DEFNS_FP}"
-# Try this at some point instead of hard-coding it as above; it's a more
-# flexible approach (if it works).
-#GLOBAL_VAR_DEFNS_FP=$( readlink -f "${BASH_SOURCE[0]}" )
+# This path can be derived from BASH_SOURCE for a more flexible setup.
 
 DATA_TABLE_TMPL_FN="${DATA_TABLE_TMPL_FN}"
 DIAG_TABLE_TMPL_FN="${DIAG_TABLE_TMPL_FN}"
@@ -2502,7 +2509,7 @@ SDF_USES_THOMPSON_MP="${SDF_USES_THOMPSON_MP}"
 #
 #-----------------------------------------------------------------------
 #
-GTYPE="$GTYPE"
+GTYPE="${GTYPE}"
 TILE_RGNL="${TILE_RGNL}"
 NH0="${NH0}"
 NH3="${NH3}"
@@ -2522,7 +2529,7 @@ RES_IN_FIXLAM_FILENAMES="${RES_IN_FIXLAM_FILENAMES}"
 # the grid generation step.  It will later be set to an actual value af-
 # ter the make_grid task is complete.
 #
-CRES="$CRES"
+CRES="${CRES}"
 EOM
 } || print_err_msg_exit "\
 Heredoc (cat) command to append new variable definitions to variable 
@@ -2537,7 +2544,7 @@ definitions file returned with a nonzero status."
 #
 if [ "${GRID_GEN_METHOD}" = "GFDLgrid" ]; then
 
-  { cat << EOM >> ${GLOBAL_VAR_DEFNS_FP}
+  { cat << EOM >> "${GLOBAL_VAR_DEFNS_FP}"
 #
 #-----------------------------------------------------------------------
 #
@@ -2562,7 +2569,7 @@ file returned with a nonzero status."
 
 elif [ "${GRID_GEN_METHOD}" = "ESGgrid" ]; then
 
-  { cat << EOM >> ${GLOBAL_VAR_DEFNS_FP}
+  { cat << EOM >> "${GLOBAL_VAR_DEFNS_FP}"
 #
 #-----------------------------------------------------------------------
 #
@@ -2591,7 +2598,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-{ cat << EOM >> ${GLOBAL_VAR_DEFNS_FP}
+{ cat << EOM >> "${GLOBAL_VAR_DEFNS_FP}"
 #
 #-----------------------------------------------------------------------
 #
@@ -2725,4 +2732,3 @@ Setup script completed successfully!!!
 #-----------------------------------------------------------------------
 #
 setup
-

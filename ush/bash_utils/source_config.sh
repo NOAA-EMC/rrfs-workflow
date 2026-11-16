@@ -1,3 +1,5 @@
+#!/bin/bash
+set -x
 #
 #-----------------------------------------------------------------------
 # This file defines function that sources a config file (yaml/json etc)
@@ -8,7 +10,7 @@
 function config_to_str() {
   set -x
   echo "source_config calling python script config_utils.py start"
-  $USHdir/config_utils.py -o $1 -c $2 "${@:3}"
+  "${USHdir}"/config_utils.py -o "$1" -c "$2" "${@:3}"
   echo "source_config calling python script config_utils.py end"
 }
 
@@ -56,7 +58,9 @@ function config_to_xml_str() {
 function source_config() {
   set -x
   echo "source_config source_config source config_to_shell_str start"
-  source <( config_to_shell_str "$@" )
+  local config_shell_str
+  config_shell_str=$( config_to_shell_str "$@" ) || return
+  eval "${config_shell_str}"
   echo "source_config source_config source config_to_shell_str end"
 
 }
@@ -68,6 +72,13 @@ function source_config() {
 #
 function source_config_for_task() {
   set -x
-  source <( config_to_shell_str "${@:2}" -k "(^(?!task_)|$1).*" )
+  local config_shell_str
+
+  # 1. Use ${1:-} to prevent 'set -u' errors if no arguments are passed
+  # 2. Halt immediately if the generation fails
+  config_shell_str=$( config_to_shell_str "${@:2}" -k "(^(?!task_)|${1:-}).*" ) || return
+
+  # 3. Use eval to execute the string in the current shell context natively
+  eval "${config_shell_str}"
 
 }

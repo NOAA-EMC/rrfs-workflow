@@ -1,3 +1,5 @@
+#!/bin/bash
+set -x
 #
 #-----------------------------------------------------------------------
 #
@@ -87,7 +89,7 @@ where the arguments are defined as follows:
   valid_var_values_array_name="$2"
 
   var_value=${!var_name}
-  valid_var_values_at="$valid_var_values_array_name[@]"
+  valid_var_values_at="${valid_var_values_array_name}[@]"
   valid_var_values=("${!valid_var_values_at}")
 
   if [ "$#" -eq 3 ]; then

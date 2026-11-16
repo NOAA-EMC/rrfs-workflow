@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 
-source ${FIXrrfs}/workflow/${WGF}/workflow.conf
+source "${FIXrrfs}"/workflow/"${WGF}"/workflow.conf
 
 #
 #-----------------------------------------------------------------------
@@ -10,7 +10,7 @@ source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 #
 #-----------------------------------------------------------------------
 #
-. $USHrrfs/source_util_funcs.sh
+. "${USHrrfs}"/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -51,7 +51,7 @@ RRFS for the specified cycle.
 #
 ulimit -a
 
-case $MACHINE in
+case ${MACHINE} in
 #
 "WCOSS2")
 #
@@ -103,7 +103,7 @@ nens=${NUM_ENS_MEMBERS:-"30"}
 #
 START_DATE=$(echo "${CDATE}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
 
-YYYYMMDDHH=$CDATE
+YYYYMMDDHH=${CDATE}
 JJJ=$(date +%j -d "${START_DATE}")
 
 YYYY=${YYYYMMDDHH:0:4}
@@ -124,14 +124,14 @@ dynvarfile_control_spinup=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver_2d}
 tracerfile_control_spinup=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver_2d}_${envir}/det/INPUT/fv_tracer.res.tile1.nc
 if [ -r "${dynvarfile_control_spinup}" ] && [ -r "${tracerfile_control_spinup}" ] && [[ ${DO_ENSFCST} != "TRUE" ]] ; then
   ctrlpath=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver_2d}_${envir}/det
-  ln -sf ${ctrlpath}/INPUT/fv_core.res.tile1.nc  ./control_dynvar
-  ln -sf ${ctrlpath}/INPUT/fv_tracer.res.tile1.nc   ./control_tracer
-  ln -sf ${ctrlpath}/INPUT/sfc_data.nc  ./control_sfcvar
+  ln -sf "${ctrlpath}"/INPUT/fv_core.res.tile1.nc  ./control_dynvar
+  ln -sf "${ctrlpath}"/INPUT/fv_tracer.res.tile1.nc   ./control_tracer
+  ln -sf "${ctrlpath}"/INPUT/sfc_data.nc  ./control_sfcvar
 elif [ -r "${dynvarfile_control}" ] && [ -r "${tracerfile_control}" ] ; then
   ctrlpath=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver_2d}_${envir}/det
-  ln -sf ${ctrlpath}/INPUT/fv_core.res.tile1.nc  ./control_dynvar
-  ln -sf ${ctrlpath}/INPUT/fv_tracer.res.tile1.nc   ./control_tracer
-  ln -sf ${ctrlpath}/INPUT/sfc_data.nc  ./control_sfcvar
+  ln -sf "${ctrlpath}"/INPUT/fv_core.res.tile1.nc  ./control_dynvar
+  ln -sf "${ctrlpath}"/INPUT/fv_tracer.res.tile1.nc   ./control_tracer
+  ln -sf "${ctrlpath}"/INPUT/sfc_data.nc  ./control_sfcvar
 else
   err_exit "Cannot find background: ${dynvarfile_control} or ${dynvarfile_control_spinup}"
 fi
@@ -144,27 +144,27 @@ fi
 #
 touch ./para_copy.sh
 imem=1
-for imem in  $(seq 1 $nens)
+for imem in  $(seq 1 "${nens}")
   do
-  ensmem=$( printf "%03d" $imem ) 
-  memberstring=$( printf "%03d" $imem )
+  ensmem=$( printf "%03d" "${imem}" )
+  memberstring=$( printf "%03d" "${imem}" )
 
   bkpath=${umbrella_forecast_data}/m${ensmem}/INPUT  # cycling, use background from RESTART
 
   dynvarfile=${bkpath}/fv_core.res.tile1.nc
   tracerfile=${bkpath}/fv_tracer.res.tile1.nc
   if [ -r "${dynvarfile}" ] && [ -r "${tracerfile}" ] ; then
-    if [ ${DO_ENSFCST} = "TRUE" ] ; then
-      ln -sf ${bkpath}/fv_core.res.tile1.nc  ./fv3sar_tile1_mem${memberstring}_dynvar
-      ln -sf ${bkpath}/fv_tracer.res.tile1.nc   ./fv3sar_tile1_mem${memberstring}_tracer
-      ln -sf ${bkpath}/sfc_data.nc  ./fv3sar_tile1_mem${memberstring}_sfcvar
-      ln -sf ${bkpath}/fv_core.res.tile1.nc  ./rec_fv3sar_tile1_mem${memberstring}_dynvar
-      ln -sf ${bkpath}/fv_tracer.res.tile1.nc   ./rec_fv3sar_tile1_mem${memberstring}_tracer
-      ln -sf ${bkpath}/sfc_data.nc  ./rec_fv3sar_tile1_mem${memberstring}_sfcvar
+    if [ "${DO_ENSFCST}" = "TRUE" ] ; then
+      ln -sf "${bkpath}"/fv_core.res.tile1.nc  ./fv3sar_tile1_mem"${memberstring}"_dynvar
+      ln -sf "${bkpath}"/fv_tracer.res.tile1.nc   ./fv3sar_tile1_mem"${memberstring}"_tracer
+      ln -sf "${bkpath}"/sfc_data.nc  ./fv3sar_tile1_mem"${memberstring}"_sfcvar
+      ln -sf "${bkpath}"/fv_core.res.tile1.nc  ./rec_fv3sar_tile1_mem"${memberstring}"_dynvar
+      ln -sf "${bkpath}"/fv_tracer.res.tile1.nc   ./rec_fv3sar_tile1_mem"${memberstring}"_tracer
+      ln -sf "${bkpath}"/sfc_data.nc  ./rec_fv3sar_tile1_mem"${memberstring}"_sfcvar
     else
-      ln -sf ${bkpath}/fv_core.res.tile1.nc  ./fv3sar_tile1_mem${memberstring}_dynvar
-      ln -sf ${bkpath}/fv_tracer.res.tile1.nc   ./fv3sar_tile1_mem${memberstring}_tracer
-      ln -sf ${bkpath}/sfc_data.nc  ./fv3sar_tile1_mem${memberstring}_sfcvar
+      ln -sf "${bkpath}"/fv_core.res.tile1.nc  ./fv3sar_tile1_mem"${memberstring}"_dynvar
+      ln -sf "${bkpath}"/fv_tracer.res.tile1.nc   ./fv3sar_tile1_mem"${memberstring}"_tracer
+      ln -sf "${bkpath}"/sfc_data.nc  ./fv3sar_tile1_mem"${memberstring}"_sfcvar
       echo "cpreq -p  ${ctrlpath}/INPUT/fv_core.res.tile1.nc  ./rec_fv3sar_tile1_mem${memberstring}_dynvar" >> para_copy.sh
       echo "cpreq -p  ${ctrlpath}/INPUT/fv_tracer.res.tile1.nc   ./rec_fv3sar_tile1_mem${memberstring}_tracer" >> para_copy.sh
       echo "cpreq -p  ${ctrlpath}/INPUT/sfc_data.nc  ./rec_fv3sar_tile1_mem${memberstring}_sfcvar" >> para_copy.sh
@@ -176,11 +176,12 @@ for imem in  $(seq 1 $nens)
   (( imem += 1 ))
  done
 
-if [ ${DO_ENSFCST} = "FALSE" ] ; then
+if [ "${DO_ENSFCST}" = "FALSE" ] ; then
   cpprocs=90
   # cfp only exists on WCOSS2, so run the copies serially on other machines
   if [ "${MACHINE}" = "WCOSS2" ]; then
     mpiexec -n ${cpprocs} -ppn ${cpprocs} --cpu-bind core cfp ./para_copy.sh
+    export err=$?; err_chk
   else
     bash ./para_copy.sh
   fi
@@ -218,10 +219,10 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
-echo pwd is `pwd`
+printf 'pwd is %s\n' "${PWD}"
 export pgm="rrfs_util_ens_mean_recenter_P2DIO.exe"
 
-${APRUN} ${EXECrrfs}/$pgm < namelist.ens >>$pgmout 2>errfile
+${APRUN} "${EXECrrfs}"/${pgm} < namelist.ens >>"${pgmout}" 2>errfile
 export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
@@ -231,7 +232,7 @@ export err=$?; err_chk
 #-----------------------------------------------------------------------
 #
 for files in $(ls rec_fv3sar_tile1_mem*)  ; do
-  ncatted -a checksum,,d,,  $files
+  ncatted -a checksum,,d,,  "${files}"
 done
 #
 #-----------------------------------------------------------------------
@@ -239,27 +240,27 @@ done
 # copy recentering file back to umbrella
 #
 #-----------------------------------------------------------------------
-if [ ${DO_ENSFCST} = "FALSE" ] ; then
-for imem in  $(seq 1 $nens)
+if [ "${DO_ENSFCST}" = "FALSE" ] ; then
+for imem in  $(seq 1 "${nens}")
   do
-  ensmem=$( printf "%03d" $imem ) 
-  memberstring=$( printf "%03d" $imem )
+  ensmem=$( printf "%03d" "${imem}" )
+  memberstring=$( printf "%03d" "${imem}" )
   bkpath=${umbrella_forecast_data}/m${ensmem}/INPUT  # cycling, use background from RESTART
 
-  mv ${bkpath}/fv_core.res.tile1.nc ${bkpath}/bf_rec_fv_core.res.tile1.nc
-  mv ${bkpath}/fv_tracer.res.tile1.nc ${bkpath}/bf_rec_fv_tracer.res.tile1.nc
-  mv ${bkpath}/sfc_data.nc ${bkpath}/bf_rec_sfc_data.nc
+  mv "${bkpath}"/fv_core.res.tile1.nc "${bkpath}"/bf_rec_fv_core.res.tile1.nc
+  mv "${bkpath}"/fv_tracer.res.tile1.nc "${bkpath}"/bf_rec_fv_tracer.res.tile1.nc
+  mv "${bkpath}"/sfc_data.nc "${bkpath}"/bf_rec_sfc_data.nc
 
-  mv ./rec_fv3sar_tile1_mem${memberstring}_dynvar ${bkpath}/fv_core.res.tile1.nc
-  mv ./rec_fv3sar_tile1_mem${memberstring}_tracer  ${bkpath}/fv_tracer.res.tile1.nc
-  mv ./rec_fv3sar_tile1_mem${memberstring}_sfcvar ${bkpath}/sfc_data.nc
+  mv ./rec_fv3sar_tile1_mem"${memberstring}"_dynvar "${bkpath}"/fv_core.res.tile1.nc
+  mv ./rec_fv3sar_tile1_mem"${memberstring}"_tracer  "${bkpath}"/fv_tracer.res.tile1.nc
+  mv ./rec_fv3sar_tile1_mem"${memberstring}"_sfcvar "${bkpath}"/sfc_data.nc
 done
 fi
 #-----------------------------------------------------------------------
 #
 # touch a file to show completion of the task
 #
-touch ${COMOUT}/recenter_complete.txt
+touch "${COMOUT}"/recenter_complete.txt
 #
 #-----------------------------------------------------------------------
 #

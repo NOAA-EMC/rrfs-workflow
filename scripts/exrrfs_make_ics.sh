@@ -1,14 +1,14 @@
 #!/bin/bash
 set -x
 
-source ${FIXrrfs}/workflow/${WGF}/workflow.conf
+source "${FIXrrfs}"/workflow/"${WGF}"/workflow.conf
 
 export FIXam=${FIXam:-${HOMErrfs}/fix/am}
 export FIXLAM=${FIXLAM:-${HOMErrfs}/fix/lam/RRFS_NA_3km}
 export FIX_GSI="${FIXrrfs}/gsi"
 # export OROG_DIR="${HOMErrfs}/fix/lam/RRFS_NA_3km"
 export THOMPSON_MP_CLIMO_FP="${FIXam}/Thompson_MP_MONTHLY_CLIMO.nc"
-if [ $WGF == "firewx" ]; then
+if [ "${WGF}" == "firewx" ]; then
 #notused?  export CCPP_PHYS_SUITE_FP="${PARMrrfs}/config/${WGF}/suite_RRFS_sas_nogwd.xml"
   export CCPP_PHYS_SUITE='RRFS_sas_nogwd'
 fi
@@ -20,7 +20,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-. $USHrrfs/source_util_funcs.sh
+. "${USHrrfs}"/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -58,12 +58,24 @@ This is the ex-script for the task that generates initial condition
 #
 #-----------------------------------------------------------------------
 #
-if [ ${WGF} = "firewx" ]; then
+if [ "${WGF}" = "firewx" ]; then
   hh="${CDATE:8:2}"
   firewx_loc="${COMrrfs}/firewx_input/rrfs_firewx_loc"
-  if [ -s ${firewx_loc} ]; then
-    LAT_CTR=`grep ${hh}z $firewx_loc | awk '{print $2}'`
-    LON_CTR=`grep ${hh}z $firewx_loc | awk '{print $3}'`
+  if [ -s "${firewx_loc}" ]; then
+    LAT_CTR=""
+    LON_CTR=""
+    if [[ -s "${firewx_loc}" ]]; then
+      # NEW: Replaced dual awk subprocesses with a single native Bash read loop (Zero Subprocess Rule).
+      while read -r target_hh lat lon _rest; do
+        # NEW: Exact match on the first column strictly prevents false positives from the 'index' flaw.
+        if [[ "${target_hh}" == "${hh}z" ]]; then
+          LAT_CTR="${lat}"
+          LON_CTR="${lon}"
+          # NEW: Break immediately stops the loop, preventing multi-line variable corruption.
+          break 
+        fi
+      done < "${firewx_loc}"
+    fi
   else
     echo "WARNING:  Did not find firewx_loc to to set center point.  Will default to DC region"
     LAT_CTR=38.9
@@ -84,8 +96,8 @@ ic_spec_fhrs=$(( 0 + time_offset_hrs ))
 
 hh=${CDATE:8:2}
 yyyymmdd=${CDATE:0:8}
-OFFSETDATE=`$NDATE -${time_offset_hrs} ${yyyymmdd}${hh}`
-export extrn_mdl_cdate="$OFFSETDATE"
+OFFSETDATE=`${NDATE} -"${time_offset_hrs}" "${yyyymmdd}""${hh}"`
+export extrn_mdl_cdate="${OFFSETDATE}"
 
 # Starting year, month, day, and hour of the external model forecast.
 yyyy=${OFFSETDATE:0:4}
@@ -93,7 +105,7 @@ mm=${OFFSETDATE:4:2}
 dd=${OFFSETDATE:6:2}
 hh=${OFFSETDATE:8:2}
 mn="00"
-yyyymmdd=${OFFSETDATE:0:8}
+yyymmdd=${OFFSETDATE:0:8}
 
 fcst_hh=$( printf "%02d" "${ic_spec_fhrs}" )
 fcst_mn="00"
@@ -111,9 +123,9 @@ case "${extrn_mdl_name}" in
       else
         suffix="f0${fcst_hh}.nc"
       fi
-      fns=( "${fns[@]/%/$suffix}" )
+      fns=( "${fns[@]/%/${suffix}}" )
       prefix="gfs.t${hh}z."
-      fns_on_disk=( "${fns[@]/#/$prefix}" )
+      fns_on_disk=( "${fns[@]/#/${prefix}}" )
     fi
     ;;
 
@@ -130,9 +142,19 @@ case "${extrn_mdl_name}" in
     # spacing and name rather than the NA ones. This task runs as the 1.5 km fire weather grid, so
     # the parent domain is not in its environment; take whichever natlev file the parent wrote.
     if [ "${RETRO:-NO}" = "YES" ] && [ ! -e "${sysdir}/${fns_on_disk[0]}" ]; then
-      fn_parent=$( ls -1 ${sysdir}/rrfs.t${hh}z.natlev.*.f0${fcst_hh}.*.grib2 2>/dev/null | head -1 )
+      fn_parent=""
+
+      # Enable nullglob so unmatched globs disappear instead of returning literal asterisks
+      shopt -s nullglob
+      parent_files=( "${sysdir}"/rrfs.t"${hh}"z.natlev.*.f0"${fcst_hh}".*.grib2 )
+      shopt -u nullglob # Disable it immediately after use
+
+      # If the array populated, grab the first index [0] natively
+      if [[ ${#parent_files[@]} -gt 0 ]]; then
+        fn_parent="${parent_files[0]}"
+      fi
       if [ -n "${fn_parent}" ]; then
-        fns_on_disk=( "$( basename ${fn_parent} )" )
+        fns_on_disk=( "$( basename "${fn_parent}" )" )
         print_info_msg "Fire weather ICs: using the parent post file ${fns_on_disk[0]}"
       fi
     fi
@@ -143,7 +165,7 @@ case "${extrn_mdl_name}" in
 esac
 
 extrn_mdl_sysdir="${sysdir}"
-extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
+extrn_mdl_fns_on_disk_str="( $(printf '"%s" ' "${fns_on_disk[@]}"))"
 export use_user_staged_extrn_files="FALSE"
 export extrn_mdl_source_dir="${extrn_mdl_sysdir}"
 export extrn_mdl_staging_dir="${shared_output_data}"
@@ -157,7 +179,7 @@ export extrn_mdl_staging_dir="${shared_output_data}"
 #
 ulimit -a
 
-case "$MACHINE" in
+case "${MACHINE}" in
 
   "WCOSS2")
     export OMP_STACKSIZE=1G
@@ -197,12 +219,12 @@ case "$MACHINE" in
 
 esac
 
-if [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
+if [ "${PREDEF_GRID_NAME}" = "RRFS_FIREWX_1.5km" ]; then
   export FIXLAM=${COMrrfs}/${RUN}.${PDY}/${cyc}/input
 else
   export FIXLAM=${FIXLAM:-${FIXrrfs}/lam/${PREDEF_GRID_NAME}}
 fi
-UFS_UTILS_DIR=${UFS_UTILS_DIR:-$HOMErrfs/sorc/UFS_UTILS}
+UFS_UTILS_DIR=${UFS_UTILS_DIR:-${HOMErrfs}/sorc/UFS_UTILS}
 #
 #-----------------------------------------------------------------------
 #
@@ -215,7 +237,7 @@ UFS_UTILS_DIR=${UFS_UTILS_DIR:-$HOMErrfs/sorc/UFS_UTILS}
 #
 num_files_to_copy="${#fns_on_disk[@]}"
 prefix="${extrn_mdl_source_dir}/"
-extrn_mdl_fps_on_disk=( "${fns_on_disk[@]/#/$prefix}" )
+extrn_mdl_fps_on_disk=( "${fns_on_disk[@]/#/${prefix}}" )
 #
 #-----------------------------------------------------------------------
 #
@@ -242,7 +264,7 @@ for fp in "${extrn_mdl_fps_on_disk[@]}"; do
   #
   # If the external model file exists, then...
   #
-  if [ -f "$fp" ]; then
+  if [ -f "${fp}" ]; then
     #
     # Increment the counter that keeps track of the number of external
     # model files found on disk and print out an informational message.
@@ -250,23 +272,25 @@ for fp in "${extrn_mdl_fps_on_disk[@]}"; do
     num_files_found_on_disk=$(( num_files_found_on_disk+1 ))
     print_info_msg "
 File fp exists on disk:
-  fp = \"$fp\""
+  fp = \"${fp}\""
     #
     # If we are NOT searching for user-staged external model files, then
     # we also check that the current file is at least min_age minutes old.
     #
     if [ "${use_user_staged_extrn_files}" != "TRUE" ]; then
 
-      if [ $( find "$fp" -mmin +${min_age} ) ]; then
+      old_file=$(find "${fp}" -mmin "+${min_age}" -print -quit) || \
+        err_exit "Failed checking file age for ${fp}"
+      if [ -n "${old_file}" ]; then
         print_info_msg "
 File fp is older than the minimum required age of min_age minutes:
-  fp = \"$fp\"
+  fp = \"${fp}\"
   min_age = ${min_age} minutes"
 
       else
         print_info_msg "
 File fp is NOT older than the minumum required age of min_age minutes:
-  fp = \"$fp\"
+  fp = \"${fp}\"
   min_age = ${min_age} minutes
 Not checking presence and age of remaining external model files on disk."
         break
@@ -281,14 +305,15 @@ Not checking presence and age of remaining external model files on disk."
     # in a user-specified directory, print out an error message and exit.
     #
     if [ "${use_user_staged_extrn_files}" = "TRUE" ]; then
+      fns_on_disk_display=$(printf '"%s" ' "${fns_on_disk[@]}")
       err_exit "\
 File fp does NOT exist on disk:
-  fp = \"$fp\"
+  fp = \"${fp}\"
 Please ensure that the directory specified by extrn_mdl_source_dir exists
 and that all the files specified in the array extrn_mdl_fns_on_disk exist
 within it:
   extrn_mdl_source_dir = \"${extrn_mdl_source_dir}\"
-  extrn_mdl_fns_on_disk = ( $( printf "\"%s\" " "${extrn_mdl_fns_on_disk[@]}" ))"
+  extrn_mdl_fns_on_disk = ( ${fns_on_disk_display})"
     #
     # If an external model file is not found and we are searching for it
     # in a system directory, give up on the system directory.
@@ -296,7 +321,7 @@ within it:
     else
       print_info_msg "
 File fp does NOT exist on disk:
-  fp = \"$fp\"
+  fp = \"${fp}\"
 Not checking presence and age of remaining external model files on disk."
       break
 
@@ -310,7 +335,7 @@ done
 #
 #-----------------------------------------------------------------------
 #
-extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
+extrn_mdl_fns_on_disk_str="( $(printf '"%s" ' "${fns_on_disk[@]}"))"
 
 print_info_msg "
 Creating links in staging directory (extrn_mdl_staging_dir) to external
@@ -320,7 +345,7 @@ extrn_mdl_staging_dir = \"${extrn_mdl_staging_dir}\"
 extrn_mdl_source_dir = \"${extrn_mdl_source_dir}\"
 extrn_mdl_fns_on_disk = ${extrn_mdl_fns_on_disk_str}"
 
-cpreq ${extrn_mdl_fps_on_disk[@]} ${extrn_mdl_staging_dir}
+cpreq "${extrn_mdl_fps_on_disk[@]}" "${extrn_mdl_staging_dir}"
 #
 #-----------------------------------------------------------------------
 #
@@ -340,9 +365,8 @@ generating initial conditions and surface fields for the RRFS forecast!!!
 #
 #-----------------------------------------------------------------------
 #
-eval EXTRN_MDL_CDATE=${extrn_mdl_cdate}
-extrn_mdl_fns_str="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
-eval EXTRN_MDL_FNS=${extrn_mdl_fns_str}
+EXTRN_MDL_CDATE="${extrn_mdl_cdate}"
+EXTRN_MDL_FNS=( "${fns_on_disk[@]}" )
 #
 #-----------------------------------------------------------------------
 #
@@ -607,7 +631,7 @@ dd="${EXTRN_MDL_CDATE:6:2}"
 hh="${EXTRN_MDL_CDATE:8:2}"
 
 fhr="${EXTRN_MDL_ICS_OFFSET_HRS}"
-cdate_crnt_fhr=`$NDATE +${fhr} ${yyyymmdd}${hh}`
+cdate_crnt_fhr=`${NDATE} +"${fhr}" "${yyyymmdd}""${hh}"`
 
 #
 # Get the month, day, and hour corresponding to the current forecast time
@@ -643,29 +667,29 @@ hh="${cdate_crnt_fhr:8:2}"
 settings="
 'config': {
  'fix_dir_target_grid': ${FIXLAM},
- 'mosaic_file_target_grid': ${FIXLAM}/${CRES}${DOT_OR_USCORE}mosaic.halo$((10#${NH4})).nc,
+ 'mosaic_file_target_grid': ${FIXLAM}/${CRES}${DOT_OR_USCORE}mosaic.halo$((10#NH4)).nc,
  'orog_dir_target_grid': ${FIXLAM},
- 'orog_files_target_grid': ${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo$((10#${NH4})).nc,
+ 'orog_files_target_grid': ${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo$((10#NH4)).nc,
  'vcoord_file_target_grid': ${FIXam}/${VCOORD_FILE},
  'varmap_file': ${PARMrrfs}/${varmap_file},
  'data_dir_input_grid': ${extrn_mdl_staging_dir},
  'atm_files_input_grid': ${fn_atm},
  'sfc_files_input_grid': ${fn_sfc},
  'grib2_file_input_grid': \"${fn_grib2}\",
- 'cycle_mon': $((10#${mm})),
- 'cycle_day': $((10#${dd})),
- 'cycle_hour': $((10#${hh})),
+ 'cycle_mon': $((10#mm)),
+ 'cycle_day': $((10#dd)),
+ 'cycle_hour': $((10#hh)),
  'convert_atm': True,
  'convert_sfc': True,
  'convert_nst': ${convert_nst},
  'regional': 1,
- 'halo_bndy': $((10#${NH4})),
- 'halo_blend': $((10#${HALO_BLEND})),
+ 'halo_bndy': $((10#NH4)),
+ 'halo_blend': $((10#HALO_BLEND)),
  'input_type': ${input_type},
  'external_model': ${external_model},
  'tracers_input': ${tracers_input},
  'tracers': ${tracers},
- 'nsoill_out': $((10#${nsoill_out})),
+ 'nsoill_out': $((10#nsoill_out)),
  'geogrid_file_input_grid': ${geogrid_file_input_grid},
  'vgtyp_from_climo': ${vgtyp_from_climo},
  'sotyp_from_climo': ${sotyp_from_climo},
@@ -680,7 +704,7 @@ settings="
 # Call the python script to create the namelist file.
 #
 nml_fn="fort.41"
-${USHrrfs}/set_namelist.py -u "$settings" -o ${nml_fn} || \
+"${USHrrfs}"/set_namelist.py -u "${settings}" -o ${nml_fn} || \
   err_exit "\
 Call to python script set_namelist.py to set the variables in the namelist
 file read in by the ${exec_fn} executable failed.  Parameters passed to
@@ -689,7 +713,7 @@ this script are:
     nml_fn = \"${nml_fn}\"
   Namelist settings specified on command line (these have highest precedence):
     settings =
-$settings"
+${settings}"
 #
 #-----------------------------------------------------------------------
 #
@@ -698,16 +722,16 @@ $settings"
 #
 #-----------------------------------------------------------------------
 #
-if [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
-  sp_lon=$(echo "$LON_CTR + 360" | bc -l)
-  sp_lat=$(echo "(90 - $LAT_CTR) * -1" | bc -l)
+if [ "${PREDEF_GRID_NAME}" = "RRFS_FIREWX_1.5km" ]; then
+  sp_lon=$(echo "${LON_CTR} + 360" | bc -l)
+  sp_lat=$(echo "(90 - ${LAT_CTR}) * -1" | bc -l)
   gridspecs="rot-ll:${sp_lon}:${sp_lat}:0 -10:801:0.025 -10:801:0.025"
   fn_grib2_subset=rrfs.t${hh}z.natlev.f000.subset.grib2
 
-  wgrib2 ${extrn_mdl_staging_dir}/${fn_grib2} -set_grib_type c3b -new_grid_winds grid \
-    -new_grid ${gridspecs} ${extrn_mdl_staging_dir}/${fn_grib2_subset}
+  wgrib2 "${extrn_mdl_staging_dir}"/"${fn_grib2}" -set_grib_type c3b -new_grid_winds grid \
+    -new_grid "${gridspecs}" "${extrn_mdl_staging_dir}"/"${fn_grib2_subset}"
   export err=$?; err_chk
-  mv ${extrn_mdl_staging_dir}/${fn_grib2_subset} ${extrn_mdl_staging_dir}/${fn_grib2}
+  mv "${extrn_mdl_staging_dir}"/"${fn_grib2_subset}" "${extrn_mdl_staging_dir}"/"${fn_grib2}"
 fi
 #
 #-----------------------------------------------------------------------
@@ -719,7 +743,7 @@ fi
 export pgm="ufs_util_chgres_cube"
 . prep_step
 
-${APRUN} ${EXECrrfs}/$pgm >>$pgmout 2>errfile
+${APRUN} "${EXECrrfs}"/${pgm} >>"${pgmout}" 2>errfile
 export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
@@ -762,9 +786,10 @@ export err=$?; err_chk
 #
 
 # Check for 1h RRFS EnKF files, if at least one missing then use 1tstep initialization
-if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
+if [[ ${DO_ENS_BLENDING} == "TRUE" && ${EXTRN_MDL_NAME_ICS} = "GDASENKF" ]]; then
 
-  echo "Pre-Blending Starting. `date`"
+  current_time=$(date) || err_exit "Unable to get current time"
+  echo "Pre-Blending Starting. ${current_time}"
   sleep 6
   ulimit -s unlimited
   #Add the size of the variables declared as private and multiply by the OMP_NUMTHREADS
@@ -774,9 +799,9 @@ if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
   export MPICH_OFI_STARTUP_CONNECT=1
 
   # Required FIX files
-  cpreq  $FIXLAM/${CRES}_grid.tile7.nc .
-  cpreq  $FIXLAM/${CRES}_oro_data.tile7.halo0.nc .
-  cpreq  $FIX_GSI/$PREDEF_GRID_NAME/fv3_akbk fv_core.res.nc
+  cpreq  "${FIXLAM}"/"${CRES}"_grid.tile7.nc .
+  cpreq  "${FIXLAM}"/"${CRES}"_oro_data.tile7.halo0.nc .
+  cpreq  "${FIX_GSI}"/"${PREDEF_GRID_NAME}"/fv3_akbk fv_core.res.nc
 
   # Shortcut the file names
   warm=./fv_core.res.tile1.nc
@@ -789,15 +814,16 @@ if [[ $DO_ENS_BLENDING == "TRUE" && $EXTRN_MDL_NAME_ICS = "GDASENKF" ]]; then
 
   # Run convert coldstart files to fv3 restart (rotate winds and remap).
   export OMP_NUM_THREADS=2
-  fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
-  cpreq ${fixgriddir}/cold2warm_all.nc .
+  fixgriddir=${FIX_GSI}/${PREDEF_GRID_NAME}
+  cpreq "${fixgriddir}"/cold2warm_all.nc .
   export pgm1=rrfs_util_fv3lam_pre_blending.exe
 . prep_step
-  ${APRUN_PRE_BLENDING} ${EXECrrfs}/$pgm1 >>$pgmout_pre_blending 2>errfile_pre_blending
+  ${APRUN_PRE_BLENDING} "${EXECrrfs}"/${pgm1} >>"${pgmout_pre_blending}" 2>errfile_pre_blending
   export err=$?; err_chk
-  mv ${DATA}/cold2warm_all.nc ${shared_output_data}/.
+  mv "${DATA}"/cold2warm_all.nc "${shared_output_data}"/.
 
-  echo "Pre-Blending end `date`"
+  current_time=$(date) || err_exit "Unable to get current time"
+  echo "Pre-Blending end ${current_time}"
 
 fi
 #
@@ -807,10 +833,10 @@ fi
 # ary files to umbrella data.
 #-----------------------------------------------------------------------
 #
-cpreq ${DATA}/out.atm.tile${TILE_RGNL}.nc ${shared_output_data}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc
-cpreq ${DATA}/out.sfc.tile${TILE_RGNL}.nc ${shared_output_data}/sfc_data.tile${TILE_RGNL}.halo${NH0}.nc
-cpreq ${DATA}/gfs_ctrl.nc ${shared_output_data}
-cpreq ${DATA}/gfs.bndy.nc ${shared_output_data}/gfs_bndy.tile${TILE_RGNL}.000.nc
+cpreq "${DATA}"/out.atm.tile"${TILE_RGNL}".nc "${shared_output_data}"/gfs_data.tile"${TILE_RGNL}".halo"${NH0}".nc
+cpreq "${DATA}"/out.sfc.tile"${TILE_RGNL}".nc "${shared_output_data}"/sfc_data.tile"${TILE_RGNL}".halo"${NH0}".nc
+cpreq "${DATA}"/gfs_ctrl.nc "${shared_output_data}"
+cpreq "${DATA}"/gfs.bndy.nc "${shared_output_data}"/gfs_bndy.tile"${TILE_RGNL}".000.nc
 #
 #-----------------------------------------------------------------------
 #
@@ -841,12 +867,12 @@ check_for_preexist_dir_file "${extrn_mdl_var_defns_fp}" "delete"
 
 settings="EXTRN_MDL_CDATE=${extrn_mdl_cdate}"
 
-{ cat << EOM >> ${extrn_mdl_var_defns_fp}
-$settings
+{ cat << EOM >> "${extrn_mdl_var_defns_fp}"
+${settings}
 EOM
 }
 export err=$?
-if [ $err -ne 0 ]; then
+if [ ${err} -ne 0 ]; then
   err_exit "\
 Heredoc (cat) command to create a variable definitions file associated
 with the external model from which to generate ${ics_or_lbcs} returned with a

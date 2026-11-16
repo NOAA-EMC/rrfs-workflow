@@ -118,10 +118,10 @@ function set_FV3nml_stoch_params() {
     }"
   fi
 
-  $USHrrfs/set_namelist.py -q \
-                          -n ${fv3_nml_ensmem_fp_base} \
-                          -u "$settings" \
-                          -o ${fv3_nml_ensmem_fp} || \
+  "${USHrrfs}"/set_namelist.py -q \
+                          -n "${fv3_nml_ensmem_fp_base}" \
+                          -u "${settings}" \
+                          -o "${fv3_nml_ensmem_fp}" || \
     print_err_msg_exit "\
 Call to python script set_namelist.py to set the variables in the FV3
 namelist file that specify the paths to the surface climatology files
@@ -132,7 +132,7 @@ failed.  Parameters passed to this script are:
     fv3_nml_ensmem_fp = \"${fv3_nml_ensmem_fp}\"
   Namelist settings specified on command line (these have highest precedence):
     settings =
-$settings"
+${settings}"
 
 }
 

@@ -96,38 +96,38 @@ function set_FV3nml_ens_stoch_seeds() {
   settings="\
 'nam_stochy': {"
 
-  if [ ${DO_SPPT} = TRUE ]; then
+  if [ "${DO_SPPT}" = TRUE ]; then
   
   iseed_sppt=$(( cdate*1000 + ensmem_num*10 + 1 ))
-    settings="$settings
+    settings="${settings}
   'iseed_sppt': ${iseed_sppt},"
   
   fi
 
-  if [ ${DO_SHUM} = TRUE ]; then
+  if [ "${DO_SHUM}" = TRUE ]; then
 
   iseed_shum=$(( cdate*1000 + ensmem_num*10 + 2 ))
-    settings="$settings
+    settings="${settings}
   'iseed_shum': ${iseed_shum},"
 
   fi
 
-  if [ ${DO_SKEB} = TRUE ]; then
+  if [ "${DO_SKEB}" = TRUE ]; then
 
   iseed_skeb=$(( cdate*1000 + ensmem_num*10 + 3 ))
-    settings="$settings
+    settings="${settings}
   'iseed_skeb': ${iseed_skeb},"
   
   fi
-  settings="$settings
+  settings="${settings}
     }"
 
-  settings="$settings
+  settings="${settings}
 'nam_sppperts': {"
 
-  if [ ${DO_SPP} = TRUE ]; then
+  if [ "${DO_SPP}" = TRUE ]; then
 
-    if [ ${DO_ENSFCST_MULPHY} = TRUE ]; then
+    if [ "${DO_ENSFCST_MULPHY}" = TRUE ]; then
       if [ $((ENSMEM_INDX)) = 1 ] || [ $((ENSMEM_INDX)) = 5 ]; then
           ISEED_SPP=(4 5 6 7)
       elif [ $((ENSMEM_INDX)) = 2 ] || [ $((ENSMEM_INDX)) = 3 ]; then
@@ -138,37 +138,37 @@ function set_FV3nml_ens_stoch_seeds() {
     fi
 
   num_iseed_spp=${#ISEED_SPP[@]}
-  for (( i=0; i<${num_iseed_spp}; i++ )); do
-    iseed_spp[$i]=$(( cdate*1000 + ensmem_num*10 + ${ISEED_SPP[$i]} ))
+  for (( i=0; i<num_iseed_spp; i++ )); do
+    iseed_spp[i]=$(( cdate*1000 + ensmem_num*10 + ISEED_SPP[i] ))
   done
 
-    settings="$settings
+    settings="${settings}
   'iseed_spp': [ $( printf "%s, " "${iseed_spp[@]}" ) ],"
   
   fi
 
-  settings="$settings
+  settings="${settings}
     }"
 
-  settings="$settings
+  settings="${settings}
 'nam_sfcperts': {"
 
-  if [ ${DO_LSM_SPP} = TRUE ]; then
+  if [ "${DO_LSM_SPP}" = TRUE ]; then
 
   iseed_lsm_spp=$(( cdate*1000 + ensmem_num*10 + 9))
  
-    settings="$settings
+    settings="${settings}
   'iseed_lndp': [ $( printf "%s, " "${iseed_lsm_spp[@]}" ) ],"
  
   fi
 
-  settings="$settings
+  settings="${settings}
     }"
 
-  $USHrrfs/set_namelist.py -q \
-                          -n ${fv3_nml_ensmem_fp_base} \
-                          -u "$settings" \
-                          -o ${fv3_nml_ensmem_fp} || \
+  "${USHrrfs}"/set_namelist.py -q \
+                          -n "${fv3_nml_ensmem_fp_base}" \
+                          -u "${settings}" \
+                          -o "${fv3_nml_ensmem_fp}" || \
     print_err_msg_exit "\
 Call to python script set_namelist.py to set the variables in the FV3
 namelist file that specify the paths to the surface climatology files
@@ -179,5 +179,5 @@ failed.  Parameters passed to this script are:
     fv3_nml_ensmem_fp = \"${fv3_nml_ensmem_fp}\"
   Namelist settings specified on command line (these have highest precedence):
     settings =
-$settings"
+${settings}"
 }

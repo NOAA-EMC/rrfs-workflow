@@ -1,4 +1,6 @@
 #!/bin/bash
+# Suppress unrelated legacy findings to keep this ShellCheck fix focused.
+# shellcheck disable=SC2002,SC2004,SC2086,SC2126,SC2162,SC2185,SC2235,SC2250,SC2312,SC2335
 set -x
 
 source ${FIXrrfs}/workflow/${WGF}/workflow.conf
@@ -332,7 +334,14 @@ fi
 # files in the run directory.
 #
 suites=( "RRFS_sas" "FV3_RAP" "FV3_HRRR" "FV3_HRRR_gf" "FV3_GFS_v15_thompson_mynn_lam3km" "FV3_GFS_v17_p8" )
-if [[ ${suites[@]} =~ "${CCPP_PHYS_SUITE}" ]] ; then
+suite_match=FALSE
+for suite in "${suites[@]}"; do
+  if [[ ${CCPP_PHYS_SUITE} == "${suite}" ]]; then
+    suite_match=TRUE
+    break
+  fi
+done
+if [[ ${suite_match} == TRUE ]]; then
   fileids=( "ss" "ls" )
   for fileid in "${fileids[@]}"; do
     target="${FIXLAM}/${CRES}${DOT_OR_USCORE}oro_data_${fileid}.tile${TILE_RGNL}.halo${NH0}.nc"
@@ -955,18 +964,18 @@ if [ "${DO_FCST_RESTART}" = "TRUE" ] && [ $coupler_res_ct -gt 0 ] && [ $FCST_LEN
     for (( fhr_to_remove=${FHROT_UPPER_RANGE}; fhr_to_remove>=${FHROT}; fhr_to_remove-- )); do
       fhr_to_remove3d=$( printf "%03d" "${fhr_to_remove}" )
       if [ $fhr_to_remove -eq $FHROT ]; then
-        $(find -type f -name "log.atm.f*${fhr_to_remove3d}*" | grep -v "00-00" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh)
-        $(find -type f -name "dynf*${fhr_to_remove3d}*" | grep -v "00-00" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh)
-        $(find -type f -name "phyf*${fhr_to_remove3d}*" | grep -v "00-00" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh)
+        find -type f -name "log.atm.f*${fhr_to_remove3d}*" | grep -v "00-00" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh
+        find -type f -name "dynf*${fhr_to_remove3d}*" | grep -v "00-00" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh
+        find -type f -name "phyf*${fhr_to_remove3d}*" | grep -v "00-00" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh
         sed -i "/log\.atm\.f${fhr_to_remove3d}/d" output_file_backup.sh
         sed -i "/dynf${fhr_to_remove3d}\.nc/d" output_file_backup.sh
         sed -i "/phyf${fhr_to_remove3d}\.nc/d" output_file_backup.sh
       else
-        $(find -type f -name "log.atm.f*${fhr_to_remove3d}*" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh)
-        $(find -type f -name "dynf*${fhr_to_remove3d}*" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh)
-        $(find -type f -name "phyf*${fhr_to_remove3d}*" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh)
-        $(find -name "phyf*${fhr_to_remove3d}.nc" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh)
-        $(find -name "dynf*${fhr_to_remove3d}.nc" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh)
+        find -type f -name "log.atm.f*${fhr_to_remove3d}*" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh
+        find -type f -name "dynf*${fhr_to_remove3d}*" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh
+        find -type f -name "phyf*${fhr_to_remove3d}*" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh
+        find -name "phyf*${fhr_to_remove3d}.nc" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh
+        find -name "dynf*${fhr_to_remove3d}.nc" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh
       fi
     done
     if [ -s output_file_backup.sh ]; then

@@ -1,3 +1,5 @@
+#!/bin/bash
+set -x
 #
 #-----------------------------------------------------------------------
 #
@@ -88,7 +90,7 @@ where the arguments are defined as follows:
 #
   if [ -e "${dir_or_file}" ]; then
 
-    case "$method" in
+    case "${method}" in
 #
 #-----------------------------------------------------------------------
 #
@@ -124,15 +126,15 @@ where the arguments are defined as follows:
     "upgrade")
       if [[ "${dir_or_file}" == "${EXPTDIR}" ]]; then
         local i=1
-        local old_indx=$( printf "%03d" "$i" )
+        local old_indx=$( printf "%03d" "${i}" )
         local old_dir_or_file="${dir_or_file}_old${old_indx}"
         while [ -d "${old_dir_or_file}" ]; do
-          i=$[$i+1]
-          old_indx=$( printf "%03d" "$i" )
+          i=$(( i + 1 ))
+          old_indx=$( printf "%03d" "${i}" )
           old_dir_or_file="${dir_or_file}_old${old_indx}"
         done
 
-        print_info_msg "$VERBOSE" "
+        print_info_msg "${VERBOSE}" "
   Specified directory or file (dir_or_file) already exists:
     dir_or_file = \"${dir_or_file}\"
   Moving (renaming) preexisting directory or file to:
@@ -152,15 +154,15 @@ where the arguments are defined as follows:
     "rename")
 
       local i=1
-      local old_indx=$( printf "%03d" "$i" )
+      local old_indx=$( printf "%03d" "${i}" )
       local old_dir_or_file="${dir_or_file}_old${old_indx}"
       while [ -e "${old_dir_or_file}" ]; do
-        i=$[$i+1]
-        old_indx=$( printf "%03d" "$i" )
+        i=$(( i + 1 ))
+        old_indx=$( printf "%03d" "${i}" )
         old_dir_or_file="${dir_or_file}_old${old_indx}"
       done
 
-      print_info_msg "$VERBOSE" "
+      print_info_msg "${VERBOSE}" "
 Specified directory or file (dir_or_file) already exists:
   dir_or_file = \"${dir_or_file}\"
 Moving (renaming) preexisting directory or file to:
@@ -189,5 +191,4 @@ Specified directory or file (dir_or_file) already exists:
   fi
 #
 }
-
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 
-source ${FIXrrfs}/workflow/${WGF}/workflow.conf
+source "${FIXrrfs}"/workflow/"${WGF}"/workflow.conf
 
 export FIX_GSI="${FIXrrfs}/gsi"
 
@@ -12,7 +12,7 @@ export FIX_GSI="${FIXrrfs}/gsi"
 #
 #-----------------------------------------------------------------------
 #
-. $USHrrfs/source_util_funcs.sh
+. "${USHrrfs}"/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -49,7 +49,7 @@ with RRFS for the specified cycle.
 #
 ulimit -a
 
-case $MACHINE in
+case ${MACHINE} in
 #
 "WCOSS2")
   APRUN="mpiexec -n 1 -ppn 1"
@@ -103,8 +103,8 @@ PREYYJJJHH=$(date +"%y%j%H" -d "${START_DATE} 1 hours ago")
 #
 #-----------------------------------------------------------------------
 #
-fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
-print_info_msg "$VERBOSE" "fixgriddir is $fixgriddir"
+fixgriddir=${FIX_GSI}/${PREDEF_GRID_NAME}
+print_info_msg "${VERBOSE}" "fixgriddir is ${fixgriddir}"
 #
 #-----------------------------------------------------------------------
 #
@@ -112,7 +112,7 @@ print_info_msg "$VERBOSE" "fixgriddir is $fixgriddir"
 #
 #-----------------------------------------------------------------------
 #
-cpreq -p ${fixgriddir}/fv3_grid_spec  fv3sar_grid_spec.nc
+cpreq -p "${fixgriddir}"/fv3_grid_spec  fv3sar_grid_spec.nc
 #
 #-----------------------------------------------------------------------
 #
@@ -121,7 +121,7 @@ cpreq -p ${fixgriddir}/fv3_grid_spec  fv3sar_grid_spec.nc
 #-----------------------------------------------------------------------
 #
 BUFR_TABLE=${FIX_GSI}/prepobs_prep_RAP.bufrtable
-cpreq -p $BUFR_TABLE prepobs_prep.bufrtable
+cpreq -p "${BUFR_TABLE}" prepobs_prep.bufrtable
 #
 #-----------------------------------------------------------------------
 #
@@ -141,7 +141,7 @@ else
     obs_source=${OBSTYPE_SOURCE}_e
   fi
 
-  case $MACHINE in
+  case ${MACHINE} in
 
   "WCOSS2" | "URSA")
 
@@ -165,12 +165,12 @@ fi
 #
 run_lightning=false
 obs_file=${obspath_tmp}/${obsfileprefix}.t${HH}${SUBH}z.lghtng.tm00.bufr_d
-print_info_msg "$VERBOSE" "obsfile is $obs_file"
+print_info_msg "${VERBOSE}" "obsfile is ${obs_file}"
 if [ -r "${obs_file}" ]; then
    cpreq -p "${obs_file}" "lghtngbufr"
    run_lightning=true
 else
-   print_info_msg "$VERBOSE" "WARNING: ${obs_file} does not exist. Will continue without it (is data of opportunity)"
+   print_info_msg "${VERBOSE}" "WARNING: ${obs_file} does not exist. Will continue without it (is data of opportunity)"
    missing_data_flag=true
    cat << EOF > email_warning.txt
 WARNING: Observation files are not available at the below path:
@@ -220,15 +220,15 @@ EOF
 export pgm="rrfs_util_process_Lightning.exe"
 . prep_step
 
-if [[ "$run_lightning" == true ]]; then
-  $APRUN ${EXECrrfs}/$pgm >>$pgmout 2>errfile
+if [[ "${run_lightning}" == true ]]; then
+  ${APRUN} "${EXECrrfs}"/${pgm} >>"${pgmout}" 2>errfile
   export err=$?; err_chk
   mv errfile errfile_lightning
-  if [ -f ${shared_output_data}/rrfs.t${HH}z.LightningInFV3LAM.bin ] && [ -s ${DATA}/LightningInFV3LAM.dat ]; then
-    rm -f ${shared_output_data}/rrfs.t${HH}z.LightningInFV3LAM.bin
+  if [ -f "${shared_output_data}"/rrfs.t"${HH}"z.LightningInFV3LAM.bin ] && [ -s "${DATA}"/LightningInFV3LAM.dat ]; then
+    rm -f "${shared_output_data}"/rrfs.t"${HH}"z.LightningInFV3LAM.bin
   fi
-  cpreq ${DATA}/LightningInFV3LAM.dat ${shared_output_data}/rrfs.t${HH}z.LightningInFV3LAM.bin
-  cpreq -p LightningInFV3LAM.dat ${COMOUT_ANALYSIS}/rrfs.t${HH}z.LightningInFV3LAM.bin
+  cpreq "${DATA}"/LightningInFV3LAM.dat "${shared_output_data}"/rrfs.t"${HH}"z.LightningInFV3LAM.bin
+  cpreq -p LightningInFV3LAM.dat "${COMOUT_ANALYSIS}"/rrfs.t"${HH}"z.LightningInFV3LAM.bin
 fi
 #
 #-----------------------------------------------------------------------
@@ -238,13 +238,13 @@ fi
 #-----------------------------------------------------------------------
 #
 obs_file=${obspath_tmp}/${obsfileprefix}.t${HH}${SUBH}z.lgycld.tm00.bufr_d
-print_info_msg "$VERBOSE" "obsfile is $obs_file"
+print_info_msg "${VERBOSE}" "obsfile is ${obs_file}"
 run_cloud=false
 if [ -r "${obs_file}" ]; then
    cpreq -p "${obs_file}" "lgycld.bufr_d"
    run_cloud=true
 else
-   print_info_msg "$VERBOSE" "WARNING: ${obs_file} does not exist. Will continue without it (is data of opportunity)"
+   print_info_msg "${VERBOSE}" "WARNING: ${obs_file} does not exist. Will continue without it (is data of opportunity)"
    missing_data_flag=true
    cat << EOF >> email_warning.txt
 WARNING: Observation files are not available at the below path:
@@ -286,7 +286,7 @@ cat << EOF > namelist.nasalarc
  &setup
   analysis_time = ${YYYYMMDDHH},
   bufrfile='NASALaRCCloudInGSI_bufr.bufr',
-  npts_rad=$npts_rad_number,
+  npts_rad=${npts_rad_number},
   ioption = 2,
   grid_type = "${PREDEF_GRID_NAME}",
  /
@@ -301,17 +301,17 @@ EOF
 #
 export pgm="rrfs_util_process_larccld.exe"
 . prep_step
-if [[ "$run_cloud" == true ]]; then
-  $APRUN ${EXECrrfs}/$pgm >>$pgmout 2>errfile
+if [[ "${run_cloud}" == true ]]; then
+  ${APRUN} "${EXECrrfs}"/${pgm} >>"${pgmout}" 2>errfile
   export err=$?; err_chk
   mv errfile errfile_larccld
 
   if [ -s NASALaRC_cloud4fv3.bin ]; then
-    if [ -f ${shared_output_data}/rrfs.t${HH}z.NASALaRC_cloud4fv3.bin ] && [ -s ${DATA}/NASALaRC_cloud4fv3.bin ]; then
-      rm -f ${shared_output_data}/rrfs.t${HH}z.NASALaRC_cloud4fv3.bin
+    if [ -f "${shared_output_data}"/rrfs.t"${HH}"z.NASALaRC_cloud4fv3.bin ] && [ -s "${DATA}"/NASALaRC_cloud4fv3.bin ]; then
+      rm -f "${shared_output_data}"/rrfs.t"${HH}"z.NASALaRC_cloud4fv3.bin
     fi
-    cpreq ${DATA}/NASALaRC_cloud4fv3.bin ${shared_output_data}/rrfs.t${HH}z.NASALaRC_cloud4fv3.bin
-    cpreq -p NASALaRC_cloud4fv3.bin ${COMOUT_ANALYSIS}/rrfs.t${HH}z.NASALaRC_cloud4fv3.bin
+    cpreq "${DATA}"/NASALaRC_cloud4fv3.bin "${shared_output_data}"/rrfs.t"${HH}"z.NASALaRC_cloud4fv3.bin
+    cpreq -p NASALaRC_cloud4fv3.bin "${COMOUT_ANALYSIS}"/rrfs.t"${HH}"z.NASALaRC_cloud4fv3.bin
   fi
 fi
 #
@@ -322,13 +322,13 @@ fi
 #-----------------------------------------------------------------------
 #
 obs_file=${obspath_tmp}/${obsfileprefix}.t${HH}${SUBH}z.prepbufr.tm00 
-print_info_msg "$VERBOSE" "obsfile is $obs_file"
+print_info_msg "${VERBOSE}" "obsfile is ${obs_file}"
 run_metar=false
 if [ -r "${obs_file}" ]; then
    cpreq -p "${obs_file}" "prepbufr"
    run_metar=true
 else
-   print_info_msg "$VERBOSE" "WARNING: ${obs_file} does not exist. Will continue without it (is data of opportunity here)"
+   print_info_msg "${VERBOSE}" "WARNING: ${obs_file} does not exist. Will continue without it (is data of opportunity here)"
    missing_data_flag=true
    cat << EOF >> email_warning.txt
 WARNING: Observation files are not available at the below path:
@@ -344,9 +344,9 @@ EOF
 fi
 
 # only email for det system twice per day
-if [[ "$missing_data_flag" == true && "$WGF" == "det" && "$CYCLE_TYPE" == "prod" ]]; then
-   if [[ "$cyc" == "13" || "$cyc" == "19" ]]; then
-      mail.py -s "Missing Observation Data of Opportunity for RRFS" -v ${MAIL_TO} < email_warning.txt
+if [[ "${missing_data_flag}" == true && "${WGF}" == "det" && "${CYCLE_TYPE}" == "prod" ]]; then
+   if [[ "${cyc}" == "13" || "${cyc}" == "19" ]]; then
+      mail.py -s "Missing Observation Data of Opportunity for RRFS" -v "${MAIL_TO}" < email_warning.txt
    fi
 fi
 
@@ -367,7 +367,7 @@ cat << EOF > namelist.metarcld
   analysis_time = ${YYYYMMDDHH},
   prepbufrfile='prepbufr',
   twindin=0.5,
-  metar_impact_radius=$metar_impact_radius_number,
+  metar_impact_radius=${metar_impact_radius_number},
   grid_type = "${PREDEF_GRID_NAME}",
  /
 EOF
@@ -381,15 +381,15 @@ EOF
 #
 export pgm="rrfs_util_process_metarcld.exe"
 . prep_step
-if [[ "$run_metar" == true ]]; then
-  $APRUN ${EXECrrfs}/$pgm >>$pgmout 2>errfile
+if [[ "${run_metar}" == true ]]; then
+  ${APRUN} "${EXECrrfs}"/${pgm} >>"${pgmout}" 2>errfile
   export err=$?; err_chk
   mv errfile errfile_metarcld
-  if [ -f ${shared_output_data}/rrfs.t${HH}z.fv3_metarcloud.bin ] && [ -s ${DATA}/fv3_metarcloud.bin ]; then
-    rm -f ${shared_output_data}/rrfs.t${HH}z.fv3_metarcloud.bin
+  if [ -f "${shared_output_data}"/rrfs.t"${HH}"z.fv3_metarcloud.bin ] && [ -s "${DATA}"/fv3_metarcloud.bin ]; then
+    rm -f "${shared_output_data}"/rrfs.t"${HH}"z.fv3_metarcloud.bin
   fi
-  cpreq ${DATA}/fv3_metarcloud.bin ${shared_output_data}/rrfs.t${HH}z.fv3_metarcloud.bin
-  cpreq -p fv3_metarcloud.bin ${COMOUT_ANALYSIS}/rrfs.t${HH}z.fv3_metarcloud.bin
+  cpreq "${DATA}"/fv3_metarcloud.bin "${shared_output_data}"/rrfs.t"${HH}"z.fv3_metarcloud.bin
+  cpreq -p fv3_metarcloud.bin "${COMOUT_ANALYSIS}"/rrfs.t"${HH}"z.fv3_metarcloud.bin
 fi
 #
 #-----------------------------------------------------------------------

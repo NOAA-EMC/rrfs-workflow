@@ -1,3 +1,5 @@
+#!/bin/bash
+set -x
 #
 #-----------------------------------------------------------------------
 #
@@ -63,19 +65,19 @@ The arguments to this function are defined as follows:
 Use this function in a script as follows:
 
   . ./is_element_of.sh
-  array_name=("1" "2" "3 4" "5")
+  array_name=(\"1\" \"2\" \"3 4\" \"5\")
 
-  str_to_match="2"
-  is_element_of "${str_to_match}" array_name
-  echo $?  # Should output 0.
+  str_to_match=\"2\"
+  is_element_of \"\${str_to_match}\" array_name
+  echo \$?  # Should output 0.
 
-  str_to_match="3 4"
-  is_element_of "${str_to_match}" array_name
-  echo $?  # Should output 0.
+  str_to_match=\"3 4\"
+  is_element_of \"\${str_to_match}\" array_name
+  echo \$?  # Should output 0.
 
-  str_to_match="6"
-  is_element_of "${str_to_match}" array_name
-  echo $?  # Should output 1.
+  str_to_match=\"6\"
+  is_element_of \"\${str_to_match}\" array_name
+  echo \$?  # Should output 1.
 "
 
   fi
@@ -103,7 +105,7 @@ Use this function in a script as follows:
   array_name="$1"
   str_to_match="$2"
 
-  array_name_at="$array_name[@]"
+  array_name_at="${array_name}[@]"
   array=("${!array_name_at:-}")
 #
 #-----------------------------------------------------------------------
@@ -117,8 +119,8 @@ Use this function in a script as follows:
 #
   found_match=1
   num_elems=${#array[@]}
-  for (( n=0; n<${num_elems}; n++ )); do
-    if [ "${array[$n]}" = "${str_to_match}" ]; then
+  for (( n=0; n<num_elems; n++ )); do
+    if [ "${array[${n}]}" = "${str_to_match}" ]; then
       found_match=0
       break
     fi
@@ -133,4 +135,3 @@ Use this function in a script as follows:
 #
   return ${found_match}
 }
-

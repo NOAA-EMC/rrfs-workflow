@@ -19,7 +19,7 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 # RRFS Non-Var Cloud Analysis
 #-----------------------------------------------------------------------
 export pid=${pid:-$$}
-export outid=${outid:-"LL$job"}
+export outid=${outid:-"LL${job}"}
 case "${WGF}" in
   "det")
     export RUN="rrfs"
@@ -34,7 +34,7 @@ case "${WGF}" in
     export RUN="firewx"
     ;;
 esac
-if [ $WGF = "enkf" ] || [ $WGF = "ensf" ]; then
+if [ "${WGF}" = "enkf" ] || [ "${WGF}" = "ensf" ]; then
   export ENSMEM_INDX=${MEMBER_NAME}
   export mem_num=m$(echo "${ENSMEM_INDX}")
   export DO_ENSEMBLE="TRUE"
@@ -44,7 +44,7 @@ else
   export DO_ENSEMBLE="FALSE"
 fi
 
-case $WGF in
+case ${WGF} in
   det)
     COM_WGF="rrfs"
     ;;
@@ -60,8 +60,8 @@ case $WGF in
 esac
 
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
-export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/${rrfs_ver})}
-if [ ${CYCLE_TYPE} = "spinup" ]; then
+export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/"${rrfs_ver}")}
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
   export umbrella_analysis_data=${umbrella_analysis_data:-${DATAROOT}/rrfs_analysis_gsi_spinup_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}}
   export umbrella_init_data=${umbrella_init_data:-${DATAROOT}/rrfs_init_spinup_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}}
   export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}
@@ -85,8 +85,8 @@ export FORECAST_INPUT_PRODUCT=${umbrella_forecast_data}/INPUT
 export shared_output_data=${umbrella_analysis_data}/output
 export shared_output_data_init=${umbrella_init_data}/output
 export DATA=${DATA:-${DATAROOT}/${jobid}}
-mkdir -p ${DATA} ${shared_output_data} ${shared_output_data_init} ${FORECAST_INPUT_PRODUCT}
-cd ${DATA}
+mkdir -p "${DATA}" "${shared_output_data}" "${shared_output_data_init}" "${FORECAST_INPUT_PRODUCT}"
+cd "${DATA}"
 
 #-----------------------------------------------------------------------
 # Set PDY and define COMOUT
@@ -96,7 +96,7 @@ setpdy.sh
 . ./PDY
 export CDATE="${PDY}${cyc}"
 
-if [ ${CYCLE_TYPE} = "spinup" ]; then
+if [ "${CYCLE_TYPE}" = "spinup" ]; then
   export COMOUT=${COMrrfs}/${COM_WGF}.${PDY}/${cyc}_spinup
 else
   export COMOUT=${COMrrfs}/${COM_WGF}.${PDY}/${cyc}
@@ -106,13 +106,13 @@ if [ "${DO_ENSEMBLE}" = "TRUE" ]; then
   export umbrella_forecast_data=${umbrella_forecast_data}/${mem_num}
 fi
 export COMOUT=${COMOUT}/analysis
-mkdir -p ${COMOUT}
+mkdir -p "${COMOUT}"
 
 #-----------------------------------------------------------------------
 # Source the bash utility functions.
 #-----------------------------------------------------------------------
 
-. $USHrrfs/source_util_funcs.sh
+. "${USHrrfs}"/source_util_funcs.sh
 
 #-----------------------------------------------------------------------
 # Get the full path to the file in which this script/function is located 
@@ -144,14 +144,14 @@ analysis with RRFS for the specified cycle.
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-$HOMErrfs/scripts/exrrfs_analysis_nonvarcld.sh
+"${HOMErrfs}"/scripts/exrrfs_analysis_nonvarcld.sh
 export err=$?; err_chk
 
-if [ -e "$pgmout" ]; then
-  cat $pgmout
+if [ -e "${pgmout}" ]; then
+  cat "${pgmout}"
 fi
 
-echo "ANALYSIS NONVARCLD job is completed" &> ${umbrella_init_data}/analysis_nonvarcld_${CYCLE_TYPE}_clean.flag
+echo "ANALYSIS NONVARCLD job is completed" &> "${umbrella_init_data}"/analysis_nonvarcld_"${CYCLE_TYPE}"_clean.flag
 
 #-----------------------------------------------------------------------
 # Print exit message.
@@ -167,6 +167,6 @@ In directory:    \"${scrfunc_dir}\"
 # Remove the Temporary working directory
 ##################################################
 if [ "${KEEPDATA^^}" != YES ]; then
-  cd $DATAROOT
-  rm -rf $DATA
+  cd "${DATAROOT}"
+  rm -rf "${DATA}"
 fi

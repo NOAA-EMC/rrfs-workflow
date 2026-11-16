@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+# ci-ignore: bash_setx
+# Keep interactive user input out of xtrace logs.
 
 ##########################################
 echo "This script is run by the SDM to create the text file"
@@ -19,16 +21,16 @@ function setfirewx {
    echo "Enter center latitude and longitude points for ${cyc}Z cycle"
    echo "To keep default location as Washington DC, enter 0.0 for both"
    echo "Otherwise format is xx.x -yyy.y"
-   read clat clon
+   read -r clat clon
 
-   if [ $clat != "0.0" ] && [ $clon != "0.0" ]; then
-    lat=$clat
-    lon=$clon
+   if [ "${clat}" != "0.0" ] && [ "${clon}" != "0.0" ]; then
+    lat=${clat}
+    lon=${clon}
    fi
   
    echo
    echo "Run Python script to check whether the center lat/lon are inside the RRFS domain"
-   python $HOMErrfs/ush/rrfsfw_domain.py $lat $lon
+   python "${HOMErrfs}"/ush/rrfsfw_domain.py "${lat}" "${lon}"
 
 }
 
@@ -39,21 +41,23 @@ function setfirewx {
 envir=${envir:-prod}
 
 # in ush
-BASEdir="$(dirname "$(realpath "$0")")"
-HOMErrfs="$BASEdir/.."
+script_fp=$(realpath "$0") || exit 1
+BASEdir=$(dirname "${script_fp}")
+HOMErrfs="${BASEdir}/.."
 
-. ${HOMErrfs}/versions/run.ver
-module load intel/${intel_ver}
-module load ve/rrfs/${rrfs_pythonve_ver}
+. "${HOMErrfs}"/versions/run.ver
+module load intel/"${intel_ver}"
+module load ve/rrfs/"${rrfs_pythonve_ver}"
 
-COMOUT=/lfs/h1/ops/${envir}/com/rrfs/${rrfs_ver_2d}/firewx_input
-if [ ! -e ${COMOUT} ]; then
-  mkdir -p ${COMOUT}
+COMOUT="/lfs/h1/ops/${envir}/com/rrfs/${rrfs_ver_2d}/firewx_input"
+if [ ! -e "${COMOUT}" ]; then
+  mkdir -p "${COMOUT}"
 fi
 
 TMP=/lfs/h1/nco/ptmp
-mkdir -p ${TMP}/`whoami`/firewx_setup
-cd ${TMP}/`whoami`/firewx_setup
+firewx_setup_dir="${TMP}/$(whoami)/firewx_setup"
+mkdir -p "${firewx_setup_dir}"
+cd "${firewx_setup_dir}" || exit 1
 rm rrfs_firewx_loc
 
 ###
@@ -62,7 +66,7 @@ rm rrfs_firewx_loc
 
 ###clear
 endloop=""
-until [ -n "$endloop" ]
+until [ -n "${endloop}" ]
 do
  prcss_points="no"
  enter_dat="no"
@@ -78,9 +82,9 @@ do
  echo "4. Quit"
  echo 
  echo "Please select from the above (1-4):"
- read choice 
+ read -r choice
  
- case "$choice"
+ case "${choice}"
  in
   1) prcss_points="yes" 
      enter_dat="yes";;
@@ -91,9 +95,9 @@ do
      echo "-------------------------"
      for cyc in 00 06 12 18
      do
-      lt=`grep ${cyc}z $COMOUT/rrfs_firewx_loc | awk '{print $2}'`
-      lg=`grep ${cyc}z $COMOUT/rrfs_firewx_loc | awk '{print $3}'`
-      echo "$cyc        $lt     $lg"
+      lt=$(awk -v cycle="${cyc}z" 'index($0, cycle) { print $2 }' "${COMOUT}/rrfs_firewx_loc")
+      lg=$(awk -v cycle="${cyc}z" 'index($0, cycle) { print $3 }' "${COMOUT}/rrfs_firewx_loc")
+      echo "${cyc}        ${lt}     ${lg}"
      done
      echo "exit script"
      exit 0 ;;
@@ -105,19 +109,19 @@ do
      echo "-------------------------"
      for cyc in 00 06 12 18 
      do
-      lt=`grep ${cyc}z $COMOUT/rrfs_firewx_loc | awk '{print $2}'`
-      lg=`grep ${cyc}z $COMOUT/rrfs_firewx_loc | awk '{print $3}'`
-      echo "$cyc	$lt	$lg"
+      lt=$(awk -v cycle="${cyc}z" 'index($0, cycle) { print $2 }' "${COMOUT}/rrfs_firewx_loc")
+      lg=$(awk -v cycle="${cyc}z" 'index($0, cycle) { print $3 }' "${COMOUT}/rrfs_firewx_loc")
+      echo "${cyc}	${lt}	${lg}"
      done ;;
      
   4) endloop="yes";;
 
-  *) echo "You entered $choice...Invalid Choice...try again"  ;;
+  *) echo "You entered ${choice}...Invalid Choice...try again"  ;;
  esac
  
- if [ "$prcss_points" = "yes" ]
+ if [ "${prcss_points}" = "yes" ]
   then
- if [ "$enter_dat" = "yes" ]
+ if [ "${enter_dat}" = "yes" ]
   then
 
   for cyc in 00 06 12 18
@@ -125,10 +129,9 @@ do
 
 # Call setfirewx function to set latitude and longitude
    check="incomplete"
-   while [ ${check} = "incomplete" ] 
+   while [ "${check}" = "incomplete" ]
    do
-    setfirewx
-    if [ $? -ne 0 ]; then
+    if ! setfirewx; then
      echo
      echo "WARNING: Problem with the requested fire weather grid"
      echo "Try again"
@@ -139,7 +142,7 @@ do
 
    echo
    echo "For the ${cyc}Z cycle, the center latitude is ${lat} degrees and the center longitude is ${lon} degrees"
-   echo "${cyc}z $lat $lon" >> rrfs_firewx_loc
+   echo "${cyc}z ${lat} ${lon}" >> rrfs_firewx_loc
 
   done
 
@@ -150,15 +153,15 @@ do
   echo "-------------------------"
   for cyc in 00 06 12 18
   do
-   lt=`grep ${cyc}z rrfs_firewx_loc | awk '{print $2}'`
-   lg=`grep ${cyc}z rrfs_firewx_loc | awk '{print $3}'`
-   echo "$cyc        $lt     $lg"
+   lt=$(awk -v cycle="${cyc}z" 'index($0, cycle) { print $2 }' rrfs_firewx_loc)
+   lg=$(awk -v cycle="${cyc}z" 'index($0, cycle) { print $3 }' rrfs_firewx_loc)
+   echo "${cyc}        ${lt}     ${lg}"
   done
 
-  if [ -s $COMOUT/rrfs_firewx_loc ]; then
-    cp $COMOUT/rrfs_firewx_loc $COMOUT/rrfs_firewx_loc_prev
+  if [ -s "${COMOUT}"/rrfs_firewx_loc ]; then
+    cp "${COMOUT}"/rrfs_firewx_loc "${COMOUT}"/rrfs_firewx_loc_prev
   fi
-  cp rrfs_firewx_loc $COMOUT/rrfs_firewx_loc
+  cp rrfs_firewx_loc "${COMOUT}"/rrfs_firewx_loc
 
   fi #end prscc if statement
 

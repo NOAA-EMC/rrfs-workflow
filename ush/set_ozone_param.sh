@@ -28,7 +28,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-function set_ozone_param() {
+set_ozone_param() {
 #
 #-----------------------------------------------------------------------
 #
@@ -59,8 +59,8 @@ function set_ozone_param() {
 #-----------------------------------------------------------------------
 #
   local valid_args=( \
-"ccpp_phys_suite_fp" \
-"output_varname_ozone_param" \
+    "ccpp_phys_suite_fp" \
+    "output_varname_ozone_param" \
   )
   process_args valid_args "$@"
 #
@@ -81,7 +81,6 @@ function set_ozone_param() {
 #-----------------------------------------------------------------------
 #
   local ozone_param \
-        regex_search \
         fixgsm_ozone_fn \
         i \
         ozone_symlink \
@@ -126,9 +125,9 @@ function set_ozone_param() {
   regex_search="^[ ]*<scheme>(ozphys.*)<\/scheme>[ ]*$"
   ozone_param=$( sed -r -n -e "s/${regex_search}/\1/p" "${ccpp_phys_suite_fp}" )
 
-  if [ "${ozone_param}" = "ozphys_2015" ]; then
+  if [[ "${ozone_param}" == "ozphys_2015" ]]; then
     fixgsm_ozone_fn="ozprdlos_2015_new_sbuvO3_tclm15_nuchem.f77"
-  elif [ "${ozone_param}" = "ozphys" ]; then
+  elif [[ "${ozone_param}" == "ozphys" ]]; then
     fixgsm_ozone_fn="global_o3prdlos.f77"
   else
     fixgsm_ozone_fn="ozprdlos_2015_new_sbuvO3_tclm15_nuchem.f77"
@@ -144,40 +143,40 @@ function set_ozone_param() {
 #
 #-----------------------------------------------------------------------
 #
-i=$(( ${#FIXgsm_FILES_TO_COPY_TO_FIXam[@]} - 1 ))
-FIXgsm_FILES_TO_COPY_TO_FIXam[$i]="${fixgsm_ozone_fn}"
+  i=$(( ${#FIXgsm_FILES_TO_COPY_TO_FIXam[@]} - 1 ))
+  FIXgsm_FILES_TO_COPY_TO_FIXam[i]="${fixgsm_ozone_fn}"
 #
 #-----------------------------------------------------------------------
 #
 # Set the element in the array CYCLEDIR_LINKS_TO_FIXam_FILES_MAPPING that
 # specifies the mapping between the symlink for the ozone production/loss
 # file that must be created in each cycle directory and its target in the 
-# FIXam directory.  The name of the symlink is alrady in the array, but
+# FIXam directory.  The name of the symlink is already in the array, but
 # the target is not because it depends on the ozone parameterization that 
 # the physics suite uses.  Since we determined the ozone parameterization
 # above, we now set the target of the symlink accordingly.
 #
 #-----------------------------------------------------------------------
 #
-ozone_symlink="global_o3prdlos.f77"
-fixgsm_ozone_fn_is_set="FALSE"
-regex_search="^[ ]*([^| ]*)[ ]*[|][ ]*([^| ]*)[ ]*$"
-num_symlinks=${#CYCLEDIR_LINKS_TO_FIXam_FILES_MAPPING[@]}
+  ozone_symlink="global_o3prdlos.f77"
+  fixgsm_ozone_fn_is_set="FALSE"
+  regex_search="^[ ]*([^| ]*)[ ]*[|][ ]*([^| ]*)[ ]*$"
+  num_symlinks=${#CYCLEDIR_LINKS_TO_FIXam_FILES_MAPPING[@]}
 
-for (( i=0; i<${num_symlinks}; i++ )); do
-  mapping="${CYCLEDIR_LINKS_TO_FIXam_FILES_MAPPING[$i]}"
-  symlink=$( printf "%s\n" "$mapping" | \
-             sed -n -r -e "s/${regex_search}/\1/p" )
-  if [ "$symlink" = "${ozone_symlink}" ]; then
-    regex_search="^[ ]*([^| ]+[ ]*)[|][ ]*([^| ]*)[ ]*$"
-    mapping_ozone=$( printf "%s\n" "$mapping" | \
-                     sed -n -r -e "s/${regex_search}/\1/p" )
-    mapping_ozone="${mapping_ozone}| ${fixgsm_ozone_fn}"
-    CYCLEDIR_LINKS_TO_FIXam_FILES_MAPPING[$i]="${mapping_ozone}"
-    fixgsm_ozone_fn_is_set="TRUE"
-    break
-  fi
-done
+  for (( i=0; i<num_symlinks; i++ )); do
+    mapping="${CYCLEDIR_LINKS_TO_FIXam_FILES_MAPPING[i]}"
+    symlink=$( printf "%s\n" "${mapping}" | \
+               sed -n -r -e "s/${regex_search}/\1/p" )
+    if [[ "${symlink}" == "${ozone_symlink}" ]]; then
+      regex_search="^[ ]*([^| ]+[ ]*)[|][ ]*([^| ]*)[ ]*$"
+      mapping_ozone=$( printf "%s\n" "${mapping}" | \
+                       sed -n -r -e "s/${regex_search}/\1/p" )
+      mapping_ozone="${mapping_ozone}| ${fixgsm_ozone_fn}"
+      CYCLEDIR_LINKS_TO_FIXam_FILES_MAPPING[i]="${mapping_ozone}"
+      fixgsm_ozone_fn_is_set="TRUE"
+      break
+    fi
+  done
 #
 #-----------------------------------------------------------------------
 #
@@ -188,9 +187,9 @@ done
 #
 #-----------------------------------------------------------------------
 #
-if [ "${fixgsm_ozone_fn_is_set}" = "TRUE" ]; then
+  if [[ "${fixgsm_ozone_fn_is_set}" == "TRUE" ]]; then
 
-  msg="
+    msg="
 After setting the file name of the ozone production/loss file in the
 FIXgsm directory (based on the ozone parameterization specified in the
 CCPP suite definition file), the array specifying the mapping between
@@ -199,19 +198,19 @@ files in the FIXam directory is:
 
   CYCLEDIR_LINKS_TO_FIXam_FILES_MAPPING = ( \\
 "
-  msg="$msg"$( printf "\"%s\" \\\\\n" "${CYCLEDIR_LINKS_TO_FIXam_FILES_MAPPING[@]}" )
-  msg="$msg"$( printf "\n)" )
-  print_info_msg "$msg"
+    msg="${msg}"$( printf "\"%s\" \\\\\n" "${CYCLEDIR_LINKS_TO_FIXam_FILES_MAPPING[@]}" )
+    msg="${msg}"$( printf "\n)" )
+    print_info_msg "${msg}"
 
-else
+  else
 
-  print_err_msg_exit "\
+    print_err_msg_exit "\
 Unable to set name of the ozone production/loss file in the FIXgsm directory
 in the array that specifies the mapping between the symlinks that need to
 be created in the cycle directories and the files in the FIXgsm directory:
   fixgsm_ozone_fn_is_set = \"${fixgsm_ozone_fn_is_set}\""
 
-fi
+  fi
 #
 #-----------------------------------------------------------------------
 #
@@ -219,6 +218,5 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-  eval ${output_varname_ozone_param}="${ozone_param}"
+  printf -v "${output_varname_ozone_param}" '%s' "${ozone_param}"
 }
-

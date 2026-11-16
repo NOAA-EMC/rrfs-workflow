@@ -1,5 +1,6 @@
 #!/bin/bash
 set -eux
+
 gsi_namelist="
  &SETUP
    miter=${miter},niter(1)=${niter1},niter(2)=${niter2},
@@ -11,10 +12,10 @@ gsi_namelist="
    gencode=78,factqmin=0.0,factqmax=0.0,
    iguess=-1,crtm_coeffs_path='./crtm_coeffs/',
    lread_obs_save=${lread_obs_save},lread_obs_skip=${lread_obs_skip},
-   ${ens_nstarthr:+"ens_nstarthr=$ens_nstarthr,"}
+   ${ens_nstarthr:+"ens_nstarthr=${ens_nstarthr},"}
    oneobtest=.false.,retrieval=.false.,
    nhr_assimilation=3,l_foto=.false.,
-   use_pbl=.false.,use_prepb_satwnd=$ifsatbufr,
+   use_pbl=.false.,use_prepb_satwnd=${ifsatbufr},
    newpc4pred=.true.,adp_anglebc=.true.,angord=4,
    passive_bc=.true.,use_edges=.false.,emiss_bc=.true.,
    diag_precon=.true.,step_start=1.e-3,

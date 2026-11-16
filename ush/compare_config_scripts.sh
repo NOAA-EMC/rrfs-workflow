@@ -1,3 +1,5 @@
+#!/bin/bash
+set -x
 #
 #-----------------------------------------------------------------------
 #
@@ -37,7 +39,7 @@ local func_name="${FUNCNAME[0]}"
 #
 #-----------------------------------------------------------------------
 #
-. ${scrfunc_dir}/source_util_funcs.sh
+. "${scrfunc_dir}"/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -69,7 +71,7 @@ sed -r \
     -e "s/^([ ]*)([^ ]+.*)/\2/g" \
     -e "/^#.*/d" \
     -e "/^$/d" \
-    ${EXPT_DEFAULT_CONFIG_FN} \
+    "${EXPT_DEFAULT_CONFIG_FN}" \
 )
 
 var_list_local=$( \
@@ -77,7 +79,7 @@ sed -r \
     -e "s/^([ ]*)([^ ]+.*)/\2/g" \
     -e "/^#.*/d" \
     -e "/^$/d" \
-    ${EXPT_CONFIG_FN} \
+    "${EXPT_CONFIG_FN}" \
 )
 #
 #-----------------------------------------------------------------------
@@ -90,6 +92,7 @@ sed -r \
 #
 #-----------------------------------------------------------------------
 #
+# shellcheck disable=SC2162
 while read crnt_line; do
 #
 # Note that a variable name will be found only if the equal sign immed-
@@ -148,4 +151,3 @@ done <<< "${var_list_local}"
 #-----------------------------------------------------------------------
 #
 compare_config_scripts
-

@@ -1,3 +1,5 @@
+#!/bin/bash
+set -x
 #
 #-----------------------------------------------------------------------
 #
@@ -123,7 +125,7 @@ are zero or more options and arguments to pass to that command.
 #
 #-----------------------------------------------------------------------
 #
-  local output=$( "$cmd" "$@" 2>&1 )
+  local output=$( "${cmd}" "$@" 2>&1 )
   local exit_code=$?
 #
 #-----------------------------------------------------------------------
@@ -134,7 +136,7 @@ are zero or more options and arguments to pass to that command.
 #
 #-----------------------------------------------------------------------
 #
-  if [ -n "$output" ]; then
+  if [ -n "${output}" ]; then
     local double_space="  "
     output="${double_space}${output}"
     output=${output/$'\n'/$'\n'${double_space}}
@@ -162,8 +164,8 @@ ${script_or_function} in file:
 
   \"${caller_fp}\"
 
-Error message from \"${cmd}_vrfy\" function's \"$cmd\" operation:
-$output"
+Error message from \"${cmd}_vrfy\" function's \"${cmd}\" operation:
+${output}"
 
   fi
 #
@@ -178,8 +180,8 @@ $output"
 #
 #-----------------------------------------------------------------------
 #
-  if [ "$cmd" = "cd" ]; then
-    "$cmd" "$@" 2>&1 > /dev/null
+  if [ "${cmd}" = "cd" ]; then
+    "${cmd}" "$@" > /dev/null
   fi
 #
 #-----------------------------------------------------------------------
@@ -189,7 +191,7 @@ $output"
 #
 #-----------------------------------------------------------------------
 #
-  if [ -n "$output" ]; then
+  if [ -n "${output}" ]; then
 
     print_info_msg "
 \"${cmd}_vrfy\" operation returned with a message.  This command was 
@@ -197,8 +199,8 @@ issued from ${script_or_function} in file:
 
   \"${caller_fp}\"
 
-Message from \"${cmd}_vrfy\" function's \"$cmd\" operation:
-$output"
+Message from \"${cmd}_vrfy\" function's \"${cmd}\" operation:
+${output}"
 
   fi
 #
@@ -254,4 +256,3 @@ function cd_vrfy() {
   set -x
   filesys_cmd_vrfy "cd" "$@"
 }
-

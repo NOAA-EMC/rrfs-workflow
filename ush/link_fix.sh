@@ -4,11 +4,13 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-# This file defines a function that <need to complete>...
+# This file defines a function that creates symlinks in the FIXLAM 
+# directory to grid, orography, and surface climatology files.
 #
 #-----------------------------------------------------------------------
 #
-function link_fix() {
+link_fix() {
+  local original_dir="${PWD}"
 #
 #-----------------------------------------------------------------------
 #
@@ -39,9 +41,9 @@ function link_fix() {
 #-----------------------------------------------------------------------
 #
   local valid_args=( \
-"verbose" \
-"file_group" \
-"output_varname_res_in_filenames" \
+    "verbose" \
+    "file_group" \
+    "output_varname_res_in_filenames" \
   )
   process_args valid_args "$@"
 #
@@ -78,8 +80,12 @@ function link_fix() {
         relative_or_null \
         cres \
         tmp \
+        grid_name \
+        suites \
         fns_sfc_climo_with_halo_in_fn \
         fns_sfc_climo_no_halo_in_fn \
+        fns_sfc_climo_tile7_halo0_in_fn \
+        fns_sfc_climo_tile1_no_halo_in_fn \
         target \
         symlink
 #
@@ -109,7 +115,7 @@ function link_fix() {
 #
 #-----------------------------------------------------------------------
 #
-  print_info_msg "$verbose" "
+  print_info_msg "${verbose}" "
 Creating links in the FIXLAM directory to the grid files..."
 #
 #-----------------------------------------------------------------------
@@ -221,19 +227,19 @@ Creating links in the FIXLAM directory to the grid files..."
 #
   "grid")
     fns=( \
-    "C*${DOT_OR_USCORE}mosaic.halo${NHW}.nc" \
-    "C*${DOT_OR_USCORE}mosaic.halo${NH4}.nc" \
-    "C*${DOT_OR_USCORE}mosaic.halo${NH3}.nc" \
-    "C*${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${NHW}.nc" \
-    "C*${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${NH3}.nc" \
-    "C*${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${NH4}.nc" \
-        )
-    if [ "${DO_NON_DA_RUN}" = "FALSE" ] && [ "${RUN_TASK_MAKE_GRID}" = "FALSE" ]; then
+      "C*${DOT_OR_USCORE}mosaic.halo${NHW}.nc" \
+      "C*${DOT_OR_USCORE}mosaic.halo${NH4}.nc" \
+      "C*${DOT_OR_USCORE}mosaic.halo${NH3}.nc" \
+      "C*${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${NHW}.nc" \
+      "C*${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${NH3}.nc" \
+      "C*${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${NH4}.nc" \
+    )
+    if [[ "${DO_NON_DA_RUN}" == "FALSE" && "${RUN_TASK_MAKE_GRID}" == "FALSE" ]]; then
       grid_name=( "RRFS_CONUS_3km" "RRFS_NA_3km" )
-      if [[ ${grid_name[@]} =~ "${PREDEF_GRID_NAME}" ]] ; then
+      if [[ "${grid_name[*]}" =~ ${PREDEF_GRID_NAME} ]]; then
         fns+=( \
-        "C*${DOT_OR_USCORE}fvcom_mask.nc" \
-             )
+          "C*${DOT_OR_USCORE}fvcom_mask.nc" \
+        )
       fi
     fi
     fps=( "${fns[@]/#/${GRID_DIR}/}" )
@@ -242,15 +248,15 @@ Creating links in the FIXLAM directory to the grid files..."
 #
   "orog")
     fns=( \
-    "C*${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH0}.nc" \
-    "C*${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH4}.nc" \
-        )
+      "C*${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH0}.nc" \
+      "C*${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NH4}.nc" \
+    )
     suites=( "FV3_HRRR" "FV3_RAP" "FV3_HRRR_gf" "FV3_GFS_v15_thompson_mynn_lam3km" "RRFS_sas" )
-    if [[ ${suites[@]} =~ "${CCPP_PHYS_SUITE}" ]] ; then
+    if [[ "${suites[*]}" =~ ${CCPP_PHYS_SUITE} ]]; then
       fns+=( \
-      "C*${DOT_OR_USCORE}oro_data_ss.tile${TILE_RGNL}.halo${NH0}.nc" \
-      "C*${DOT_OR_USCORE}oro_data_ls.tile${TILE_RGNL}.halo${NH0}.nc" \
-           )
+        "C*${DOT_OR_USCORE}oro_data_ss.tile${TILE_RGNL}.halo${NH0}.nc" \
+        "C*${DOT_OR_USCORE}oro_data_ls.tile${TILE_RGNL}.halo${NH0}.nc" \
+      )
     fi
     fps=( "${fns[@]/#/${OROG_DIR}/}" )
     run_task="${RUN_TASK_MAKE_OROG}"
@@ -263,10 +269,10 @@ Creating links in the FIXLAM directory to the grid files..."
   "sfc_climo")
     num_fields=${#SFC_CLIMO_FIELDS[@]}
     fns=()
-    for (( i=0; i<${num_fields}; i++ )); do
+    for (( i=0; i<num_fields; i++ )); do
       ii=$((2*i))
-      fns[$ii]="C*.${SFC_CLIMO_FIELDS[$i]}.tile${TILE_RGNL}.halo${NH0}.nc"
-      fns[$ii+1]="C*.${SFC_CLIMO_FIELDS[$i]}.tile${TILE_RGNL}.halo${NH4}.nc"
+      fns[ii]="C*.${SFC_CLIMO_FIELDS[i]}.tile${TILE_RGNL}.halo${NH0}.nc"
+      fns[ii+1]="C*.${SFC_CLIMO_FIELDS[i]}.tile${TILE_RGNL}.halo${NH4}.nc"
     done
     fps=( "${fns[@]/#/${SFC_CLIMO_DIR}/}" )
     run_task="${RUN_TASK_MAKE_SFC_CLIMO}"
@@ -286,12 +292,13 @@ Creating links in the FIXLAM directory to the grid files..."
   res=""
   fp_prev=""
 
+  # shellcheck disable=SC2068
   for fp in ${fps[@]}; do
 
-    fn=$( basename $fp )
+    fn=$( basename "${fp}" )
   
-    res=$( printf "%s" $fn | sed -n -r -e "s/^C([0-9]*).*/\1/p" )
-    if [ -z $res ]; then
+    res=$( printf "%s" "${fn}" | sed -n -r -e "s/^C([0-9]*).*/\1/p" )
+    if [[ -z "${res}" ]]; then
       print_err_msg_exit "\
 The resolution could not be extracted from the current file's name.  The
 full path to the file (fp) is:
@@ -301,7 +308,7 @@ imply that no files were found that match the globbing pattern specified
 in fp."
     fi
 
-    if [ $i -gt 0 ] && [ ${res} != ${res_prev} ]; then
+    if [[ ${i} -gt 0 && "${res}" != "${res_prev}" ]]; then
       print_err_msg_exit "\
 The resolutions (as obtained from the file names) of the previous and 
 current file (fp_prev and fp, respectively) are different:
@@ -311,8 +318,8 @@ Please ensure that all files have the same resolution."
     fi
 
     i=$((i+1))
-    fp_prev="$fp"
-    res_prev=${res}
+    fp_prev="${fp}"
+    res_prev="${res}"
 
   done
 #
@@ -326,8 +333,8 @@ Please ensure that all files have the same resolution."
 #
 #-----------------------------------------------------------------------
 #
-  if [ ! -z "${output_varname_res_in_filenames}" ]; then
-    eval ${output_varname_res_in_filenames}="$res"
+  if [[ -n "${output_varname_res_in_filenames}" ]]; then
+    printf -v "${output_varname_res_in_filenames}" '%s' "${res}"
   fi
 #
 #-----------------------------------------------------------------------
@@ -338,7 +345,7 @@ Please ensure that all files have the same resolution."
 #
 #-----------------------------------------------------------------------
 #
-  fps=( "${fps[@]/\*/$res}" )
+  fps=( "${fps[@]/\*/${res}}" )
 #
 #-----------------------------------------------------------------------
 #
@@ -348,7 +355,7 @@ Please ensure that all files have the same resolution."
 #
 #-----------------------------------------------------------------------
 #
-  cd "$FIXLAM"
+  cd "${FIXLAM}" || exit 1
 #
 #-----------------------------------------------------------------------
 #
@@ -358,13 +365,13 @@ Please ensure that all files have the same resolution."
 #-----------------------------------------------------------------------
 #
   relative_or_null=""
-  if [ "${run_task}" = "TRUE" ] && [ "${MACHINE}" != "WCOSS_CRAY" ] ; then
+  if [[ "${run_task}" == "TRUE" && "${MACHINE}" != "WCOSS_CRAY" ]]; then
     relative_or_null="--relative"
   fi
 
   for fp in "${fps[@]}"; do
-    if [ -f "$fp" ]; then
-      ln -sf ${relative_or_null} $fp .
+    if [[ -f "${fp}" ]]; then
+      ln -sf ${relative_or_null} "${fp}" .
     else
       print_err_msg_exit "\
 Cannot create symlink because target file (fp) does not exist:
@@ -379,7 +386,7 @@ Cannot create symlink because target file (fp) does not exist:
 #
 #-----------------------------------------------------------------------
 #
-  cres="C$res"
+  cres="C${res}"
 #
 #-----------------------------------------------------------------------
 #
@@ -390,12 +397,12 @@ Cannot create symlink because target file (fp) does not exist:
 #
 #-----------------------------------------------------------------------
 #
-  if [ "${file_group}" = "grid" ]; then
+  if [[ "${file_group}" == "grid" ]]; then
 
     target="${cres}${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${NH4}.nc"
     symlink="${cres}${DOT_OR_USCORE}grid.tile${TILE_RGNL}.nc"
-    if [ -f "${target}" ]; then
-      ln -sf $target $symlink
+    if [[ -f "${target}" ]]; then
+      ln -sf "${target}" "${symlink}"
     else
       print_err_msg_exit "\
 Cannot create symlink because the target file (target) in the directory 
@@ -414,14 +421,14 @@ specified by FIXLAM does not exist:
 # whose name uses the GFDLgrid_RES that points to the link whose name uses
 # the equivalent global uniform resolution.
 #
-    if [ "${RUN_TASK_MAKE_SFC_CLIMO}" = "TRUE" ] && \
-       [ "${GRID_GEN_METHOD}" = "GFDLgrid" ] && \
-       [ "${GFDLgrid_USE_GFDLgrid_RES_IN_FILENAMES}" = "FALSE" ]; then
+    if [[ "${RUN_TASK_MAKE_SFC_CLIMO}" == "TRUE" && \
+          "${GRID_GEN_METHOD}" == "GFDLgrid" && \
+          "${GFDLgrid_USE_GFDLgrid_RES_IN_FILENAMES}" == "FALSE" ]]; then
 
       target="${cres}${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${NH4}.nc"
       symlink="C${GFDLgrid_RES}${DOT_OR_USCORE}grid.tile${TILE_RGNL}.nc"
-      if [ -f "${target}" ]; then
-        ln -sf $target $symlink
+      if [[ -f "${target}" ]]; then
+        ln -sf "${target}" "${symlink}"
       else
         print_err_msg_exit "\
 Cannot create symlink because the target file (target) in the directory 
@@ -443,17 +450,17 @@ specified by FIXLAM does not exist:
 #
 #-----------------------------------------------------------------------
 #
-  if [ "${file_group}" = "sfc_climo" ]; then
+  if [[ "${file_group}" == "sfc_climo" ]]; then
 
     tmp=( "${SFC_CLIMO_FIELDS[@]/#/${cres}.}" )
     fns_sfc_climo_with_halo_in_fn=( "${tmp[@]/%/.tile${TILE_RGNL}.halo${NH4}.nc}" )
     fns_sfc_climo_no_halo_in_fn=( "${tmp[@]/%/.tile${TILE_RGNL}.nc}" )
 
-    for (( i=0; i<${num_fields}; i++ )); do
-      target="${fns_sfc_climo_with_halo_in_fn[$i]}"
-      symlink="${fns_sfc_climo_no_halo_in_fn[$i]}"
-      if [ -f "$target" ]; then
-        ln -sf $target $symlink
+    for (( i=0; i<num_fields; i++ )); do
+      target="${fns_sfc_climo_with_halo_in_fn[i]}"
+      symlink="${fns_sfc_climo_no_halo_in_fn[i]}"
+      if [[ -f "${target}" ]]; then
+        ln -sf "${target}" "${symlink}"
       else
         print_err_msg_exit "\
 Cannot create symlink because target file (target) does not exist:
@@ -471,11 +478,11 @@ Cannot create symlink because target file (target) does not exist:
     fns_sfc_climo_tile7_halo0_in_fn=( "${tmp[@]/%/.tile${TILE_RGNL}.halo${NH0}.nc}" )
     fns_sfc_climo_tile1_no_halo_in_fn=( "${tmp[@]/%/.tile1.nc}" )
 
-    for (( i=0; i<${num_fields}; i++ )); do
-      target="${fns_sfc_climo_tile7_halo0_in_fn[$i]}"
-      symlink="${fns_sfc_climo_tile1_no_halo_in_fn[$i]}"
-      if [ -f "$target" ]; then
-        ln -sf $target $symlink
+    for (( i=0; i<num_fields; i++ )); do
+      target="${fns_sfc_climo_tile7_halo0_in_fn[i]}"
+      symlink="${fns_sfc_climo_tile1_no_halo_in_fn[i]}"
+      if [[ -f "${target}" ]]; then
+        ln -sf "${target}" "${symlink}"
       else
         print_err_msg_exit "\
 Cannot create symlink because target file (target) does not exist:
@@ -491,6 +498,6 @@ Cannot create symlink because target file (target) does not exist:
 #
 #-----------------------------------------------------------------------
 #
-  cd -
+  cd "${original_dir}" || exit 1
 
 }

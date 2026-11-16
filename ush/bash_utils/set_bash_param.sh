@@ -1,3 +1,5 @@
+#!/bin/bash
+set -x
 #
 #-----------------------------------------------------------------------
 #
@@ -87,7 +89,7 @@ where the arguments are defined as follows:
 #-----------------------------------------------------------------------
 #
   print_info_msg "\
-Setting parameter \"$param\" in file \"$file\" to \"$value\" ..."
+Setting parameter \"${param}\" in file \"${file}\" to \"${value}\" ..."
 #
 #-----------------------------------------------------------------------
 #
@@ -100,8 +102,8 @@ Setting parameter \"$param\" in file \"$file\" to \"$value\" ..."
 #
 #-----------------------------------------------------------------------
 #
-  local regex_search="(^\s*$param=)(\".*\")?([^ \"]*)?(\(.*\))?(\s*[#].*)?"
-  local regex_replace="\1\"$value\"\5"
+  local regex_search="(^\s*${param}=)(\".*\")?([^ \"]*)?(\(.*\))?(\s*[#].*)?"
+  local regex_replace="\1\"${value}\"\5"
 #
 #-----------------------------------------------------------------------
 #
@@ -116,8 +118,8 @@ Setting parameter \"$param\" in file \"$file\" to \"$value\" ..."
 Specified file (file_full_path) does not contain the searched-for regu-
 lar expression (regex_search):
   file_full_path = \"${file_full_path}\"
-  param = \"$param\"
-  value = \"$value\"
+  param = \"${param}\"
+  value = \"${value}\"
   regex_search = ${regex_search}"
     }; 
 

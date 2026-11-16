@@ -10,7 +10,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-function set_gridparams_ESGgrid() {
+set_gridparams_ESGgrid() {
 #
 #-----------------------------------------------------------------------
 #
@@ -42,25 +42,25 @@ function set_gridparams_ESGgrid() {
 #-----------------------------------------------------------------------
 #
   local valid_args=( \
-"lon_ctr" \
-"lat_ctr" \
-"nx" \
-"ny" \
-"halo_width" \
-"delx" \
-"dely" \
-"pazi" \
-"output_varname_lon_ctr" \
-"output_varname_lat_ctr" \
-"output_varname_nx" \
-"output_varname_ny" \
-"output_varname_pazi" \
-"output_varname_halo_width" \
-"output_varname_stretch_factor" \
-"output_varname_del_angle_x_sg" \
-"output_varname_del_angle_y_sg" \
-"output_varname_neg_nx_of_dom_with_wide_halo" \
-"output_varname_neg_ny_of_dom_with_wide_halo" \
+    "lon_ctr" \
+    "lat_ctr" \
+    "nx" \
+    "ny" \
+    "halo_width" \
+    "delx" \
+    "dely" \
+    "pazi" \
+    "output_varname_lon_ctr" \
+    "output_varname_lat_ctr" \
+    "output_varname_nx" \
+    "output_varname_ny" \
+    "output_varname_pazi" \
+    "output_varname_halo_width" \
+    "output_varname_stretch_factor" \
+    "output_varname_del_angle_x_sg" \
+    "output_varname_del_angle_y_sg" \
+    "output_varname_neg_nx_of_dom_with_wide_halo" \
+    "output_varname_neg_ny_of_dom_with_wide_halo" \
   )
   process_args valid_args "$@"
 #
@@ -81,7 +81,7 @@ function set_gridparams_ESGgrid() {
 #
 #-----------------------------------------------------------------------
 #
-  . ${USHrrfs}/constants.sh
+  . "${USHrrfs}/constants.sh"
 #
 #-----------------------------------------------------------------------
 #
@@ -127,16 +127,16 @@ function set_gridparams_ESGgrid() {
 #-----------------------------------------------------------------------
 #
   del_angle_x_sg=$( bc -l <<< "(${delx}/(2.0*${radius_Earth}))*${degs_per_radian}" )
-  del_angle_x_sg=$( printf "%0.17f\n" ${del_angle_x_sg} )
+  del_angle_x_sg=$( printf "%0.17f\n" "${del_angle_x_sg}" )
 
   del_angle_y_sg=$( bc -l <<< "(${dely}/(2.0*${radius_Earth}))*${degs_per_radian}" )
-  del_angle_y_sg=$( printf "%0.17f\n" ${del_angle_y_sg} )
+  del_angle_y_sg=$( printf "%0.17f\n" "${del_angle_y_sg}" )
 
-  neg_nx_of_dom_with_wide_halo=$( bc -l <<< "-($nx + 2*${halo_width})" )
-  neg_nx_of_dom_with_wide_halo=$( printf "%.0f\n" ${neg_nx_of_dom_with_wide_halo} )
+  neg_nx_of_dom_with_wide_halo=$( bc -l <<< "-(${nx} + 2*${halo_width})" )
+  neg_nx_of_dom_with_wide_halo=$( printf "%.0f\n" "${neg_nx_of_dom_with_wide_halo}" )
 
-  neg_ny_of_dom_with_wide_halo=$( bc -l <<< "-($ny + 2*${halo_width})" )
-  neg_ny_of_dom_with_wide_halo=$( printf "%.0f\n" ${neg_ny_of_dom_with_wide_halo} )
+  neg_ny_of_dom_with_wide_halo=$( bc -l <<< "-(${ny} + 2*${halo_width})" )
+  neg_ny_of_dom_with_wide_halo=$( printf "%.0f\n" "${neg_ny_of_dom_with_wide_halo}" )
 #
 #-----------------------------------------------------------------------
 #
@@ -144,17 +144,15 @@ function set_gridparams_ESGgrid() {
 #
 #-----------------------------------------------------------------------
 #
-  eval ${output_varname_lon_ctr}="${lon_ctr}"
-  eval ${output_varname_lat_ctr}="${lat_ctr}"
-  eval ${output_varname_nx}="${nx}"
-  eval ${output_varname_ny}="${ny}"
-  eval ${output_varname_pazi}="${pazi}"
-  eval ${output_varname_halo_width}="${halo_width}"
-  eval ${output_varname_stretch_factor}="${stretch_factor}"
-  eval ${output_varname_del_angle_x_sg}="${del_angle_x_sg}"
-  eval ${output_varname_del_angle_y_sg}="${del_angle_y_sg}"
-  eval ${output_varname_neg_nx_of_dom_with_wide_halo}="${neg_nx_of_dom_with_wide_halo}"
-  eval ${output_varname_neg_ny_of_dom_with_wide_halo}="${neg_ny_of_dom_with_wide_halo}"
-#
+  printf -v "${output_varname_lon_ctr}" '%s' "${lon_ctr}"
+  printf -v "${output_varname_lat_ctr}" '%s' "${lat_ctr}"
+  printf -v "${output_varname_nx}" '%s' "${nx}"
+  printf -v "${output_varname_ny}" '%s' "${ny}"
+  printf -v "${output_varname_pazi}" '%s' "${pazi}"
+  printf -v "${output_varname_halo_width}" '%s' "${halo_width}"
+  printf -v "${output_varname_stretch_factor}" '%s' "${stretch_factor}"
+  printf -v "${output_varname_del_angle_x_sg}" '%s' "${del_angle_x_sg}"
+  printf -v "${output_varname_del_angle_y_sg}" '%s' "${del_angle_y_sg}"
+  printf -v "${output_varname_neg_nx_of_dom_with_wide_halo}" '%s' "${neg_nx_of_dom_with_wide_halo}"
+  printf -v "${output_varname_neg_ny_of_dom_with_wide_halo}" '%s' "${neg_ny_of_dom_with_wide_halo}"
 }
-

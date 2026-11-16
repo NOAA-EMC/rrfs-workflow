@@ -18,7 +18,7 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 # RRFS JEDI EnKF Update (GETKF)
 #-----------------------------------------------------------------------
 export pid=${pid:-$$}
-export outid=${outid:-"LL$job"}
+export outid=${outid:-"LL${job}"}
 case "${WGF}" in
   "det")
     export RUN="rrfs"
@@ -37,8 +37,8 @@ esac
 # Define data directories
 #-----------------------------------------------------------------------
 export DATA=${DATA:-${DATAROOT}/${jobid}}
-mkdir -p ${DATA}
-cd ${DATA}
+mkdir -p "${DATA}"
+cd "${DATA}"
 
 export cycle="t${cyc}z"
 setpdy.sh
@@ -47,10 +47,10 @@ export CDATE="${PDY}${cyc}"
 
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ "${CYCLE_TYPE}" == "spinup" ]; then
-  export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc}_spinup)}
+  export COMOUT=${COMOUT:-$(compath.py -o ${NET}/"${rrfs_ver}"/"${RUN}"."${PDY}"/"${cyc}"_spinup)}
   export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_spinup_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}
 else
-  export COMOUT=${COMOUT:-$(compath.py -o ${NET}/${rrfs_ver}/${RUN}.${PDY}/${cyc})}
+  export COMOUT=${COMOUT:-$(compath.py -o ${NET}/"${rrfs_ver}"/"${RUN}"."${PDY}"/"${cyc}")}
   export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}
 fi
   
@@ -59,7 +59,7 @@ export FORECAST_INPUT_PRODUCT=${umbrella_forecast_data}
 # Source the bash utility functions.
 #-----------------------------------------------------------------------
 
-. $USHrrfs/source_util_funcs.sh
+. "${USHrrfs}"/source_util_funcs.sh
 
 #-----------------------------------------------------------------------
 # Get the full path to the file in which this script/function is located 
@@ -91,11 +91,11 @@ update for the specified cycle.
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-$HOMErrfs/scripts/exrrfs_analysis_enkf_jedi.sh
+"${HOMErrfs}"/scripts/exrrfs_analysis_enkf_jedi.sh
 export err=$?; err_chk
 
-if [ -e "$pgmout" ]; then
-  cat $pgmout
+if [ -e "${pgmout}" ]; then
+  cat "${pgmout}"
 fi
 
 #-----------------------------------------------------------------------
@@ -112,6 +112,6 @@ In directory:    \"${scrfunc_dir}\"
 # Remove the Temporary working directory
 ##################################################
 if [ "${KEEPDATA^^}" != YES ]; then
-  cd $DATAROOT
-  rm -rf $DATA
+  cd "${DATAROOT}"
+  rm -rf "${DATA}"
 fi

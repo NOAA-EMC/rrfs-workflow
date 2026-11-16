@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 
-source ${FIXrrfs}/workflow/${WGF}/workflow.conf
+source "${FIXrrfs}"/workflow/"${WGF}"/workflow.conf
 
 #
 #-----------------------------------------------------------------------
@@ -10,7 +10,7 @@ source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 #
 #-----------------------------------------------------------------------
 #
-. $USHrrfs/source_util_funcs.sh
+. "${USHrrfs}"/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -59,7 +59,7 @@ export OB_TYPE=${OB_TYPE}
 #
 ulimit -a
 
-case $MACHINE in
+case ${MACHINE} in
 
 "WCOSS2")
   export FI_OFI_RXM_SAR_LIMIT=3145728
@@ -110,7 +110,7 @@ esac
 #
 START_DATE=$(echo "${CDATE}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
 
-YYYYMMDDHH=$CDATE
+YYYYMMDDHH=${CDATE}
 JJJ=$(date +%j -d "${START_DATE}")
 
 YYYY=${YYYYMMDDHH:0:4}
@@ -127,7 +127,7 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 #
 FIX_GSI="${FIXrrfs}/gsi"
 
-fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
+fixgriddir=${FIX_GSI}/${PREDEF_GRID_NAME}
 
 bkpath=${FORECAST_INPUT_PRODUCT}
 
@@ -146,8 +146,8 @@ fi
 #
 
 if [[ ${BKTYPE} -eq 0 ]] && [[ ${OB_TYPE} =~ "conv" ]] && [[ "${DO_SOIL_ADJUST}" = "TRUE" ]]; then  # warm start
-  ln -s ${bkpath}/*.nc .
-  ln -snf ${fixgriddir}/fv3_grid_spec                fv3_grid_spec
+  ln -s "${bkpath}"/*.nc .
+  ln -snf "${fixgriddir}"/fv3_grid_spec                fv3_grid_spec
 
 cat << EOF > namelist.soiltq
  &setup
@@ -163,7 +163,7 @@ EOF
   export pgm="rrfs_util_adjust_soiltq.exe"
   . prep_step
 
-  $APRUN ${EXECrrfs}/$pgm >>$pgmout 2>errfile
+  ${APRUN} "${EXECrrfs}"/${pgm} >>"${pgmout}" 2>errfile
   export err=$?; err_chk
   mv errfile errfile_adjust_soiltq
 
@@ -177,7 +177,7 @@ fi
 #-----------------------------------------------------------------------
 #
 if [ ${BKTYPE} -eq 0 ] && [ "${DO_UPDATE_BC}" = "TRUE" ]; then  # warm start
-  ln -s ${bkpath}/gfs_bndy.tile7.000.nc .
+  ln -s "${bkpath}"/gfs_bndy.tile7.000.nc .
 
 cat << EOF > namelist.updatebc
  &setup
@@ -190,7 +190,7 @@ EOF
   export pgm="rrfs_util_update_bc.exe"
   . prep_step
 
-  $APRUN ${EXECrrfs}/$pgm >>$pgmout 2>errfile
+  ${APRUN} "${EXECrrfs}"/${pgm} >>"${pgmout}" 2>errfile
   export err=$?; err_chk
   mv errfile errfile_update_bc
 

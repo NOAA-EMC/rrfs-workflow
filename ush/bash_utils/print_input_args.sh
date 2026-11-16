@@ -1,3 +1,5 @@
+#!/bin/bash
+set -x
 #
 #-----------------------------------------------------------------------
 #
@@ -111,7 +113,7 @@ function.
 #
   array_name_valid_caller_args="$1"
   valid_arg_names_0th="${array_name_valid_caller_args}[0]"
-  if [ ${!valid_arg_names_0th:-"__unset__"} = "__unset__" ]; then
+  if [ "${!valid_arg_names_0th:-"__unset__"}" = "__unset__" ]; then
     valid_caller_args=()
   else
     valid_caller_args_at="${array_name_valid_caller_args}[@]"
@@ -133,7 +135,7 @@ function.
     script_or_function="function \"${caller_name}\""
   fi
 
-  if [ ${num_valid_caller_args} -eq 0 ]; then
+  if [ "${num_valid_caller_args}" -eq 0 ]; then
 
     msg="
 No arguments have been passed to ${script_or_function} in file
@@ -151,9 +153,9 @@ The arguments to ${script_or_function} in file
 have been set as follows:
 "
 
-    for (( i=0; i<${num_valid_caller_args}; i++ )); do
-      line=$( declare -p "${valid_caller_args[$i]}" )
-      msg=$( printf "%s\n%s" "$msg" "  $line" )
+    for (( i=0; i<num_valid_caller_args; i++ )); do
+      line=$( declare -p "${valid_caller_args[${i}]}" )
+      msg=$( printf "%s\n%s" "${msg}" "  ${line}" )
     done
 
   fi
@@ -166,10 +168,9 @@ have been set as follows:
 #-----------------------------------------------------------------------
 #
   if [ ! -v VERBOSE ]; then
-    print_info_msg "$msg"
+    print_info_msg "${msg}"
   else
-    print_info_msg "$VERBOSE" "$msg"
+    print_info_msg "${VERBOSE}" "${msg}"
   fi
 #
 }
-

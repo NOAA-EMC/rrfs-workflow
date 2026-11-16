@@ -1,5 +1,4 @@
 #!/bin/bash
-
 set -eux
 
 module load intel
@@ -38,7 +37,7 @@ grid_dir="/scratch3/BMC/fim/Gerard.Ketefian/regional_FV3_EMC_visit_20180509/work
 RAP_grid_fn="/scratch3/BMC/fim/Gerard.Ketefian/regional_FV3_EMC_visit_20180509/geo_em.d01.RAP.nc"
 #RAP_grid_fn="/scratch3/BMC/fim/Gerard.Ketefian/regional_FV3_EMC_visit_20180509/geo_em.d01.HRRR.nc"
 
-if [ 1 = 1 ]; then
+if true; then
 #
 # Show FV3 regional domain (tile 7) and the original RAP domain outline
 # on a cylindrical projection.
@@ -113,105 +112,105 @@ exit
 
 
 
-if [ 0 = 1 ]; then
+if false; then
 #
 # Show FV3 regional domain (tile 7) and the original RAP domain outline
 # on a sphere (orthogonal spherical projection).
 #
 ncl -n plot_fields.ncl \
-  grid_dir=\"$grid_dir\" \
-  res=${RES} \
+  grid_dir=\""${grid_dir}"\" \
+  res="${RES}" \
   tile_inds=\(/7/\) \
   draw_tile_bdy=True \
   draw_tile_grid=False \
   draw_RAP_domain=True \
-  RAP_grid_fn=\"$RAP_grid_fn\" \
+  RAP_grid_fn=\""${RAP_grid_fn}"\" \
   draw_RAP_bdy=True \
   draw_RAP_grid=False \
   map_proj=\"ortho\" \
   map_proj_ctr=\(/-105,50/\) \
   graphics_type=\"png\"
 #
-mv ${CRES}_grid.png ${CRES}rgnl_grid_size_and_RAP_domain_sphr.png
+mv "${CRES}"_grid.png "${CRES}"rgnl_grid_size_and_RAP_domain_sphr.png
 fi
 
 
-if [ 0 = 1 ]; then
+if false; then
 #
 # Show FV3 regional domain (tile 7) and the original RAP domain outline
 # on a sphere (orthogonal spherical projection).
 #
 ncl -n plot_fields.ncl \
-  grid_dir=\"$grid_dir\" \
-  res=${RES} \
+  grid_dir=\""${grid_dir}"\" \
+  res="${RES}" \
   tile_inds=\(/5,6,7/\) \
   draw_tile_bdy=True \
   draw_tile_grid=True \
   draw_RAP_domain=True \
-  RAP_grid_fn=\"$RAP_grid_fn\" \
+  RAP_grid_fn=\""${RAP_grid_fn}"\" \
   draw_RAP_bdy=True \
   draw_RAP_grid=True \
   map_proj=\"cyln\" \
   subreg=\(/-47,-40,15,22/\) \
   graphics_type=\"png\"
 #
-mv ${CRES}_grid.png ${CRES}rgnl_and_RAP_gridlines_cyln_closeup.png
+mv "${CRES}"_grid.png "${CRES}"rgnl_and_RAP_gridlines_cyln_closeup.png
 fi
 
-if [ 0 = 1 ]; then
+if false; then
 #
 # Show FV3 regional domain (tile 7) and the original RAP domain outline
 # on a cylindrical projection.
 #
 ncl -n plot_fields.ncl \
-  grid_dir=\"$grid_dir\" \
-  res=${RES} \
+  grid_dir=\""${grid_dir}"\" \
+  res="${RES}" \
   tile_inds=\(/7/\) \
   draw_tile_bdy=False \
   draw_tile_grid=False \
   draw_RAP_domain=True \
-  RAP_grid_fn=\"$RAP_grid_fn\" \
+  RAP_grid_fn=\""${RAP_grid_fn}"\" \
   draw_RAP_bdy=True \
   draw_RAP_grid=False \
   map_proj=\"cyln\" \
   graphics_type=\"png\"
 #
-mv ${CRES}_grid.png ${CRES}rgnl_RAP_grids_cyln.png
+mv "${CRES}"_grid.png "${CRES}"rgnl_RAP_grids_cyln.png
 
 fi
 
 
-if [ 0 = 1 ]; then
+if false; then
 #
 #
 ncl -n plot_grid.ncl \
-  grid_dir=\"$grid_dir\" \
-  res=${RES} \
+  grid_dir=\""${grid_dir}"\" \
+  res="${RES}" \
   tile_inds=\(/7/\) \
   draw_tile_bdy=False \
   draw_tile_grid=False \
   draw_RAP_domain=True \
-  RAP_grid_fn=\"$RAP_grid_fn\" \
+  RAP_grid_fn=\""${RAP_grid_fn}"\" \
   draw_RAP_bdy=True \
   draw_RAP_grid=True \
   map_proj=\"cyln\" \
   subreg=\(/-130,-60,25,55/\) \
   graphics_type=\"png\"
 #
-mv ${CRES}_grid.png ${CRES}rgnl_RAP_grids_cyln_subreg_CONUS.png
+mv "${CRES}"_grid.png "${CRES}"rgnl_RAP_grids_cyln_subreg_CONUS.png
 
 fi
 
-if [ 0 = 1 ]; then
+if false; then
 #
 ncl -n plot_fields.ncl \
-  grid_dir=\"$grid_dir\" \
-  res=${RES} \
+  grid_dir=\""${grid_dir}"\" \
+  res="${RES}" \
   tile_inds=\(/7/\) \
   draw_tile_bdy=True \
   draw_tile_grid=True \
   draw_RAP_domain=False \
-  RAP_grid_fn=\"$RAP_grid_fn\" \
+  RAP_grid_fn=\""${RAP_grid_fn}"\" \
   draw_RAP_bdy=True \
   draw_RAP_grid=False \
   map_proj=\"cyln\" \
@@ -223,23 +222,23 @@ ncl -n plot_fields.ncl \
 #  subreg=\(/-120,-70,20,70/\) \
 #
 #mv ${CRES}_grid.png ${CRES}rgnl_RAP_grids_cyln_subreg.png
-mv ${CRES}_grid.png ${CRES}rgnl_RAP_grids_cyln.png
+mv "${CRES}"_grid.png "${CRES}"rgnl_RAP_grids_cyln.png
 
 fi
 
 
 
-if [ 0 = 1 ]; then
+if false; then
 #
 #ncl -n plot_fields.ncl \
 ncl -n plot_grid.ncl \
-  grid_dir=\"$grid_dir\" \
-  res=${RES} \
+  grid_dir=\""${grid_dir}"\" \
+  res="${RES}" \
   tile_inds=\(/7/\) \
   draw_tile_bdy=True \
   draw_tile_grid=False \
   draw_RAP_domain=True \
-  RAP_grid_fn=\"$RAP_grid_fn\" \
+  RAP_grid_fn=\""${RAP_grid_fn}"\" \
   draw_RAP_bdy=True \
   draw_RAP_grid=False \
   map_proj=\"cyln\" \
@@ -252,22 +251,22 @@ ncl -n plot_grid.ncl \
 #  subreg=\(/-120,-70,20,70/\) \
 #
 #mv ${CRES}_grid.png ${CRES}rgnl_RAP_fields_cyln_subreg.png
-mv ${CRES}_grid.png ${CRES}rgnl_RAP_fields_cyln.png
+mv "${CRES}"_grid.png "${CRES}"rgnl_RAP_fields_cyln.png
 
 fi
 
 
-if [ 0 = 1 ]; then
+if false; then
 #
 #ncl -n plot_fields.ncl \
 ncl -n plot_grid.ncl \
-  grid_dir=\"$grid_dir\" \
-  res=${RES} \
+  grid_dir=\""${grid_dir}"\" \
+  res="${RES}" \
   tile_inds=\(/7/\) \
   draw_tile_bdy=True \
   draw_tile_grid=False \
   draw_RAP_domain=True \
-  RAP_grid_fn=\"$RAP_grid_fn\" \
+  RAP_grid_fn=\""${RAP_grid_fn}"\" \
   draw_RAP_bdy=True \
   draw_RAP_grid=False \
   map_proj=\"lamb\" \
@@ -288,17 +287,17 @@ ncl -n plot_grid.ncl \
 fi
 
 
-if [ 0 = 1 ]; then
+if false; then
 #
 #ncl -n plot_fields.ncl \
 ncl -n plot_grid.ncl \
-  grid_dir=\"$grid_dir\" \
-  res=${RES} \
+  grid_dir=\""${grid_dir}"\" \
+  res="${RES}" \
   tile_inds=\(/7/\) \
   draw_tile_bdy=True \
   draw_tile_grid=False \
   draw_RAP_domain=False \
-  RAP_grid_fn=\"$RAP_grid_fn\" \
+  RAP_grid_fn=\""${RAP_grid_fn}"\" \
   draw_RAP_bdy=True \
   draw_RAP_grid=False \
   map_proj=\"ortho\" \
@@ -321,7 +320,7 @@ fi
 
 
 
-if [ 0 = 1 ]; then
+if false; then
 ncl -n plot_grid.ncl \
     'grid_dir="./some_dir/grid"' \
     'res=96' \

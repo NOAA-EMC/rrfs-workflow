@@ -1,5 +1,6 @@
-#!/bin/sh
-mydir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+#!/bin/bash
+set -x
+mydir="$( CDPATH= cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ushdir="$(dirname "$mydir")"
 basedir="$(dirname "$ushdir")"
 agentdir="$basedir/fix/.agent"

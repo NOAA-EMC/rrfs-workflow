@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 
-source ${FIXrrfs}/workflow/${WGF}/workflow.conf
+source "${FIXrrfs}"/workflow/"${WGF}"/workflow.conf
 
 export FIX_GSI="${FIXrrfs}/gsi"
 
@@ -12,7 +12,7 @@ export FIX_GSI="${FIXrrfs}/gsi"
 #
 #-----------------------------------------------------------------------
 #
-. $USHrrfs/source_util_funcs.sh
+. "${USHrrfs}"/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -49,7 +49,7 @@ with RRFS for the specified cycle.
 #
 ulimit -a
 
-case $MACHINE in
+case ${MACHINE} in
 #
 "WCOSS2")
   ncores=$(( NNODES_ANALYSIS_NONVARCLD*PPN_ANALYSIS_NONVARCLD ))
@@ -87,7 +87,7 @@ esac
 #-----------------------------------------------------------------------
 #
 START_DATE=$(echo "${CDATE}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
-YYYYMMDDHH=$CDATE
+YYYYMMDDHH=${CDATE}
 JJJ=$(date +%j -d "${START_DATE}")
 
 YYYY=${YYYYMMDDHH:0:4}
@@ -102,8 +102,8 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 #
 #-----------------------------------------------------------------------
 #
-fixgriddir=$FIX_GSI/${PREDEF_GRID_NAME}
-print_info_msg "$VERBOSE" "fixgriddir is $fixgriddir"
+fixgriddir=${FIX_GSI}/${PREDEF_GRID_NAME}
+print_info_msg "${VERBOSE}" "fixgriddir is ${fixgriddir}"
 #
 #-----------------------------------------------------------------------
 #
@@ -113,33 +113,33 @@ print_info_msg "$VERBOSE" "fixgriddir is $fixgriddir"
 #
 bkpath=${FORECAST_INPUT_PRODUCT}
 
-if [ ${l_cld_uncertainty} == ".true." ]; then
+if [ "${l_cld_uncertainty}" == ".true." ]; then
   # Copy analysis fields into uncertainties - data will be overwritten
   echo "exrrfs_analysis_nonvarcld.sh: copy tracer file into uncertainty file "
-  cpreq -p ${bkpath}/fv_tracer.res.tile1.nc  ${bkpath}/fv_tracer.unc.tile1.nc
+  cpreq -p "${bkpath}"/fv_tracer.res.tile1.nc  "${bkpath}"/fv_tracer.unc.tile1.nc
 fi
 
-n_iolayouty=$(($IO_LAYOUT_Y-1))
-list_iolayout=$(seq 0 $n_iolayouty)
+n_iolayouty=$((IO_LAYOUT_Y-1))
+list_iolayout=$(seq 0 ${n_iolayouty})
 
-cpreq -p ${fixgriddir}/fv3_akbk       fv3_akbk
-cpreq -p ${fixgriddir}/fv3_grid_spec  fv3_grid_spec
+cpreq -p "${fixgriddir}"/fv3_akbk       fv3_akbk
+cpreq -p "${fixgriddir}"/fv3_grid_spec  fv3_grid_spec
 
 BKTYPE=0
 if [ -r "${bkpath}/coupler.res" ]; then # Use background from warm restart
 #  if [ "${IO_LAYOUT_Y}" == "1" ]; then
-  ln -s ${bkpath}/fv_core.res.tile1.nc         fv3_dynvars
-  ln -s ${bkpath}/fv_tracer.res.tile1.nc       fv3_tracer
-  if [ ${l_cld_uncertainty} == ".true." ]; then
-    ln -s ${bkpath}/fv_tracer.unc.tile1.nc     fv3_tracer_unc
+  ln -s "${bkpath}"/fv_core.res.tile1.nc         fv3_dynvars
+  ln -s "${bkpath}"/fv_tracer.res.tile1.nc       fv3_tracer
+  if [ "${l_cld_uncertainty}" == ".true." ]; then
+    ln -s "${bkpath}"/fv_tracer.unc.tile1.nc     fv3_tracer_unc
   fi
-  ln -s ${bkpath}/sfc_data.nc                  fv3_sfcdata
-  ln -s ${bkpath}/phy_data.nc                  fv3_phydata
+  ln -s "${bkpath}"/sfc_data.nc                  fv3_sfcdata
+  ln -s "${bkpath}"/phy_data.nc                  fv3_phydata
   BKTYPE=0
 else                                   # Use background from input (cold start)
-  ln -s ${bkpath}/sfc_data.tile7.halo0.nc      fv3_sfcdata
-  ln -s ${bkpath}/gfs_data.tile7.halo0.nc      fv3_dynvars
-  ln -s ${bkpath}/gfs_data.tile7.halo0.nc      fv3_tracer
+  ln -s "${bkpath}"/sfc_data.tile7.halo0.nc      fv3_sfcdata
+  ln -s "${bkpath}"/gfs_data.tile7.halo0.nc      fv3_dynvars
+  ln -s "${bkpath}"/gfs_data.tile7.halo0.nc      fv3_tracer
   BKTYPE=1
 fi
 #
@@ -159,21 +159,20 @@ obs_files_source[2]=${shared_output_data_init}/rrfs.t${HH}z.LightningInFV3LAM.bi
 obs_files_target[2]=LightningInFV3LAM.dat
 
 obs_number=${#obs_files_source[@]}
-for (( i=0; i<${obs_number}; i++ ));
+for (( i=0; i<obs_number; i++ ));
 do
-  obs_file=${obs_files_source[$i]}
-  obs_file_t=${obs_files_target[$i]}
+  obs_file=${obs_files_source[i]}
+  obs_file_t=${obs_files_target[i]}
   if [ -r "${obs_file}" ]; then
     cpreq -p "${obs_file}" "${obs_file_t}"
   else
-    print_info_msg "$VERBOSE" "Warning: ${obs_file} does not exist!"
+    print_info_msg "${VERBOSE}" "Warning: ${obs_file} does not exist!"
   fi
 done
 
 # radar reflectivity on esg grid over each subdomain.
 ss=0
-for bigmin in 0; do
-  bigmin=$( printf %2.2i $bigmin )
+bigmin="00"
   obs_file=${shared_output_data_init}/rrfs.t${HH}z.RefInGSI3D.bin.${bigmin}
   if [ "${IO_LAYOUT_Y}" == "1" ]; then
     obs_file_check=${obs_file}
@@ -188,14 +187,13 @@ for bigmin in 0; do
      else
        for ii in ${list_iolayout}
        do
-         iii=$(printf %4.4i $ii)
+         iii=$(printf %4.4i "${ii}")
          cpreq -p "${obs_file}.${iii}" "RefInGSI3D.dat.${iii}_${num}"
        done
      fi
   else
-     print_info_msg "$VERBOSE" "Warning: ${obs_file} does not exist!"
+     print_info_msg "${VERBOSE}" "Warning: ${obs_file} does not exist!"
   fi
-done
 #
 #-----------------------------------------------------------------------
 #
@@ -213,9 +211,9 @@ l_qnr_from_qr=${l_qnr_from_qr:-".false."}
 if [ ${BKTYPE} -eq 1 ]; then
   n_iolayouty=1
 else
-  n_iolayouty=$(($IO_LAYOUT_Y))
+  n_iolayouty=$((IO_LAYOUT_Y))
 fi
-if [ ${RUN} == "enkfrrfs" ]; then
+if [ "${RUN}" == "enkfrrfs" ]; then
    cld_bld_hgt=0.0
    l_precip_clear_only=.true.
    if [ "${DO_ENKF_RADAR_REF}" = "TRUE" ]; then
@@ -284,7 +282,7 @@ export pgm="rrfs_util_fv3lam_nonvarcldana.exe"
 . prep_step
 
 if [ ${BKTYPE} -eq 0 ]; then
-  $APRUN ${EXECrrfs}/$pgm >>$pgmout 2>errfile
+  ${APRUN} "${EXECrrfs}"/${pgm} >>"${pgmout}" 2>errfile
   export err=$?; err_chk
 fi
 #
@@ -294,7 +292,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-touch ${COMOUT}/analysis_nonvarcld_complete.txt
+touch "${COMOUT}"/analysis_nonvarcld_complete.txt
 #
 #-----------------------------------------------------------------------
 #
