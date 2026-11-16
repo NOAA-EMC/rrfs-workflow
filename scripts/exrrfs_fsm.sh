@@ -59,29 +59,29 @@ shifted_cycle=$(${NDATE} +3 "${CDATE}")
 RRFS_next_3_PDY=${shifted_cycle:0:8}
 RRFS_next_3_cyc=${shifted_cycle:8:2}
 current_PDY_6hr_fmt=${PDY}
-if [ $((10#RRFS_Current_cyc)) -ge 0 ] && [ $((10#RRFS_Current_cyc)) -le 5 ]; then
+if [ $((10#${RRFS_Current_cyc})) -ge 0 ] && [ $((10#${RRFS_Current_cyc})) -le 5 ]; then
   current_cyc_6hr_fmt="00"
 fi
-if [ $((10#RRFS_Current_cyc)) -ge 6 ] && [ $((10#RRFS_Current_cyc)) -le 11 ]; then
+if [ $((10#${RRFS_Current_cyc})) -ge 6 ] && [ $((10#${RRFS_Current_cyc})) -le 11 ]; then
   current_cyc_6hr_fmt="06"
 fi
-if [ $((10#RRFS_Current_cyc)) -ge 12 ] && [ $((10#RRFS_Current_cyc)) -le 17 ]; then
+if [ $((10#${RRFS_Current_cyc})) -ge 12 ] && [ $((10#${RRFS_Current_cyc})) -le 17 ]; then
   current_cyc_6hr_fmt="12"
 fi
-if [ $((10#RRFS_Current_cyc)) -ge 18 ] && [ $((10#RRFS_Current_cyc)) -le 23 ]; then
+if [ $((10#${RRFS_Current_cyc})) -ge 18 ] && [ $((10#${RRFS_Current_cyc})) -le 23 ]; then
   current_cyc_6hr_fmt="18"
 fi
 prior_PDY_6hr_fmt=${RRFS_previous_PDY}
-if [ $((10#RRFS_previous_cyc)) -ge 0 ] && [ $((10#RRFS_previous_cyc)) -le 5 ]; then
+if [ $((10#${RRFS_previous_cyc})) -ge 0 ] && [ $((10#${RRFS_previous_cyc})) -le 5 ]; then
   previous_cyc_6hr_fmt="00"
 fi
-if [ $((10#RRFS_previous_cyc)) -ge 6 ] && [ $((10#RRFS_previous_cyc)) -le 11 ]; then
+if [ $((10#${RRFS_previous_cyc})) -ge 6 ] && [ $((10#${RRFS_previous_cyc})) -le 11 ]; then
   previous_cyc_6hr_fmt="06"
 fi
-if [ $((10#RRFS_previous_cyc)) -ge 12 ] && [ $((10#RRFS_previous_cyc)) -le 17 ]; then
+if [ $((10#${RRFS_previous_cyc})) -ge 12 ] && [ $((10#${RRFS_previous_cyc})) -le 17 ]; then
   previous_cyc_6hr_fmt="12"
 fi
-if [ $((10#RRFS_previous_cyc)) -ge 18 ] && [ $((10#RRFS_previous_cyc)) -le 23 ]; then
+if [ $((10#${RRFS_previous_cyc})) -ge 18 ] && [ $((10#${RRFS_previous_cyc})) -le 23 ]; then
   previous_cyc_6hr_fmt="18"
 fi
 
@@ -321,7 +321,7 @@ for fhr in $(seq 0 60); do
   fhr_3d=$( printf "%03d" "${fhr}" )
   memuse=$( printf "%03d" "${mem}" )
   search_str=${memuse}${fhr_3d}00
-  array_element_scan_release_ensf_post[$((10#search_str))]="NO"
+  array_element_scan_release_ensf_post[$((10#${search_str}))]="NO"
 done
 done
 
@@ -624,8 +624,8 @@ while [ ${proceed_trigger_scan} == "YES" ]; do
         fc=$(count_matching_files "${umbrella_forecast_data}"/log.atm.f"${fhr_3d}"*)
         if [ "${fc}" -gt 0 ]; then
           search_str=${memuse}${fhr_3d}00
-          if [ "${array_element_scan_release_ensf_post[$((10#search_str))]}" == "NO" ]; then
-            array_element_scan_release_ensf_post[$((10#search_str))]="found"
+          if [ "${array_element_scan_release_ensf_post[$((10#${search_str}))]}" == "NO" ]; then
+            array_element_scan_release_ensf_post[$((10#${search_str}))]="found"
             ecflow_client --event release_ensf_post_mem"${memuse}"_f"${fhr_3d}"
           fi
         else
