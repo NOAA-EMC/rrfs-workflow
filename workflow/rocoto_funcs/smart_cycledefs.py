@@ -82,6 +82,7 @@ def smart_cycledefs():
     else:
         dcCycledef['prod'] = f'{cycledef_prod}'
     #
+    dcCycledef['viirs'] = {'valid_hours': '17 18 19 20 21 22', 'cycledef': f'{cycledef_prod}'}
     if recenter:
         dcCycledef['recenter'] = f'{cycledef_recenter}'
     #
