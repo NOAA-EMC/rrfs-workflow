@@ -162,8 +162,6 @@ jobs:
 
           EOF
 
-
-
           if [ -f rrfs-workflow/docs/source/index.rst ]; then
             if ! grep -q "ci_guidance"                 rrfs-workflow/docs/source/index.rst; then
               sed -i '/.. toctree::/a \   ci_guidance'                 rrfs-workflow/docs/source/index.rst
