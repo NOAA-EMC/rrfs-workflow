@@ -8,8 +8,7 @@ export FIXLAM=${FIXLAM:-${HOMErrfs}/fix/lam/RRFS_NA_3km}
 export FIX_GSI="${FIXrrfs}/gsi"
 export OBSPATH_NSSLMOSIAC="${DCOMROOT}/ldmdata/obs/upperair/mrms/conus/MergedReflectivityQC"
 export RDASAPP_DIR="${RDASAPP_DIR:-${HOMErrfs}/sorc/RDASApp}"
-export DO_IODA_MRMS=${DO_IODA_MRMS:-"TRUE"}
-export DO_IODA_MRMS="TRUE"
+export DO_IODA_MRMS=${DO_IODA_MRMS:-"FALSE"}
 
 #
 #-----------------------------------------------------------------------
