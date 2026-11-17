@@ -6,9 +6,10 @@ export NET=rrfs                    # rrfs, rtma,
 export MESH_NAME=conus3km         # conus12km, conus3km, na12km, etc
 export WGF="enkf"   # working group function = "det", "enkf", "ens", "firewx"
 export VERSION=$(cat ./VERSION)
-export EXP_NAME=RRFSv2
-export TAG=errfsv2
+export EXP_NAME=RRFSv2X
+export TAG=errfsv2x
 export OPSROOT=/scratch3/BMC/wrfruc/gge/OPSROOT/${EXP_NAME}
+#export OPSROOT=/scratch3/BMC/rtwrfruc/RRFSv2X/NCO_dirs/${EXP_NAME}
 export EXPDIR=${OPSROOT}/exp/${NET}${WGF}
 export COMROOT=${OPSROOT}/com      # task input and output data as well as logs
 export DATAROOT=${OPSROOT}/stmp    # task workdirs ($DATA) which to be removed immediately upon task completion unless KEEPDATA=YES
@@ -30,7 +31,7 @@ export DO_JEDI=true
 export DO_CHEMISTRY=false
 export GETKF_ONESTEP=true
 export DO_NONVAR_CLOUD_ANA=true
-export COLDSTART_CYCS_DO_DA=true
+export COLDSTART_CYCS_DO_DA=false
 export DO_RECENTER=true
 export RECENTER_TEMPLATE=CONTROL
 export DO_RADAR_REF=true
@@ -80,7 +81,7 @@ export TASKTHROTTLE=60
 if [[ "${REALTIME^^}" == "TRUE" ]]; then
   export DO_GETKF_POST=false
   export SAVE_GETKF_ANL=false
-  export MAXTRIES=3
+  export MAXTRIES=2
   export CLEAN_BACK_DAYS=2
   export STMP_RETENTION_CYCS=18
   export COM_RETENTION_CYCS='{"default": 48, "lbc,fcst": 36}'   # use " inside and ' outside
@@ -94,6 +95,7 @@ if [[ "${REALTIME^^}" == "TRUE" ]]; then
   export STARTTIME_NONVAR_REFLOBS="00:40:00"
   export STARTTIME_NONVAR_BUFROBS="00:40:00"
   export STARTTIME_IODA_MRMS_REFL="00:40:00"
+  export STARTTIME_RECENTER="12:00:00"
   export STARTTIME_GETKF="00:30:00"
   export STARTTIME_FCST="00:15:00"
   export STARTTIME_MPASSIT="00:05:00"
@@ -108,6 +110,7 @@ if [[ "${REALTIME^^}" == "TRUE" ]]; then
 else # ========== for retros ==========
   export DO_GETKF_POST=true
   export SAVE_GETKF_ANL=true
+  export SAVE_NONVAR_CLOUD_ANA=true
   export IC_EXTRN_MDL_FILENAME_PATTERN="gefs.@Y@m@d/@H/pgrb2ap5/gep#gmem#.t@Hz.pgrb2a.0p50.f^HHH^"
   export IC_EXTRN_MDL_FILENAME_PATTERN_B="gefs.@Y@m@d/@H/pgrb2bp5/gep#gmem#.t@Hz.pgrb2b.0p50.f^HHH^"
 fi
@@ -175,6 +178,19 @@ case ${MACHINE} in
     fi
     ;;
   "ursa")
+    export PARTITION="u1-compute"
+    export NODES_IC="<nodes>10:ppn=160</nodes>"
+    export NODES_LBC="<nodes>10:ppn=160</nodes>"
+    export NODES_FCST="<nodes>10:ppn=160</nodes>"
+    export NODES_MPASSIT="<nodes>1:ppn=160</nodes>"
+    export NODES_UPP="<nodes>1:ppn=80</nodes>"
+    export NODES_RECENTER="<nodes>1:ppn=32</nodes>"
+    export NODES_GETKF="<nodes>20:ppn=40</nodes>"
+    export WALLTIME_PREP_IC="0:20:00"
+    export WALLTIME_FCST="0:30:00"
+    export WALLTIME_MPASSIT="2:00:00"
+    export WALLTIME_UPP="2:00:00"
+    export WALLTIME_GETKF="00:30:00"
     if [[ "${REALTIME^^}" == "TRUE" ]]; then
       export IC_EXTRN_MDL_BASEDIR="/public/data/grids/gefs/ncep"
       export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
@@ -182,6 +198,9 @@ case ${MACHINE} in
       export OBSPATH_NSSLMOSAIC="/public/data/radar/mrms"
       export ACCOUNT="rtwrfruc"
       export QUEUE="hpq"  # "windfall"
+      export NODES_IC="<nodes>1:ppn=192</nodes>"
+      export NODES_LBC="<nodes>1:ppn=192</nodes>"
+      export NODES_FCST="<nodes>4:ppn=160</nodes>"
     else
       export IC_EXTRN_MDL_BASEDIR="/scratch4/BMC/rtrr/RRFS2_RETRO_DATA/May2024/GEFS"
       export LBC_EXTRN_MDL_BASEDIR=${IC_EXTRN_MDL_BASEDIR}
@@ -191,18 +210,6 @@ case ${MACHINE} in
       export ACCOUNT="wrfruc"
       export QUEUE="batch"
     fi
-    export PARTITION="u1-compute"
-    export NODES_IC="<nodes>10:ppn=160</nodes>"
-    export NODES_LBC="<nodes>10:ppn=160</nodes>"
-    export NODES_FCST="<nodes>10:ppn=160</nodes>"
-    export NODES_MPASSIT="<nodes>1:ppn=160</nodes>"
-    export NODES_UPP="<nodes>1:ppn=80</nodes>"
-    export NODES_RECENTER="<nodes>1:ppn=32</nodes>"
-    export NODES_GETKF="<nodes>20:ppn=40</nodes>"
-    export WALLTIME_FCST="2:00:00"
-    export WALLTIME_MPASSIT="2:00:00"
-    export WALLTIME_UPP="2:00:00"
-    export WALLTIME_GETKF="00:30:00"
     ;;
   "gaeac6")
     if [[ "${REALTIME^^}" == "TRUE" ]]; then

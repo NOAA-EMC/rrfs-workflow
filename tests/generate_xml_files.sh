@@ -87,12 +87,12 @@ myexp=conus3km_det
 myfile=${wflow}/exp/exp.${myexp}
 sed 's|^export OPSROOT=/scratch3/BMC/wrfruc/gge/OPSROOT/${EXP_NAME}|export OPSROOT=./OPSROOT/${EXP_NAME}|' "${myfile}" > "exp.test"
 ./setup_rocoto.py "exp.test"
-mv "OPSROOT/RRFSv2/exp/rrfsdet/rrfs.xml" "${rundir}/xml/${myexp}_retro.xml"
+mv "OPSROOT/RRFSv2X/exp/rrfsdet/rrfs.xml" "${rundir}/xml/${myexp}_retro.xml"
 
 echo -e "\n----------conus3km_det realtime----------"
 { cat "exp.test"; echo -e 'export REALTIME=true'; } > exp.tmp
 ./setup_rocoto.py exp.tmp
-mv "OPSROOT/RRFSv2/exp/rrfsdet/rrfs.xml" "${rundir}/xml/${myexp}_rt.xml"
+mv "OPSROOT/RRFSv2X/exp/rrfsdet/rrfs.xml" "${rundir}/xml/${myexp}_rt.xml"
 
 # conus3km_enkf
 echo -e "\n----------conus3km_enkf org----------"
@@ -100,12 +100,12 @@ myexp=conus3km_enkf
 myfile=${wflow}/exp/exp.${myexp}
 sed 's|^export OPSROOT=/scratch3/BMC/wrfruc/gge/OPSROOT/${EXP_NAME}|export OPSROOT=./OPSROOT/${EXP_NAME}|' "${myfile}" > "exp.test"
 ./setup_rocoto.py "exp.test"
-mv "OPSROOT/RRFSv2/exp/rrfsenkf/rrfs.xml" "${rundir}/xml/${myexp}_retro.xml"
+mv "OPSROOT/RRFSv2X/exp/rrfsenkf/rrfs.xml" "${rundir}/xml/${myexp}_retro.xml"
 
 echo -e "\n----------conus3km_enkf realtime----------"
 { cat "exp.test"; echo -e 'export REALTIME=true'; } > exp.tmp
 ./setup_rocoto.py exp.tmp
-mv "OPSROOT/RRFSv2/exp/rrfsenkf/rrfs.xml" "${rundir}/xml/${myexp}_rt.xml"
+mv "OPSROOT/RRFSv2X/exp/rrfsenkf/rrfs.xml" "${rundir}/xml/${myexp}_rt.xml"
 
 
 # ----------------------------------------------------------------------------------------------------
