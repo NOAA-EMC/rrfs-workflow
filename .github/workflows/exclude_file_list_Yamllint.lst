@@ -1,3 +1,4 @@
+./github/workflows/docs.yml
 ./sorc/manage_externals/.travis.yml
 ./sorc/_workaround_/*
 ./parm/jedi/*
