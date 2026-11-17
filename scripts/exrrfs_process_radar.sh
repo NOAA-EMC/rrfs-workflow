@@ -187,8 +187,12 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
   #
   case $MACHINE in
   "WCOSS2")
-    #obs_appendix=grib2.gz
-    obs_appendix=grib2
+    # operational dcom MRMS is gzipped; staged retro MRMS is plain grib2
+    if [ "${RETRO:-NO}" = "YES" ]; then
+      obs_appendix=grib2
+    else
+      obs_appendix=grib2.gz
+    fi
     ;;
   "JET" | "HERA" | "ORION" | "HERCULES" | "URSA")
     obs_appendix=grib2
