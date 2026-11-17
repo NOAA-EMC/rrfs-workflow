@@ -93,6 +93,8 @@ def setup_xml(HOMErrfs, expdir):
             if os.getenv("DO_NONVAR_CLOUD_ANA", "FALSE").upper() == "TRUE":
                 nonvar_bufrobs(xmlFile, expdir)
                 nonvar_reflobs(xmlFile, expdir)
+            if do_chemistry == "TRUE":
+                prep_chem(xmlFile, expdir)
             #
             if os.getenv("DO_IC_LBC", "TRUE").upper() == "TRUE":
                 ungrib_ic(xmlFile, expdir)
@@ -127,8 +129,6 @@ def setup_xml(HOMErrfs, expdir):
                 prep_ic(xmlFile, expdir)
                 if "global" not in MESH_NAME:
                     prep_lbc(xmlFile, expdir)
-                if do_chemistry == "TRUE":
-                    prep_chem(xmlFile, expdir)
                 if os.getenv("DO_BLENDING", "FALSE").upper() == "TRUE":
                     mpas_blend(xmlFile, expdir)
                 if os.getenv("DO_JEDI", "FALSE").upper() == "TRUE":
