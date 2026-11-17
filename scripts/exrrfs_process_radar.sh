@@ -8,7 +8,8 @@ export FIXLAM=${FIXLAM:-${HOMErrfs}/fix/lam/RRFS_NA_3km}
 export FIX_GSI="${FIXrrfs}/gsi"
 export OBSPATH_NSSLMOSIAC="${DCOMROOT}/ldmdata/obs/upperair/mrms/conus/MergedReflectivityQC"
 export RDASAPP_DIR="${RDASAPP_DIR:-${HOMErrfs}/sorc/RDASApp}"
-export DO_IODA_MRMS=${DO_IODA_MRMS:-"FALSE"}
+export DO_IODA_MRMS=${DO_IODA_MRMS:-"TRUE"}
+export DO_IODA_MRMS="TRUE"
 
 #
 #-----------------------------------------------------------------------
@@ -186,7 +187,8 @@ for bigmin in ${RADARREFL_TIMELEVEL[@]}; do
   #
   case $MACHINE in
   "WCOSS2")
-    obs_appendix=grib2.gz
+    #obs_appendix=grib2.gz
+    obs_appendix=grib2
     ;;
   "JET" | "HERA" | "ORION" | "HERCULES" | "URSA")
     obs_appendix=grib2
@@ -383,7 +385,22 @@ EOF
     PYIODALIB=${dirs[0]}
     shopt -u nullglob
     export PYTHONPATH="${PYIODALIB}:${PYIODALIB}/site-packages:${PYTHONPATH:-}"
-    python ${USHrrfs}/MRMS2ioda.py -i ./Gridded_ref.nc -c "${YYYY}-${MM}-${DD}T${HH}:${bigmin}:00" -o ioda_mrms_refl.nc
+    if [ "${MACHINE}" = "WCOSS2" ]; then
+      # pyioda/pyiodaconv are built with RDASApp's python 3.11, not the job's python 3.12,
+      # so run the converter in a subshell with RDASApp's own build environment.
+      ( set +x
+        type module >/dev/null 2>&1 || source /etc/profile
+        module reset >/dev/null 2>&1
+        module use "${RDASAPP_DIR}/modulefiles"
+        module load RDAS/wcoss2.intel >/dev/null 2>&1 || { echo "WARNING: module load RDAS/wcoss2.intel failed"; exit 1; }
+        export LD_LIBRARY_PATH="${RDASAPP_DIR}/build/lib64:${LD_LIBRARY_PATH}"
+        export PYTHONPATH="${PYIODALIB}:${PYIODALIB}/site-packages:${PYTHONPATH:-}"
+        set -x
+        which python3; python3 --version; echo "PYTHONPATH=${PYTHONPATH}"
+        python3 ${USHrrfs}/MRMS2ioda.py -i ./Gridded_ref.nc -c "${YYYY}-${MM}-${DD}T${HH}:${bigmin}:00" -o ioda_mrms_refl.nc )
+    else
+      python ${USHrrfs}/MRMS2ioda.py -i ./Gridded_ref.nc -c "${YYYY}-${MM}-${DD}T${HH}:${bigmin}:00" -o ioda_mrms_refl.nc
+    fi
     if [ -s ioda_mrms_refl.nc ]; then
       cpreq -p ioda_mrms_refl.nc ${COMOUT_ANALYSIS}/ioda_mrms_refl.nc
     else
