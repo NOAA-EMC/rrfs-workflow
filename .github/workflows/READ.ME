@@ -1,71 +1,120 @@
-RRFS CI Design and Usage Guide
-Lin Gan
+RRFS CI Design and Usage Guide                                                
+Target Audience: Code Managers and Repository Administrators                  
 
-This document outlines the design pattern and usage of the automated GitHub Actions CI pipelines established to enforce NCEP Central Operations (NCO) Implementation Standards.
+This document outlines the technical design, architectural framework, and     
+usage of the automated GitHub Actions CI pipelines established to enforce     
+NCEP Central Operations (NCO) Implementation Standards.
+These CI pipelines enforce only a subset of the NCO Implementation Standards,
+ as not all standards can be fully automated through a CI process.                       
 
-Core Design Pattern
+System Architecture Design                                                    
+![CI Architecture Diagram](ci_design_diagram.png)                             
 
-Every new CI test adheres to a strict standard to maintain uniformity:
+Core Design Pattern                                                           
+Every new CI test adheres to a strict standard to maintain uniformity across  
+the repository:                                                               
 
-Workflow File (.yml): Named NCO_Consistency_${CI_Test_Job_Name}.yml. Controls the GitHub Action runner.
+Workflow File (`.yml`): Named                                                 
+`NCO_Consistency_${CI_Test_Job_Name}.yml`. Controls the GitHub Action runner. 
 
-Exclusion List (.lst): Named exclude_file_list_${CI_Test_Job_Name}.lst. Used by repository admins to permanently bypass specific files from tests.
+Exclusion List (`.lst`): Named                                                
+`exclude_file_list_${CI_Test_Job_Name}.lst`. Used by Code Managers to         
+permanently bypass specific files/directories from tests.                     
 
-Regression Test (.sh): Named regression_test_${CI_Test_Job_Name}.sh. Verifies that the testing logic works correctly on known bad data.
+Regression Test (`.sh`): Named                                                
+`regression_test_${CI_Test_Job_Name}.sh`. A localized sandbox to safely test  
+custom linter logic without risking live repository data.                     
 
-Zero-Match Logic: If a repository branch lacks matching target files, the CI completes successfully (exit 0) but clearly logs "No files found to check. Exiting gracefully" in ci_run.log.
+Zero-Match Logic: If a branch lacks matching target files, the CI completes   
+successfully (exit 0) and logs "No files found to check. Exiting gracefully". 
 
-Artifact Generation: Output is logged to ci_run.log and uploaded as an artifact, as well as displayed in the $GITHUB_STEP_SUMMARY.
+Artifact Generation: Output is logged to `ci_run.log`, uploaded as an         
+artifact, and rendered in the `$GITHUB_STEP_SUMMARY`.                         
 
-Available Pipelines
+---                                                                           
 
-1. Yamllint (NCO_Consistency_Yamllint)
+Detailed CI Testing Specifications                                            
 
-Target: .yml, .yaml files.
+1. Bash Consistency (`NCO_Consistency_Bash`)                                  
 
-Purpose: Validates basic syntax, indentation, format constraints (120 character line length max), trailing spaces.
+Technical Design Overview: Multi-stage bash verification using `shellcheck`   
+and custom regular expressions. Enforces standard conventions: a              
+`#!/bin/bash` shebang, `set -x` for operational traceability, and strictly    
+prohibits unconditional `exit 0` at the EOF to prevent suppressed error codes.
 
-2. Yamllint Scientific Hierarchical (NCO_Consistency_Yamllint_Scientific_Hierarchical)
+Usage: Targets `.sh`/`.bash` files and the `./jobs`, `./scripts` directories. 
+Governed by `exclude_file_list_Bash.lst`.
 
-Target: .yml, .yaml files.
+2. Implementation Standard (`NCO_Consistency_Implementation_Standard`)        
 
-Purpose: Utilizes a custom Python PyYAML wrapper (check_hierarchical_yaml.py) to enforce scientific structural standards, specifically throwing hard errors if duplicate keys are detected within a block (which normally overwrite silently).
+Technical Design Overview: Enforces NCO EE2 directory layouts utilizing a     
+custom Python linter (`linter_nco_implementation_standard.py`). Prevents the  
+creation of subdirectories directly beneath `./jobs` and `./scripts`. Scans   
+scripts to prevent hardcoded paths (`/lfs`, `/gpfs`), banned commands         
+(`> /dev/null`), and validates `err_chk` implementation.                      
 
-3. Implementation Standard (NCO_Consistency_Implementation_Standard)
+Usage: Prevents deployment blockers before code merges into operational       
+branches. Handled via `exclude_file_list_Implementation_Standard.lst`.        
 
-Target: Bash scripts (.sh) in ./jobs, ./scripts, ./ush.
+3. Python Consistency (`NCO_Consistency_Python`)                              
 
-Purpose: Enforces NCO EE2 checklist requirements via linter_nco_implementation_standard.py.
+Technical Design Overview: Implements Python code quality governance          
+utilizing `flake8` for PEP-8 compliance and `pytest` (with `pytest-cov`) for  
+unit testing. Features dynamic path scanning to automatically ignore virtual  
+environments (`venv`, `build`, `dist`).                                       
 
-No hardcoded paths (/lfs, /gpfs).
+Usage: Validates workflow generation tools. Managed via                       
+`exclude_file_list_python.lst`.                                               
 
-No redirecting to > /dev/null.
+Regression Test: Executed via                                                 
+`./regression_test_python_Implementation_Standard.sh` to ensure the         
+duplicate-key checking logic functions properly in the runner environment.
 
-Enforces directory structure (./jobs must be uppercase, ./scripts lowercase ex*.sh).
+4. Yamllint Standard (`NCO_Consistency_Yamllint`)                             
 
-Validates err_chk follows mpiexec/aprun.
+Technical Design Overview: Uses the standard Python `yamllint` utility to     
+ensure foundational syntax correctness across configuration files. Enforces   
+a maximum line length of 120 characters.                                      
 
-Prevents rm -rf $DATA outside of the j-job conditional logic.
+Usage: GitHub workflows (`.github/*`) are excluded by default to avoid syntax 
+rules clashing with GitHub Actions syntax.
 
-Skipping & Disabling Checks
+5. Yamllint Scientific Hierarchical                                           
+(`NCO_Consistency_Yamllint_Scientific_Hierarchical`)                          
 
-1. Global Skip (via Commit/PR Message)
+Technical Design Overview: Deploys a custom PyYAML `UniqueKeyLoader`.         
+Designed to catch duplicate keys within configuration blocks. Standard        
+parsers often overwrite duplicate keys silently, which can cause catastrophic 
+parameter failures in JEDI DA/MPAS models.                                    
 
-You can disable an entire CI job globally by including ci-ignore: <job_name> in your commit message or PR description.
+Usage: Crucial for scientific configuration integrity. Unlike the standard    
+Yamllint, this explicitly checks GitHub workflows to ensure CI parameter      
+integrity.                                                                    
 
-Example: git commit -m "Updating docs. ci-ignore: yamllint"
+---                                                                           
 
-Available tags: yamllint, yamllint_scientific, implementation_standard.
+Skipping & Disabling Checks (Code Manager Governance)                         
 
-2. File-level Skip (via Inline Comment)
+1. Global Skip (via Commit/PR Message)                                        
 
-Place a comment in the specific file to bypass checks for that file only.
+You can disable an entire CI job globally by including                        
+`ci-ignore: <job_name>` in your commit message or PR description during       
+emergency hotfixes.                                                           
 
-Example in YAML: # ci-ignore: yamllint_scientific
+Example: `git commit -m "Updating docs. ci-ignore: yamllint"`                 
 
-Example in Bash: # ci-ignore: implementation_standard
+Available tags: `yamllint`, `yamllint_scientific`, `implementation_standard`, 
+`bash_shellcheck`, `shebang_script`, `bash_setx`, `bash_exitzero`,            
+`python_flake8`, `python_pytest`.                                             
 
-3. Repository-level Skip (via List)
+2. File-level Skip (via Inline Comment)                                       
 
+Place a comment in the specific file to bypass checks for that file only.     
 
-Admins can permanently exclude files or directories by adding their relative paths to the corresponding .lst file in .github/workflows/.
+Example in YAML: `# ci-ignore: yamllint_scientific`                           
+Example in Bash: `# ci-ignore: bash_setx`                                     
+
+3. Repository-level Skip (via `.lst` Files)                                   
+
+Code Managers can permanently exclude files or directories by adding their    
+relative paths to the corresponding `.lst` file in `.github/workflows/`.      

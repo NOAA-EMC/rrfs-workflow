@@ -1,5 +1,8 @@
 ---
-# This workflow is designed to help GitHub action support with CI on NCO implementation Standard
+# This workflow is designed to help GitHub action
+# support with CI on NCO implementation Standard
+# Optimized for Code Manager and Repository
+# Administrator Governance
 #
 # Lin Gan, 10/29/2026
 
@@ -14,9 +17,7 @@ permissions:
 
 jobs:
   docs:
-
     runs-on: ubuntu-latest
-
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -37,166 +38,146 @@ jobs:
       - name: Inject CI Documentation
         run: |
           cat << 'EOF' > rrfs-workflow/docs/source/ci_guidance.rst
-          ==============================
-          RRFS CI Design and Usage Guide
-          ==============================
+          ====================================================================
+          RRFS CI Design & Code Manager Usage Guide
+          These CI pipelines enforce only a subset of the NCO Implementation 
+          Standards, as not all standards can be fully automated through a CI 
+          process.                           
+          ====================================================================
 
-          This document outlines the design pattern, step-by-step actions, and usage of the automated GitHub
-          Actions CI pipelines established to enforce NCEP Central Operations (NCO) Implementation Standards.
+          System Architecture Design                                          
+          --------------------------------------------------------------------
+          .. image:: ci_design_diagram.png                                    
 
-          Core Design Pattern
-          -------------------
-          Every new CI test adheres to a strict standard to maintain uniformity across the repository:
+          :width: 800                                                         
 
-          * **Workflow File (.yml):** Named ``NCO_Consistency_${CI_Test_Job_Name}.yml``. Controls runner.
-          * **Exclusion List (.lst):** Named ``exclude_file_list_${CI_Test_Job_Name}.lst``.
-            Used by repository admins to permanently bypass specific files from tests.
-          * **Regression Test (.sh):** Named ``regression_test_${CI_Test_Job_Name}.sh``. Verifies that the testing
-            logic works correctly on known bad data to prevent CI regressions.
-          * **Zero-Match Logic:** If a repository branch lacks matching target files, the CI completes
-            successfully (exit 0) but clearly logs "No files found to check. Exiting gracefully".
-          * **Artifact Generation:** Output is logged to ``ci_run.log`` and uploaded as an artifact, as well as
-            displayed in the ``$GITHUB_STEP_SUMMARY``.
+          :alt: CI Architecture and Sandbox Flowchart                         
 
-          Detailed CI Testing Specifications
-          ----------------------------------
+          :align: center                                                      
 
-          1. Yamllint (NCO_Consistency_Yamllint)
-          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-          * **Design:** Uses the standard Python ``yamllint`` utility to ensure foundational syntax correctness
-            across all configuration files.
-          * **Regression Test:** Powered by ``regression_test_Yamllint.sh``, which creates a mock YAML file
-            on the fly and verifies that the CI's relaxed linting rules successfully parse it without throwing errors.
-          * **Actions & Steps:**
-            1. **Checkout:** Clones the repository.
-            2. **Install:** Installs ``yamllint`` via apt-get.
-            3. **Check:** Discovers all ``.yml``/``.yaml`` files. Excludes files in ``.git`` or those
-               listed in ``exclude_file_list_Yamllint.lst``.
-            4. **Execute:** Runs ``yamllint`` with a customized configuration
-               (``{extends: default, rules: {line-length: {max: 120}}}``).
-            5. **Artifact:** Saves output to ``ci_run.log``, uploads it as a GitHub artifact, and
-               prints to the step summary.
-          * **Usage:** Fails if indentation is wrong, syntax is broken, or trailing spaces exist. Skip specific
-            files using ``# ci-ignore: yamllint``.
+          Core Design Pattern                                                 
+          --------------------------------------------------------------------
+          Every CI test adheres to a strict standard to maintain uniformity:  
 
-          2. Yamllint Scientific Hierarchical (NCO_Consistency_Yamllint_Scientific_Hierarchical)
-          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-          * **Design:** Features a custom PyYAML parser (``check_hierarchical_yaml.py``) specifically designed
-            to catch duplicate keys within configuration blocks. Standard parsers often overwrite duplicate keys
-            silently, which can cause catastrophic parameter failures in JEDI DA/MPAS model runs.
-          * **Regression Test:** Executed via ``regression_test_Yamllint_Scientific_Hierarchical.sh``, ensuring
-            the custom Python duplicate-key checking logic functions properly in the runner environment.
-          * **Actions & Steps:**
-            1. **Checkout:** Clones the repository.
-            2. **Setup:** Initializes Python 3.10 and installs ``pyyaml``.
-            3. **Check:** Discovers all YAML files and filters out excluded files based on ignores.
-            4. **Execute:** Parses each file with a custom ``UniqueKeyLoader``. Hard-fails if a duplicate
-               key exception is caught.
-            5. **Artifact:** Logs file names and duplicate key errors to ``ci_run.log`` and uploads the artifact.
-          * **Usage:** Crucial for scientific configuration integrity. Skip specific files
-            with ``# ci-ignore: yamllint_scientific``.
+          * **Workflow File (.yml):** Named                                   
+          ``NCO_Consistency_${CI_Test_Job_Name}.yml``.                        
 
-          3. Implementation Standard (NCO_Consistency_Implementation_Standard)
+          * **Exclusion List (.lst):** Named                                  
+          ``exclude_file_list_${CI_Test_Job_Name}.lst``. Admin-controlled     
+          global bypass list.                                                 
+
+          * **Regression Test (.sh):** Named                                  
+          ``regression_test_${CI_Test_Job_Name}.sh``. A local sandbox to      
+          verify linter logic.                                                
+
+          * **Zero-Match Logic:** If a branch lacks target files, the CI      
+          completes successfully (exit 0) and logs "No files found to check". 
+
+          * **Artifact Generation:** Outputs are logged to ``ci_run.log`` and 
+          uploaded as artifacts.                                              
+
+          Detailed CI Testing Specifications                                  
+          --------------------------------------------------------------------
+          1. Bash Consistency (NCO_Consistency_Bash)                          
           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-          * **Design:** CI owns all repository discovery, include/exclude filtering, inline-ignore filtering, and
-            the ``./jobs``/``./scripts`` directory-layout check. It passes the selected paths to
-            ``linter_nco_implementation_standard.py`` through a generated manifest. The Python utility only reads
-            and checks those explicit paths; it does not search directories or apply repository exclusions.
-          * **Regression Test:** ``regression_test_python_Implementation_Standard.sh`` is a manual regression
-            driver. It verifies that the Python linter accepts a valid manifest, rejects a known-invalid target,
-            and fails on a missing manifest; GitHub Actions does not run this driver.
-          * **Actions & Steps:**
-            1. **Checkout:** Clones the repository.
-            2. **Setup:** Initializes Python 3.10.
-            3. **Check:** CI discovers shell files in the repository and all files under ``./jobs``, applies
-               exclusions, and selects eligible files under ``./scripts`` and ``./ush``.
-            4. **Execute:**
-               * Enforces directory naming conventions (``J*`` for upper-level jobs, ``ex*`` for lowercase scripts).
-               * Scans script contents line-by-line for NCO violations (e.g., banned paths like ``/lfs`` or
-                 ``/gpfs``, banned commands like ``> /dev/null``).
-               * Verifies unconditional ``rm -rf $DATA`` is not used outside of j-jobs.
-               * Validates that standard exception handling (``err_chk``) is used immediately following ``mpiexec``
-                 or ``aprun`` executions.
-            5. **Artifact:** Logs precise file names and line numbers of violations to ``ci_impl_run.log``.
-          * **Usage:** Prevents deployment blockers before code merges into operational branches. Skip files
-            via ``# ci-ignore: implementation_standard``.
+          Multi-stage bash verification using ``shellcheck`` and custom       
+          expressions. Enforces POSIX standards, requires the ``#!/bin/bash`` 
+          shebang, mandates ``set -x`` for operational traceability, and      
+          prohibits unconditional ``exit 0`` at the EOF to prevent masked     
+          failures.                                                           
 
-          4. Bash Consistency (NCO_Consistency_Bash)
-          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-          * **Design:** Multi-stage bash verification using ``shellcheck`` and custom regular expressions to enforce
-            robust shell scripting practices and NCO execution tracing.
-          * **Regression Test:** Relies on ``regression_test_Bash.sh`` to verify that mock scripts missing shebangs,
-            ``set -x``, or utilizing unauthorized ``exit 0`` statements are successfully caught by the pipeline.
-          * **Actions & Steps:**
-            1. **Checkout:** Clones the repository.
-            2. **Install:** Installs ``shellcheck``.
-            3. **Execute:**
-               * Checks for the mandatory NCO standard ``#!/bin/bash`` shebang.
-               * Verifies the NCO operational tracing requirement (``set -x`` or ``set -o xtrace``) is present.
-               * Rejects scripts ending with an unconditional ``exit 0``, which can mask job failures.
-               * Runs ``shellcheck`` while deliberately ignoring NCO-specific legacy syntax.
-            4. **Artifact:** Prints failures directly to the GitHub Actions terminal and step summary.
-          * **Usage:** Ensures NCO operational script compatibility. You can skip specific bash sub-tests using
-            tags like ``# ci-ignore: bash_setx``, ``# ci-ignore: bash_exitzero``, or ``# ci-ignore: shebang_script``.
+          Automatically scans files ending in ``.sh``/``.bash`` or residing in
+          ``jobs/`` and ``scripts/``. Bypass locally via ``# ci-ignore:       
+          bash_setx`` or globally via PR tags (e.g., ``bash_shellcheck``).
+          
+          Code managers use ``exclude_file_list_Bash.lst`` 
+          for permanent repository exclusions.                                                          
 
-          5. Python Consistency (NCO_Consistency_Python)
-          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-          * **Design:** Implements standard Python CI tools (``flake8`` for syntax, ``pytest`` for unit tests,
-            ``pytest-cov`` for coverage) wrapped in a custom runner that gracefully handles scientific environments.
-          * **Regression Test:** Checked via ``regression_test_Python.sh``, ensuring flake8 configuration constraints
-            load correctly and pytest properly ignores "Exit Code 5" when zero tests are present.
-          * **Actions & Steps:**
-            1. **Checkout:** Clones the repository.
-            2. **Setup:** Initializes Python 3.10.
-            3. **Install:** Installs linting tools and required scientific libraries (``numpy``, ``netCDF4``).
-            4. **Execute:**
-               * Dynamically excludes external modules, ``venv`` directories, and build directories from the scan.
-               * Runs ``flake8`` on active python scripts to catch critical errors (E9, F7, F6).
-               * Runs ``pytest`` across the repository. Gracefully absorbs "Exit Code 5" if no active tests exist.
-            5. **Artifact:** Uploads ``flake8-report.txt``, ``pytest-results.xml``, and coverage XML
-               reports as downloadable artifacts.
-          * **Usage:** Validates workflow generation tools written in Python. Skip via ``# ci-ignore: python_flake8``
-            or ``# ci-ignore: python_pytest``.
+          2. Implementation Standard (NCO_Consistency_Implementation_Standard)
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+          Enforces NCO EE2 checklist directory layouts. CI discovers all shell
+          scripts, builds a dynamic manifest, and feeds it to                 
+          ``linter_nco_implementation_standard.py``. It blocks subdirectories 
+          in ``./jobs`` and ``./scripts``, prevents hardcoded paths           
+          (``/lfs``), and validates ``err_chk`` usage post-MPI execution.     
 
-          Skipping & Disabling Checks
-          ---------------------------
-          1. Global Skip (via Commit/PR Message)
-          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-          You can disable an entire CI job globally by including ``ci-ignore: <job_name>`` in your commit message
-          or PR description.
+          Code managers use ``exclude_file_list_Implementation_Standard.lst`` 
+          for permanent repository exclusions.                                
 
-          * **Example:** ``git commit -m "Updating docs. ci-ignore: yamllint"``
-          * **Available tags:** ``yamllint``, ``yamllint_scientific``, ``implementation_standard``, ``bash_shellcheck``,
-            ``shebang_script``, ``bash_setx``, ``bash_exitzero``, ``python_flake8``, ``python_pytest``.
+          Execute ``./regression_test_python_Implementation_Standard.sh`` with
+          ``MOCK="YES"`` to test custom NCO Implementation Standard linter 
+          logic against dummy files.                                  
 
-          2. File-level Skip (via Inline Comment)
-          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-          Place a comment in the specific file to bypass checks for that file only.
+          3. Python Consistency (NCO_Consistency_Python)                      
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+          Executes ``flake8`` for PEP-8 syntax validation and ``pytest`` for  
+          unit test coverage (with ``pytest-cov``). It dynamically excludes   
+          common virtual environments (``venv``, ``build``) to prevent        
+          pipeline bloating.                                                  
 
-          * **Example in YAML:** ``# ci-ignore: yamllint_scientific``
-          * **Example in Bash:** ``# ci-ignore: implementation_standard``
+          Target configurations and workflows written in Python. Emergency    
+          bypasses are available via ``python_flake8`` or ``python_pytest`` PR
+          flags.
+          
+          Code managers use ``exclude_file_list_python.lst`` 
+          for permanent repository exclusions.
 
-          3. Repository-level Skip (via List)
-          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-          Admins can permanently exclude files or directories by adding their relative paths to the corresponding
-          ``.lst`` file in ``.github/workflows/``.
+          4. Yamllint Standard (NCO_Consistency_Yamllint)                     
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+          Utilizes the standard ``yamllint`` utility to ensure foundational   
+          syntax correctness, enforcing a maximum line length of 120          
+          characters and blocking trailing spaces.
+          
+          Code managers use ``exclude_file_list_Yamllint.lst`` 
+          for permanent repository exclusions.
+
+          Fails on broken syntax. Excludes GitHub workflows by default to     
+          prevent conflicts. Inline skip via ``# ci-ignore: yamllint``.       
+
+          5. Yamllint Scientific                                              
+          (NCO_Consistency_Yamllint_Scientific_Hierarchical)                  
+          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+          Deploys a custom PyYAML ``UniqueKeyLoader`` parser. It prevents     
+          catastrophic parameter overwrites in JEDI/MPAS models by throwing   
+          hard errors if duplicate keys are detected within a configuration   
+          block (which standard parsers overwrite silently).                  
+
+          Includes GitHub workflows to ensure maximum repository integrity.   
+          Bypass specific scientific parameters via ``# ci-ignore:            
+          yamllint_scientific``.                                              
+
+          Code managers use ``exclude_file_list_Yamllint_Scientific_Hierarchical.lst`` 
+          for permanent repository exclusions.                                                        
+
+          Skipping & Disabling Checks                                         
+          --------------------------------------------------------------------
+          1. **Global Skip (PR Message):** Add ``ci-ignore: <job_name>`` to   
+          commit/PR bodies.                                                   
+
+          2. **File-level Skip (Inline):** Place ``# ci-ignore: <job_name>``  
+          directly in the target file.                                        
+
+          3. **Repository-level Skip:** Add paths to the respective           
+          ``exclude_file_list_*.lst`` files.                                  
+
           EOF
 
-          # Inject the newly created document into the Sphinx TOC so it renders in the HTML output
+
+
           if [ -f rrfs-workflow/docs/source/index.rst ]; then
-            if ! grep -q "ci_guidance" rrfs-workflow/docs/source/index.rst; then
-              sed -i '/.. toctree::/a \   ci_guidance' rrfs-workflow/docs/source/index.rst
+            if ! grep -q "ci_guidance" \
+                rrfs-workflow/docs/source/index.rst; then
+              sed -i '/.. toctree::/a \   ci_guidance' \
+                rrfs-workflow/docs/source/index.rst
             fi
           fi
 
       - name: Build docs
         run: |
           cd rrfs-workflow/docs
-          #sphinx-build -W --keep-going source build
           sphinx-build source build
 
       - uses: actions/upload-artifact@v4
         with:
           name: rrfs-workflow docs
-          path: |
-            rrfs-workflow/docs/build
+          path: rrfs-workflow/docs/build
