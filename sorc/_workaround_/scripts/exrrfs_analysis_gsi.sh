@@ -14,7 +14,7 @@ source "${FIXrrfs}"/workflow/"${WGF}"/workflow.conf
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -133,7 +133,7 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 # both contain past 7 day OmB averages till ~YYYYMMDD_23:59:59 UTC
 # So they are to be used by next day cycles
 #
-prev_yyyymmddhh=$(${NDATE} -24 "${YYYYMMDDHH}") 
+prev_yyyymmddhh=$(${NDATE} -24 "${YYYYMMDDHH}")
 MESO_USELIST_FN="${prev_yyyymmddhh:0:4}-${prev_yyyymmddhh:4:2}-${prev_yyyymmddhh:6:2}_meso_uselist.txt"
 AIR_REJECT_FN="${prev_yyyymmddhh:0:8}_rejects.txt"
 #
@@ -165,7 +165,7 @@ if  [ "${OB_TYPE}" != "conv" ] || [ ${BKTYPE} -eq 1 ]; then #not using GDAS
 fi
 
 if [ "${GSI_TYPE}" == "OBSERVER" ]; then
-   print_info_msg "${VERBOSE}" "In this regional EnKF observer mode, GDAS is not required"   
+   print_info_msg "${VERBOSE}" "In this regional EnKF observer mode, GDAS is not required"
 fi
 #
 #---------------------------------------------------------------------
@@ -382,11 +382,11 @@ if [ "${regional_ensemble_option:-1}" -eq 5 ]  && [ ${BKTYPE} != 1  ]; then
   nummem=`expr ${nummem_gfs} + "${nummem_fv3sar}"`
   print_info_msg "${VERBOSE}" "Do hybrid with FV3LAM ensemble"
   ifhyb=.true.
-  print_info_msg "${VERBOSE}" " Cycle ${YYYYMMDDHH}: GSI hybrid uses FV3LAM ensemble with n_ens=${nummem}" 
+  print_info_msg "${VERBOSE}" " Cycle ${YYYYMMDDHH}: GSI hybrid uses FV3LAM ensemble with n_ens=${nummem}"
   echo " ${YYYYMMDDHH}(${CYCLE_TYPE}): GSI hybrid uses FV3LAM ensemble with n_ens=${nummem}"
   grid_ratio_ens="1"
   ens_fast_read=.false.
-else    
+else
   nummem_gfs=$(wc -l < filelist03)
   nummem_gfs=$((nummem_gfs - 3 ))
   nummem=${nummem_gfs}
@@ -425,7 +425,7 @@ ln -snf "${fixgriddir}"/fv3_grid_spec  fv3_grid_spec
 
 if [ ${BKTYPE} -eq 1 ]; then  # cold start uses background from INPUT
   ln -snf "${fixgriddir}"/phis.nc  phis.nc
-  ncks -A -v  phis  phis.nc  "${bkpath}"/gfs_data.tile7.halo0.nc 
+  ncks -A -v  phis  phis.nc  "${bkpath}"/gfs_data.tile7.halo0.nc
 
   ln -snf "${bkpath}"/sfc_data.tile7.halo0.nc  fv3_sfcdata
   ln -snf "${bkpath}"/gfs_data.tile7.halo0.nc  fv3_dynvars
@@ -447,7 +447,7 @@ sed -i "s/mm/${MM}/"     coupler.res
 sed -i "s/dd/${DD}/"     coupler.res
 sed -i "s/hh/${HH}/"     coupler.res
 
-# copy xnorm and anl_grid for gsi performance 
+# copy xnorm and anl_grid for gsi performance
 if [ -r "${fixgriddir}"/xnorm_new.480.1351.1976 ] && [ -r "${fixgriddir}"/anl_grid.480.3950.2700 ]; then
   cpreq -p "${fixgriddir}"/xnorm_new.480.1351.1976 .
   cpreq -p "${fixgriddir}"/anl_grid.480.3950.2700 .
@@ -461,7 +461,7 @@ fi
 #-----------------------------------------------------------------------
 #
 # link observation files
-# copy observation files to working directory 
+# copy observation files to working directory
 #
 #-----------------------------------------------------------------------
 OBSTYPE_SOURCE=${OBSTYPE_SOURCE:-"rrfs"}
@@ -810,7 +810,7 @@ cpreq -p "${HYBENSINFO}" hybens_info
 if [ -r "${FIX_GSI}"/gsd_sfcobs_provider.txt ]; then
   cpreq -p "${FIX_GSI}"/gsd_sfcobs_provider.txt gsd_sfcobs_provider.txt
 else
-  print_info_msg "${VERBOSE}" "WARNING: gsd surface observation provider does not exist!" 
+  print_info_msg "${VERBOSE}" "WARNING: gsd surface observation provider does not exist!"
 fi
 
 # Get aircraft reject list
@@ -832,7 +832,7 @@ gsd_sfcobs_uselist="gsd_sfcobs_uselist.txt"
 for use_list in "${SFCOBS_USELIST}/current_mesonet_uselist.txt" \
                 "${SFCOBS_USELIST}/${MESO_USELIST_FN}"      \
                 "${SFCOBS_USELIST}/gsd_sfcobs_uselist.txt"
-do 
+do
   if [ -r "${use_list}" ] ; then
     cpreq -p "${use_list}"  ${gsd_sfcobs_uselist}
     print_info_msg "${VERBOSE}" "Use surface obs uselist: ${use_list} "
@@ -840,7 +840,7 @@ do
   fi
 done
 if [ ! -r "${use_list}" ] ; then
-  print_info_msg "${VERBOSE}" "WARNING: gsd surface observation uselist does not exist!" 
+  print_info_msg "${VERBOSE}" "WARNING: gsd surface observation uselist does not exist!"
 fi
 #
 #-----------------------------------------------------------------------
@@ -899,16 +899,16 @@ if [ "${DO_RADDA}" = "TRUE" ]; then
     spinup_or_prod_rrfs=spinup
     for cyc_start in "${CYCL_HRS_SPINSTART[@]}"; do
       if [ "${HH}" -eq "${cyc_start}" ]; then
-        spinup_or_prod_rrfs=prod 
+        spinup_or_prod_rrfs=prod
       fi
     done
-  else 
+  else
     echo " product cycle"
     spinup_or_prod_rrfs=prod
     for cyc_start in "${CYCL_HRS_PRODSTART[@]}"; do
       if [ "${HH}" -eq "${cyc_start}" ]; then
-        spinup_or_prod_rrfs=spinup      
-      fi 
+        spinup_or_prod_rrfs=spinup
+      fi
     done
   fi
 
@@ -930,21 +930,21 @@ if [ "${DO_RADDA}" = "TRUE" ]; then
 
       break
     fi
-	
+
     satcounter=` expr "${satcounter}" + 1 `
   done
 
-  ## if satbias files (go back to previous 10 days) are not available from ${SATBIAS_OUT}, use satbias files from the ${FIX_GSI} 
+  ## if satbias files (go back to previous 10 days) are not available from ${SATBIAS_OUT}, use satbias files from the ${FIX_GSI}
   if [ "${satcounter}" -eq ${maxcounter} ]; then
     # satbias_in
     if [ -r "${FIX_GSI}"/rrfs.starting_satbias ]; then
-      echo "using satelite satbias_in files from ${FIX_GSI}"     
+      echo "using satelite satbias_in files from ${FIX_GSI}"
       cpreq -p "${FIX_GSI}"/rrfs.starting_satbias ./satbias_in
     fi
-	  	  
+
     # satbias_pc
     if [ -r "${FIX_GSI}"/rrfs.starting_satbias_pc ]; then
-      echo "using satelite satbias_pc files from ${FIX_GSI}"     
+      echo "using satelite satbias_pc files from ${FIX_GSI}"
       cpreq -p "${FIX_GSI}"/rrfs.starting_satbias_pc ./satbias_pc
     fi
   fi
@@ -986,7 +986,7 @@ fi
 #                                             (var_defns.sh in runtime)
 #
 #-----------------------------------------------------------------------
-# 
+#
 if [ "${GSI_TYPE}" = "OBSERVER" ]; then
   miter=0
   ifhyb=.false.
@@ -1081,7 +1081,7 @@ fi
 # diagnostic files for indicated observation types (groups)
 #
 # NOTE:  Since we set miter=2 in GSI namelist SETUP, outer
-#        loop 03 will contain innovations with respect to 
+#        loop 03 will contain innovations with respect to
 #        the analysis.  Creation of o-a innovation files
 #        is triggered by write_diag(3)=.true.  The setting
 #        write_diag(1)=.true. turns on creation of o-g
@@ -1227,7 +1227,7 @@ if [ "${DO_GSIDIAG_OFFLINE}" = "FALSE" ]; then
       cpreq "./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat" "${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat"
     fi
 
-    # For EnVar DA  
+    # For EnVar DA
     cpreq ./satbias_out "${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias"
     cpreq ./satbias_pc.out "${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc"
     cpreq ./satbias_out "${COMOUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias"
@@ -1235,11 +1235,11 @@ if [ "${DO_GSIDIAG_OFFLINE}" = "FALSE" ]; then
   fi
 fi # run diag inline (with GSI)
 
-# 
+#
 #-----------------------------------------------------------------------
-# 
+#
 # Copy output files to Umbrella Shared DATA location
-# 
+#
 #-----------------------------------------------------------------------
 #
 filelist="pe*.nc4 satbias_out satbias_pc.out"
