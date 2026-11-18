@@ -32,7 +32,7 @@ if (( $# == 3 )); then
       layout_x=$((layout_x - 1))
      fi
    fi
-   if (( layout_x == 0 )); then 
+   if (( layout_x == 0 )); then
       layout_x=2
    fi
    if (( layout_x > 24 )); then
@@ -41,13 +41,13 @@ if (( $# == 3 )); then
 # get layout_y
    layout_y=$((nlayout / layout_x))
    if (( layout_y % 2 > 0 )); then
-    layout_y=$((layout_y + 1)) 
+    layout_y=$((layout_y + 1))
    fi
    if (( layout_y > 24 && layout_x != 24 )); then
       layout_y=24
       layout_x=$((nlayout / layout_y))
       if (( layout_x % 2 > 0 )); then
-       layout_x=$((layout_x + 1)) 
+       layout_x=$((layout_x + 1))
       fi
    fi
    if (( nx > ny && layout_x < layout_y )); then
@@ -73,7 +73,7 @@ fi
 
 nxy=$((nx * ny))
 
-if (( nxy <= 22000 )); then # 22000 is from predefined HRRR 25km domain 
+if (( nxy <= 22000 )); then # 22000 is from predefined HRRR 25km domain
    layout_x=2
    layout_y=2
    nx=$((nx + nx % 2))
@@ -94,7 +94,7 @@ elif (( nxy > 22000 && nxy <= 81900 )); then # 81900 is obtained from predefined
    fi
    layout_y=$((nlayout / layout_x))
    if (( layout_y % 2 > 0 )); then
-    layout_y=$((layout_y + 1)) 
+    layout_y=$((layout_y + 1))
    fi
    if (( nx % layout_x > 0 )); then
     nx=$((nx / layout_x * layout_x + layout_x))

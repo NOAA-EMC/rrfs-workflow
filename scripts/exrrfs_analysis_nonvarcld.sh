@@ -16,7 +16,7 @@ export FIX_GSI="${FIXrrfs}/gsi"
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -197,7 +197,7 @@ bigmin="00"
 #
 #-----------------------------------------------------------------------
 #
-# Build namelist 
+# Build namelist
 #
 #-----------------------------------------------------------------------
 #
@@ -271,7 +271,7 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
-# Run the non-var cloud analysis application.  
+# Run the non-var cloud analysis application.
 #
 #-----------------------------------------------------------------------
 #

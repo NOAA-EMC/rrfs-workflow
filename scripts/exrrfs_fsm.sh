@@ -12,9 +12,9 @@ count_matching_files() {
 # This is RRFS file server management job for ecflow workflow
 # Scan and set ecflow trigger event for file level dependency
 # Designed to be used on all cycles
-# 
+#
 # Lin Gan
-# EMC/EIB 
+# EMC/EIB
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
@@ -391,7 +391,7 @@ while [ ${proceed_trigger_scan} == "YES" ]; do
     # /lfs/f2/t2o/ptmp/emc/ptmp/emc.lam/rrfs/v0.9.5/nwges/2024060923/mem0001~0030/fcst_fv3lam/RESTART/20240610.000000.coupler.res
     if [ -s "${obsproc_rrfs_inp_file}" ]; then
       source_file_found="YES"
-      echo "Proceeding with scan_release_det_analysis_gsi"      
+      echo "Proceeding with scan_release_det_analysis_gsi"
       if [ -d "${COMrrfs}"/enkfrrfs."${RRFS_previous_PDY}"/"${RRFS_previous_cyc}"/m001/forecast/RESTART ]; then
         echo "Forecast RESTART directory found in regular cycle - looking for file"
         target_directory_scan=${COMrrfs}/enkfrrfs.${RRFS_previous_PDY}/${RRFS_previous_cyc}
@@ -449,7 +449,7 @@ while [ ${proceed_trigger_scan} == "YES" ]; do
       echo "Production realtime gefs grib2 data only retain up to 4 days."
       proceed_trigger_scan="YES"
     fi
-  fi 
+  fi
   #### release_enkf_make_lbcs
 
   #### release_save_restart_long

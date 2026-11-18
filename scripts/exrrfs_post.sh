@@ -25,7 +25,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -211,7 +211,7 @@ for what in "${FIX_UPP_CRTM}"/*Emis* ; do
 done
 
 if [ "${USE_CUSTOM_POST_CONFIG_FILE}" = "TRUE" ]; then
-# For RRFS: use special postcntrl for fhr=0,1 to eliminate duplicate 
+# For RRFS: use special postcntrl for fhr=0,1 to eliminate duplicate
 # max/min hourly (f000 only) and accumulation fields (f000 and f001);
 # use special postcntrl for ensemble and firewx forecasts
   if [ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ] || [ "${PREDEF_GRID_NAME}" = "RRFS_FIREWX_1.5km" ]; then
@@ -469,7 +469,7 @@ if [ -f PRSLEV.GrbF"${post_fhr}" ]; then
       if [[ -e "${tm15}" && -e "${tm30}" && -e "${tm45}" ]]
       then
         break
-      else 
+      else
         loop=$((loop+1))
         sleep 20
       fi
@@ -487,7 +487,7 @@ if [ -f PRSLEV.GrbF"${post_fhr}" ]; then
     else
       msg="FATAL ERROR: ABORTING due to missing 15 minute UPP output ${fld2d_subh} ${tm15} ${tm30} ${tm45}"
       err_exit "${msg}"
-    fi 
+    fi
   fi # SUB_GEN=1 test
 fi # PRSLEV test
 

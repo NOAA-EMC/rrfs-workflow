@@ -1,7 +1,7 @@
 #!/bin/bash
 
 date
-export PS4='+ $SECONDS + ' 
+export PS4='+ $SECONDS + '
 set -xue
 
 #-----------------------------------------------------------------------
@@ -91,7 +91,7 @@ else
       export shared_output_data=${umbrella_analysis_data}/output
     fi
   fi
-fi 
+fi
 
 #-----------------------------------------------------------------------
 # Define data directories
@@ -128,7 +128,7 @@ else
       export COMOUT=${COMrrfs}/${RUN}.${PDY}/${cyc}/analysis
     fi
   fi
-fi 
+fi
 
 mkdir -p "${COMOUT}"
 export SATBIAS_OUT=$(compath.py -o ${NET}/"${rrfs_ver}"/satbias/satbias."${PDY}")
@@ -146,7 +146,7 @@ mkdir -p "${FORECAST_INPUT_PRODUCT}"
 . "${USHrrfs}"/source_util_funcs.sh
 
 #-----------------------------------------------------------------------
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #-----------------------------------------------------------------------

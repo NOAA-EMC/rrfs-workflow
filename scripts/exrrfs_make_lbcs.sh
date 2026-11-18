@@ -70,7 +70,7 @@ if [ "${WGF}" = "firewx" ]; then
           LAT_CTR="${lat}"
           LON_CTR="${lon}"
           # Break immediately stops the loop, preventing multi-line variable corruption.
-          break 
+          break
         fi
       done < "${firewx_loc}"
     fi

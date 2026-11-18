@@ -23,7 +23,7 @@ module load nccmp
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -116,7 +116,7 @@ else
     baseline_dir="${baseline_dir}/${PREDEF_GRID_NAME}"
   else
     printf "\
-The experiment must be run on one of the predefined domains.  Thus, 
+The experiment must be run on one of the predefined domains.  Thus,
 PREDEF_GRID_NAME cannot be empty:
   PREDEF_GRID_NAME = \"${PREDEF_GRID_NAME}\"
 Exiting script with nonzero return code.
@@ -159,8 +159,8 @@ The experiment and baseline directories are:
 #
 #-----------------------------------------------------------------------
 #
-# This list should also include $CDATE/postprd since that contains the 
-# post-processed grib files, but those files' names don't end in a 
+# This list should also include $CDATE/postprd since that contains the
+# post-processed grib files, but those files' names don't end in a
 # standard file extension, e.g. .grb, etc.  Must look into this more.
 #          "grid" \
 #          "orog" \
@@ -186,13 +186,13 @@ declare -a file_extensions=( "nc" "grb" )
 #declare -a file_extensions=( "nc" )
 #
 #-----------------------------------------------------------------------
-# 
+#
 # Initialize file counts to 0.  These are defined as follows:
-# 
+#
 # nfiles_total:
-# The number of files in the experiment directory that we attempted to 
+# The number of files in the experiment directory that we attempted to
 # compare to the corresponding file in the baseline directory.
-# 
+#
 # nfiles_missing:
 # The number of files (out of nfiles_total) that are missing from the
 # baseline directory.
@@ -236,7 +236,7 @@ for subdir in "${subdirs[@]}"; do
 #    cmp_files_btwn_dirs "$expt_dir/$subdir" "${baseline_dir}/$subdir" "${ext}" || { \
 #    printf "
 #Call to file comparison function failed.  Exiting with nonzero exit code.
-#"; 
+#";
 #    exit 1; }
 #
 #-----------------------------------------------------------------------
@@ -250,7 +250,7 @@ for subdir in "${subdirs[@]}"; do
       compare_tool="nccmp -d"
     else
       printf "\
-The file comparison tool to use for this file extension has not been 
+The file comparison tool to use for this file extension has not been
 specified:
   file_ext = \"${file_ext}\"
 Please specify the compare tool and rerun.
@@ -292,15 +292,15 @@ Exiting script with nonzero exit code.
       done
       compare_msg_pre="      Comparing file "
       msg_len_max=$(( fn_len_max + ${#compare_msg_pre} ))
-  
+
       for fn in *."${file_ext}"; do
-  
+
         nfiles_total=$(( nfiles_total + 1 ))
-  
+
         fn1="${fn}"
         fn2="${baseline_dir}/${subdir}/${fn}"
         if [ ! -e "${fn2}" ]; then  # Check if file exists in baseline directory.
-  
+
           printf "
         File specified by fn exists in subdirectory \"${subdir}\" of the
         experiment directory but not in that of the the baseline directory:
@@ -309,9 +309,9 @@ Exiting script with nonzero exit code.
         Incrementing missing file count and moving to next file or sub-
         directory.\n"
           nfiles_missing=$(( nfiles_missing + 1 ))
-  
+
         else
-  
+
           msg="${compare_msg_pre}\"${fn}\""
           msg_len="${#msg}"
           num_dots=$(( msg_len_max - msg_len + 7 ))
@@ -320,10 +320,10 @@ Exiting script with nonzero exit code.
           # 2. Use Bash parameter expansion to replace all spaces with dots
           dots_str="${dots_str// /.}"
           msg="${msg} ${dots_str}"
-  
+
           printf "%s" "${msg}"
           eval_output=$( eval "${compare_tool}" "${fn1}" "${fn2}" 2>&1 )
-  
+
           if [ $? -eq 0 ]; then
             printf " Files are identical.\n"
           else
@@ -334,9 +334,9 @@ ${eval_output}
 "
             nfiles_different=$(( nfiles_different + 1 ))
           fi
-    
+
         fi
-  
+
       done # Loop over files of the same extension.
 
     fi # Number of files > 0
@@ -374,11 +374,11 @@ printf "
 where
 
   file_extensions:
-  Array containing the file extensions considered when comparing files.  
+  Array containing the file extensions considered when comparing files.
   Only files ending with one of these extensions are compared.
 
   nfiles_total:
-  The number of files in the experiment directory that we attempted to 
+  The number of files in the experiment directory that we attempted to
   compare to the corresponding file in the baseline directory.
 
   nfiles_missing:

@@ -61,7 +61,7 @@ pyversion=($(/usr/bin/env python3 -c 'import platform; major, minor, patch = pla
 #Now, set an error check variable so that we can print all python errors rather than just the first
 pyerrors=0
 
-# Check that the call to python3 returned no errors, then check if the 
+# Check that the call to python3 returned no errors, then check if the
 # python3 minor version is 6 or higher
 if [[ -z "$pyversion" ]];then
   print_info_msg "\
@@ -708,7 +708,7 @@ ln -fsn "$FIXgsm" "$FIXam"
 path_resolved=$( readlink -m "$FIXam" )
 if [ ! -d "${path_resolved}" ]; then
   print_err_msg_exit "\
-  The path specified by FIXam after resolving all symlinks (path_resolved) 
+  The path specified by FIXam after resolving all symlinks (path_resolved)
   must be an existing directory:
   FIXam = \"$FIXam\"
   path_resolved = \"${path_resolved}\"
@@ -783,13 +783,13 @@ if [ "${SDF_USES_RUC_LSM}" = "TRUE" ]; then
   kice="9"
 fi
 #
-# Set lsoil, which is the number of input soil levels provided in the 
-# chgres_cube output NetCDF file.  This is the same as the parameter 
-# nsoill_out in the namelist file for chgres_cube.  [On the other hand, 
-# the parameter lsoil_lsm (not set here but set in input.nml.FV3 and/or 
+# Set lsoil, which is the number of input soil levels provided in the
+# chgres_cube output NetCDF file.  This is the same as the parameter
+# nsoill_out in the namelist file for chgres_cube.  [On the other hand,
+# the parameter lsoil_lsm (not set here but set in input.nml.FV3 and/or
 # FV3.input.yml) is the number of soil levels that the LSM scheme in the
 # forecast model will run with.]  Here, we use the same approach to set
-# lsoil as the one used to set nsoill_out in exrrfs_make_ics.sh.  
+# lsoil as the one used to set nsoill_out in exrrfs_make_ics.sh.
 # See that script for details.
 #
 # NOTE:
@@ -804,11 +804,11 @@ if [ "${EXTRN_MDL_NAME_ICS}" = "HRRR" -o \
    [ "${SDF_USES_RUC_LSM}" = "TRUE" ]; then
   lsoil="9"
 fi
-# 
+#
 # fhzero = 0.25
 #     get time-max fields like UH to reset at 15-minute intervals
 #
-# avg_max_length=900, sec, 
+# avg_max_length=900, sec,
 #     for needing restart files also output at higher frequency
 #     or other time-max fields output at high frequency
 #
@@ -828,9 +828,9 @@ fi
 # IMPORTANT:
 # If we want a namelist variable to be removed from the namelist file,
 # in the "settings" variable below, we need to set its value to the
-# string "null".  This is equivalent to setting its value to 
+# string "null".  This is equivalent to setting its value to
 #    !!python/none
-# in the base namelist file specified by FV3_NML_BASE_SUITE_FP or the 
+# in the base namelist file specified by FV3_NML_BASE_SUITE_FP or the
 # suite-specific yaml settings file specified by FV3_NML_YAML_CONFIG_FP.
 #
 # It turns out that setting the variable to an empty string also works
@@ -953,7 +953,7 @@ Call to python script set_namelist.py to generate an FV3 namelist file
 failed.  Parameters passed to this script are:
   Full path to base namelist file:
     FV3_NML_BASE_SUITE_FP = \"${FV3_NML_BASE_SUITE_FP}\"
-  Full path to output namelist file: 
+  Full path to output namelist file:
     FV3_NML_FP = \"${FV3_NML_FP}\"
   Namelist settings specified on command line:
     settings =
@@ -1026,7 +1026,7 @@ if [[ "${DO_DACYCLE}" = "TRUE" || "${DO_ENKFUPDATE}" = "TRUE" ]]; then
 # 'gfs_physics_nml': {
 #    'fh_dfi_radar': [${FH_DFI_RADAR[@]}],
 #  }"
- 
+
  $USHrrfs/set_namelist.py -q \
                          -n ${FV3_NML_FP} \
                          -u "$settings" \
@@ -1044,9 +1044,9 @@ if [[ "${DO_DACYCLE}" = "TRUE" || "${DO_ENKFUPDATE}" = "TRUE" ]]; then
 fi
 #
 # Add the relevant tendency-based stochastic physics namelist variables to
-# "settings" when running with SPPT, SHUM, or SKEB turned on. If running 
-# with SPP or LSM SPP, set the "new_lscale" variable.  Otherwise only 
-# include an empty "nam_stochy" stanza. 
+# "settings" when running with SPPT, SHUM, or SKEB turned on. If running
+# with SPP or LSM SPP, set the "new_lscale" variable.  Otherwise only
+# include an empty "nam_stochy" stanza.
 #
 settings="\
 'gfs_physics_nml': {
@@ -1062,7 +1062,7 @@ settings="\
   }"
 settings="$settings
 'nam_stochy': {"
-if [ "${DO_SPPT}" = "TRUE" ]; then 
+if [ "${DO_SPPT}" = "TRUE" ]; then
     settings="$settings
     'iseed_sppt': ${ISEED_SPPT},
     'sppt': ${SPPT_MAG},
@@ -1074,7 +1074,7 @@ if [ "${DO_SPPT}" = "TRUE" ]; then
     'use_zmtnblck': ${USE_ZMTNBLCK},"
 fi
 
-if [ "${DO_SHUM}" = "TRUE" ]; then 
+if [ "${DO_SHUM}" = "TRUE" ]; then
     settings="$settings
     'iseed_shum': ${ISEED_SHUM},
     'shum': ${SHUM_MAG},

@@ -5,11 +5,11 @@ set -x
 echo "---> exrrfs_vrfyrad.sh.ecf"
 
 #  Command line arguments
-export PDY="${1:-${PDY:?}}" 
+export PDY="${1:-${PDY:?}}"
 export cyc="${2:-${cyc:?}}"
 
 #################################################################################
-# Set the required Directories 
+# Set the required Directories
 #################################################################################
 
 export FIXrrfs="${FIXrrfs:-${FIX_GSI}}"
@@ -44,11 +44,11 @@ rc_bcor=0
 rc_time=0
 
 if [[ -s "${radstat}" && -s "${biascr}" ]]; then
-   data_available=1                                         
+   data_available=1
 
    #------------------------------------------------------------------
-   #  Copy data files file to local data directory.  
-   #  Untar radstat file.  
+   #  Copy data files file to local data directory.
+   #  Untar radstat file.
    #------------------------------------------------------------------
 
    ${NCP} "${biascr}"  "./biascr.${PDATE}"
@@ -59,8 +59,8 @@ if [[ -s "${radstat}" && -s "${biascr}" ]]; then
 
    #------------------------------------------------------------------
    #  SATYPE is the list of expected satellite/instrument sources
-   #  in the radstat file.  It should be stored in the $TANKverf 
-   #  directory.  If it isn't there then use the $FIXrrfs copy.  In all 
+   #  in the radstat file.  It should be stored in the $TANKverf
+   #  directory.  If it isn't there then use the $FIXrrfs copy.  In all
    #  cases write it back out to the radmon.$PDY directory.  Add any
    #  new sources to the list before writing back out.
    #------------------------------------------------------------------
@@ -74,10 +74,10 @@ if [[ -s "${radstat}" && -s "${biascr}" ]]; then
 
    #------------------------------------------------------------------
    #  Look for the $satype_file from the info directory or $FIXrrfs
-   #  in that order.  
+   #  in that order.
    #------------------------------------------------------------------
    if [[ ! -e "${TANKverf}/info/${satype_file}" ]]; then
-      if [[ -e "${FIXrrfs}/${satype_file}" ]]; then 
+      if [[ -e "${FIXrrfs}/${satype_file}" ]]; then
          export SATYPE
          SATYPE=$(cat "${FIXrrfs}/${satype_file}")
       else
@@ -89,8 +89,8 @@ if [[ -s "${radstat}" && -s "${biascr}" ]]; then
    fi
 
    #-------------------------------------------------------------
-   #  Update the SATYPE if any new sat/instrument was 
-   #  found in $radstat_satype. 
+   #  Update the SATYPE if any new sat/instrument was
+   #  found in $radstat_satype.
    #-------------------------------------------------------------
    satype_changes=0
    new_satype="${SATYPE}"
@@ -109,8 +109,8 @@ if [[ -s "${radstat}" && -s "${biascr}" ]]; then
    fi
    export SATYPE="${SATYPE}"
 
-   echo "SATYPE = ${SATYPE}"  
- 
+   echo "SATYPE = ${SATYPE}"
+
    #------------------------------------------------------------------
    # Determine bin or nc4 diag files, rename, and uncompress
    #------------------------------------------------------------------
@@ -133,20 +133,20 @@ if [[ -s "${radstat}" && -s "${biascr}" ]]; then
             echo "REMOVED:  ${type} from SATYPE"
             export SATYPE="${edited_satype}"
 
-         else 
+         else
             mv "./diag_${type}_ges.${PDATE}.nc4.${Z}" "${type}.${Z}"
             ${UNCOMPRESS} "./${type}.${Z}"
             mv ./diag_"${type}"_anl."${PDATE}".*"${Z}" "${type}_anl.${Z}"
             ${UNCOMPRESS} "./${type}_anl.${Z}"
          fi
-   
-      else	  
+
+      else
          if [[ ! -e "./diag_${type}_ges.${PDATE}.${Z}" ]]; then
             satypes="${SATYPE// /$'\n'}"
             edited_satype=$(sed "/${type}/d" <<< "${satypes}")
             echo "REMOVED:  ${type} from SATYPE"
             export SATYPE="${edited_satype}"
-         else	
+         else
             mv "./diag_${type}_ges.${PDATE}.${Z}" "${type}.${Z}"
             ${UNCOMPRESS} "./${type}.${Z}"
             mv "./diag_${type}_anl.${PDATE}.${Z}" "${type}_anl.${Z}"
@@ -177,7 +177,7 @@ if [[ -s "${radstat}" && -s "${biascr}" ]]; then
    #  optionally run clean_tankdir script
    #
    if [[ "${CLEAN_TANKVERF:-0}" -eq 1 ]]; then
-      "${USHradmon}/clean_tankdir.sh" rgn 20 
+      "${USHradmon}/clean_tankdir.sh" rgn 20
       rc_clean_tankdir=$?
       echo "rc_clean_tankdir = ${rc_clean_tankdir}"
    fi

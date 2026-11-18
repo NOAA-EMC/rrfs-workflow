@@ -167,9 +167,9 @@ if [[ "${DO_RETRO}" == "TRUE" ]] ; then
     RAPHRRR_SOIL_ROOT="/work2/noaa/wrfruc/murdzek/RRFS_input_data/rap_hrrr_soil"
   fi
   if [[ "${MACHINE}" == "wcoss2" ]] ; then
-  # for winter 2022  
+  # for winter 2022
     #RETRODATAPATH="/lfs/h2/emc/lam/noscrub/emc.lam/rrfs_retro_data"
-  # for spring 2023  
+  # for spring 2023
     #RETRODATAPATH="/lfs/h2/emc/lam/noscrub/donald.e.lippi/rrfs-stagedata"
   #for Feb 2022
 #    RETRODATAPATH="/lfs/h2/emc/da/noscrub/donald.e.lippi/rrfs-stagedata"
@@ -221,5 +221,5 @@ if [[ "${DO_RETRO}" == "TRUE" ]] ; then
   if [[ "${LBCS_ICS_ONLY}" == "TRUE" ]]; then
     CLEAN_OLDRUN_HRS="7777"
     CLEAN_OLDFCST_HRS="7777"
-  fi  
+  fi
 fi

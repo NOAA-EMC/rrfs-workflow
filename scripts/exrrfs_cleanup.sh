@@ -67,7 +67,7 @@ if [ "${CLEAN_MODE}" == "post" ]; then
         fi
       done
     fi
-  
+
     # enkf
     if [ "${KEEP_ENKF_RESTART^^}" != YES ]; then
       echo "Cleaning up enkf RESTART files for cyc ${cyc} ."

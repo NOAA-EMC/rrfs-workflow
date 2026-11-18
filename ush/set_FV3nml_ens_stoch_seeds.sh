@@ -4,15 +4,15 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-# This file defines a function that, for an ensemble-enabled experiment 
-# (i.e. for an experiment for which the workflow configuration variable 
+# This file defines a function that, for an ensemble-enabled experiment
+# (i.e. for an experiment for which the workflow configuration variable
 # DO_ENSEMBLE has been set to "TRUE"), creates new namelist files with
-# unique stochastic "seed" parameters, using a base namelist file in the 
-# ${EXPTDIR} directory as a template. These new namelist files are stored 
-# within each member directory housed within each cycle directory. Files 
-# of any two ensemble members differ only in their stochastic "seed" 
+# unique stochastic "seed" parameters, using a base namelist file in the
+# ${EXPTDIR} directory as a template. These new namelist files are stored
+# within each member directory housed within each cycle directory. Files
+# of any two ensemble members differ only in their stochastic "seed"
 # parameter values.  These namelist files are generated when this file is
-# called as part of the FORECAST_TN task.  
+# called as part of the FORECAST_TN task.
 #
 #-----------------------------------------------------------------------
 #
@@ -97,11 +97,11 @@ function set_FV3nml_ens_stoch_seeds() {
 'nam_stochy': {"
 
   if [ "${DO_SPPT}" = TRUE ]; then
-  
+
   iseed_sppt=$(( cdate*1000 + ensmem_num*10 + 1 ))
     settings="${settings}
   'iseed_sppt': ${iseed_sppt},"
-  
+
   fi
 
   if [ "${DO_SHUM}" = TRUE ]; then
@@ -117,7 +117,7 @@ function set_FV3nml_ens_stoch_seeds() {
   iseed_skeb=$(( cdate*1000 + ensmem_num*10 + 3 ))
     settings="${settings}
   'iseed_skeb': ${iseed_skeb},"
-  
+
   fi
   settings="${settings}
     }"
@@ -144,7 +144,7 @@ function set_FV3nml_ens_stoch_seeds() {
 
     settings="${settings}
   'iseed_spp': [ $( printf "%s, " "${iseed_spp[@]}" ) ],"
-  
+
   fi
 
   settings="${settings}
@@ -156,10 +156,10 @@ function set_FV3nml_ens_stoch_seeds() {
   if [ "${DO_LSM_SPP}" = TRUE ]; then
 
   iseed_lsm_spp=$(( cdate*1000 + ensmem_num*10 + 9))
- 
+
     settings="${settings}
   'iseed_lndp': [ $( printf "%s, " "${iseed_lsm_spp[@]}" ) ],"
- 
+
   fi
 
   settings="${settings}

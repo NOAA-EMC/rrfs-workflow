@@ -26,7 +26,7 @@ export PREDEF_GRID_NAME=${PREDEF_GRID_NAME:-"RRFS_NA_3km"}
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -215,8 +215,8 @@ else
   #-----------------------------------------------------------------------
   #
   # go to INPUT directory.
-  # prepare initial conditions for 
-  #     cold start if BKTYPE=1 
+  # prepare initial conditions for
+  #     cold start if BKTYPE=1
   #     warm start if BKTYPE=0
   #     spinupcyc + warm start if BKTYPE=2
   #       the previous 3 cycles are searched to find the restart files
@@ -254,7 +254,7 @@ else
      BKTYPE=3
   fi
 
-  # cycle surface 
+  # cycle surface
   SFC_CYC=0
   if [ "${DO_SURFACE_CYCLE}" = "TRUE" ]; then  # cycle surface fields
     if [ "${DO_SPINUP}" = "TRUE" ]; then
@@ -425,7 +425,7 @@ else
              bkpath=${LBCS_ROOT}/${RUN}.${YYYYMMDDInterv}/${HHInterv}/${fg_restart_dirname}/RESTART  # cycling, use background from RESTART
            fi
            print_info_msg "${VERBOSE}" "Trying this path: ${bkpath}"
-  
+
            checkfile=${bkpath}/${restart_prefix}coupler.res
            if [ -r "${checkfile}" ] ; then
              print_info_msg "${VERBOSE}" "Found ${checkfile}; Use it as background for analysis "
@@ -625,7 +625,7 @@ EOF
     ${APRUN} "${EXECrrfs}"/${pgm} >>"${pgmout}" 2>errfile
     export err=$?; err_chk
     mv errfile errfile_updatesst
-    sst_reference_time=$(wgrib2 -t latest.SST) 
+    sst_reference_time=$(wgrib2 -t latest.SST)
     echo "${YYYYMMDDHH}(${CYCLE_TYPE}): update SST using ${sst_reference_time}"
   fi
 fi
@@ -666,7 +666,7 @@ if [ "${DO_SMOKE_DUST}" = "TRUE" ] && [ "${CYCLE_TYPE}" = "spinup" ]; then  # cy
                print_info_msg "${VERBOSE}" "Found ${checkfile}; Use it for smoke/dust cycle "
                break
              fi
- 
+
              n=$((n + DA_CYCLE_INTERV))
              offset_hours=${n}
 	     YYYYMMDDHHmInterv=$(${NDATE} -${offset_hours} "${YYYYMMDD}""${HH}")
@@ -710,7 +710,7 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
 
     restart_prefix="${YYYYMMDD}.${HH}0000."
       for ndayinhour in 00 24 48 72
-      do 
+      do
         if [ "${restart_suffix_find}" = "missing" ]; then
           yyyymmddhh_prev=$(${NDATE} -${ndayinhour} "${YYYYMMDD}""${HH}")
           restart_prefix="${yyyymmddhh_prev:0:8}.${yyyymmddhh_prev:8:2}0000."
@@ -743,7 +743,7 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
 
 
       for ndayinhour in 00 24
-      do 
+      do
         if [ "${restart_suffix_find}" = "missing" ]; then
           yyyymmddhh_prev=$(${NDATE} -${ndayinhour} "${YYYYMMDD}""${HH}")
           restart_prefix="${yyyymmddhh_prev:0:8}.${yyyymmddhh_prev:8:2}0000."
@@ -764,7 +764,7 @@ if [ ${SFC_CYC} -eq 1 ] || [ ${SFC_CYC} -eq 2 ] ; then  # cycle surface fields
               restart_prefix_find=${restart_prefix}
               restart_suffix_find=${YYYYMMDDHHmInterv}
             fi
- 
+
             n=$((n + DA_CYCLE_INTERV))
             offset_hours=$(( n + ndayinhour ))
 	    YYYYMMDDHHmInterv=$(${NDATE} -${offset_hours} "${YYYYMMDD}""${HH}")
@@ -852,7 +852,7 @@ if [ ${Update_GVF} -ge 1 ]; then
      fi
    else
      latestGVF="${latestGVF_array[${#latestGVF_array[@]}-1]}"
-   fi 
+   fi
    if [ -r "${latestGVF}" ]; then
       cpreq -p "${latestGVF}" ./GVF-WKL-GLB.grib2
       ln -sf "${FIX_GSI}"/gvf_VIIRS_4KM.MAX.1gd4r.new  gvf_VIIRS_4KM.MAX.1gd4r.new
@@ -887,9 +887,9 @@ if [[ "${missing_data_flag}" == true && "${SENDMAIL}" == "YES" ]]; then
 WARNING: Some files were unable to be found in this analysis:
 
 RRFS cycle will continue without these files.
-  
+
 No immediate impact to integrity of delivered products.
-  
+
 Ops action: identify cause of missing files below.
 
 EOF
@@ -916,7 +916,7 @@ else
 fi
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
    FCST_LEN_HRS_thiscycle=${FCST_LEN_HRS_SPINUP}
-fi 
+fi
 print_info_msg "${VERBOSE}" " The forecast length for cycle (\"${HH}\") is
                ( \"${FCST_LEN_HRS_thiscycle}\") "
 
@@ -979,7 +979,7 @@ fi
 
 
 if [ ${SFC_CYC} -eq 3 ] ; then
-# 
+#
 echo need to uncomment ush/rrfs_soilsurgery.sh call to run SFC_CYC=3
 # ${USHrrfs}/rrfs_soilsurgery.sh
 fi
@@ -1006,7 +1006,7 @@ if [ "${USE_FVCOM}" = "TRUE" ] && [ ${SFC_CYC} -eq 2 ] ; then
     [[ ${err} -gt 0 ]]&& echo "WARNING FVCOM data process failed"
     INPUT_DATA=${DATA}
     cd "${INPUT_DATA}"
-    # FVCOM_DIR needs to be redefined here to find 
+    # FVCOM_DIR needs to be redefined here to find
     FVCOM_DIR=${INPUT_DATA}/fvcom_remap
     latest_fvcom_file="${FVCOM_DIR}/${FVCOM_FILE}"
     fvcomtime=${YYYYJJJHH}
@@ -1024,7 +1024,7 @@ if [ "${USE_FVCOM}" = "TRUE" ] && [ ${SFC_CYC} -eq 2 ] ; then
        fvcomtime=$(date +%Y%j%H -d "${starttime_fvcom}  ${jumphour} hours ago")
        fvcom_data_fp="${latest_fvcom_file}_${fvcomtime}.nc"
        if [ -f "${fvcom_data_fp}" ]; then
-         break 
+         break
        fi
     done
   fi
@@ -1077,7 +1077,7 @@ fi
 #-----------------------------------------------------------------------
 #
 # This job share data with forecast job of current cycle
-#   (1) Move output to Umbrella Data for the initial condition - ICS_ROOT 
+#   (1) Move output to Umbrella Data for the initial condition - ICS_ROOT
 #   (2) Create share from ICS_ROOT to forecast Umbrella Data location - FORECAST_INPUT_PRODUCT
 #
 #-----------------------------------------------------------------------

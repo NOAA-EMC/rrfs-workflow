@@ -28,11 +28,11 @@ set -x
    dirs=`ls "${TANKverf}"`
 
    if [[ ${area} = 'rgn' ]]; then
-      #----------------------------------------------- 
-      #  Determine number of days from $PDATE for all 
-      #  directories that start with "radmon".  Note 
+      #-----------------------------------------------
+      #  Determine number of days from $PDATE for all
+      #  directories that start with "radmon".  Note
       #  that this expects the directories to be in
-      #  the format of ${RUN}.yyyymmdd. 
+      #  the format of ${RUN}.yyyymmdd.
       #
       for dir in ${dirs}; do
          file_name="${dir##*/}"
@@ -42,9 +42,9 @@ set -x
          if [ "${file}" = "${subdir}" ]; then
 
             #----------------------------------------------
-            # Use date utility to determine number of days 
+            # Use date utility to determine number of days
             # from PDATE.  Note that time difference is
-            # calculated in seconds, hence the division 
+            # calculated in seconds, hence the division
             # by the number of seconds/day.
             #
             days=$(( ($(date --date="${PDY}" +%s) - $(date --date="${file_extension}" +%s) )/(60*60*24) ))
@@ -53,7 +53,7 @@ set -x
             #  rm anything older than $days_to_keep
             #
             if [ ${days} -gt "${days_to_keep}" ]; then
-                
+
                cycle_dir="${TANKverf}/${dir}"
 
                if [[ -d ${cycle_dir} ]]; then
@@ -66,12 +66,12 @@ set -x
       done
 
    else
-  
-      #----------------------------------------------- 
-      #  Determine number of days from $PDATE for all 
-      #  directories that start with "gdas".  Note 
+
+      #-----------------------------------------------
+      #  Determine number of days from $PDATE for all
+      #  directories that start with "gdas".  Note
       #  that this expects the directories to be in
-      #  the format of ${RUN}.yyyymmdd. 
+      #  the format of ${RUN}.yyyymmdd.
       #
       for dir in ${dirs}; do
          file_name="${dir##*/}"
@@ -81,9 +81,9 @@ set -x
          if [ "${file}" = "${subdir}" ]; then
 
             #----------------------------------------------
-            # Use date utility to determine number of days 
+            # Use date utility to determine number of days
             # from PDATE.  Note that time difference is
-            # calculated in seconds, hence the division 
+            # calculated in seconds, hence the division
             # by the number of seconds/day.
             #
             days=$(( ($(date --date="${PDY}" +%s) - $(date --date="${file_extension}" +%s) )/(60*60*24) ))
@@ -93,7 +93,7 @@ set -x
             #
             if [ ${days} -gt "${days_to_keep}" ]; then
                cycles="00 06 12 18"
- 
+
                for cyc in ${cycles}; do
                   cycle_dir="${TANKverf}/${dir}/${cyc}/radmon"
                   if [[ -d ${cycle_dir} ]]; then

@@ -58,7 +58,7 @@ export CDATE="${PDY}${cyc}"
 . "${USHrrfs}"/source_util_funcs.sh
 
 #-----------------------------------------------------------------------
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #-----------------------------------------------------------------------
@@ -76,7 +76,7 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the J-job script for the task that runs an analysis with RRFS for 
+This is the J-job script for the task that runs an analysis with RRFS for
 the specified cycle.
 ========================================================================"
 

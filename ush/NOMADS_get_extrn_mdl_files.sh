@@ -13,19 +13,19 @@ hh=$2 #i.e. "12"
 ## file format (grib2 or nemsio), the default format is grib2
 if [ "$#" -ge 3 ]; then
    file_fmt=$3
-else 
+else
    file_fmt="grib2"
 fi
 ## forecast length, the default value are 6 hours
 if [ "$#" -ge 4 ]; then
    nfcst=$4
-else 
+else
    nfcst=6
 fi
 ## forecast interval, the default interval are 3 hours
 if [ "$#" -ge 5 ]; then
    nfcst_int=$5
-else 
+else
    nfcst_int=3
 fi
 

@@ -14,7 +14,7 @@ source "${FIXrrfs}"/workflow/"${WGF}"/workflow.conf
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -35,7 +35,7 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the ex-script for the task that calculates ensemble mean with 
+This is the ex-script for the task that calculates ensemble mean with
 RRFS for the specified cycle.
 ========================================================================"
 #

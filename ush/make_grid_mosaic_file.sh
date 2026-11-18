@@ -5,7 +5,7 @@ set -x
 #-----------------------------------------------------------------------
 #
 # This file defines a function that creates a grid mosaic file from the
-# specified grid file. 
+# specified grid file.
 #
 #-----------------------------------------------------------------------
 #
@@ -13,7 +13,7 @@ make_grid_mosaic_file() {
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -79,7 +79,7 @@ make_grid_mosaic_file() {
   exec_fp="${HOMErrfs}/exec/${exec_fn}"
   if [[ ! -f "${exec_fp}" ]]; then
     print_err_msg_exit "\
-The executable (exec_fp) for generating the grid mosaic file does not 
+The executable (exec_fp) for generating the grid mosaic file does not
 exist:
   exec_fp = \"${exec_fp}\"
 Please ensure that you've built this executable."
@@ -96,27 +96,27 @@ Please ensure that you've built this executable."
   mosaic_fp_prefix="${mosaic_fp%.*}"
 #
 # Call the make_solo_mosaic executable/code to generate a mosaic file.
-# Note the following about this code: 
+# Note the following about this code:
 #
-# 1) The code attempts to open the grid file specified by the argument 
-#    of --tile_file in the directory specified by the argument of --dir.  
+# 1) The code attempts to open the grid file specified by the argument
+#    of --tile_file in the directory specified by the argument of --dir.
 #    If it cannot find this file, it will fail.
 #
 #    Note that:
 #
-#    a) The argument of --grid may or may not contain a "/" at the end.  
+#    a) The argument of --grid may or may not contain a "/" at the end.
 #       The code will add a "/" if necessary when appending the argument
-#       of --tile_file to that of --grid to form the full path to the 
+#       of --tile_file to that of --grid to form the full path to the
 #       grid file.
 #
 #    b) The code creates a string variable named "gridlocation" in the
-#       mosaic file that contains the argument of --dir followed if 
+#       mosaic file that contains the argument of --dir followed if
 #       necessary by a "/".
 #
 #    c) The code creates a string array variable named "gridfiles" in the
-#       mosaic file that has only a single element (for the case of a 
+#       mosaic file that has only a single element (for the case of a
 #       global or nested grid, it would contain more elements).  This
-#       element contains the argument of --grid, i.e. the name of the 
+#       element contains the argument of --grid, i.e. the name of the
 #       grid file.
 #
 # 2) The argument of --mosaic must be the absolute or relative path to
@@ -134,13 +134,13 @@ Please ensure that you've built this executable."
 #       the code will fail.
 #
 #    b) If the argument of --mosaic is a relative path, then the code
-#       assumes that this path is relative to the current working directory, 
-#       i.e. the directory from which the make_solo_mosaic executable is 
+#       assumes that this path is relative to the current working directory,
+#       i.e. the directory from which the make_solo_mosaic executable is
 #       called.
 #
 #    c) If the argument of --mosaic ends with a "/", then it is the path
 #       to a directory, not to a file.  In this case, a mosaic file named
-#       ".nc" will be created in this absolute or relative  directory.  
+#       ".nc" will be created in this absolute or relative  directory.
 #       For example, if the argument of --mosaic is "/abc/def/", then a
 #       file named ".nc" will be created in the directory /abc/def
 #       (assuming the directory /abc/def exists).  This is generally not
@@ -148,14 +148,14 @@ Please ensure that you've built this executable."
 #       "/"
 #
 # 3) The code creates a string variable named "mosaic" in the mosaic file.
-#    This gets set exactly to the argument of --mosaic without any 
+#    This gets set exactly to the argument of --mosaic without any
 #    modifications.  Thus, if this argument is a relative path, "mosaic"
 #    will be set to that relative path without the current working directory
 #    prepended to it.  Similarly, "mosaic" will normally not contain at
 #    its end the ".nc" extension of the mosaic file (unless the argument
 #    to --mosaic itself contains that extension, e.g. if the argument is
 #    "/abc/def/ghi.nc", but in that case the mosaic file will be in the
-#    directory /abc/def and named ghi.nc.nc -- note the double ".nc" 
+#    directory /abc/def and named ghi.nc.nc -- note the double ".nc"
 #    extensions).
 #
     ${APRUN} "${exec_fp}" \
@@ -164,7 +164,7 @@ Please ensure that you've built this executable."
       --tile_file "${grid_fn}" \
       --mosaic "${mosaic_fp_prefix}" || \
     print_err_msg_exit "\
-Call to executable (exec_fp) that generates a grid mosaic file for a 
+Call to executable (exec_fp) that generates a grid mosaic file for a
 regional grid returned with nonzero exit code:
-  exec_fp = \"${exec_fp}\"" 
+  exec_fp = \"${exec_fp}\""
 }

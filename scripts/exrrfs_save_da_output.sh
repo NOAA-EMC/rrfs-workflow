@@ -14,7 +14,7 @@ source "${FIXrrfs}"/workflow/"${WGF}"/workflow.conf
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -47,12 +47,12 @@ This is the ex-script for the task that saves DA analysis files to nwges.
 #
 yyyymmdd=${CDATE:0:8}
 hh=${CDATE:8:2}
-# 
+#
 #-----------------------------------------------------------------------
 #
 # Let's save the DA analysis files if needed before run fcst.
 # This will copy the data assimilation analysis files from $DATA/INPUT/
-# to ${NWGES_DIR}/DA_OUTPUT/, 
+# to ${NWGES_DIR}/DA_OUTPUT/,
 # this is to prepare for ensemble free forecast after the ensemble data assimilation
 #
 #-----------------------------------------------------------------------

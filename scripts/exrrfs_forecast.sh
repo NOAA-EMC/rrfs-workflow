@@ -55,7 +55,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -328,9 +328,9 @@ Cannot create symlink because target does not exist:
 fi
 
 #
-# If using some specific physics suites such as FV3_HRRR or FV3_RAP, there are two files 
-# (that contain statistics of the orography) that are needed by the gravity 
-# wave drag parameterization in that suite.  Below, create symlinks to these 
+# If using some specific physics suites such as FV3_HRRR or FV3_RAP, there are two files
+# (that contain statistics of the orography) that are needed by the gravity
+# wave drag parameterization in that suite.  Below, create symlinks to these
 # files in the run directory.
 #
 suites=( "RRFS_sas" "FV3_RAP" "FV3_HRRR" "FV3_HRRR_gf" "FV3_GFS_v15_thompson_mynn_lam3km" "FV3_GFS_v17_p8" )
@@ -554,7 +554,7 @@ if [ "${DO_ENSEMBLE}" = TRUE ] && ([ "${DO_SPP}" = TRUE ] || [ "${DO_SPPT}" = TR
   || [ "${DO_SKEB}" = TRUE ] || [ "${DO_LSM_SPP}" =  TRUE ]); then
    HH=${HH:-${cyc}}
    for cyc_start in "${CYCL_HRS_STOCH[@]}"; do
-     if [ ${HH} -eq ${cyc_start} ]; then 
+     if [ ${HH} -eq ${cyc_start} ]; then
        STOCH="TRUE"
        FV3_NML_RESTART_STOCH_FP=${PARMrrfs}/config/${WGF}/input.nml_restart_stoch
      fi
@@ -675,7 +675,7 @@ fi
 if [ "${STOCH}" = "TRUE" ]; then
   if [ ${BKTYPE} -eq 0 ] && [ ${DO_ENSFCST_MULPHY} = "TRUE" ]; then
     ensmem_num=$(echo "${ENSMEM_INDX}" | awk '{print $1+0}')
-    cpreq -p ${FV3_NML_RESTART_STOCH_FP}_ensphy${ensmem_num} ${DATA}/${FV3_NML_FN}_base 
+    cpreq -p ${FV3_NML_RESTART_STOCH_FP}_ensphy${ensmem_num} ${DATA}/${FV3_NML_FN}_base
     rm -fr ${DATA}/field_table
     cpreq -p ${PARMrrfs}/field_table.rrfsens_phy0${ENSMEM_INDX} ${DATA}/field_table
   else
@@ -685,8 +685,8 @@ if [ "${STOCH}" = "TRUE" ]; then
   export err=$?
   if [ $err -ne 0 ]; then
     err_exit "\
- Call to function to create the ensemble-based namelist for the current 
- cycle's (CDATE) run directory (DATA) failed: 
+ Call to function to create the ensemble-based namelist for the current
+ cycle's (CDATE) run directory (DATA) failed:
    cdate = \"${CDATE}\"
    DATA = \"${DATA}\""
   fi
@@ -710,7 +710,7 @@ if [ ${WGF} = "firewx" ]; then
 fi
 
 #-----------------------------------------------------------------------
-#   
+#
 # Forecast hours for current run
 #
 #-----------------------------------------------------------------------
@@ -1073,7 +1073,7 @@ fi
 #
 $USHrrfs/create_ufs_configure_file.py \
   --path-to-defns ${FIXrrfs}/workflow/${WGF}/workflow.conf \
-  --run-dir ${DATA} 
+  --run-dir ${DATA}
 export err=$?
 if [ $err -ne 0 ]; then
   err_exit "Call to function to create the UFS configuration file for

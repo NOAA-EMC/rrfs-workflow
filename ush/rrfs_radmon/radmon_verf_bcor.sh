@@ -54,7 +54,7 @@ else
              rm -f ./input
          fi
 
-      # Check for 0 length input file here and avoid running 
+      # Check for 0 length input file here and avoid running
       # the executable if $input_file doesn't exist or is 0 bytes
       #
          if [[ -s "${input_file}" ]]; then
@@ -77,19 +77,19 @@ cat << EOF > input
   netcdf=${RADMON_NETCDF},
  /
 EOF
-   
+
             "./${bcor_exec}" < input >> "stdout.${type}" 2>>errfile
             if [[ $? -ne 0 ]]; then
                fail=$((fail+1))
             fi
- 
+
 
 #-------------------------------------------------------------------
 #  move data, control, and stdout files to $TANKverf_rad and compress
 #
             cat "stdout.${type}" >> stdout.bcor
             rm -f "stdout.${type}"
- 
+
             if [[ -s "${bcor_file}" ]]; then
                ${COMPRESS} "${bcor_file}"
             fi

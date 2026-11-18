@@ -1,7 +1,7 @@
 #!/bin/bash
 
 date
-export PS4='+ $SECONDS + ' 
+export PS4='+ $SECONDS + '
 set -xue
 
 #-----------------------------------------------------------------------
@@ -103,7 +103,7 @@ mkdir -p "${SURFACE_DIR}"/surface."${PDY}"
 . "${USHrrfs}"/source_util_funcs.sh
 
 #-----------------------------------------------------------------------
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #-----------------------------------------------------------------------
@@ -124,7 +124,7 @@ In directory:     \"${scrfunc_dir}\"
 This is the J-job script for the task that saves restart files to COM.
 ========================================================================"
 SLASH_ENSMEM_SUBDIR=${SLASH_ENSMEM_SUBDIR:-""}
-len_ensmem=${#SLASH_ENSMEM_SUBDIR} 
+len_ensmem=${#SLASH_ENSMEM_SUBDIR}
 if [ "${len_ensmem}" -eq 0 ] && [ "${DO_ENSEMBLE}" != "TRUE" ]; then
   export CYCLE_SUBTYPE="control"
 fi

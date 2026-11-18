@@ -46,7 +46,7 @@ proceed_trigger_scan="YES"
 ic=1
 while [ ${proceed_trigger_scan} == "YES" ]; do
   proceed_trigger_scan="NO"
-  
+
   #### release_enkf_save_restart
   if [ "${scan_release_enkf_save_restart}" == "YES" ]; then
     echo "Proceeding with scan_release_enkf_save_restart"
@@ -88,7 +88,7 @@ while [ ${proceed_trigger_scan} == "YES" ]; do
     echo " *** Check ${umbrella_forecast_data}"
       export err=9
       err_chk
-  fi 
+  fi
 
   if [ ${proceed_trigger_scan} == "YES" ]; then
     ic=`expr "${ic}" + 1`

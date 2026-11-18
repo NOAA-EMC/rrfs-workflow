@@ -5,7 +5,7 @@ set -x
 #-----------------------------------------------------------------------
 #
 # This file defines a function that:
-# 
+#
 # (1) Determines the ozone parameterization being used by checking in the
 #     CCPP physics suite XML.
 #
@@ -14,15 +14,15 @@ set -x
 #
 # (3) Resets the last element of the workflow array variable
 #     FIXgsm_FILES_TO_COPY_TO_FIXam that contains the files to copy from
-#     FIXgsm to FIXam (this last element is initially set to a dummy 
+#     FIXgsm to FIXam (this last element is initially set to a dummy
 #     value) to the name of the ozone production/loss file set in the
 #     previous step.
 #
-# (4) Resets the element of the workflow array variable 
-#     CYCLEDIR_LINKS_TO_FIXam_FILES_MAPPING (this array contains the 
+# (4) Resets the element of the workflow array variable
+#     CYCLEDIR_LINKS_TO_FIXam_FILES_MAPPING (this array contains the
 #     mapping between the symlinks to create in any cycle directory and
-#     the files in the FIXam directory that are their targets) that 
-#     specifies the mapping for the ozone symlink/file such that the 
+#     the files in the FIXam directory that are their targets) that
+#     specifies the mapping for the ozone symlink/file such that the
 #     target FIXam file name is set to the name of the ozone production/
 #     loss file set above.
 #
@@ -32,7 +32,7 @@ set_ozone_param() {
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -53,7 +53,7 @@ set_ozone_param() {
 #-----------------------------------------------------------------------
 #
 # Specify the set of valid argument names for this script/function.  Then
-# process the arguments provided to this script/function (which should 
+# process the arguments provided to this script/function (which should
 # consist of a set of name-value pairs of the form arg1="value1", etc).
 #
 #-----------------------------------------------------------------------
@@ -95,7 +95,7 @@ set_ozone_param() {
 #-----------------------------------------------------------------------
 #
 # Get the name of the ozone parameterization being used.  There are two
-# possible ozone parameterizations:  
+# possible ozone parameterizations:
 #
 # (1) A parameterization developed/published in 2015.  Here, we refer to
 #     this as the 2015 parameterization.  If this is being used, then we
@@ -103,10 +103,10 @@ set_ozone_param() {
 #
 # (2) A parameterization developed/published sometime after 2015.  Here,
 #     we refer to this as the after-2015 parameterization.  If this is
-#     being used, then we set the variable ozone_param to the string 
+#     being used, then we set the variable ozone_param to the string
 #     "ozphys".
 #
-# We check the CCPP physics suite definition file (SDF) to determine the 
+# We check the CCPP physics suite definition file (SDF) to determine the
 # parameterization being used.  If this file contains the line
 #
 #   <scheme>ozphys_2015</scheme>
@@ -117,8 +117,8 @@ set_ozone_param() {
 #   <scheme>ozphys</scheme>
 #
 # then the after-2015 parameterization is being used.  (The SDF should
-# contain exactly one of these lines; not both nor neither; we check for 
-# this.)  
+# contain exactly one of these lines; not both nor neither; we check for
+# this.)
 #
 #-----------------------------------------------------------------------
 #
@@ -150,9 +150,9 @@ set_ozone_param() {
 #
 # Set the element in the array CYCLEDIR_LINKS_TO_FIXam_FILES_MAPPING that
 # specifies the mapping between the symlink for the ozone production/loss
-# file that must be created in each cycle directory and its target in the 
+# file that must be created in each cycle directory and its target in the
 # FIXam directory.  The name of the symlink is already in the array, but
-# the target is not because it depends on the ozone parameterization that 
+# the target is not because it depends on the ozone parameterization that
 # the physics suite uses.  Since we determined the ozone parameterization
 # above, we now set the target of the symlink accordingly.
 #

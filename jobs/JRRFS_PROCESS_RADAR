@@ -1,7 +1,7 @@
 #!/bin/bash
 
 date
-export PS4='+ $SECONDS + ' 
+export PS4='+ $SECONDS + '
 set -xue
 
 #-----------------------------------------------------------------------
@@ -74,7 +74,7 @@ mkdir -p "${COMOUT_ANALYSIS}"
 . "${USHrrfs}"/source_util_funcs.sh
 
 #-----------------------------------------------------------------------
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #-----------------------------------------------------------------------
@@ -92,7 +92,7 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the J-job script for the task that runs the radar reflectivity 
+This is the J-job script for the task that runs the radar reflectivity
 preprocessing with RRFS for the specified cycle.
 ========================================================================"
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 date
-export PS4='+ $SECONDS + ' 
+export PS4='+ $SECONDS + '
 set -xue
 
 #-----------------------------------------------------------------------
@@ -57,7 +57,7 @@ else
   export umbrella_ics_data=${umbrella_ics_data:-${DATAROOT}/rrfs_ics_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}}
 fi
 
-# Umbrella Data for the initial condition that will be used in 
+# Umbrella Data for the initial condition that will be used in
 #   shared INPUT within forecast Umbrella Data location
 export shared_output_data_ics=${umbrella_ics_data}/ics
 
@@ -80,7 +80,7 @@ export CDATE="${PDY}${cyc}"
 . "${USHrrfs}"/source_util_funcs.sh
 
 #-----------------------------------------------------------------------
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #-----------------------------------------------------------------------

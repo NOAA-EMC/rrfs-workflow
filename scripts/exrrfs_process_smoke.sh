@@ -18,7 +18,7 @@ export FIRE_RAVE_DIR="${DCOMROOT}"
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -64,7 +64,7 @@ for i in $(seq 0 24); do
       "${LN}" -sf "${rave_day_dir}/${intp_fname}" "${DATA}/${intp_fname}"
       echo "${rave_day_dir}/${intp_fname} interpolated file available to reuse"
    else
-      echo "${rave_day_dir}/${intp_fname} interpolated file not available to reuse"  
+      echo "${rave_day_dir}/${intp_fname} interpolated file not available to reuse"
    fi
 done
 
@@ -102,7 +102,7 @@ fi
   "${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}" \
   "${fire_rave_dir_work}" \
   "${DATA}" \
-  "${PREDEF_GRID_NAME}" 
+  "${PREDEF_GRID_NAME}"
 export err=$?; err_chk
 
 #Copy the the hourly, interpolated RAVE data to $rave_dir so it

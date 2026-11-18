@@ -6,10 +6,10 @@ set -x
 #
 # This file defines a function that checks whether the RUC land surface
 # model (LSM) parameterization is being called by the selected physics
-# suite.  If so, it sets the variable ruc_lsm used to "TRUE".  If not, 
-# it sets this variable to "FALSE".  It then "returns" this variable, 
-# i.e. it sets the environment variable whose name is specified by the 
-# input argument output_varname_sdf_uses_ruc_lsm to whatever sdf_uses_ruc_lsm 
+# suite.  If so, it sets the variable ruc_lsm used to "TRUE".  If not,
+# it sets this variable to "FALSE".  It then "returns" this variable,
+# i.e. it sets the environment variable whose name is specified by the
+# input argument output_varname_sdf_uses_ruc_lsm to whatever sdf_uses_ruc_lsm
 # is set to.
 #
 #-----------------------------------------------------------------------
@@ -18,7 +18,7 @@ function check_ruc_lsm() {
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -39,7 +39,7 @@ function check_ruc_lsm() {
 #-----------------------------------------------------------------------
 #
 # Specify the set of valid argument names for this script/function.  Then
-# process the arguments provided to this script/function (which should 
+# process the arguments provided to this script/function (which should
 # consist of a set of name-value pairs of the form arg1="value1", etc).
 #
 #-----------------------------------------------------------------------

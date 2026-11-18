@@ -54,7 +54,7 @@ ncl -n generate_RAP_based_ICs_BCs.ncl \
               [/ "FV3LAMSE", (/ -75,  -70,  20,  25/),  True, False /], \
               [/ "dummy_list_element_dont_remove" /] \
            /]' \
-  map_proj=\"cyln\" 
+  map_proj=\"cyln\"
 
 #  'regions=[/ [/ "GLOBE",    (/-180,  180, -90,  90/), False, False /], \
 #              [/ "FV3LAM",   (/-140,  -60,  20,  55/), False, False /], \

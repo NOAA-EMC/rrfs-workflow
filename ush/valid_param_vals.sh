@@ -37,7 +37,7 @@ valid_vals_CCPP_PHYS_SUITE=( \
 "FV3_RAP" \
 "FV3_GFS_v15_thompson_mynn_lam3km" \
 "RRFS_sas_nogwd" \
-) 
+)
 valid_vals_GFDLgrid_RES=("48" "96" "192" "384" "768" "1152" "3072")
 valid_vals_EXTRN_MDL_NAME_ICS=("GFS" "GDASENKF" "RRFS")
 valid_vals_EXTRN_MDL_NAME_LBCS=("GFS" "GEFS" "RRFS")

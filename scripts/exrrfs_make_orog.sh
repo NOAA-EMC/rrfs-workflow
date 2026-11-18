@@ -17,7 +17,7 @@ export FIXam=${FIXam:-${HOMErrfs}/fix/am}
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -55,7 +55,7 @@ export OMP_STACKSIZE=2048m
 #
 # Load modules and set various computational parameters and directories.
 #
-# Note: 
+# Note:
 # These module loads should all be moved to modulefiles.  This has been
 # done for Hera but must still be done for other machines.
 #
@@ -92,7 +92,7 @@ if [ "${WGF}" = "firewx" ]; then
           LAT_CTR="${lat}"
           LON_CTR="${lon}"
           # Break immediately stops the loop, preventing multi-line variable corruption.
-          break 
+          break
         fi
       done < "${firewx_loc}"
     fi

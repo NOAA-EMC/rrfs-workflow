@@ -94,7 +94,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -119,7 +119,7 @@ set -x
   if [ "$#" -eq 1 ]; then
 
     input="$1"
-    
+
 #
 #-----------------------------------------------------------------------
 #

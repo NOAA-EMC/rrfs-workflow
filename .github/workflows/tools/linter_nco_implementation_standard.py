@@ -145,6 +145,16 @@ def check_standards(files_to_scan):
                     )
                     failed = True
 
+            # Trailing whitespace check
+            # line.rstrip('\r\n') removes the newline character(s) so $ accurately anchors to the visual end of the line
+            if re.search(r"[ \t]+$", line.rstrip('\r\n')):
+                skipped, reason = is_line_skipped(filename, line_num, "trailing_whitespace", line)
+                if skipped:
+                    xtrace(f"[{filename}] step: line {line_num} skipped for trailing_whitespace ({reason})")
+                else:
+                    print(f"FAIL: Trailing whitespace found in {path}:{line_num}")
+                    failed = True
+
             stripped_line = line.strip()
             if not stripped_line or stripped_line.startswith("#"):
                 continue

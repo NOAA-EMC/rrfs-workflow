@@ -14,7 +14,7 @@ source "${FIXrrfs}"/workflow/"${WGF}"/workflow.conf
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -152,8 +152,8 @@ elif [ "${GRID_GEN_METHOD}" = "ESGgrid" ]; then
   "${USHrrfs}"/set_namelist.py -q -u "${settings}" -o "${rgnl_grid_nml_fp}"
   export err=$?
   if [ ${err} -ne 0 ]; then
-    err_exit "Call to python script set_namelist.py to set the variables 
-  in the regional_esg_grid namelist file failed. Parameters passed to this 
+    err_exit "Call to python script set_namelist.py to set the variables
+  in the regional_esg_grid namelist file failed. Parameters passed to this
   script are:
   Full path to output namelist file:
     rgnl_grid_nml_fp = \"${rgn_grid_nml_fp}\"
@@ -208,7 +208,7 @@ else
   # Optional: err_exit "Could not find RES_equiv in ${grid_fp}"
 fi
 if [ ${err} -ne 0 ]; then
-  err_exit "Attempt to extract the equivalent global uniform cubed-sphere 
+  err_exit "Attempt to extract the equivalent global uniform cubed-sphere
   grid resolution from the grid file (grid_fp) failed:
   grid_fp = \"${grid_fp}\""
 fi
@@ -234,7 +234,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Copy the grid file from the run directory (DATA) to COM. 
+# Copy the grid file from the run directory (DATA) to COM.
 # In the process, rename it such that its name includes CRES and the halo width.
 #
 #-----------------------------------------------------------------------
@@ -271,8 +271,8 @@ fi
 #-----------------------------------------------------------------------
 #
 # Partially "shave" the halo from the grid file having a wide halo to
-# generate multiple grid files with [6,4,3,0]-grid-wide halos. 
-# These are needed as inputs by the forecast model as well as by the code 
+# generate multiple grid files with [6,4,3,0]-grid-wide halos.
+# These are needed as inputs by the forecast model as well as by the code
 # (chgres_cube) that generates the lateral boundary condition files.
 #
 #-----------------------------------------------------------------------
@@ -310,7 +310,7 @@ export pgm="ufs_util_make_solo_mosaic"
 
 halo_num_list[${#halo_num_list[@]}]="${NHW}"
 for halo_num in "${halo_num_list[@]}"; do
-  print_info_msg "Creating grid mosaic file with ${halo_num}-cell-wide halo..."  
+  print_info_msg "Creating grid mosaic file with ${halo_num}-cell-wide halo..."
   grid_fn="${CRES}${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${halo_num}.nc"
   grid_fp="${COMOUT}/${grid_fn}"
   mosaic_fn="${CRES}${DOT_OR_USCORE}mosaic.halo${halo_num}.nc"

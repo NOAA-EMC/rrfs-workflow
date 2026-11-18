@@ -72,7 +72,7 @@ if [ "${WGF}" = "firewx" ]; then
           LAT_CTR="${lat}"
           LON_CTR="${lon}"
           # NEW: Break immediately stops the loop, preventing multi-line variable corruption.
-          break 
+          break
         fi
       done < "${firewx_loc}"
     fi
@@ -109,7 +109,7 @@ yyyymmdd=${OFFSETDATE:0:8}
 
 fcst_hh=$( printf "%02d" "${ic_spec_fhrs}" )
 fcst_mn="00"
-    
+
 case "${extrn_mdl_name}" in
 
   "GFS")
@@ -493,27 +493,27 @@ convert_nst=""
 #
 # If the external model is not one that uses the RUC land surface model
 # (LSM) -- which currently includes all valid external models except the
-# HRRR, the RAP, and the RRFS -- then we set the number of soil levels 
-# to include in the output NetCDF file that chgres_cube generates 
+# HRRR, the RAP, and the RRFS -- then we set the number of soil levels
+# to include in the output NetCDF file that chgres_cube generates
 # (nsoill_out; this is a variable in the namelist that chgres_cube reads
 # in) to 4.  This is because FV3 can handle this regardless of the LSM
 # that it is using (which is specified in the suite definition file, or
-# SDF), as follows.  
-# If the SDF does not use the RUC LSM (i.e. it uses the Noah or Noah MP 
-# LSM), then it will expect to see 4 soil layers; and if the SDF uses 
-# the RUC LSM, then the RUC LSM itself has the capability to regrid from 
+# SDF), as follows.
+# If the SDF does not use the RUC LSM (i.e. it uses the Noah or Noah MP
+# LSM), then it will expect to see 4 soil layers; and if the SDF uses
+# the RUC LSM, then the RUC LSM itself has the capability to regrid from
 # 4 soil layers to the 9 layers that it uses.
 #
 # On the other hand, if the external model is one that uses the RUC LSM
 # (currently meaning that it is either the HRRR, the RAP, or the RRFS),
-# then what we set nsoill_out to depends on whether the RUC or the 
+# then what we set nsoill_out to depends on whether the RUC or the
 # Noah/Noah MP LSM is used in the SDF.  If the SDF uses RUC, then both
-# the external model and FV3 use RUC (which expects 9 soil levels), so 
-# we simply set nsoill_out to 9.  In this case, chgres_cube does not 
+# the external model and FV3 use RUC (which expects 9 soil levels), so
+# we simply set nsoill_out to 9.  In this case, chgres_cube does not
 # need to do any regridding of soil levels (because the number of levels
-# in is the same as the number out).  If the SDF uses the Noah or Noah 
+# in is the same as the number out).  If the SDF uses the Noah or Noah
 # MP LSM, then the output from chgres_cube must contain 4 soil levels
-# because that is what these LSMs expect, and the code in FV3 does not 
+# because that is what these LSMs expect, and the code in FV3 does not
 # have the capability to regrid from the 9 levels in the external model
 # to the 4 levels expected by Noah/Noah MP.  In this case, chgres_cube
 # does the regridding from 9 to 4 levels.
@@ -532,11 +532,11 @@ fi
 #-----------------------------------------------------------------------
 #
 # If the external model for ICs is one that does not provide the aerosol
-# fields needed by Thompson microphysics (currently only the HRRR and 
-# RAP provide aerosol data) and if the physics suite uses Thompson 
-# microphysics, set the variable thomp_mp_climo_file in the chgres_cube 
-# namelist to the full path of the file containing aerosol climatology 
-# data.  In this case, this file will be used to generate approximate 
+# fields needed by Thompson microphysics (currently only the HRRR and
+# RAP provide aerosol data) and if the physics suite uses Thompson
+# microphysics, set the variable thomp_mp_climo_file in the chgres_cube
+# namelist to the full path of the file containing aerosol climatology
+# data.  In this case, this file will be used to generate approximate
 # aerosol fields in the ICs that Thompson MP can use.  Otherwise, set
 # thomp_mp_climo_file to a null string.
 #

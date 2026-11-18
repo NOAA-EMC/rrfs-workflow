@@ -7,7 +7,7 @@ set -x
 # This file defines a function that first checks whether the Thompson
 # microphysics parameterization is being called by the selected physics
 # suite.  If not, it sets the output variable whose name is specified by
-# output_varname_sdf_uses_thompson_mp to "FALSE" and exits.  If so, it 
+# output_varname_sdf_uses_thompson_mp to "FALSE" and exits.  If so, it
 # sets this variable to "TRUE" and modifies the workflow arrays
 # FIXgsm_FILES_TO_COPY_TO_FIXam and CYCLEDIR_LINKS_TO_FIXam_FILES_MAPPING
 # to ensure that fixed files needed by the Thompson microphysics
@@ -20,7 +20,7 @@ function set_thompson_mp_fix_files() {
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -41,7 +41,7 @@ function set_thompson_mp_fix_files() {
 #-----------------------------------------------------------------------
 #
 # Specify the set of valid argument names for this script/function.  Then
-# process the arguments provided to this script/function (which should 
+# process the arguments provided to this script/function (which should
 # consist of a set of name-value pairs of the form arg1="value1", etc).
 #
 #-----------------------------------------------------------------------
@@ -97,7 +97,7 @@ function set_thompson_mp_fix_files() {
     print_err_msg_exit "\
 Unexpected value returned for thompson_mp_name_or_null:
   thompson_mp_name_or_null = \"${thompson_mp_name_or_null}\"
-This variable should be set to either \"${thompson_mp_name}\" or an empty 
+This variable should be set to either \"${thompson_mp_name}\" or an empty
 string."
   fi
 #
@@ -112,9 +112,9 @@ string."
 #-----------------------------------------------------------------------
 #
 # Append the names of the fixed files needed by the Thompson microphysics
-# parameterization to the workflow array FIXgsm_FILES_TO_COPY_TO_FIXam, 
-# and append to the workflow array CYCLEDIR_LINKS_TO_FIXam_FILES_MAPPING 
-# the mappings between these files and the names of the corresponding 
+# parameterization to the workflow array FIXgsm_FILES_TO_COPY_TO_FIXam,
+# and append to the workflow array CYCLEDIR_LINKS_TO_FIXam_FILES_MAPPING
+# the mappings between these files and the names of the corresponding
 # symlinks that need to be created in the run directories.
 #
 #-----------------------------------------------------------------------
@@ -142,12 +142,12 @@ string."
     done
 
     msg="
-Since the Thompson microphysics parameterization is being used by this 
+Since the Thompson microphysics parameterization is being used by this
 physics suite (CCPP_PHYS_SUITE), the names of the fixed files needed by
-this scheme have been appended to the array FIXgsm_FILES_TO_COPY_TO_FIXam, 
-and the mappings between these files and the symlinks that need to be 
+this scheme have been appended to the array FIXgsm_FILES_TO_COPY_TO_FIXam,
+and the mappings between these files and the symlinks that need to be
 created in the cycle directories have been appended to the array
-CYCLEDIR_LINKS_TO_FIXam_FILES_MAPPING.  After these modifications, the 
+CYCLEDIR_LINKS_TO_FIXam_FILES_MAPPING.  After these modifications, the
 values of these parameters are as follows:
 
   CCPP_PHYS_SUITE = \"${CCPP_PHYS_SUITE}\"

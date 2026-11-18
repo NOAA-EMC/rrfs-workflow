@@ -5,17 +5,17 @@
 ##########################################
 echo "This script is run by the SDM to create the text file"
 echo "with the central lat/lon of the RRFS fire weather nest."
-echo "This text file, called "rrfs_firewx_loc" is copied to" 
+echo "This text file, called "rrfs_firewx_loc" is copied to"
 echo "/lfs/h1/ops/prod/com/rrfs/v1.0/firewx_input and is read"
 echo "by the RRFS jobs that process the fire weather nest."
 ##########################################
 
-function setfirewx { 
-     
+function setfirewx {
+
 # Set default center lat/lons (Washington DC)
    lat=38.9
    lon=-77.0
-    
+
    echo
    echo
    echo "Enter center latitude and longitude points for ${cyc}Z cycle"
@@ -27,7 +27,7 @@ function setfirewx {
     lat=${clat}
     lon=${clon}
    fi
-  
+
    echo
    echo "Run Python script to check whether the center lat/lon are inside the RRFS domain"
    python "${HOMErrfs}"/ush/rrfsfw_domain.py "${lat}" "${lon}"
@@ -80,13 +80,13 @@ do
  echo "2. Enter same firewx points as yesterday for all four cycles"
  echo "3. Check to see what points are currently entered in production"
  echo "4. Quit"
- echo 
+ echo
  echo "Please select from the above (1-4):"
  read -r choice
- 
+
  case "${choice}"
  in
-  1) prcss_points="yes" 
+  1) prcss_points="yes"
      enter_dat="yes";;
 
   2) echo "Use same fire weather points as yesterday, which are:"
@@ -101,24 +101,24 @@ do
      done
      echo "exit script"
      exit 0 ;;
-    
+
   3) clear
      echo "CURRENT SUBMITTED FIREWX POINTS/INFO IN PRODUCTION"
-     echo 
+     echo
      echo "CYCLE     LAT      LON   "
      echo "-------------------------"
-     for cyc in 00 06 12 18 
+     for cyc in 00 06 12 18
      do
       lt=$(awk -v cycle="${cyc}z" 'index($0, cycle) { print $2 }' "${COMOUT}/rrfs_firewx_loc")
       lg=$(awk -v cycle="${cyc}z" 'index($0, cycle) { print $3 }' "${COMOUT}/rrfs_firewx_loc")
       echo "${cyc}	${lt}	${lg}"
      done ;;
-     
+
   4) endloop="yes";;
 
   *) echo "You entered ${choice}...Invalid Choice...try again"  ;;
  esac
- 
+
  if [ "${prcss_points}" = "yes" ]
   then
  if [ "${enter_dat}" = "yes" ]

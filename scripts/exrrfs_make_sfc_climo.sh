@@ -16,7 +16,7 @@ export SFC_CLIMO_INPUT_DIR="${FIXrrfs}/fix_sfc_climo"
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -73,7 +73,7 @@ if [ "${WGF}" = "firewx" ]; then
           LAT_CTR="${lat}"
           LON_CTR="${lon}"
           # Break immediately stops the loop, preventing multi-line variable corruption.
-          break 
+          break
         fi
       done < "${firewx_loc}"
     fi
@@ -240,7 +240,7 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-# Add fractional vegetation/soil information to the halo0 and halo4 
+# Add fractional vegetation/soil information to the halo0 and halo4
 # orography files.  For the fire weather grid, vegsoilt_frac = true.
 #
 #-----------------------------------------------------------------------

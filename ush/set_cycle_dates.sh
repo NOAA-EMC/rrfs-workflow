@@ -4,9 +4,9 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-# This file defines a function that, given the starting date (date_start, 
-# in the form YYYYMMDD), the ending date (date_end, in the form YYYYMMDD), 
-# and an array containing the cycle hours for each day (whose elements 
+# This file defines a function that, given the starting date (date_start,
+# in the form YYYYMMDD), the ending date (date_end, in the form YYYYMMDD),
+# and an array containing the cycle hours for each day (whose elements
 # have the form HH), returns an array of cycle date-hours whose elements
 # have the form YYYYMMDD.  Here, YYYY is a four-digit year, MM is a two-
 # digit month, DD is a two-digit day of the month, and HH is a two-digit
@@ -68,7 +68,7 @@ function set_cycle_dates() {
 #
 #-----------------------------------------------------------------------
 #
-  local all_cdates date_crnt 
+  local all_cdates date_crnt
 #
 #-----------------------------------------------------------------------
 #
@@ -85,12 +85,12 @@ End date (date_end) must be at or after start date (date_start):
 #
 #-----------------------------------------------------------------------
 #
-# In the following "while" loop, we begin with the starting date and 
+# In the following "while" loop, we begin with the starting date and
 # increment by 1 day each time through the loop until we reach the ending
 # date.  For each date, we obtain an intermediate array of cdates (whose
-# elements have the format YYYYMMDDHH) by prepending to the elements of 
+# elements have the format YYYYMMDDHH) by prepending to the elements of
 # cycle_hrs the current date.  (Thus, this array has the same number of
-# elements as cycle_hrs.)  We then append this intermediate array to the 
+# elements as cycle_hrs.)  We then append this intermediate array to the
 # final array that will contain all cdates (i.e. over all days and cycle
 # hours).
 #

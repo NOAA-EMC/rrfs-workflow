@@ -4,7 +4,7 @@ set -x
 #-----------------------------------------------------------------------
 #
 # For a description of this function, see the usage message below.
-# 
+#
 #-----------------------------------------------------------------------
 #
 function is_element_of() {
@@ -12,7 +12,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -50,7 +50,7 @@ Usage:
 
 This function checks whether the specified array contains the specified
 string, i.e. whether at least one of the elements of the array is equal
-to the string.  The return code from this function will be zero if at 
+to the string.  The return code from this function will be zero if at
 least one match is found and nonzero if no matches are found.
 
 The arguments to this function are defined as follows:

@@ -1,18 +1,18 @@
 #!/bin/bash
 set -x
 
-#   
+#
 #-----------------------------------------------------------------------
 #
 # conduct surface surgery to transfer RAP/HRRR surface fields into RRFS.
-#   
+#
 # This surgery only needs to be done once to give RRFS a good start of the surface.
 # Please consult Ming or Tanya first before turning on this surgery.
-#     
+#
 #-----------------------------------------------------------------------
-#     
+#
 if [ "${SFC_CYC}" -eq 3 ] ; then
-      
+
    do_lake_surgery=".false."
    if [ "${USE_CLM}" = "TRUE" ]; then
      do_lake_surgery=".true."

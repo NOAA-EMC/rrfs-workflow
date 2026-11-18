@@ -6,7 +6,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -93,7 +93,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-# Source the file containing the function that checks for preexisting 
+# Source the file containing the function that checks for preexisting
 # directories or files and handles them according to a specified method
 # (which can be one of "delete", "rename", and "quit").
 #
@@ -141,7 +141,7 @@ set -x
 #-----------------------------------------------------------------------
 #
 # Source the file containing the function that interpolates (or extrapo-
-# lates) a grid cell size-dependent property to an arbitrary global 
+# lates) a grid cell size-dependent property to an arbitrary global
 # cubed-sphere resolution.
 #
 #-----------------------------------------------------------------------
@@ -159,7 +159,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-# 
+#
 #
 #-----------------------------------------------------------------------
 #
@@ -177,7 +177,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-# 
+#
 #
 #-----------------------------------------------------------------------
 #
@@ -185,7 +185,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-# Source the file containing the function that returns to stdout the 
+# Source the file containing the function that returns to stdout the
 # contents of a character (i.e. string) variable in a netcdf file.
 #
 #-----------------------------------------------------------------------

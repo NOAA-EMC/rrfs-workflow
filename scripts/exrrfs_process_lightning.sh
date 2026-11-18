@@ -20,7 +20,7 @@ export GLMFED_WEST_ROOT="${DCOMROOT}/ldmdata/obs/GOES-18/GLM/tiles"
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -56,11 +56,11 @@ export PREP_MODEL=${PREP_MODEL:-0}
 #
 #-----------------------------------------------------------------------
 #
-# Run the lightning processing and copy output file 
+# Run the lightning processing and copy output file
 # to umbrella data directory.
 #
 #-----------------------------------------------------------------------
-# 
+#
 python -u "${HOMErrfs}"/ush/process_lightning.py
 if [ -f "${shared_output_data}"/fedobs.nc ] && [ -s "${DATA}"/fedobs.nc ]; then
   rm -f "${shared_output_data}"/fedobs.nc

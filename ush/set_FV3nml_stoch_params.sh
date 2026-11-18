@@ -4,15 +4,15 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-# This file defines a function that, for an ensemble-enabled experiment 
-# (i.e. for an experiment for which the workflow configuration variable 
+# This file defines a function that, for an ensemble-enabled experiment
+# (i.e. for an experiment for which the workflow configuration variable
 # DO_ENSEMBLE has been set to "TRUE"), creates new namelist files with
-# unique stochastic "seed" parameters, using a base namelist file in the 
+# unique stochastic "seed" parameters, using a base namelist file in the
 # ${EXPTDIR} directory. These new namelist files are stored within each
 # member directory housed within each cycle directory in ${EXPTDIR}.
-# Files of any two ensemble members differ only in their stochastic "seed" 
+# Files of any two ensemble members differ only in their stochastic "seed"
 # parameter values.  These namelist files are generated when this file is
-# called as part of the FORECAST_TN task. 
+# called as part of the FORECAST_TN task.
 #
 #-----------------------------------------------------------------------
 #
@@ -78,7 +78,7 @@ function set_FV3nml_stoch_params() {
 #
 #-----------------------------------------------------------------------
 #
-# For a given cycle and member, generate a namelist file with unique 
+# For a given cycle and member, generate a namelist file with unique
 # seed values.
 #
 #-----------------------------------------------------------------------
@@ -97,7 +97,7 @@ function set_FV3nml_stoch_params() {
 'nam_stochy': {
     'iseed_shum': ${iseed_shum},
     'iseed_skeb': ${iseed_skeb},
-    'iseed_sppt': ${iseed_sppt},  
+    'iseed_sppt': ${iseed_sppt},
     'sppt': -999.0
     }
 'gfs_physics_nml': {

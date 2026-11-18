@@ -33,9 +33,9 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This script, along with the python script it calls, is used to remap the 
-fvcom output from the 5 lakes onto the RRFS grid. It maps skin temp and 
-ice concentration. The resulting file is used by RRFS for improving lake 
+This script, along with the python script it calls, is used to remap the
+fvcom output from the 5 lakes onto the RRFS grid. It maps skin temp and
+ice concentration. The resulting file is used by RRFS for improving lake
 effect snow forecasts.
 ========================================================================"
 #

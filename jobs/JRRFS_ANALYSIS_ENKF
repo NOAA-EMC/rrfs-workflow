@@ -53,7 +53,7 @@ else
   export COMOUT=${COMOUT:-$(compath.py -o ${NET}/"${rrfs_ver}"/"${RUN}"."${PDY}"/"${cyc}")}
   export umbrella_forecast_data=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}
 fi
-  
+
 export FORECAST_INPUT_PRODUCT=${umbrella_forecast_data}
 #-----------------------------------------------------------------------
 # Source the bash utility functions.
@@ -62,7 +62,7 @@ export FORECAST_INPUT_PRODUCT=${umbrella_forecast_data}
 . "${USHrrfs}"/source_util_funcs.sh
 
 #-----------------------------------------------------------------------
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #-----------------------------------------------------------------------
@@ -80,7 +80,7 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the J-job script for the task that runs the EnKF updates for the 
+This is the J-job script for the task that runs the EnKF updates for the
 specified cycle.
 ========================================================================"
 

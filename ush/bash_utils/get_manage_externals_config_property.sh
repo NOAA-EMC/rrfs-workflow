@@ -4,7 +4,7 @@ set -x
 #-----------------------------------------------------------------------
 #
 # For a description of this function, see the usage message below.
-# 
+#
 #-----------------------------------------------------------------------
 #
 function get_manage_externals_config_property() {
@@ -12,7 +12,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -106,7 +106,7 @@ The arguments to this function are defined as follows:
 #
   if [ ! -f "${externals_cfg_fp}" ]; then
     print_err_msg_exit "\
-The specified manage_externals configuration file (externals_cfg_fp) 
+The specified manage_externals configuration file (externals_cfg_fp)
 does not exist:
   externals_cfg_fp = \"${externals_cfg_fp}\""
   fi
@@ -133,14 +133,14 @@ does not exist:
 # flag suppresses the printing of each line in the file that sed pro-
 # cesses.
 #
-# Line (2) checks for all lines in the file [which is specified on line 
+# Line (2) checks for all lines in the file [which is specified on line
 # (8)] that do NOT start with zero or more spaces followed by the exter-
 # nal name in square brackets.  (The ! before the "b" causes the nega-
 # tion.)  For each such line, the "b" causes the rest of the sed com-
-# mands [specified by the arguments to the "-e" flags on lines (3) 
+# mands [specified by the arguments to the "-e" flags on lines (3)
 # through (7)] to be skipped and for sed to read in the next line in the
-# file.  Note that if no line is found that starts with zero or more 
-# spaces followed by the external name in square brackets, sed will 
+# file.  Note that if no line is found that starts with zero or more
+# spaces followed by the external name in square brackets, sed will
 # reach the end of the file and quit [and lines (3) through (6) will ne-
 # ver be executed], and the variable "line" will get assigned to a null
 # string.
@@ -149,30 +149,30 @@ does not exist:
 # file that does start with zero or more spaces followed by the external
 # name in square brackets, we pass through line (3) (which just defines
 # the location of the SearchForLine label; it does not execute any com-
-# mands) and execute line (4).  This line checks whether the current 
+# mands) and execute line (4).  This line checks whether the current
 # line in the file has the form specified by the regular expression in
-# regex_search but doesn't change the line (since the whole line is 
-# substuted back in via the parentheses around ${regex_search} and the 
+# regex_search but doesn't change the line (since the whole line is
+# substuted back in via the parentheses around ${regex_search} and the
 # \1).  If not, sed moves on to line (5), which clears the contents of
 # the pattern buffer and reads the next line in the file into it (be-
 # cause of the "n" command).  Execution then moves back to line 3 (be-
 # cause of the "bSearchForLine" command).  If the current line in the
 # file does have the form specified by regex_search, line (5) places the
 # current line in the file in the pattern buffer (whithout modifying
-# it), and execution moves on to line (6) [because a substitution was 
+# it), and execution moves on to line (6) [because a substitution was
 # successfully made on line 4, so the "t FoundLine" command moves the
-# execution to line (6)].  Thus, once line (1) finds the start of the 
+# execution to line (6)].  Thus, once line (1) finds the start of the
 # section for the specified external, lines (3) through (6) loop until a
 # line defining the specified property is found (or the end of the file
 # is reached).  If and when this happens, sed execution moves to line
 # (6).
 #
-# Line (6) just defines the location of the FoundLine label, so it 
-# doesn't actually execute any commands, and execution moves to line 
-# (7).  On this line, the "p" command prints out the contents of the 
+# Line (6) just defines the location of the FoundLine label, so it
+# doesn't actually execute any commands, and execution moves to line
+# (7).  On this line, the "p" command prints out the contents of the
 # pattern buffer, which is the first line in the file after the start
-# of the specified external that defines the property.  Then the "q" 
-# command simply quits execution since we have found the line we are 
+# of the specified external that defines the property.  Then the "q"
+# command simply quits execution since we have found the line we are
 # looking for.
 #
 #-----------------------------------------------------------------------
@@ -190,8 +190,8 @@ does not exist:
 #
 #-----------------------------------------------------------------------
 #
-# If the variable "line" is empty, it means the sed command above was 
-# not able to find a line in the configuration file that defines the 
+# If the variable "line" is empty, it means the sed command above was
+# not able to find a line in the configuration file that defines the
 # specified property for the specified external.  In this case, print
 # out an error messge and exit.
 #
@@ -200,9 +200,9 @@ does not exist:
   if [ -z "${line}" ]; then
 
     print_err_msg_exit "\
-In the specified manage_externals configuration file (externals_cfg_fp), 
+In the specified manage_externals configuration file (externals_cfg_fp),
 the specified property (property_name) was not found for the the speci-
-fied external (external_name): 
+fied external (external_name):
   externals_cfg_fp = \"${externals_cfg_fp}\"
   external_name = \"${external_name}\"
   property_name = \"${property_name}\""

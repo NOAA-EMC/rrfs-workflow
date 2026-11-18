@@ -19,7 +19,7 @@ dt_mmss=$( printf "%02d%02d" $(( ${DT_ATMOS:-36} / 60 )) $(( ${DT_ATMOS:-36} % 6
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -78,8 +78,8 @@ fi
 #
 # Let save the restart files if needed before run post.
 # This part will copy or move restart files matching the forecast hour
-# this post will process to the nwges directory. The nwges is used to 
-# stage the restart files for a long time. 
+# this post will process to the nwges directory. The nwges is used to
+# stage the restart files for a long time.
 #-----------------------------------------------------------------------
 #
 filelist="fv_core.res.nc coupler.res"
@@ -104,7 +104,7 @@ if [ "${WGF}" = "enkf" ]; then
 elif [ "${WGF}" = "det" ]; then
   if [ "${FHR}" != "001" ]; then
     copy_gfs_ctrl=FALSE
-  fi  
+  fi
 fi
 if [[ ${copy_gfs_ctrl} = TRUE ]]; then
   if [ -s "${umbrella_forecast_data}"/INPUT/gfs_ctrl.nc ]; then
@@ -135,12 +135,12 @@ if [ -r "${shared_forecast_restart_data}/${restart_prefix}.coupler.res" ]; then
   #
   #-----------------------------------------------------------------------
   #
-  # If EnVar needs flash extent density field in control member, add it 
+  # If EnVar needs flash extent density field in control member, add it
   #
   #-----------------------------------------------------------------------
   #
   if [[ ${DO_GLM_FED_DA} = TRUE && ${DO_ENSEMBLE} != TRUE ]]; then
-    export restart_prefix=${restart_prefix} 
+    export restart_prefix=${restart_prefix}
     export PREP_MODEL=2
     ncap2 -O -v -s 'flash_extent_density=ref_f3d' "${shared_forecast_restart_data}"/"${restart_prefix}".phy_data.nc "${shared_forecast_restart_data}"/"${restart_prefix}".tmp.nc
     python -u "${HOMErrfs}"/ush/process_lightning.py
@@ -150,14 +150,14 @@ if [ -r "${shared_forecast_restart_data}/${restart_prefix}.coupler.res" ]; then
   #
   #-----------------------------------------------------------------------
   #
-  # If EnVar will need flash extent density field in ensembles, add it 
+  # If EnVar will need flash extent density field in ensembles, add it
   #
   #-----------------------------------------------------------------------
   #
   if [[ ${DO_ENSEMBLE} = TRUE && ${fhr} -eq 1 && ${PREP_MODEL_FOR_FED} = TRUE ]]; then
-    export restart_prefix=${restart_prefix}  
+    export restart_prefix=${restart_prefix}
     export PREP_MODEL=2
-  
+
     ncap2 -O -v -s 'flash_extent_density=ref_f3d' "${shared_forecast_restart_data}"/"${restart_prefix}".phy_data.nc "${shared_forecast_restart_data}"/"${restart_prefix}".tmp.nc
     python -u "${HOMErrfs}"/ush/process_lightning.py
     ncks -A -C -v flash_extent_density "${shared_forecast_restart_data}"/"${restart_prefix}".tmp.nc "${shared_forecast_restart_data}"/"${restart_prefix}".phy_data.nc
@@ -166,7 +166,7 @@ if [ -r "${shared_forecast_restart_data}/${restart_prefix}.coupler.res" ]; then
   #
   #-----------------------------------------------------------------------
   #
-  # Back to our regularly scheduled programming 
+  # Back to our regularly scheduled programming
   #
   #-----------------------------------------------------------------------
   #

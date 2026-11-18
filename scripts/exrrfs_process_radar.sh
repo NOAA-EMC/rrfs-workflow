@@ -21,7 +21,7 @@ export DO_IODA_MRMS=${DO_IODA_MRMS:-"FALSE"}
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -120,7 +120,7 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 #
 #-----------------------------------------------------------------------
 #
-# Find cycle type: cold or warm 
+# Find cycle type: cold or warm
 #  BKTYPE=0: warm start
 #  BKTYPE=1: cold start
 #
@@ -171,7 +171,7 @@ for bigmin in "${RADARREFL_TIMELEVEL[@]}"; do
   print_info_msg "${VERBOSE}" "fixgriddir is ${fixgriddir}"
   #
   #-----------------------------------------------------------------------
-  #  
+  #
   # link or copy background files
   #
   #-----------------------------------------------------------------------
@@ -180,7 +180,7 @@ for bigmin in "${RADARREFL_TIMELEVEL[@]}"; do
   #
   #-----------------------------------------------------------------------
   #
-  # link/copy observation files to working directory 
+  # link/copy observation files to working directory
   #
   #-----------------------------------------------------------------------
   #
@@ -288,7 +288,7 @@ EOF
   #
   #-----------------------------------------------------------------------
   #
-  # Build namelist and run executable 
+  # Build namelist and run executable
   #
   #   tversion      : data source version
   #                   = 1 NSSL 1 tile grib2 for single level
@@ -349,7 +349,7 @@ cat << EOF > namelist.mosaic_netcdf
     precip_dbz_vert_skip = ${precipdbzvertskip},
     clear_air_dbz_horiz_skip = ${clearairdbzhorizskip},
     clear_air_dbz_vert_skip = ${clearairdbzvertskip},
-   / 
+   /
 EOF
   #
   #-----------------------------------------------------------------------
@@ -357,7 +357,7 @@ EOF
   # Run the radar refl process.
   #
   #-----------------------------------------------------------------------
-  # 
+  #
   ${APRUN} "${EXECrrfs}"/${pgm} >>"${pgmout}" 2>errfile
   export err=$?; err_chk
   if [ -f "${shared_output_data}"/rrfs.t"${HH}"z.RefInGSI3D.bin."${bigmin}" ] && [ -s "${DATA}"/"${bigmin}"/RefInGSI3D.dat ]; then

@@ -4,17 +4,17 @@ set -x
 #-----------------------------------------------------------------------
 #
 # This file defines a function that returns the contents of a bash script/
-# function with all empty lines, comment lines, and leading and trailing 
+# function with all empty lines, comment lines, and leading and trailing
 # whitespace removed.  Arguments are as follows:
 #
 # fp:
-# The relative or full path to the file containing the bash script or 
+# The relative or full path to the file containing the bash script or
 # function.
 #
 # output_varname_contents:
-# Name of the output variable that will contain the (processed) contents 
+# Name of the output variable that will contain the (processed) contents
 # of the file.  This is the output of the function.
-# 
+#
 #-----------------------------------------------------------------------
 #
 function get_bash_file_contents() {

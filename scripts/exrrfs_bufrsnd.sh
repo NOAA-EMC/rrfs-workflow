@@ -17,7 +17,7 @@ export GEMPAK_FIX=${GEMPAK_FIX:-${FIXrrfs}/gempak/fix}
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -38,7 +38,7 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the ex-script for the task that runs the bufr-sounding 
+This is the ex-script for the task that runs the bufr-sounding
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -306,8 +306,8 @@ if [[ "${SENDCOM}" = "YES" ]]; then
   cpreq "${DATA}"/profilm.c1.${tmmark} "${COMOUT}"/rrfs.t"${cyc}"z.m"${ENSMEM_INDX}".profilm.c1
  else
   echo "WARNING: running BUFRSND task for ${WGF}"
- fi 
- 
+ fi
+
  if [[ "${SENDDBN}" = "YES" ]]; then
  if [ "${WGF}" = "det" ]; then
    "${DBNROOT}"/bin/dbn_alert MODEL RRFS_DET_BUFR "${job}" "${COMOUT}"/rrfs.t"${cyc}"z.class1.bufr

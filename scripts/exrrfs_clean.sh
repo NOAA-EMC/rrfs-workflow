@@ -9,7 +9,7 @@ set -eu
 module load prod_util
 
 #-----------------------------------------------------------------------
-# set up currentime from CDATE 
+# set up currentime from CDATE
 #-----------------------------------------------------------------------
 export DATA=${DATA:-${DATAROOT}/${jobid}}
 mkdir -p "${DATA}"

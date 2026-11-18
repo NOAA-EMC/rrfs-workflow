@@ -16,7 +16,7 @@ export FIX_GSI="${FIXrrfs}/gsi"
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -125,7 +125,7 @@ cpreq -p "${BUFR_TABLE}" prepobs_prep.bufrtable
 #
 #-----------------------------------------------------------------------
 #
-#   set observation soruce 
+#   set observation soruce
 #
 #-----------------------------------------------------------------------
 OBSTYPE_SOURCE=${OBSTYPE_SOURCE:-"rrfs"}
@@ -213,7 +213,7 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
-# Run the process for lightning bufr file 
+# Run the process for lightning bufr file
 #
 #-----------------------------------------------------------------------
 #
@@ -295,7 +295,7 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
-# Run the process for NASA LaRc cloud bufr file 
+# Run the process for NASA LaRc cloud bufr file
 #
 #-----------------------------------------------------------------------
 #
@@ -321,7 +321,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-obs_file=${obspath_tmp}/${obsfileprefix}.t${HH}${SUBH}z.prepbufr.tm00 
+obs_file=${obspath_tmp}/${obsfileprefix}.t${HH}${SUBH}z.prepbufr.tm00
 print_info_msg "${VERBOSE}" "obsfile is ${obs_file}"
 run_metar=false
 if [ -r "${obs_file}" ]; then
@@ -375,7 +375,7 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
-# Run the process for METAR cloud bufr file 
+# Run the process for METAR cloud bufr file
 #
 #-----------------------------------------------------------------------
 #

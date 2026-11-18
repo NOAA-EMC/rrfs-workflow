@@ -14,7 +14,7 @@ source "${FIXrrfs}"/workflow/"${WGF}"/workflow.conf
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -114,7 +114,7 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 #
 #-----------------------------------------------------------------------
 #
-# link the control member 
+# link the control member
 #
 #-----------------------------------------------------------------------
 #

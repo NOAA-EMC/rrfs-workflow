@@ -13,7 +13,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -55,7 +55,7 @@ where the arguments are defined as follows:
   Full path to the file in which the specified parameter's value will be
   set.
 
-  param: 
+  param:
   Name of the parameter whose value will be set.
 
   value:
@@ -107,7 +107,7 @@ Setting parameter \"${param}\" in file \"${file}\" to \"${value}\" ..."
 #
 #-----------------------------------------------------------------------
 #
-# Use grep to determine whether regex_search exists in the specified 
+# Use grep to determine whether regex_search exists in the specified
 # file.  If so, perform the regex replacement using sed.  If not, print
 # out an error message and exit.
 #
@@ -121,7 +121,7 @@ lar expression (regex_search):
   param = \"${param}\"
   value = \"${value}\"
   regex_search = ${regex_search}"
-    }; 
+    };
 
   sed -i -r -e "s%${regex_search}%${regex_replace}%" "${file_full_path}"
 #

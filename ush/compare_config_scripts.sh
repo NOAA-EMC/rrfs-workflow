@@ -4,9 +4,9 @@ set -x
 #-----------------------------------------------------------------------
 #
 # This file defines and then calls a function that checks that all vari-
-# ables defined in the user-specified experiment/workflow configuration 
-# file (whose file name is stored in the variable EXPT_CONFIG_FN) are 
-# also assigned default values in the default configuration file (whose 
+# ables defined in the user-specified experiment/workflow configuration
+# file (whose file name is stored in the variable EXPT_CONFIG_FN) are
+# also assigned default values in the default configuration file (whose
 # file name is stored in the variable EXPT_DEFAULT_CONFIG_FN).
 #
 #-----------------------------------------------------------------------
@@ -15,7 +15,7 @@ function compare_config_scripts() {
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -55,12 +55,12 @@ local func_name="${FUNCNAME[0]}"
 # Create a list of variable settings in the default workflow/experiment
 # file (script) by stripping out comments, blank lines, extraneous lead-
 # ing whitespace, etc from that file and saving the result in the varia-
-# ble var_list_default.  Each line of var_list_default will have the 
+# ble var_list_default.  Each line of var_list_default will have the
 # form
 #
 #      VAR=...
 #
-# where the VAR is a variable name and ... is the value (including any 
+# where the VAR is a variable name and ... is the value (including any
 # trailing comments).  Then create an equivalent list for the local con-
 # figuration file and save the result in var_list_local.
 #
@@ -85,7 +85,7 @@ sed -r \
 #-----------------------------------------------------------------------
 #
 # Loop through each line of var_list_local.  For each line, extract the
-# the name of the variable that is being set (say VAR) and check that 
+# the name of the variable that is being set (say VAR) and check that
 # this variable is set somewhere in the default configuration file by
 # verifying that a line that starts with "VAR=" exists in var_list_de-
 # fault.
@@ -97,14 +97,14 @@ while read crnt_line; do
 #
 # Note that a variable name will be found only if the equal sign immed-
 # iately follows the variable name.
-# 
+#
   var_name=$( printf "%s" "${crnt_line}" | sed -n -r -e "s/^([^ =\"]*)=.*/\1/p")
 
   if [ -z "${var_name}" ]; then
 
     print_info_msg "
 Current line (crnt_line) of user-specified experiment/workflow configu-
-ration file (EXPT_CONFIG_FN) does not contain a variable name (i.e. 
+ration file (EXPT_CONFIG_FN) does not contain a variable name (i.e.
 var_name is empty):
   EXPT_CONFIG_FN = \"${EXPT_CONFIG_FN}\"
   crnt_line = \"${crnt_line}\"
@@ -115,7 +115,7 @@ Skipping to next line."
 #
 # Use a herestring to input list of variables in the default configura-
 # tion file to grep.  Also, redirect the output to null because we are
-# only interested in the exit status of grep (which will be nonzero if 
+# only interested in the exit status of grep (which will be nonzero if
 # the specified regex was not found in the list)..
 #
     grep "^${var_name}=" <<< "${var_list_default}" > /dev/null 2>&1 || \

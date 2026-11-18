@@ -21,7 +21,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -59,7 +59,7 @@ set -x
 
     verbose="TRUE"
     info_msg="$1"
-    
+
   elif [ "$#" -eq 2 ]; then
 
     verbose="$1"
@@ -67,7 +67,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-# If no arguments or more than two arguments are supplied, print out a 
+# If no arguments or more than two arguments are supplied, print out a
 # usage message and exit.
 #
 #-----------------------------------------------------------------------
@@ -94,7 +94,7 @@ where the arguments are defined as follows:
   This is the informational message to print to stdout.
 
 This function prints an informational message to stdout.  If one argu-
-ment is passed in, then that argument is assumed to be info_msg and is 
+ment is passed in, then that argument is assumed to be info_msg and is
 printed.  If two arguments are passed in, then the first is assumed to
 be verbose and the second info_msg.  In this case, info_msg gets printed
 only if verbose is set to \"TRUE\".
@@ -130,7 +130,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -153,16 +153,16 @@ set -x
 # Get information about the script or function that calls this function.
 # Note that caller_name will be set as follows:
 #
-# 1) If the caller is a function, caller_name will be set to the name of 
+# 1) If the caller is a function, caller_name will be set to the name of
 #    that function.
-# 2) If the caller is a sourced script, caller_name will be set to 
-#    "script".  Note that a sourced script cannot be the top level 
+# 2) If the caller is a sourced script, caller_name will be set to
+#    "script".  Note that a sourced script cannot be the top level
 #    script since by defintion, it is sourced by another script or func-
 #    tion.
 # 3) If the caller is the top-level script, caller_name will be set to
 #    "main".
 #
-# Thus, if caller_name is set to "script" or "main", the caller is a 
+# Thus, if caller_name is set to "script" or "main", the caller is a
 # script, and if it is set to anything else, the caller is a function.
 #
 #-----------------------------------------------------------------------
@@ -231,7 +231,7 @@ Usage:
 
   ${func_name}  err_msg
 
-where err_msg is an optional error message to print to stderr.  Note 
+where err_msg is an optional error message to print to stderr.  Note
 that a header and a footer are always added to err_msg.  Thus, if err_-
 msg is not specified, the message that is printed will consist of only
 the header and footer.
@@ -239,7 +239,7 @@ the header and footer.
 #
 #-----------------------------------------------------------------------
 #
-# If an argument is listed, set err_msg to that argument.  Otherwise, 
+# If an argument is listed, set err_msg to that argument.  Otherwise,
 # set it to a null string.  Then print out the complete error message to
 # stderr and exit.
 #

@@ -6,7 +6,7 @@ set -x
 # 00 | 06 | 12 | 18:
 #   det_post_long && ensf_post
 # Other cycles:
-#   det_post 
+#   det_post
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
@@ -27,7 +27,7 @@ if [ "${WGF}" == "det" ]; then
   scan_release_ensf_post="NO"
   scan_release_firewx_post="NO"
   if [[ "${cyc}" =~ ^(00|06|12|18)$ ]]; then
-    scan_release_det_post_long="YES" 
+    scan_release_det_post_long="YES"
     scan_release_det_post="NO"
 
     for fhr in $(seq 0 84); do
@@ -78,7 +78,7 @@ if [ "${WGF}" == "det" ]; then
 elif [ "${WGF}" == "ensf" ]; then
   scan_release_ensf_post="YES"
   scan_release_firewx_post="NO"
-  scan_release_det_post_long="NO" 
+  scan_release_det_post_long="NO"
   scan_release_det_post="NO"
 
   for mem in $(seq 1 5); do
@@ -92,9 +92,9 @@ elif [ "${WGF}" == "ensf" ]; then
 elif [ "${WGF}" == "firewx" ]; then
   scan_release_firewx_post="YES"
   scan_release_ensf_post="NO"
-  scan_release_det_post_long="NO" 
+  scan_release_det_post_long="NO"
   scan_release_det_post="NO"
-    
+
   for fhr in $(seq 0 36); do
     array_element_scan_release_firewx_post[fhr]="NO"
   done
@@ -111,7 +111,7 @@ proceed_trigger_scan="YES"
 ic=1
 while [ ${proceed_trigger_scan} == "YES" ]; do
   proceed_trigger_scan="NO"
-  
+
   #### release_det_post_long
   if [ "${scan_release_det_post_long}" == "YES" ]; then
     echo "Proceeding with scan_release_det_post_long"
@@ -294,7 +294,7 @@ while [ ${proceed_trigger_scan} == "YES" ]; do
     echo " *** Check ${umbrella_forecast_data}"
       export err=9
       err_chk
-  fi 
+  fi
 
   if [ ${proceed_trigger_scan} == "YES" ]; then
     ic=`expr "${ic}" + 1`

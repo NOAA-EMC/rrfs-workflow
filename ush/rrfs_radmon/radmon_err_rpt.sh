@@ -5,10 +5,10 @@ set -x
 #  radmon_err_rpt.sh
 #
 #  This script prepares the error warning report for regional
-#  sources.  
+#  sources.
 #
 #  NOTE:  This won't work at present, but has been included
-#  as a placeholder for future work.  The principle issue is 
+#  as a placeholder for future work.  The principle issue is
 #  hourly data cycles which leads to significant, but expected
 #  inconsistencies in counts for many sat/instrument sources.
 #
@@ -45,10 +45,10 @@ else
 fi
 
 #-----------------------------------------------------------------------------
-#  read each line in the $file1 
-#  search $file2 for the same satname, channel, and region 
+#  read each line in the $file1
+#  search $file2 for the same satname, channel, and region
 #  if same combination is in both files, add the values to the output file
-#  
+#
 { while read -r myline || [[ -n "${myline}" ]]; do
    echo "myline = ${myline}"
    bound=""
@@ -61,14 +61,14 @@ fi
    bound=$(echo "${myline}" | gawk '{print $9}')
 
 #
-#     Check findings against diag_report.  If the satellite/instrument is on the 
+#     Check findings against diag_report.  If the satellite/instrument is on the
 #     diagnostic report it means the diagnostic file file for the
 #     satelite/instrument is missing for this cycle, so skip any additional
 #     error checking for that source.  Otherwise, evaluate as per normal.
 #
 
    diag_match=""
-   diag_match_len=0 
+   diag_match_len=0
 
    if [[ "${have_diag_rpt}" -eq 1 ]]; then
       diag_match=$(gawk "/${satname}/" "${diag_rpt}")
@@ -76,7 +76,7 @@ fi
    fi
 
 
-   if [[ "${diag_match_len}" -eq 0 ]]; then  
+   if [[ "${diag_match_len}" -eq 0 ]]; then
 
       if [[ "${type}" == "chan" ]]; then
          echo "looking for match for ${satname} and ${channel}"
@@ -85,15 +85,15 @@ fi
             channel2=$(echo "${myline2}" | gawk '{print $3}')
 
             if [[ "${satname}" == "${satname2}" && "${channel}" == "${channel2}" ]]; then
-               match="${satname}  channel=  ${channel}" 
+               match="${satname}  channel=  ${channel}"
                echo "match from gawk = ${match}"
                break
-            else 
+            else
                match=""
             fi
 
          done } < "${file2}"
-     
+
 
       else
          match=$(gawk "/${satname}/ && /channel= ${channel} / && /region= ${region} /" "${file2}")
@@ -106,11 +106,11 @@ fi
             if [[ "${channel2}" != "${channel}" ]]; then
                match=""
             fi
-         fi            
+         fi
 
       fi
       match_len="${#match}"
-         
+
       if [[ "${match_len}" -gt 0 ]]; then
 
          value2=$(echo "${match}" | gawk '{print $7}')
@@ -143,7 +143,7 @@ fi
                line2=" ${tmpc} ${cycle2}         	${value2}	${bound2}"
             else
                line2=" ${tmpc} ${cycle2}: ${type}= ${value2}"
-            fi 
+            fi
 
             echo "${line2}" >> "${outfile}"
          fi

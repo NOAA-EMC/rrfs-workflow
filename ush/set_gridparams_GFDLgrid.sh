@@ -14,7 +14,7 @@ set_gridparams_GFDLgrid() {
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -34,8 +34,8 @@ set_gridparams_GFDLgrid() {
 #
 #-----------------------------------------------------------------------
 #
-# Specify the set of valid argument names for this script/function.  
-# Then process the arguments provided to this script/function (which 
+# Specify the set of valid argument names for this script/function.
+# Then process the arguments provided to this script/function (which
 # should consist of a set of name-value pairs of the form arg1="value1",
 # etc).
 #
@@ -108,18 +108,18 @@ set_gridparams_GFDLgrid() {
 #
 #-----------------------------------------------------------------------
 #
-# To simplify the grid setup, we require that tile 7 be centered on tile 
+# To simplify the grid setup, we require that tile 7 be centered on tile
 # 6.  Note that this is not really a restriction because tile 6 can al-
-# ways be moved so that it is centered on tile 7 [the location of tile 6 
-# doesn't really matter because for a regional setup, the forecast model 
+# ways be moved so that it is centered on tile 7 [the location of tile 6
+# doesn't really matter because for a regional setup, the forecast model
 # will only run on tile 7 (not on tiles 1-6)].
 #
-# We now check that tile 7 is centered on tile 6 by checking (1) that 
-# the number of cells (on tile 6) between the left boundaries of these 
-# two tiles is equal to that between their right boundaries and (2) that 
+# We now check that tile 7 is centered on tile 6 by checking (1) that
+# the number of cells (on tile 6) between the left boundaries of these
+# two tiles is equal to that between their right boundaries and (2) that
 # the number of cells (on tile 6) between the bottom boundaries of these
-# two tiles is equal to that between their top boundaries.  If not, we 
-# print out an error message and exit.  If so, we set the longitude and 
+# two tiles is equal to that between their top boundaries.  If not, we
+# print out an error message and exit.  If so, we set the longitude and
 # latitude of the center of tile 7 to those of tile 6 and continue.
 #
 #-----------------------------------------------------------------------
@@ -128,10 +128,10 @@ set_gridparams_GFDLgrid() {
   ny_of_t6_on_t6g="${res_of_t6g}"
 
   num_left_margin_cells_on_t6g=$(( istart_of_t7_on_t6g - 1 ))
-  num_right_margin_cells_on_t6g=$(( nx_of_t6_on_t6g - iend_of_t7_on_t6g )) 
+  num_right_margin_cells_on_t6g=$(( nx_of_t6_on_t6g - iend_of_t7_on_t6g ))
 
   num_bot_margin_cells_on_t6g=$(( jstart_of_t7_on_t6g - 1 ))
-  num_top_margin_cells_on_t6g=$(( ny_of_t6_on_t6g - jend_of_t7_on_t6g )) 
+  num_top_margin_cells_on_t6g=$(( ny_of_t6_on_t6g - jend_of_t7_on_t6g ))
 
   lon_of_t7_ctr="${lon_of_t6_ctr}"
   lat_of_t7_ctr="${lat_of_t6_ctr}"
@@ -324,7 +324,7 @@ set_gridparams_GFDLgrid() {
 #-----------------------------------------------------------------------
 #
   print_info_msg "${VERBOSE}" "
-Original values of the halo width on the tile 6 supergrid and on the 
+Original values of the halo width on the tile 6 supergrid and on the
 tile 7 grid are:
   halo_width_on_t6sg = ${halo_width_on_t6sg}
   halo_width_on_t7g  = ${halo_width_on_t7g}"
@@ -334,7 +334,7 @@ tile 7 grid are:
   halo_width_on_t7g=$(( halo_width_on_t6g*refine_ratio_t6g_to_t7g ))
 
   print_info_msg "${VERBOSE}" "
-Values of the halo width on the tile 6 supergrid and on the tile 7 grid 
+Values of the halo width on the tile 6 supergrid and on the tile 7 grid
 AFTER adjustments are:
   halo_width_on_t6sg = ${halo_width_on_t6sg}
   halo_width_on_t7g  = ${halo_width_on_t7g}"
@@ -343,7 +343,7 @@ AFTER adjustments are:
 #
 # Calculate the number of cells that the regional domain (without halo)
 # has in each of the two horizontal directions (say x and y).  We denote
-# these by nx_of_t7_on_t7g and ny_of_t7_on_t7g, respectively.  These 
+# these by nx_of_t7_on_t7g and ny_of_t7_on_t7g, respectively.  These
 # will be needed in the "shave" steps in the grid generation task of the
 # workflow.
 #
@@ -368,7 +368,7 @@ AFTER adjustments are:
   prime_factors_ny_of_t7_on_t7g="${prime_factors_ny_of_t7_on_t7g#*: }"
 
   print_info_msg "${VERBOSE}" "
-The number of cells in the two horizontal directions (x and y) on the 
+The number of cells in the two horizontal directions (x and y) on the
 parent tile's (tile 6) grid and supergrid are:
   nx_of_t6_on_t6g = ${nx_of_t6_on_t6g}
   ny_of_t6_on_t6g = ${ny_of_t6_on_t6g}

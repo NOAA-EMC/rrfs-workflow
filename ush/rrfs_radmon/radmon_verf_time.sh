@@ -178,7 +178,7 @@ if [[ "${DO_DATA_RPT:-0}" -eq 1 ]]; then
 echo "STARTING DATA_RPT"
 
 #---------------------------
-#  build report disclaimer 
+#  build report disclaimer
 #
    cat << EOF > "${disclaimer}"
 
@@ -191,7 +191,7 @@ EOF
 
 
 #-------------------------------------------------------------------
-#  Check for missing diag files 
+#  Check for missing diag files
 #
    tmp_satype="./tmp_satype.txt"
    echo "${SATYPE}" > "${tmp_satype}"
@@ -201,7 +201,7 @@ EOF
       cat << EOF > "${diag_hdr}"
 
   Problem Reading Diagnostic File
-   
+
 
   Problems were encountered reading the diagnostic file for
   the following sources:
@@ -234,7 +234,7 @@ EOF
 
 
    #----------------------------------------------------------------
-   #  Identify bad_pen and bad_chan files for this cycle and 
+   #  Identify bad_pen and bad_chan files for this cycle and
    #   previous cycle
 
    bad_pen="bad_pen.${PDATE}"
@@ -284,7 +284,7 @@ EOF
       do_cnt=1
    fi
 
-   #--------------------------------------------------------------------  
+   #--------------------------------------------------------------------
    # avoid doing the bad_chan report for REGIONAL_RR sources -- because
    # they run hourly they often have 0 count channels for off-hour runs.
    #
@@ -340,7 +340,7 @@ EOF
 
          cat << EOF > "${report}"
 Radiance Monitor warning report
- 
+
   Net:   ${RADMON_SUFFIX}
   Cycle: ${PDATE}
 
@@ -356,9 +356,9 @@ EOF
             echo "OUTPUTING CHAN_ERR"
 
             cat << EOF > "${chan_hdr}"
-         
+
   The following channels report 0 observational counts over the past two cycles:
-   
+
   Satellite/Instrument    Channel
   ====================    =======
 
@@ -374,9 +374,9 @@ EOF
             cat << EOF > "${count_hdr}"
 
 
-         
+
   The following channels report abnormally low observational counts in the latest 2 cycles:
-   
+
 Satellite/Instrument              Obs Count          Avg Count
 ====================              =========          =========
 
@@ -393,9 +393,9 @@ EOF
 
 
   Penalty values outside of the established normal range were found
-  for these sensor/channel/regions in the past two cycles: 
+  for these sensor/channel/regions in the past two cycles:
 
-  Questionable Penalty Values 
+  Questionable Penalty Values
   ============ ======= ======      Cycle                 Penalty          Bound
                                    -----                 -------          -----
 EOF
@@ -427,7 +427,7 @@ EOF
 
    #-------------------------------------------------------------------
    #  copy new bad_pen, bad_chan, and low_count files to $TANKverf_rad
-   #   
+   #
    if [[ -s "${bad_chan}" ]]; then
       mv "${bad_chan}" "${TANKverf_rad}/."
    fi
