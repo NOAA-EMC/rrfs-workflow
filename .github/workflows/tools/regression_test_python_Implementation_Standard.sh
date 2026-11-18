@@ -18,7 +18,7 @@ REPO_ROOT="$(cd "${SCRIPT_DIR}/../../.." && pwd)"
 USH_DIR="${REPO_ROOT}/ush"
 
 # Create the canned_data directory
-mkdir -p "$CANNED_DIR" 
+mkdir -p "$CANNED_DIR"
 #### TARGET_FILE="${USH_DIR}/blending_fv3.py"
 TARGET_FILE="${CANNED_DIR}/fixed_blending_fv3.py"
 
