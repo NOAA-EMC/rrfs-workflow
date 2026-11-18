@@ -11,7 +11,9 @@
          obsdatain:
            engine:
              type: H5File
-             obsfile: data/obs/ioda_crisf4_n21.nc
+             obsfiles:
+               - data/obs/ioda_crisf4_n21.nc
+               - data/obs/ioda_crsfdb_n21.nc
              missing file action: "warn"
          obsdataout:
            empty obs space action: "@emptyObsSpaceAction@"
@@ -57,7 +59,7 @@
            - name: constant
            - name: lapseRate
              order: 2
-             tlapse: &cris-fsr_n21_tlapse  data/satbias_in/cris-fsr_n21.tlapse.txt
+             tlapse: &cris-fsr_n21_tlapse  data/satbias_in/cris-fsr_n20.tlapse.txt
            - name: lapseRate
              tlapse: *cris-fsr_n21_tlapse
            - name: emissivityJacobian
@@ -80,71 +82,65 @@
                ratio for small dataset: 2.0
            output file: data/satbias_out/cris-fsr_n21.satbias_cov.nc
 
-       # -----------------------------------------
-       # Observation Pre Filters (QC): steps 0-6
+       # ----------------------------------------
+       # Observation Filters (QC)
+       # ----------------------------------------
+       # Observation Pre Filters (QC): steps 0-5
        # -----------------------------------------
        obs pre filters:
-       # -------------------------------
-       # Step 0: Create Diagnostic Flags
-       # -------------------------------
-       # Reset the QCflags at the beginning of a new outer loop
+       # -----------------------------------------------------------------------
+       # Step 0: Reset the QCflags at the beginning of the second outerloop
+       # ------------------------------------------------------------------------
        - filter: AcceptList
          apply at iterations: 1
          identifier:
            name: NewLoopReset
+           logging: true
 
-       # Remove all obs outside the regional domain polygon
+       # --------------------------------------------------------------------------------------
+       # Step 1: Polygon Check: Remove (reduce obs space) all obs outside the regional domain
+       # --------------------------------------------------------------------------------------
        - filter: Polygon Check
          identifier:
            name: PolygonCheck
            logging: true
-         <<: *polygonConfig  # yamllint disable-line rule:anchors
+         <<: *polygonConfig # yamllint disable-line rule:anchors
 
-       - filter: Create Diagnostic Flags
-         apply at iterations: 0,1
+       # ----------------------------------------------------------------------
+       # Step 2: Convert dateTime to timeOffset (seconds since analysis time)
+       # -----------------------------------------------------------------------
+       - filter: Variable Assignment
          identifier:
-           name: CreateDiagnosticFlags
+           name: TimeConvert
+         assignments:
+         - name: MetaData/timeOffset
+           type: float
+           source variable: MetaData/dateTime
+           epoch: "@ANALYSIS_DATE@"    # your analysis time
+
+       # ----------------------------------------------------------------------------------------------------
+       # Step 3: Time window filter: remove (reduce obs space) observations oustide of time window defined by
+       #         minvalue/maxvalue: seconds relative to analysis time
+       # -----------------------------------------------------------------------------------------------------
+       - filter: Domain Check
+         identifier:
+           name: TimeWindowCheck
            logging: true
-           diagnostic flag new: true
-         filter variables:
-         - name: brightnessTemperature
-           channels: *cris-fsr_n21_channels
-         flags:
-         - name: ScanEdgeRemoval
-           initial value: false
-           force reinitialization: false
-         - name: Thinning
-           initial value: false
-           force reinitialization: false
-         - name: GeoDomainCheck
-           initial value: false
-           force reinitialization: false
-         - name: CloudDetectMinResidualIR
-           initial value: false
-           force reinitialization: false
-         - name: SurfaceTempJacobianCheck
-           initial value: false
-           force reinitialization: false
-         - name: GrossErrorCheck
-           initial value: false
-           force reinitialization: false
-         - name: NearSSTRetCheckIR
-           initial value: false
-           force reinitialization: false
-         - name: UseflagCheck
-           initial value: false
-           force reinitialization: false
+         where:
+             - variable:
+                 name: MetaData/timeOffset # units: s
+               minvalue: -5400
+               maxvalue:  5400
+         action:
+           name: reduce obs space
 
        # ----------------------------------------------------------------
-       # Step 1 : Create Derived Variables for radiane to BT conversion
+       # Step 4 : Create Derived Variables for radiane to BT conversion
        #          Assign channel wavenumbers in m-1
        # ----------------------------------------------------------------
        - filter: Variable Assignment
-         apply at iterations: 0,1
          identifier:
-           name: CentralWavenumber
-           logging: true
-           diagnostic flag new: true
+           name: VarAssignWavenumber
          assignments:
          - name: MetaData/sensorCentralWavenumber
            type: float
@@ -246,13 +242,13 @@
                use channel numbers: true
 
        # --------------------------------------------------------
-       # Step 2: Transform radiance to brightness temperature
+       # Step 5: Transform radiance to brightness temperature
        # --------------------------------------------------------
        - filter: Variable Transforms
-         apply at iterations: 0,1
          identifier:
            name: BrightnessTempTransform
            logging: true
+           diagnostic flag: true
            diagnostic flag new: true
          Transform: SatBrightnessTempFromRad
          transform from:
@@ -262,18 +258,19 @@
            name: MetaData/sensorCentralWavenumber
            channels: *cris-fsr_n21_channels
          radiance units: wavenumber
-         planck1: 1.191042953e-16
-         planck2: 1.4387774e-2
+         #planck1: 1.191042953e-16
+         #planck2: 1.4387774e-2
          #SkipWhenNoObs: False
 
-       # ----------------------------------
-       # Step 3: Assign Observation Error
-       # ----------------------------------
+       # -----------------------------------------
+       # Step 6: Assign Initial Observation Error
+       # -----------------------------------------
        - filter: Perform Action
          apply at iterations: 0,1
          identifier:
            name: ObsErrorInit
            logging: true
+           diagnostic flag: true
            diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
@@ -284,19 +281,16 @@
            error parameter vector: *cris-fsr_n21_error0
 
        # ----------------------------------
-       # Step 4: Create cloudFree variable
+       # Step 7: Create cloudFree variable
        # ----------------------------------
        - filter: Variable Assignment
-         apply at iterations: 0,1
          identifier:
-           name: CloudFree
-           logging: true
-           diagnostic flag new: true
+           name: VarAssignCloudFree
          assignments:
          - name: DerivedMetaData/cloudFree
            type: int
            function:
-             name: IntObsFunction/Arithmetic
+             name: ObsFunction/Arithmetic
              options:
                variables:
                - name: MetaData/cloudCoverTotal
@@ -306,10 +300,6 @@
        # Step 4: Remove Observations from the Edge of the Scan
        # sensorscan less than 5 or larger than 56 are removed
        #- filter: Domain Check
-       #  identifier:
-       #    name: ScanEdgeRemoval
-       #    logging: true
-       #    diagnostic flag new: false
        #  filter variables:
        #  - name: brightnessTemperature
        #    channels: *cris-fsr_n21_channels
@@ -324,58 +314,53 @@
        #    #- name: reduce obs space
 
        # ----------------------------------------
-       # Step 5: Observation Range Sanity Check
+       # Step 8: Observation Range Sanity Check
        #         Valid range: (50, 550)
        # ----------------------------------------
        - filter: Bounds Check
-         apply at iterations: 0,1
          identifier:
-           name: ScanEdgeRemoval
+           name: ObsRangeCheck
            logging: true
-           diagnostic flag new: false
          filter variables:
          - name: brightnessTemperature
            channels: *cris-fsr_n21_channels
          minvalue: 50.00001
          maxvalue: 549.99999
          action:
-           name: reject
+           name: reduce obs space
 
        # -----------------------
-       # Step 6: Data Thinning
+       # Step 9: Data Thinning
        # ------------------------
        - filter: Gaussian Thinning
-         apply at iterations: 0,1
          identifier:
-           name: Thinning
+           name: GaussianThinning
            logging: true
-           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *cris-fsr_n21_channels
          horizontal_mesh: 60
          use_reduced_horizontal_grid: true
          distance_norm: geodesic
-         #priority_variable: MetaData/cloudFree
+         priority_variable: DerivedMetaData/cloudFree
          #  round_horizontal_bin_count_to_nearest: true
          #  partition_longitude_bins_using_mesh: true
-         actions:
-         - name: set
-           flag: Thinning
-         - name: reduce obs space
+         action:
+           name: reduce obs space
 
-       # ---------------------------------------
-       # Observation post Filters (steps 7-17)
-       # ----------------------------------------
-       obs post filters:
+       # ------------------------------------------------------
+       # Observation prior Filters (step 10, online geo-domain check)
+       # -------------------------------------------------------
+       obs prior filters:
        # ----------------------------------------------------------------------------------------
-       # Step 7: online geo-domain Check, rejecting observations outside of regional MPAS domain
+       # Step 10: online geo-domain Check, rejecting observations outside of regional MPAS domain
        # ----------------------------------------------------------------------------------------
        - filter: Bounds Check
          apply at iterations: 0,1
          identifier:
            name: RegionalDomainCheck
            logging: true
+           diagnostic flag: true
            diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
@@ -385,20 +370,23 @@
            flag all filter variables if any test variable is out of bounds: true
            minvalue: 0.0
            maxvalue: 0.5
-         actions:
-         - name: set
-           flag: GeoDomainCheck
-         - name: reject
+         action:
+           name: reject
 
+       # ------------------------------------------------------
+       # Observation post Filters (steps 11-18)
+       # -------------------------------------------------------
+       obs post filters:
        # ------------------------------------------------------------------------------------------------------------------------------------------------------------
-       # Step 8: wavenumber Check, remove observations with wavenumber > 2400 cm-1 if solarzenith angle > 88.999  and containing water fraction in the field of view
-       # Note, currenlty, CrIS wavenumber > 2000 are not assimilated, this is for future refernce (i.e., CrIS short-wave DA etc.)
+       # Step 11: Wavenumber Check, remove observations with wavenumber > 2400 cm-1 if solarzenith angle > 88.999  and containing water fraction in the field of view
+       #          Note, currenlty, CrIS wavenumber > 2000 are not assimilated, this is for future refernce (i.e., CrIS short-wave DA etc.)
        # ------------------------------------------------------------------------------------------------------------------------------------------------------------
        - filter: Perform Action
          apply at iterations: 0,1
          identifier:
-           name: ZenithAngleCheck0_
+           name: WavenumberCheck
            logging: true
+           diagnostic flag: true
            diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
@@ -414,17 +402,20 @@
          action:
            name: reject
 
-       # -----------------------------------------------------------------------------------------------------------------------------------------------
-       # Step 9: Observation Error Inflation: based on Wavenumber/solza/water_fac
-       # Error Inflation Factor (EIF) for channels with wavenumber in the range of [2000, 2400] cm-1 during daytime (sun zenith angle < 89) and containing
-       # water fraction in the filed of view
-       # Note, currenlty, CrIS wavenumber > 2000 are not assimilated, this is for future refernce (i.e., CrIS short-wave DA etc.)
-       # -----------------------------------------------------------------------------------------------------------------------------------------------
+       # --------------------------------------------------------------------------------------------------------------------------------------------------------
+       # Step 12: Observation Error Inflation: based on Wavenumber/solza/water_fac
+       #          Error Inflation Factor (EIF) for channels with wavenumber in the range of [2000, 2400] cm-1 during daytime (sun zenith angle < 89) and containing
+       #          water fraction in the filed of view
+       #          Note, currenlty, CrIS channels with wavenumber > 2000 are not assimilated, this is for future refernce (i.e., CrIS short-wave DA etc.)
+       # ---------------------------------------------------------------------------------------------------------------------------------------------------------
+       # Step 12a: Inflate error based on waveumber/solza/water_fac
+       # ----------------------------------------------------------------------------------------------------------------------------------------------------------
        - filter: Perform Action
          apply at iterations: 0,1
          identifier:
-           name: ZenithAngleCheck1_
+           name: ObsErrorInflationWavenumIR
            logging: true
+           diagnostic flag: true
            diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
@@ -437,15 +428,55 @@
              options:
                channels: *cris-fsr_n21_channels
 
+       # ------------------------------------------------------------------------------------
+       # Step 12b: Save ObsErrorFactorWavenumIR into DerivedData (for testing/bebug purpose)
+       #           for the first outer loop
+       # -----------------------------------------------------------------------------------
+       - filter: Variable Assignment
+         apply at iterations: 0
+         identifier:
+           name: ObsErrorFactorWavenumIR0
+         assignments:
+         - name: DerivedData/ObsErrorFactorWavenumIR0
+           channels: *cris-fsr_n21_channels
+           type: float
+           function:
+             name: ObsFunction/ObsErrorFactorWavenumIR
+             channels: *cris-fsr_n21_channels
+             options:
+               channels: *cris-fsr_n21_channels
+
+       # ------------------------------------------------------------------------------------
+       # Step 12c: Save ObsErrorFactorWavenumIR into DerivedData (for testing/bebug purpose)
+       #           for the second outer loop
+       # -----------------------------------------------------------------------------------
+       - filter: Variable Assignment
+         apply at iterations: 1
+         identifier:
+           name: ObsErrorFactorWavenumIR1
+         assignments:
+         - name: DerivedData/ObsErrorFactorWavenumIR1
+           channels: *cris-fsr_n21_channels
+           type: float
+           function:
+             name: ObsFunction/ObsErrorFactorWavenumIR
+             channels: *cris-fsr_n21_channels
+             options:
+               channels: *cris-fsr_n21_channels
+
        # -----------------------------------------------------------------------------------------------------------
-       # Step 10: Observation Error inflation: Topography Check (H> 2000m)
-       # Error Inflation Factor (EIF) as a function of terrain height, channel, and surface-to-space transmittance.
+       # Step 13: Observation Error inflation: Topography Check (H> 2000m)
+       #          using ObsFunction/ObsErrorFactorTopoRad
+       #          Error Inflation Factor (EIF) as a function of terrain height, channel, and surface-to-space transmittance.
+       # -----------------------------------------------------------------------------------------------------------
+       # Step 13a: Observation Error inflation: Topography Check (H> 2000m)
        # -----------------------------------------------------------------------------------------------------------
        - filter: Perform Action
          apply at iterations: 0,1
          identifier:
-           name: TopographyCheck
+           name: ObsErrorInflationTopoRad
            logging: true
+           diagnostic flag: true
            diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
@@ -459,15 +490,57 @@
                sensor: cris-fsr_n21
                channels: *cris-fsr_n21_channels
 
-       # -----------------------------------------------------------------------------------------------------------------------------------------------
-       # Step 11: Observation Error inflation: Model top Transmittance Check
-       # This obsfunction calculates the observation error inflation factor for satellite radiances as a function of model top-to-space transmittance.
-       # ------------------------------------------------------------------------------------------------------------------------------------------------
+       # ---------------------------------------------------------------
+       # Step 13b: Save ObsErrorFactorTopoRad (for testing/bebug purpose)
+       #           for the first outer loop
+       # -----------------------------------------------------------------
+       - filter: Variable Assignment
+         apply at iterations: 0
+         identifier:
+           name: CreateObsErrorFactorTopoRadA
+         assignments:
+         - name: DerivedData/ObsErrorFactorTopoRad0
+           channels: *cris-fsr_n21_channels
+           type: float
+           function:
+             name: ObsFunction/ObsErrorFactorTopoRad
+             channels: *cris-fsr_n21_channels
+             options:
+               sensor: cris-fsr_n21
+               channels: *cris-fsr_n21_channels
+
+       # -----------------------------------------------------------------
+       # Step 13c: Save ObsErrorFactorTopoRad (for testing/bebug purpose)
+       #           for the second outer loop
+       # ------------------------------------------------------------------
+       - filter: Variable Assignment
+         apply at iterations: 1
+         identifier:
+           name: CreateObsErrorFactorTopoRadB
+         assignments:
+         - name: DerivedData/ObsErrorFactorTopoRad1
+           channels: *cris-fsr_n21_channels
+           type: float
+           function:
+             name: ObsFunction/ObsErrorFactorTopoRad
+             channels: *cris-fsr_n21_channels
+             options:
+               sensor: cris-fsr_n21
+               channels: *cris-fsr_n21_channels
+
+       # --------------------------------------------------------------------------------
+       # Step 14: Observation Error inflation: Model top Transmittance Check
+       #          This obsfunction calculates the observation error inflation factor for
+       #          satellite radiances as a function of model top-to-space transmittance
+       # ---------------------------------------------------------------------------------
+       # Step 14a: inflate error based on ObsErrorFactorTransmitTopRad
+       # ---------------------------------------------------------------------------------
        - filter: Perform Action
          apply at iterations: 0,1
          identifier:
-           name: TransmitTopCheck
+           name: ObsErrorInflationTransmittopRad
            logging: true
+           diagnostic flag: true
            diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
@@ -480,20 +553,57 @@
              options:
                channels: *cris-fsr_n21_channels
 
-       # -------------------------------------------------------------------------------------------------------------------------------
-       # Step 12:  Cloud Detection Check
-       # This obsFunction is designed to perform cloud detection using the Minimum Residual Method for Infrared sensors
-       # using selected channels from 15 microns CO2 absorption band.
-       # The brightnessTemperature is rejected if the QC flags from this ObsFunction output value is bigger than maxvalue=1.0e-12
-       # 0 channel is not affected by cloud (clear channel)
-       # 1 channel is affected by clouds
-       # 2 channel is not affected by clouds but too sensitive to surface condition
-       # ----------------------------------------------------------------------------------------------------------------------------
+       # -----------------------------------------------------------------------------------------
+       # Step 14b: Save ObsErrorFactorTransmitTopRad into DerivedData (for testing/bebug purpose)
+       #           for the first outer loop
+       # ------------------------------------------------------------------------------------------
+       - filter: Variable Assignment
+         apply at iterations: 0
+         identifier:
+           name: ObsErrorFactorTransmitTopRadA
+         assignments:
+         - name: DerivedData/ObsErrorFactorTransmitTopRad0
+           channels: *cris-fsr_n21_channels
+           type: float
+           function:
+             name: ObsFunction/ObsErrorFactorTransmitTopRad
+             channels: *cris-fsr_n21_channels
+             options:
+               channels: *cris-fsr_n21_channels
+
+       # -----------------------------------------------------------------------------------------
+       # Step 14c: Save ObsErrorFactorTransmitTopRad into DerivedData (for testing/bebug purpose)
+       #           for the second outer loop
+       # ------------------------------------------------------------------------------------------
+       - filter: Variable Assignment
+         apply at iterations: 1
+         identifier:
+           name: ObsErrorFactorTransmitTopRadB
+         assignments:
+         - name: DerivedData/ObsErrorFactorTransmitTopRad1
+           channels: *cris-fsr_n21_channels
+           type: float
+           function:
+             name: ObsFunction/ObsErrorFactorTransmitTopRad
+             channels: *cris-fsr_n21_channels
+             options:
+               channels: *cris-fsr_n21_channels
+
+       # ----------------------------------------------------------------------------------------------------------------------------------
+       # Step 15:  Cloud Detection Check
+       #           This obsFunction is designed to perform cloud detection using the Minimum Residual Method for Infrared sensors
+       #           using selected channels from 15 microns CO2 absorption band.
+       #           The brightnessTemperature is rejected if the QC flags from this ObsFunction output value is bigger than maxvalue=1.0e-12
+       #           0 channel is not affected by cloud (clear channel)
+       #           1 channel is affected by clouds
+       #           2 channel is not affected by clouds but too sensitive to surface condition
+       # -----------------------------------------------------------------------------------------------------------------------------------
        - filter: Bounds Check
          apply at iterations: 0,1
          identifier:
            name: CloudDetect
            logging: true
+           diagnostic flag: true
            diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
@@ -508,20 +618,17 @@
              obserr_dtempf: [0.50, 2.00, 4.00, 2.00, 4.00]
              error parameter vector: *cris-fsr_n21_error0
          maxvalue: 1.0e-12
-         actions:
-         - name: set
-           flag: CloudDetectMinResidualIR
-           ignore: rejected observations
-         - name: reject
+         action:
+           name: reject
 
        # --------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-       # Step 13: Surface Temperature Jacobian Check over Land, reduce influence of land pionts on window channels, surface temperaure jacobian oove land larger than 0.2, rejected
+       # Step 16: Surface Temperature Jacobian Check over Land, reduce influence of land pionts on window channels, surface temperaure jacobian oove land larger than 0.2, rejected
        # ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------
        - filter: Bounds Check
-         apply at iterations: 0,1
          identifier:
            name: SurfaceTempJacobianCheck
            logging: true
+           diagnostic flag: true
            diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
@@ -534,23 +641,21 @@
          - name: ObsDiag/brightness_temperature_jacobian_skin_temperature_at_surface
            channels: *cris-fsr_n21_channels
          maxvalue: 0.2
-         actions:
-         - name: set
-           flag: SurfaceTempJacobianCheck
-           ignore: rejected observations
-         - name: reject
+         action:
+           name: reject
 
-       # ------------------------------------------------------------------------------------------------------------------------------------------------------
-       # Step 14: NSST Retrieval Check
-       # This obsFunction is designed to perform QC using retrieved near-sea-surface temperature (NSST) from Infrared radiances.
-       # The output of this obsFunction is the default JEDI QC flags: 0 = channel is retained for assimilation; 1 = channel is not retained for assimilation.
-       # The brightness_temperature is rejected if the QC flags from this ObsFunction output value is bigger than maxvalue=1.0e-12.
-       # ---------------------------------------------------------------------------------------------------------------------------------------------------------
+       # ---------------------------------------------------------------------------------------------------------------------------------------------------------------
+       # Step 17: NSST Retrieval Check
+       #          This obsFunction is designed to perform QC using retrieved near-sea-surface temperature (NSST) from Infrared radiances.
+       #          The output of this obsFunction is the default JEDI QC flags: 0 = channel is retained for assimilation; 1 = channel is not retained for assimilation.
+       #          The brightness_temperature is rejected if the QC flags from this ObsFunction output value is bigger than maxvalue=1.0e-12 (i.e,, =1 for this case).
+       # ---------------------------------------------------------------------------------------------------------------------------------------------------------------
        - filter: Bounds Check
          apply at iterations: 0,1
          identifier:
-           name: NearSSTRetCheckIR
+           name: NearSSTRetCheckCheckIR
            logging: true
+           diagnostic flag: true
            diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
@@ -564,21 +669,22 @@
              obserr_demisf: [0.01, 0.02, 0.03, 0.02, 0.03]
              obserr_dtempf: [0.50, 2.00, 4.00, 2.00, 4.00]
          maxvalue: 1.0e-12
-         actions:
-         - name: set
-           flag: NearSSTRetCheckIR
-         - name: reject
+         action:
+           name: reject
 
-       # ----------------------------------------------------------------------------------------------------------
-       # Step 15: Error inflation: Surface Jacobians Check
-       # This obsFunction is designed to compute observation error inflation factor for brightness temperature as
-       # a function of weighted surface temperature jacobian and surface emissivity jacobian.
-       # -----------------------------------------------------------------------------------------------------------
+       # -----------------------------------------------------------------------------------------------------------------------------------------------
+       # Step 18: Error inflation: Surface Jacobians Check
+       #          This obsFunction ObsErrorFactorSurfJacobianRad is designed to compute observation error inflation factor for brightness temperature as
+       #          a function of weighted surface temperature jacobian and surface emissivity jacobian.
+       # ------------------------------------------------------------------------------------------------------------------------------------------------
+       # Step 18a: Error inflation: Surface Jacobians Check
+       # ------------------------------------------------------------------------------------------------------------------------------------------------
        - filter: Perform Action
          apply at iterations: 0,1
          identifier:
-           name: SurfJacobianCheck
+           name: ObsErrorInflationSurfJacobianRad
            logging: true
+           diagnostic flag: true
            diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
@@ -594,15 +700,62 @@
                obserr_dtempf: [0.50, 2.00, 4.00, 2.00, 4.00]
                sensor: cris-fsr_n21
 
-       # -------------------------------------------------------------------------------------------------------------------------------------------
-       # Step 16: Gross check
-       # Filter out data if |obs-h(x)| > Residual Threshold; Residual Threshold = MIN( (3.0 * ( 1 / Errflat )^2 * (1 / Errftaotop )^2), ErrobsMax )
-       # -------------------------------------------------------------------------------------------------------------------------------------------
+       # ------------------------------------------------------------------------------------------
+       # Step 18b: Save ObsErrorFactorSurfJacobianRad into DerivedData (for testing/bebug purpose)
+       #           for the first outer loop
+       # -------------------------------------------------------------------------------------------
+       - filter: Variable Assignment
+         apply at iterations: 0
+         identifier:
+           name: CreateObsErrorFactorSurfJacobianRadA
+           logging: true
+         assignments:
+         - name: DerivedData/ObsErrorFactorSurfJacobianRad0
+           channels: *cris-fsr_n21_channels
+           type: float
+           function:
+             name: ObsFunction/ObsErrorFactorSurfJacobianRad
+             channels: *cris-fsr_n21_channels
+             options:
+               channels: *cris-fsr_n21_channels
+               obserr_demisf: [0.01, 0.02, 0.03, 0.02, 0.03]
+               obserr_dtempf: [0.50, 2.00, 4.00, 2.00, 4.00]
+               sensor: cris-fsr_n21
+
+       # ------------------------------------------------------------------------------------------
+       # Step 18c: Save ObsErrorFactorSurfJacobianRad into DerivedData (for testing/bebug purpose)
+       #           for the second outer loop
+       # -------------------------------------------------------------------------------------------
+       - filter: Variable Assignment
+         apply at iterations: 1
+         identifier:
+           name: CreateObsErrorFactorSurfJacobianRadB
+           logging: true
+         assignments:
+         - name: DerivedData/ObsErrorFactorSurfJacobianRad1
+           channels: *cris-fsr_n21_channels
+           type: float
+           function:
+             name: ObsFunction/ObsErrorFactorSurfJacobianRad
+             channels: *cris-fsr_n21_channels
+             options:
+               channels: *cris-fsr_n21_channels
+               obserr_demisf: [0.01, 0.02, 0.03, 0.02, 0.03]
+               obserr_dtempf: [0.50, 2.00, 4.00, 2.00, 4.00]
+               sensor: cris-fsr_n21
+
+       # --------------------------------------------------------------------------------------------------------------------------------------------------
+       # Step 19: Gross Error check
+       #          Filter out data if |obs-h(x)| > Residual Threshold; Residual Threshold = MIN( (3.0 * ( 1 / Errflat )^2 * (1 / Errftaotop )^2), ErrobsMax )
+       # --------------------------------------------------------------------------------------------------------------------------------------------------
+       # Step 19a: Gross Error check based on ObsErrorBoundIR and obserr_bound_max
+       # --------------------------------------------------------------------------------------------------------------------------------------------------
        - filter: Background Check
          apply at iterations: 0,1
          identifier:
            name: GrossErrorCheck
            logging: true
+           diagnostic flag: true
            diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
@@ -611,6 +764,7 @@
          - name: ObsFunction/ObsErrorBoundIR
            channels: *cris-fsr_n21_channels
            options:
+             sensor: cris-fsr_n21
              channels: *cris-fsr_n21_channels
              obserr_bound_latitude:
                name: ObsFunction/ObsErrorFactorLatRad
@@ -621,22 +775,84 @@
                channels: *cris-fsr_n21_channels
                options:
                  channels: *cris-fsr_n21_channels
+             threshold : 3
              obserr_bound_max: *cris-fsr_n21_obserr_bound_max
              error parameter vector: *cris-fsr_n21_error0
-         actions:
-         - name: set
-           flag: GrossCheck
-           ignore: rejected observations
-         - name: reject
+         action:
+           name: reject
+
+       # -----------------------------------------------------------------------------------------
+       # Step 19b: Save ObsErrorBoundIR into DerivedData (for testing/bebug/verfication purpose)
+       #           for the first outer loop
+       # ------------------------------------------------------------------------------------------
+       - filter: Variable Assignment
+         apply at iterations: 0
+         identifier:
+           name: CreateObsErrorBoundIR0
+           logging: true
+         assignments:
+         - name: DerivedData/ObsErrorBoundIR0
+           channels: *cris-fsr_n21_channels
+           type: float
+           function:
+             name: ObsFunction/ObsErrorBoundIR
+             channels: *cris-fsr_n21_channels
+             options:
+               sensor: cris-fsr_n21
+               channels: *cris-fsr_n21_channels
+               obserr_bound_latitude:
+                 name: ObsFunction/ObsErrorFactorLatRad
+                 options:
+                   latitude_parameters: [25.0, 0.5, 0.04, 1.0]
+               obserr_bound_transmittop:
+                 name: ObsFunction/ObsErrorFactorTransmitTopRad
+                 channels: *cris-fsr_n21_channels
+                 options:
+                   channels: *cris-fsr_n21_channels
+               threshold : 3
+               obserr_bound_max: *cris-fsr_n21_obserr_bound_max
+               error parameter vector: *cris-fsr_n21_error0
+
+       # -----------------------------------------------------------------------------------------
+       # Step 19c: Save ObsErrorBoundIR into DerivedData (for testing/bebug/verfication purpose)
+       #           for the second outer loop
+       # ------------------------------------------------------------------------------------------
+       - filter: Variable Assignment
+         apply at iterations: 1
+         identifier:
+           name: CreateObsErrorBoundIR1
+           logging: true
+         assignments:
+         - name: DerivedData/ObsErrorBoundIR1
+           channels: *cris-fsr_n21_channels
+           type: float
+           function:
+             name: ObsFunction/ObsErrorBoundIR
+             channels: *cris-fsr_n21_channels
+             options:
+               sensor: cris-fsr_n21
+               channels: *cris-fsr_n21_channels
+               obserr_bound_latitude:
+                 name: ObsFunction/ObsErrorFactorLatRad
+                 options:
+                   latitude_parameters: [25.0, 0.5, 0.04, 1.0]
+               obserr_bound_transmittop:
+                 name: ObsFunction/ObsErrorFactorTransmitTopRad
+                 channels: *cris-fsr_n21_channels
+                 options:
+                   channels: *cris-fsr_n21_channels
+               threshold : 3
+               obserr_bound_max: *cris-fsr_n21_obserr_bound_max
+               error parameter vector: *cris-fsr_n21_error0
 
        # ------------------------
-       # Step 17: Useflag Check
+       # Step 20: Useflag Check
        # ------------------------
        - filter: Bounds Check
-         apply at iterations: 0,1
          identifier:
-           name: UseflagCheck
+           name: ChannelUseflagCheckRad
            logging: true
+           diagnostic flag: true
            diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
@@ -648,8 +864,5 @@
              channels: *cris-fsr_n21_channels
              use_flag: *cris-fsr_n21_use_flag
          minvalue: 1.0e-12
-         actions:
-         - name: set
-           flag: UseflagCheck
-           ignore: rejected observations
-         - name: reject
+         action:
+           name: reject
