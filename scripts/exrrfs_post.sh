@@ -454,7 +454,7 @@ if [ -f PRSLEV.GrbF"${post_fhr}" ]; then
     fi
 
 
-    fhrm1tmp="$((10#fhr-1))"
+    fhrm1tmp="$((10#${fhr}-1))"
     fhrm1=`printf "%02d\n" ${fhrm1tmp}`
 
     tm15=${umbrella_post_data}/PRSLEV.GrbF${fhrm1}.45

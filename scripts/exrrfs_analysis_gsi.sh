@@ -913,7 +913,7 @@ if [ "${DO_RADDA}" = "TRUE" ]; then
   satcounter=1
   maxcounter=240
   while [ "${satcounter}" -lt ${maxcounter} ]; do
-    SAT_TIME=$(${NDATE} -$((10#satcounter)) "${YYYYMMDDHH}")
+    SAT_TIME=$(${NDATE} -$((10#${satcounter})) "${YYYYMMDDHH}")
     SATBIAS_CS_PDY=$(echo "${SAT_TIME}" | cut -c1-8)
     SATBIAS_CS=${COMrrfs}/satbias/satbias.${SATBIAS_CS_PDY}
     echo "${SAT_TIME}"
@@ -1020,6 +1020,13 @@ EOF
 #
 #-----------------------------------------------------------------------
 #
+# Skip GSI for cold-start cycles when DO_DACOLD is disabled in the retro workflow config.
+if [[ "${DO_DACOLD}" = "FALSE" && "${BKTYPE}" -eq 1 ]]; then
+  echo "Not performing DA for cold cycles - do early clean exit"
+  # ci-ignore: bash_exitzero
+  exit 0
+fi
+
 gsi_exec="${EXECrrfs}/gsi.x"
 cpreq -p "${gsi_exec}" "${DATA}"/gsi.x
 

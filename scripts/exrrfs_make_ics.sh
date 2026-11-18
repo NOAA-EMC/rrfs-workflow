@@ -105,7 +105,7 @@ mm=${OFFSETDATE:4:2}
 dd=${OFFSETDATE:6:2}
 hh=${OFFSETDATE:8:2}
 mn="00"
-yyymmdd=${OFFSETDATE:0:8}
+yyyymmdd=${OFFSETDATE:0:8}
 
 fcst_hh=$( printf "%02d" "${ic_spec_fhrs}" )
 fcst_mn="00"
@@ -667,29 +667,29 @@ hh="${cdate_crnt_fhr:8:2}"
 settings="
 'config': {
  'fix_dir_target_grid': ${FIXLAM},
- 'mosaic_file_target_grid': ${FIXLAM}/${CRES}${DOT_OR_USCORE}mosaic.halo$((10#NH4)).nc,
+ 'mosaic_file_target_grid': ${FIXLAM}/${CRES}${DOT_OR_USCORE}mosaic.halo$((10#${NH4})).nc,
  'orog_dir_target_grid': ${FIXLAM},
- 'orog_files_target_grid': ${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo$((10#NH4)).nc,
+ 'orog_files_target_grid': ${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo$((10#${NH4})).nc,
  'vcoord_file_target_grid': ${FIXam}/${VCOORD_FILE},
  'varmap_file': ${PARMrrfs}/${varmap_file},
  'data_dir_input_grid': ${extrn_mdl_staging_dir},
  'atm_files_input_grid': ${fn_atm},
  'sfc_files_input_grid': ${fn_sfc},
  'grib2_file_input_grid': \"${fn_grib2}\",
- 'cycle_mon': $((10#mm)),
- 'cycle_day': $((10#dd)),
- 'cycle_hour': $((10#hh)),
+ 'cycle_mon': $((10#${mm})),
+ 'cycle_day': $((10#${dd})),
+ 'cycle_hour': $((10#${hh})),
  'convert_atm': True,
  'convert_sfc': True,
  'convert_nst': ${convert_nst},
  'regional': 1,
- 'halo_bndy': $((10#NH4)),
- 'halo_blend': $((10#HALO_BLEND)),
+ 'halo_bndy': $((10#${NH4})),
+ 'halo_blend': $((10#${HALO_BLEND})),
  'input_type': ${input_type},
  'external_model': ${external_model},
  'tracers_input': ${tracers_input},
  'tracers': ${tracers},
- 'nsoill_out': $((10#nsoill_out)),
+ 'nsoill_out': $((10#${nsoill_out})),
  'geogrid_file_input_grid': ${geogrid_file_input_grid},
  'vgtyp_from_climo': ${vgtyp_from_climo},
  'sotyp_from_climo': ${sotyp_from_climo},

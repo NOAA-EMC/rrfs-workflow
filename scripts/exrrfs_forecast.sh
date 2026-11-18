@@ -572,20 +572,20 @@ if [ ${BKTYPE} -eq 0 ]; then
       cpreq -p ${FV3_NML_RESTART_SPINUPCYC_FP} ${DATA}/${FV3_NML_FN}
     else
       if [ ${WGF} = "enkf" ]; then
-       if [[ $((10#$cyc % 2)) -eq 0 ]]; then
+       if [[ $((10#${cyc} % 2)) -eq 0 ]]; then
          FCST_LEN_HRS=3
        else
          FCST_LEN_HRS=1
        fi
        cpreq -p ${FV3_NML_RESTART_FP} ${DATA}/${FV3_NML_FN}
       else
-        FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$((10#$cyc))]}
+        FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$((10#${cyc}))]}
         # The hourly cycles and the longer ones at 00, 06, 12 and 18z take different
         # namelists, so which cycle it is decides. A forecast length of 18 or 84 hours
         # picks out the same two in operations, but matches neither once the forecasts
         # are shortened, and then nothing is copied and the model stops on a missing
         # input.nml.
-        if [ $(( 10#$cyc % 6 )) -ne 0 ]; then
+        if [ $(( 10#${cyc} % 6 )) -ne 0 ]; then
 
           if [ -e ${FIXLAM}/115_nodes_det/routehandle_fb01 ]; then
            files=`ls ${FIXLAM}/115_nodes_det/routehandle_fb??`
@@ -635,9 +635,9 @@ else # not cycling
        elif [ ${WGF} = "firewx" ] || [ ${WGF} = "enkf" ]; then
          cpreq -p ${FV3_NML_FP} ${DATA}/${FV3_NML_FN}
        else
-         FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$((10#$cyc))]}
+         FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$((10#${cyc}))]}
          # as above: the cycle, not the forecast length, chooses the namelist
-         if [ $(( 10#$cyc % 6 )) -ne 0 ]; then
+         if [ $(( 10#${cyc} % 6 )) -ne 0 ]; then
           if [ -e ${FIXLAM}/115_nodes_det/routehandle_fb01 ]; then
            files=`ls ${FIXLAM}/115_nodes_det/routehandle_fb??`
 	   echo "#! /bin/sh" > ./para_copy.sh
@@ -723,7 +723,7 @@ if [ ${CYCLE_TYPE} = "spinup" ]; then
   WRITE_TSK="${WRTCMP_write_tasks_per_group_SPINUP}"
 else
   if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ] ; then
-    FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$((10#$cyc))]}
+    FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$((10#${cyc}))]}
     # There are three sets of layout and write-task settings: the hourly deterministic cycle
     # (_18H), the longer deterministic cycle at 00, 06, 12 and 18z (_LONG) and the ensemble
     # forecast (_ENSF). Which cycle it is decides the set. Lengths of 18, 84 and 60 hours would
@@ -737,7 +737,7 @@ else
       LAYOUT_Y="${LAYOUT_Y_ENSF}"
       WRITE_GRP="${WRTCMP_write_groups_ENSF}"
       WRITE_TSK="${WRTCMP_write_tasks_per_group_ENSF}"
-    elif [ $(( 10#$cyc % 6 )) -eq 0 ]; then
+    elif [ $(( 10#${cyc} % 6 )) -eq 0 ]; then
       LAYOUT_X="${LAYOUT_X_LONG}"
       LAYOUT_Y="${LAYOUT_Y_LONG}"
       WRITE_GRP="${WRTCMP_write_groups_LONG}"
@@ -862,10 +862,10 @@ if [ ${CYCLE_TYPE} = "spinup" ]; then
   fi
 fi
 
-if [ $WGF = "det" ] && [[ ! $((10#$cyc % 6)) -eq 0 ]]; then
+if [ $WGF = "det" ] && [[ ! $((10#${cyc} % 6)) -eq 0 ]]; then
   RESTART_HRS='1 2 3 6 12'
 fi
-if [ $WGF = "enkf" ] && [[ $((10#$cyc % 2)) -eq 0 ]]; then
+if [ $WGF = "enkf" ] && [[ $((10#${cyc} % 2)) -eq 0 ]]; then
   RESTART_HRS='1 2 3'
 fi
 

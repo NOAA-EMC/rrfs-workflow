@@ -30,7 +30,7 @@ if [ "${WGF}" == "enkf" ]; then
     for fhr in $(seq 1 3); do
       mem_3d=$( printf "%03d" "${mem}" )
       search_str=${mem_3d}${fhr}
-      array_element_scan_release_enkf_save_restart[$((10#search_str))]="NO"
+      array_element_scan_release_enkf_save_restart[$((10#${search_str}))]="NO"
     done
   done
 else
@@ -60,10 +60,10 @@ while [ ${proceed_trigger_scan} == "YES" ]; do
         date_to_check=${Restart_cyc:0:8}
         cyc_to_check=${Restart_cyc:8:2}
         search_str=${mem_3d}${fhr}
-        if [ "${array_element_scan_release_enkf_save_restart[$((10#search_str))]}" == "NO" ]; then
+        if [ "${array_element_scan_release_enkf_save_restart[$((10#${search_str}))]}" == "NO" ]; then
 
           if [ -s "${umbrella_forecast_data}/${date_to_check}.${cyc_to_check}0000.coupler.res" ]; then
-            array_element_scan_release_enkf_save_restart[$((10#search_str))]="found"
+            array_element_scan_release_enkf_save_restart[$((10#${search_str}))]="found"
             ecflow_client --event release_enkf_save_restart_mem"${mem_3d}"_f"${fhr}"
             ic=1
             continue

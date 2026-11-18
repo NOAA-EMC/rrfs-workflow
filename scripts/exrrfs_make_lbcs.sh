@@ -90,7 +90,7 @@ fi
 export extrn_mdl_name="${EXTRN_MDL_NAME_LBCS}"
 gfs_file_fmt="${GFS_FILE_FMT_LBCS}"
 if [ "${extrn_mdl_name}" == GEFS ]; then
-  idx_member_name_2d=$( printf "%02d" "$((10#MEMBER_NAME))" )
+  idx_member_name_2d=$( printf "%02d" "$((10#${MEMBER_NAME}))" )
   extrn_mdl_memhead=/gep${idx_member_name_2d}
 else
   extrn_mdl_memhead=""
@@ -417,14 +417,19 @@ if [ "${extrn_mdl_name}" != GEFS ] ; then
      # group but the first.
      t_file_ct=${#extrn_mdl_fps_on_disk[@]}
    fi
-   # Enable nullglob (ignore empty results) and extglob (advanced pattern matching)
-   shopt -s nullglob extglob
+   # Enable nullglob so unmatched patterns do not produce a literal filename.
+   shopt -s nullglob
 
    # Create an array of all files that do NOT (!) contain 'cptmp'
-   lbcops_files=( "${umbrella_lbcops_data}"/!(*cptmp*) )
+   lbcops_files=()
+   for lbcops_file in "${umbrella_lbcops_data}"/*; do
+     # Exclude temporary copy files from the completed-file count.
+     [[ ${lbcops_file##*/} == *cptmp* ]] && continue
+     lbcops_files+=( "${lbcops_file}" )
+   done
 
    # Disable shopt immediately after use
-   shopt -u nullglob extglob
+   shopt -u nullglob
 
    # Evaluate the native array length
    if [[ ${#lbcops_files[@]} -lt "${t_file_ct}" ]]; then
@@ -792,21 +797,21 @@ list file has not specified for this external LBC model (EXTRN_MDL_NAME_LBCS):
   settings="
 'config': {
  'fix_dir_target_grid': ${FIXLAM},
- 'mosaic_file_target_grid': ${FIXLAM}/${CRES}${DOT_OR_USCORE}mosaic.halo$((10#NH4)).nc,
+ 'mosaic_file_target_grid': ${FIXLAM}/${CRES}${DOT_OR_USCORE}mosaic.halo$((10#${NH4})).nc,
  'orog_dir_target_grid': ${FIXLAM},
- 'orog_files_target_grid': ${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo$((10#NH4)).nc,
+ 'orog_files_target_grid': ${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo$((10#${NH4})).nc,
  'vcoord_file_target_grid': ${FIXam}/${VCOORD_FILE},
  'varmap_file': ${PARMrrfs}/${varmap_file},
  'data_dir_input_grid': ${extrn_mdl_staging_dir},
  'atm_files_input_grid': ${fn_atm},
  'grib2_file_input_grid': \"${fn_grib2}\",
- 'cycle_mon': $((10#mm)),
- 'cycle_day': $((10#dd)),
- 'cycle_hour': $((10#hh)),
+ 'cycle_mon': $((10#${mm})),
+ 'cycle_day': $((10#${dd})),
+ 'cycle_hour': $((10#${hh})),
  'convert_atm': True,
  'regional': 2,
- 'halo_bndy': $((10#NH4)),
- 'halo_blend': $((10#HALO_BLEND)),
+ 'halo_bndy': $((10#${NH4})),
+ 'halo_blend': $((10#${HALO_BLEND})),
  'input_type': ${input_type},
  'external_model': ${external_model},
  'tracers_input': ${tracers_input},

@@ -86,7 +86,7 @@ elif [ "${WGF}" == "ensf" ]; then
       fhr_3d=$( printf "%03d" "${fhr}" )
       memuse=$( printf "%03d" "${mem}" )
       search_str=${memuse}${fhr_3d}00
-      array_element_scan_release_ensf_post[$((10#search_str))]="NO"
+      array_element_scan_release_ensf_post[$((10#${search_str}))]="NO"
     done
   done
 elif [ "${WGF}" == "firewx" ]; then
@@ -241,8 +241,8 @@ while [ ${proceed_trigger_scan} == "YES" ]; do
         fhr_3d=$( printf "%03d" "${fhr}" )
         if [ -s "${umbrella_forecast_data}/log.atm.f${fhr_3d}" ]; then
           search_str=${memuse}${fhr_3d}00
-          if [ "${array_element_scan_release_ensf_post[$((10#search_str))]}" == "NO" ]; then
-            array_element_scan_release_ensf_post[$((10#search_str))]="found"
+          if [ "${array_element_scan_release_ensf_post[$((10#${search_str}))]}" == "NO" ]; then
+            array_element_scan_release_ensf_post[$((10#${search_str}))]="found"
             ecflow_client --event release_ensf_post_mem"${memuse}"_f"${fhr_3d}"
             ic=1
             continue

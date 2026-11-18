@@ -370,7 +370,7 @@ if [[ "${WGF}" = "det" ]] || [[ "${WGF}" = "ensf" ]]; then
       fi
 
       if [[ "${SENDDBN}" = "YES" ]]; then
-        if (( 10#cyc % 3 == 0 )); then
+        if (( 10#${cyc} % 3 == 0 )); then
           "${DBNROOT}/bin/dbn_alert" MODEL "RRFS_DET_${DBNDOM}" "${job}" \
             "${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2"
           "${DBNROOT}/bin/dbn_alert" MODEL "RRFS_DET_${DBNDOM}_IDX" "${job}" \
@@ -410,7 +410,7 @@ if [[ "${WGF}" = "det" ]] || [[ "${WGF}" = "ensf" ]]; then
         wgrib2 "${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2" -s > "${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2.idx"
       fi
       if [[ "${SENDDBN}" = "YES" ]]; then
-        if (( 10#cyc % 3 == 0 )); then
+        if (( 10#${cyc} % 3 == 0 )); then
           "${DBNROOT}/bin/dbn_alert" MODEL "RRFS_DET_${DBNDOM}" "${job}" \
             "${COMOUT}/rrfs.t${cyc}z.prslev.${outspacing}.f${fhr}.${domain}.grib2"
           "${DBNROOT}/bin/dbn_alert" MODEL "RRFS_DET_${DBNDOM}_IDX" "${job}" \
@@ -458,7 +458,7 @@ if [[ "${WGF}" = "det" ]] || [[ "${WGF}" = "ensf" ]]; then
         wgrib2 "${COMOUT}/rrfs.t${cyc}z.2dfld.${outspacing}.f${fhr}.${domain}.grib2" -s > "${COMOUT}/rrfs.t${cyc}z.2dfld.${outspacing}.f${fhr}.${domain}.grib2.idx"
       fi
       if [[ "${SENDDBN}" = "YES" ]]; then
-        if (( 10#cyc % 3 == 0 )); then
+        if (( 10#${cyc} % 3 == 0 )); then
           "${DBNROOT}/bin/dbn_alert" MODEL "RRFS_DET_2DFLD_${DBNDOM}" "${job}" \
             "${COMOUT}/rrfs.t${cyc}z.2dfld.${outspacing}.f${fhr}.${domain}.grib2"
           "${DBNROOT}/bin/dbn_alert" MODEL "RRFS_DET_2DFLD_${DBNDOM}_IDX" "${job}" \
@@ -704,13 +704,13 @@ if [[ "${WGF}" = "det" ]] || [[ "${WGF}" = "ensf" ]]; then
   # without smoke/dust (DO_SMOKE_DUST=FALSE), else the f072 combine waits on files never written.
   if [[ "${DO_ENSFCST}" = "FALSE" ]] && [[ "${DO_SMOKE_DUST:-TRUE}" = "TRUE" ]]; then
     if [[ "${cyc}" -eq 06 ]] || [[ "${cyc}" -eq 12 ]]; then
-      if (( 10#fhr <= 72 )); then
+      if (( 10#${fhr} <= 72 )); then
         "${USHrrfs}/prdgen/rrfs_smokedust.sh" "${fhr}" 227
         "${USHrrfs}/prdgen/rrfs_smokedust.sh" "${fhr}" 198
         "${USHrrfs}/prdgen/rrfs_smokedust.sh" "${fhr}" 196
       fi
       #-- Files from forecast hours 0-72 are combined into one file
-      if (( 10#fhr == 72 )); then
+      if (( 10#${fhr} == 72 )); then
         "${USHrrfs}/prdgen/rrfs_smokedust_combine.sh"
       fi
     fi
