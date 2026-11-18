@@ -132,7 +132,7 @@
                minvalue: -5400
                maxvalue:  5400
          action:
-           name: reduce obs space 
+           name: reduce obs space
 
        # ----------------------------------------------------------------
        # Step 4 : Create Derived Variables for radiane to BT conversion
@@ -285,7 +285,7 @@
        # ----------------------------------
        - filter: Variable Assignment
          identifier:
-           name: VarAssignCloudFree 
+           name: VarAssignCloudFree
          assignments:
          - name: DerivedMetaData/cloudFree
            type: int
@@ -346,7 +346,7 @@
          #  round_horizontal_bin_count_to_nearest: true
          #  partition_longitude_bins_using_mesh: true
          action:
-           name: reduce obs space 
+           name: reduce obs space
 
        # ------------------------------------------------------
        # Observation prior Filters (step 10, online geo-domain check)
@@ -408,7 +408,7 @@
        #          water fraction in the filed of view
        #          Note, currenlty, CrIS channels with wavenumber > 2000 are not assimilated, this is for future refernce (i.e., CrIS short-wave DA etc.)
        # ---------------------------------------------------------------------------------------------------------------------------------------------------------
-       # Step 12a: Inflate error based on waveumber/solza/water_fac 
+       # Step 12a: Inflate error based on waveumber/solza/water_fac
        # ----------------------------------------------------------------------------------------------------------------------------------------------------------
        - filter: Perform Action
          apply at iterations: 0,1
@@ -438,13 +438,13 @@
            name: ObsErrorFactorWavenumIR0
          assignments:
          - name: DerivedData/ObsErrorFactorWavenumIR0
-           channels: *cris-fsr_n20_channels 
+           channels: *cris-fsr_n20_channels
            type: float
            function:
              name: ObsFunction/ObsErrorFactorWavenumIR
-             channels: *cris-fsr_n20_channels 
+             channels: *cris-fsr_n20_channels
              options:
-               channels: *cris-fsr_n20_channels 
+               channels: *cris-fsr_n20_channels
 
        # ------------------------------------------------------------------------------------
        # Step 12c: Save ObsErrorFactorWavenumIR into DerivedData (for testing/bebug purpose)
@@ -456,13 +456,13 @@
            name: ObsErrorFactorWavenumIR1
          assignments:
          - name: DerivedData/ObsErrorFactorWavenumIR1
-           channels: *cris-fsr_n20_channels 
+           channels: *cris-fsr_n20_channels
            type: float
            function:
              name: ObsFunction/ObsErrorFactorWavenumIR
-             channels: *cris-fsr_n20_channels 
+             channels: *cris-fsr_n20_channels
              options:
-               channels: *cris-fsr_n20_channels 
+               channels: *cris-fsr_n20_channels
 
        # -----------------------------------------------------------------------------------------------------------
        # Step 13: Observation Error inflation: Topography Check (H> 2000m)
@@ -477,7 +477,7 @@
            name: ObsErrorInflationTopoRad
            logging: true
            diagnostic flag: true
-           diagnostic flag new: true 
+           diagnostic flag new: true
          filter variables:
          - name: brightnessTemperature
            channels: *cris-fsr_n20_channels
@@ -506,8 +506,8 @@
              name: ObsFunction/ObsErrorFactorTopoRad
              channels: *cris-fsr_n20_channels
              options:
-               sensor: cris-fsr_n20 
-               channels: *cris-fsr_n20_channels 
+               sensor: cris-fsr_n20
+               channels: *cris-fsr_n20_channels
 
        # -----------------------------------------------------------------
        # Step 13c: Save ObsErrorFactorTopoRad (for testing/bebug purpose)
@@ -525,12 +525,12 @@
              name: ObsFunction/ObsErrorFactorTopoRad
              channels: *cris-fsr_n20_channels
              options:
-               sensor: cris-fsr_n20 
+               sensor: cris-fsr_n20
                channels: *cris-fsr_n20_channels
 
        # --------------------------------------------------------------------------------
        # Step 14: Observation Error inflation: Model top Transmittance Check
-       #          This obsfunction calculates the observation error inflation factor for 
+       #          This obsfunction calculates the observation error inflation factor for
        #          satellite radiances as a function of model top-to-space transmittance
        # ---------------------------------------------------------------------------------
        # Step 14a: inflate error based on ObsErrorFactorTransmitTopRad
@@ -569,7 +569,7 @@
              name: ObsFunction/ObsErrorFactorTransmitTopRad
              channels: *cris-fsr_n20_channels
              options:
-               channels: *cris-fsr_n20_channels 
+               channels: *cris-fsr_n20_channels
 
        # -----------------------------------------------------------------------------------------
        # Step 14c: Save ObsErrorFactorTransmitTopRad into DerivedData (for testing/bebug purpose)
@@ -601,7 +601,7 @@
        - filter: Bounds Check
          apply at iterations: 0,1
          identifier:
-           name: CloudDetect 
+           name: CloudDetect
            logging: true
            diagnostic flag: true
            diagnostic flag new: true
@@ -720,7 +720,7 @@
                channels: *cris-fsr_n20_channels
                obserr_demisf: [0.01, 0.02, 0.03, 0.02, 0.03]
                obserr_dtempf: [0.50, 2.00, 4.00, 2.00, 4.00]
-               sensor: cris-fsr_n20 
+               sensor: cris-fsr_n20
 
        # ------------------------------------------------------------------------------------------
        # Step 18c: Save ObsErrorFactorSurfJacobianRad into DerivedData (for testing/bebug purpose)
@@ -742,7 +742,7 @@
                channels: *cris-fsr_n20_channels
                obserr_demisf: [0.01, 0.02, 0.03, 0.02, 0.03]
                obserr_dtempf: [0.50, 2.00, 4.00, 2.00, 4.00]
-               sensor: cris-fsr_n20 
+               sensor: cris-fsr_n20
 
        # --------------------------------------------------------------------------------------------------------------------------------------------------
        # Step 19: Gross Error check
@@ -775,7 +775,7 @@
                channels: *cris-fsr_n20_channels
                options:
                  channels: *cris-fsr_n20_channels
-             threshold : 3 
+             threshold : 3
              obserr_bound_max: *cris-fsr_n20_obserr_bound_max
              error parameter vector: *cris-fsr_n20_error0
          action:
