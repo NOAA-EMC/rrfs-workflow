@@ -282,7 +282,7 @@ if  [[ ${regional_ensemble_option:-1} -eq 1 || ${l_both_fv3sar_gfs_ens} = ".true
       else
       for timelist in "${file_list[@]}"; do
         availtimeyyyymmdd=$(basename "$(dirname "$(dirname "$(dirname "$(dirname "${timelist}")")")")" | cut -d'.' -f2) # enkfgdas.YYYYMMDD
-        availtimehh=$(basename "$(dirname "$(dirname "$(dirname "${timelist}")")")") # HH                                     # HH
+        availtimehh=$(basename "$(dirname "$(dirname "$(dirname "${timelist}")")")") # HH
         availtime=${availtimeyyyymmdd}${availtimehh}
 
         loopfcst=$(echo "${loop}"| cut -c 1-3)      # for nemsio 009s to get 009
@@ -915,7 +915,7 @@ if [ "${DO_RADDA}" = "TRUE" ]; then
   satcounter=1
   maxcounter=240
   while [ "${satcounter}" -lt ${maxcounter} ]; do
-    SAT_TIME=$(${NDATE} -$((10#satcounter)) "${YYYYMMDDHH}")
+    SAT_TIME=$(${NDATE} -$((10#${satcounter})) "${YYYYMMDDHH}")
     SATBIAS_CS_PDY=$(echo "${SAT_TIME}" | cut -c1-8)
     SATBIAS_CS=${COMrrfs}/satbias/satbias.${SATBIAS_CS_PDY}
     echo "${SAT_TIME}"
@@ -1228,10 +1228,10 @@ if [ "${DO_GSIDIAG_OFFLINE}" = "FALSE" ]; then
     fi
 
     # For EnVar DA
-    cpreq ./satbias_out "${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias"
-    cpreq ./satbias_pc.out "${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc"
-    cpreq ./satbias_out "${COMOUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias"
-    cpreq ./satbias_pc.out "${COMOUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc"
+    cpreq ./satbias_out "${SATBIAS_OUT}"/rrfs.${spinup_or_prod_rrfs}."${YYYYMMDDHH}"_satbias
+    cpreq ./satbias_pc.out "${SATBIAS_OUT}"/rrfs.${spinup_or_prod_rrfs}."${YYYYMMDDHH}"_satbias_pc
+    cpreq ./satbias_out "${COMOUT}"/rrfs.${spinup_or_prod_rrfs}."${YYYYMMDDHH}"_satbias
+    cpreq ./satbias_pc.out "${COMOUT}"/rrfs.${spinup_or_prod_rrfs}."${YYYYMMDDHH}"_satbias_pc
   fi
 fi # run diag inline (with GSI)
 
