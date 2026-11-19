@@ -1,7 +1,9 @@
+#!/bin/bash
+set -x
 #
 #-----------------------------------------------------------------------
 #
-# This function checks whether the specified variable contains a valid 
+# This function checks whether the specified variable contains a valid
 # value (where the set of valid values is also specified).
 #
 #-----------------------------------------------------------------------
@@ -11,7 +13,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -87,7 +89,7 @@ where the arguments are defined as follows:
   valid_var_values_array_name="$2"
 
   var_value=${!var_name}
-  valid_var_values_at="$valid_var_values_array_name[@]"
+  valid_var_values_at="${valid_var_values_array_name}[@]"
   valid_var_values=("${!valid_var_values_at}")
 
   if [ "$#" -eq 3 ]; then
@@ -100,17 +102,17 @@ The value specified in ${var_name} is not supported:
 #
 #-----------------------------------------------------------------------
 #
-# If var_value contains a dollar sign, we assume the corresponding variable 
-# (var_name) is a template variable, i.e. one whose value contains a 
+# If var_value contains a dollar sign, we assume the corresponding variable
+# (var_name) is a template variable, i.e. one whose value contains a
 # reference to another variable, e.g.
 #
 #   MY_VAR='\${ANOTHER_VAR}'
 #
-# In this case, we do nothing since it does not make sense to check 
-# whether var_value is a valid value (since its contents have not yet 
-# been expanded).  If var_value doesn't contain a dollar sign, it must 
-# contain a literal string.  In this case, we check whether it is equal 
-# to one of the elements of the array valid_var_values.  If not, we 
+# In this case, we do nothing since it does not make sense to check
+# whether var_value is a valid value (since its contents have not yet
+# been expanded).  If var_value doesn't contain a dollar sign, it must
+# contain a literal string.  In this case, we check whether it is equal
+# to one of the elements of the array valid_var_values.  If not, we
 # print out an error message and exit the calling script.
 #
 #-----------------------------------------------------------------------

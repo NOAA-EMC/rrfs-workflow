@@ -1,15 +1,17 @@
+#!/bin/bash
+set -x
 #
 #-----------------------------------------------------------------------
 #
 # This file defines a function that is used to create a symbolic link
-# ("symlink") to the specified target file ("target").  It checks for 
+# ("symlink") to the specified target file ("target").  It checks for
 # the existence of the target file and fails (with an appropriate error
 # message) if that target does not exist or is not a file.  Also, the
 # argument "relative" determines whether a relative or an absolute path
 # to the symlink is used.  Note that on some platforms, relative symlinks
 # are not supported.  In those cases, an absolute path is used regardless
 # of the setting of "relative".
-# 
+#
 #-----------------------------------------------------------------------
 #
 function create_symlink_to_file() {
@@ -17,7 +19,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -71,14 +73,14 @@ set -x
     print_err_msg_exit "\
 The argument \"target\" specifying the target of the symbolic link that
 this function will create was not specified in the call to this function:
-  target = \"$target\""
+  target = \"${target}\""
   fi
 
   if [ -z "${symlink}" ]; then
     print_err_msg_exit "\
 The argument \"symlink\" specifying the symbolic link that this function
 will create was not specified in the call to this function:
-  symlink = \"$symlink\""
+  symlink = \"${symlink}\""
   fi
 #
 #-----------------------------------------------------------------------
@@ -92,8 +94,8 @@ will create was not specified in the call to this function:
 #
 #-----------------------------------------------------------------------
 #
-# If "relative" is not set (i.e. if it is set to a null string), reset 
-# it to a default value of "TRUE".  Then check that it is set to a vaild 
+# If "relative" is not set (i.e. if it is set to a null string), reset
+# it to a default value of "TRUE".  Then check that it is set to a vaild
 # value.
 #
 #-----------------------------------------------------------------------
@@ -113,7 +115,7 @@ will create was not specified in the call to this function:
     print_err_msg_exit "\
 Cannot create symlink to specified target file because the latter does
 not exist or is not a file:
-    target = \"$target\""
+    target = \"${target}\""
   fi
 #
 #-----------------------------------------------------------------------
@@ -134,7 +136,7 @@ not exist or is not a file:
 #
 #-----------------------------------------------------------------------
 #
-  ln -sf ${relative_flag} "$target" "$symlink"
+  ln -sf "${relative_flag}" "${target}" "${symlink}"
 #
 }
 

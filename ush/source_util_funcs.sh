@@ -6,19 +6,21 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
 #-----------------------------------------------------------------------
 #
-  if [[ $(uname -s) == Darwin ]]; then
-    local scrfunc_fp=$( greadlink -f "${BASH_SOURCE[0]}" )
+  local scrfunc_fp scrfunc_fn scrfunc_dir os_name
+  os_name=$(uname -s) || return
+  if [[ "${os_name}" == Darwin ]]; then
+    scrfunc_fp=$( greadlink -f "${BASH_SOURCE[0]}" )
   else
-    local scrfunc_fp=$( readlink -f "${BASH_SOURCE[0]}" )
+    scrfunc_fp=$( readlink -f "${BASH_SOURCE[0]}" )
   fi
-  local scrfunc_fn=$( basename "${scrfunc_fp}" )
-  local scrfunc_dir=$( dirname "${scrfunc_fp}" )
+  scrfunc_fn=$( basename "${scrfunc_fp}" )
+  scrfunc_dir=$( dirname "${scrfunc_fp}" )
 #
 #-----------------------------------------------------------------------
 #
@@ -43,7 +45,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-  . ${bashutils_dir}/print_msg.sh
+  . "${bashutils_dir}"/print_msg.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -51,7 +53,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-  . ${bashutils_dir}/set_bash_param.sh
+  . "${bashutils_dir}"/set_bash_param.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -61,7 +63,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-  . ${bashutils_dir}/set_file_param.sh
+  . "${bashutils_dir}"/set_file_param.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -69,7 +71,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-  . ${bashutils_dir}/count_files.sh
+  . "${bashutils_dir}"/count_files.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -78,7 +80,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-  . ${bashutils_dir}/boolify.sh
+  . "${bashutils_dir}"/boolify.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -87,17 +89,17 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-  . ${bashutils_dir}/change_case.sh
+  . "${bashutils_dir}"/change_case.sh
 #
 #-----------------------------------------------------------------------
 #
-# Source the file containing the function that checks for preexisting 
+# Source the file containing the function that checks for preexisting
 # directories or files and handles them according to a specified method
 # (which can be one of "delete", "rename", and "quit").
 #
 #-----------------------------------------------------------------------
 #
-  . ${bashutils_dir}/check_for_preexist_dir_file.sh
+  . "${bashutils_dir}"/check_for_preexist_dir_file.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -107,7 +109,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-  . ${bashutils_dir}/filesys_cmds_vrfy.sh
+  . "${bashutils_dir}"/filesys_cmds_vrfy.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -116,7 +118,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-  . ${bashutils_dir}/is_element_of.sh
+  . "${bashutils_dir}"/is_element_of.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -125,7 +127,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-  . ${bashutils_dir}/get_elem_inds.sh
+  . "${bashutils_dir}"/get_elem_inds.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -134,17 +136,17 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-  . ${bashutils_dir}/is_array.sh
+  . "${bashutils_dir}"/is_array.sh
 #
 #-----------------------------------------------------------------------
 #
 # Source the file containing the function that interpolates (or extrapo-
-# lates) a grid cell size-dependent property to an arbitrary global 
+# lates) a grid cell size-dependent property to an arbitrary global
 # cubed-sphere resolution.
 #
 #-----------------------------------------------------------------------
 #
-  . ${bashutils_dir}/interpol_to_arbit_CRES.sh
+  . "${bashutils_dir}"/interpol_to_arbit_CRES.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -153,15 +155,15 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-  . ${bashutils_dir}/check_var_valid_value.sh
+  . "${bashutils_dir}"/check_var_valid_value.sh
 #
 #-----------------------------------------------------------------------
 #
-# 
+#
 #
 #-----------------------------------------------------------------------
 #
-  . ${bashutils_dir}/print_input_args.sh
+  . "${bashutils_dir}"/print_input_args.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -171,24 +173,24 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-  . ${bashutils_dir}/process_args.sh
+  . "${bashutils_dir}"/process_args.sh
 #
 #-----------------------------------------------------------------------
 #
-# 
+#
 #
 #-----------------------------------------------------------------------
 #
-  . ${bashutils_dir}/get_manage_externals_config_property.sh
+  . "${bashutils_dir}"/get_manage_externals_config_property.sh
 #
 #-----------------------------------------------------------------------
 #
-# Source the file containing the function that returns to stdout the 
+# Source the file containing the function that returns to stdout the
 # contents of a character (i.e. string) variable in a netcdf file.
 #
 #-----------------------------------------------------------------------
 #
-  . ${bashutils_dir}/get_charvar_from_netcdf.sh
+  . "${bashutils_dir}"/get_charvar_from_netcdf.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -197,7 +199,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-  . ${bashutils_dir}/create_symlink_to_file.sh
+  . "${bashutils_dir}"/create_symlink_to_file.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -206,7 +208,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-  . ${bashutils_dir}/get_bash_file_contents.sh
+  . "${bashutils_dir}"/get_bash_file_contents.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -214,9 +216,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-  . ${bashutils_dir}/source_config.sh
+  . "${bashutils_dir}"/source_config.sh
   echo "source_util_funcs end"
 }
 source_util_funcs
-
-

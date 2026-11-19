@@ -1,0 +1,124 @@
+---
+name: NCO_Consistency_Yamllint
+"on":
+  push:
+  pull_request:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  yamllint-ci:
+    runs-on: ubuntu-latest
+    env:
+      CI_IGNORE: >-
+        ${{ github.event.head_commit.message }}
+        ${{ github.event.pull_request.title }}${{ github.event.pull_request.body }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Install Yamllint
+        run: |
+          if ! command -v yamllint &> /dev/null; then
+            sudo apt-get update
+            sudo apt-get install --no-install-recommends --yes yamllint
+          fi
+
+      - name: Check Yaml files
+        shell: bash
+        run: |
+          echo "Starting NCO Yamllint CI..." > ci_run.log
+          run_yamllint=1
+
+          if echo "$CI_IGNORE" | grep -iq "yamllint"; then
+            run_yamllint=0
+            echo "Globally skipping yamllint" | tee -a ci_run.log
+          fi
+
+          if (( run_yamllint == 0 )); then exit 0; fi
+
+          mapfile -d '' yaml_files < <(
+            find -L . -type f \( -iname '*.yml' -o -iname '*.yaml' \) \
+            -not -path '*/\.git/*' -print0 | sort -zu
+          )
+
+          if (( ${#yaml_files[@]} == 0 )); then
+            echo "No YAML files found to check. Exiting gracefully." | tee -a ci_run.log
+            exit 0
+          fi
+
+          # 1. Pre-parse exclusion list into memory once outside the loop
+          EXCLUDE_FILE=".github/workflows/exclude_file_list_Yamllint.lst"
+          exclude_dir_patterns=()
+          exclude_file_patterns=()
+
+          if [[ -f "$EXCLUDE_FILE" ]]; then
+            while IFS= read -r pattern || [[ -n "$pattern" ]]; do
+              pattern="${pattern%$'\r'}"
+              pattern="${pattern#"${pattern%%[![:space:]]*}"}"
+              pattern="${pattern%"${pattern##*[![:space:]]}"}"
+              [[ -z "$pattern" || "$pattern" == \#* ]] && continue
+
+              norm_pattern="${pattern#./}"
+              if [[ "$norm_pattern" == *"/*" ]]; then
+                exclude_dir_patterns+=("${norm_pattern%"/*"}")
+              elif [[ "$norm_pattern" == *"/" ]]; then
+                exclude_dir_patterns+=("${norm_pattern%"/"}")
+              elif [[ -d "$norm_pattern" ]]; then
+                exclude_dir_patterns+=("$norm_pattern")
+              else
+                exclude_file_patterns+=("$norm_pattern")
+              fi
+            done < "$EXCLUDE_FILE"
+          fi
+
+          failed=0
+          # 2. Iterate and check files using in-memory arrays
+          for file in "${yaml_files[@]}"; do
+            norm_file="${file#./}"
+            excluded=0
+
+            for dir_p in "${exclude_dir_patterns[@]}"; do
+              if [[ "$norm_file" == "$dir_p"/* ]]; then
+                excluded=1
+                break
+              fi
+            done
+
+            if [[ "$excluded" -eq 0 ]]; then
+              for file_p in "${exclude_file_patterns[@]}"; do
+                if [[ "$norm_file" == "$file_p" ]]; then
+                  excluded=1
+                  break
+                fi
+              done
+            fi
+
+            if [[ "$excluded" -eq 1 ]]; then
+              echo "Skipping excluded file: $norm_file" | tee -a ci_run.log
+              continue
+            fi
+
+            if grep -iq '^[[:space:]]*#[[:space:]]*ci-ignore:.*yamllint' "$file"; then
+              echo "Skipping $file (inline ci-ignore found)" | tee -a ci_run.log
+              continue
+            fi
+
+            echo "Checking $file" | tee -a ci_run.log
+            if ! yamllint -d "{extends: default, rules: {line-length: {max: 120}}}" "$file" >> ci_run.log 2>&1; then
+              failed=1
+            fi
+          done
+
+          echo "Log file saved to ci_run.log"
+          cat ci_run.log >> "$GITHUB_STEP_SUMMARY"
+          exit "$failed"
+
+      - name: Upload Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: yamllint-logs
+          path: ci_run.log

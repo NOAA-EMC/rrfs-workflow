@@ -21,6 +21,8 @@ def print_input_args(valid_args):
     IMPORTS = ["DEBUG"]
     import_vars(env_vars=IMPORTS)
 
+    debug = DEBUG  # noqa: F821
+
     if list(valid_args.keys())[0] == "__unset__":
         valid_arg_names = {}
     else:
@@ -51,5 +53,5 @@ def print_input_args(valid_args):
         for k, v in valid_arg_names.items():
             msg = msg + f"  {k}='{v}'\n"
 
-    print_info_msg(msg, verbose=DEBUG)
+    print_info_msg(msg, verbose=debug)
     return num_valid_args

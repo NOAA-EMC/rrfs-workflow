@@ -1,7 +1,9 @@
+#!/bin/bash
+set -x
 #
 #-----------------------------------------------------------------------
 #
-# This function returns the number of files in the current directory 
+# This function returns the number of files in the current directory
 # that end with the specified extension (file_extension).
 #
 #-----------------------------------------------------------------------
@@ -11,7 +13,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -47,7 +49,7 @@ Usage:
 
   ${func_name}  file_extension
 
-where file_extension is the file extension to use for counting files.  
+where file_extension is the file extension to use for counting files.
 The file count returned will be equal to the number of files in the cur-
 rent directory that end with \".${file_extension}\".
 "
@@ -62,7 +64,7 @@ rent directory that end with \".${file_extension}\".
 #
   local file_extension="$1"
   local glob_pattern="*.${file_extension}"
-  local num_files=$( ls -1 ${glob_pattern} 2>/dev/null | wc -l )
+  local num_files=$( ls -1 "${glob_pattern}" 2>/dev/null | wc -l )
   print_info_msg "${num_files}"
 #
 }

@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 
-source ${FIXrrfs}/workflow/${WGF}/workflow.conf
+source "${FIXrrfs}"/workflow/"${WGF}"/workflow.conf
 
 export FIX_SMOKE_DUST="${FIXrrfs}/smoke_dust"
 export FIRE_RAVE_DIR="${DCOMROOT}"
@@ -14,11 +14,11 @@ export FIRE_RAVE_DIR="${DCOMROOT}"
 #
 #-----------------------------------------------------------------------
 #
-. $USHrrfs/source_util_funcs.sh
+. "${USHrrfs}"/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -55,16 +55,16 @@ echo "Cycle date: ${CDATE}"
 rave_base_prefix="${COMrrfs}/RAVE_INTP/rave_intp"
 
 for i in $(seq 0 24); do
-   timestr=$(${NDATE} -$((i+1)) ${CDATE})
+   timestr=$(${NDATE} -$((i+1)) "${CDATE}")
    daystr=${timestr:0:8}
 
    intp_fname=${PREDEF_GRID_NAME}_intp_${timestr}00_${timestr}59.nc
    rave_day_dir="${rave_base_prefix}.${daystr}"
-   if  [ -f ${rave_day_dir}/${intp_fname} ]; then
-      ${LN} -sf ${rave_day_dir}/${intp_fname} ${DATA}/${intp_fname}
+   if  [ -f "${rave_day_dir}/${intp_fname}" ]; then
+      "${LN}" -sf "${rave_day_dir}/${intp_fname}" "${DATA}/${intp_fname}"
       echo "${rave_day_dir}/${intp_fname} interpolated file available to reuse"
    else
-      echo "${rave_day_dir}/${intp_fname} interpolated file not available to reuse"  
+      echo "${rave_day_dir}/${intp_fname} interpolated file not available to reuse"
    fi
 done
 
@@ -74,11 +74,11 @@ done
 #
 #-----------------------------------------------------------------------
 
-if [ -d ${FIRE_RAVE_DIR}/${PDYm1}/rave ]; then
+if [ -d "${FIRE_RAVE_DIR}/${PDYm1}/rave" ]; then
    fire_rave_dir_work=${DATA}
-   ${LN} -snf ${FIRE_RAVE_DIR}/${PDY}/rave/RAVE-HrlyEmiss-3km_* ${fire_rave_dir_work}/.
-   ${LN} -snf ${FIRE_RAVE_DIR}/${PDYm1}/rave/RAVE-HrlyEmiss-3km_* ${fire_rave_dir_work}/.
-   ${LN} -snf ${FIRE_RAVE_DIR}/${PDYm2}/rave/RAVE-HrlyEmiss-3km_* ${fire_rave_dir_work}/.
+   "${LN}" -snf "${FIRE_RAVE_DIR}/${PDY}/rave"/RAVE-HrlyEmiss-3km_* "${fire_rave_dir_work}/."
+   "${LN}" -snf "${FIRE_RAVE_DIR}/${PDYm1}/rave"/RAVE-HrlyEmiss-3km_* "${fire_rave_dir_work}/."
+   "${LN}" -snf "${FIRE_RAVE_DIR}/${PDYm2}/rave"/RAVE-HrlyEmiss-3km_* "${fire_rave_dir_work}/."
 else
    fire_rave_dir_work=${FIRE_RAVE_DIR}
 fi
@@ -93,33 +93,39 @@ fi
 
 # Ursa: launch through srun; the script's ESMF regridding initializes MPI, which Intel MPI
 # refuses inside a Slurm job unless srun started the process (PMI2_Job_GetId returned 14)
-pyrun=""
-[ "${MACHINE}" = "URSA" ] && pyrun="srun --export=ALL -n 1"
-${pyrun} python -u  ${USHrrfs}/generate_fire_emissions.py \
+if [ "${MACHINE}" = "URSA" ]; then
+  pyrun=(srun --export=ALL -n 1)
+else
+  pyrun=()
+fi
+"${pyrun[@]}" python -u "${USHrrfs}"/generate_fire_emissions.py \
   "${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}" \
   "${fire_rave_dir_work}" \
   "${DATA}" \
-  "${PREDEF_GRID_NAME}" 
+  "${PREDEF_GRID_NAME}"
 export err=$?; err_chk
 
 #Copy the the hourly, interpolated RAVE data to $rave_dir so it
 # is maintained there for future cycles.
 dummy_smoke_file="${FIX_SMOKE_DUST}/${PREDEF_GRID_NAME}/dummy_24hr_smoke.nc"
 if [ "${CYCLE_TYPE}" != "spinup" ]; then
-  for file in ${DATA}/RAVE-HrlyEmiss-* ${DATA}/RRFS_NA_3km_intp_* ${DATA}/SMOKE_RRFS_data_*
+  for file in "${DATA}"/RAVE-HrlyEmiss-* "${DATA}"/RRFS_NA_3km_intp_* "${DATA}"/SMOKE_RRFS_data_*
   do
-    filename=$(basename "$file")
-    if [[ "$filename" == SMOKE_RRFS_data_* ]] && cmp -s "$file" "$dummy_smoke_file"; then
-      echo "WARNING: $file is the dummy SMOKE_RRFS file"
+    filename=$(basename "${file}")
+    if [[ "${filename}" == SMOKE_RRFS_data_* ]] && cmp -s "${file}" "${dummy_smoke_file}"; then
+      echo "WARNING: ${file} is the dummy SMOKE_RRFS file"
       continue
    fi
-    daystr=$(echo "$filename" | grep -o '[0-9]\{8\}' | head -1)
-    [ -z "$daystr" ] && continue
+    if [[ "${filename}" =~ ([0-9]{8}) ]]; then
+      daystr="${BASH_REMATCH[1]}"
+    else
+      continue
+    fi
 
     rave_day_dir="${rave_base_prefix}.${daystr}"
     if [ ! -f "${rave_day_dir}/${filename}" ]; then
-      cpreq -p ${file} ${rave_day_dir}
-      echo "Copied file: $filename → $rave_day_dir/" 
+      cpreq -p "${file}" "${rave_day_dir}"
+      echo "Copied file: ${filename} → ${rave_day_dir}/"
     fi
    done
 

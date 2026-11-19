@@ -20,11 +20,12 @@ from python_utils import (
 from set_namelist_fcst_rst import set_namelist
 
 
-def update_input_nml(run_dir,member):
+def update_input_nml(run_dir, member):
     """Update the FV3 input.nml file in the specified run directory
 
     Args:
         run_dir: run directory
+        member: ensemble member index
     Returns:
         Boolean
     """
@@ -33,6 +34,10 @@ def update_input_nml(run_dir,member):
 
     # import all environment variables
     import_vars()
+
+    # Bind dynamically imported variables to local scope
+    verbose = VERBOSE  # noqa: F821
+    fv3_nml_fn = FV3_NML_FN  # noqa: F821
 
     #
     # -----------------------------------------------------------------------
@@ -45,7 +50,7 @@ def update_input_nml(run_dir,member):
         f"""
         Updating the FV3 input.nml file in the specified run directory (run_dir):
           run_dir = '{run_dir}'""",
-        verbose=VERBOSE,
+        verbose=verbose,
     )
     #
     # -----------------------------------------------------------------------
@@ -57,7 +62,7 @@ def update_input_nml(run_dir,member):
     settings = {}
 
     # For restart run
-    if args.restart:
+    if args.restart:  # noqa: F821
         settings["fv_core_nml"] = {
             "external_ic": False,
             "make_nh": False,
@@ -67,29 +72,28 @@ def update_input_nml(run_dir,member):
             "warm_start": True,
         }
 
-        if int(member)==0:
+        if int(member) == 0:
             settings["gfs_physics_nml"] = {
-               "sigmab_coldstart": False,
+                "sigmab_coldstart": False,
             }
-        elif int(member)==1 or int(member)==3 or int(member)==4:
+        elif int(member) == 1 or int(member) == 3 or int(member) == 4:
             settings["gfs_physics_nml"] = {
-               "gf_coldstart": False,
+                "gf_coldstart": False,
             }
             settings["nam_stochy"] = {
-               "stochini": True,
+                "stochini": True,
             }
         else:
             settings["gfs_physics_nml"] = {
-               "sigmab_coldstart": False,
+                "sigmab_coldstart": False,
             }
             settings["nam_stochy"] = {
-               "stochini": True,
+                "stochini": True,
             }
 
         # settings["gfs_physics_nml"] = {
         #    "nstf_name": [2, 0, 0, 0, 0],
         #}
-    
 
     settings_str = cfg_to_yaml_str(settings)
 
@@ -101,7 +105,7 @@ def update_input_nml(run_dir,member):
             settings =\n\n"""
         )
         + settings_str,
-        verbose=VERBOSE,
+        verbose=verbose,
     )
     #
     # -----------------------------------------------------------------------
@@ -111,7 +115,7 @@ def update_input_nml(run_dir,member):
     #
     # -----------------------------------------------------------------------
     #
-    fv3_input_nml_fp = os.path.join(run_dir, FV3_NML_FN)
+    fv3_input_nml_fp = os.path.join(run_dir, fv3_nml_fn)
 
     try:
         set_namelist(
@@ -156,7 +160,6 @@ def parse_args(argv):
         help="Run directory."
     )
 
-
     parser.add_argument(
         "-m", "--member",
         dest="member",
@@ -185,5 +188,5 @@ if __name__ == "__main__":
     cfg = flatten_dict(cfg)
     import_vars(dictionary=cfg)
     update_input_nml(
-        run_dir=args.run_dir,member=args.member
+        run_dir=args.run_dir, member=args.member
     )

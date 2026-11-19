@@ -50,6 +50,9 @@ def get_crontab_contents(called_from_cron):
     IMPORTS = ["MACHINE", "DEBUG"]
     import_vars(env_vars=IMPORTS)
 
+    machine = MACHINE  # noqa: F821
+    debug = DEBUG  # noqa: F821
+
     __crontab_cmd__ = "crontab"
     #
     # On Cheyenne, simply typing "crontab" will launch the crontab command
@@ -58,7 +61,7 @@ def get_crontab_contents(called_from_cron):
     # themselves being called as cron jobs.  In that case, we must instead
     # call the system version of crontab at /usr/bin/crontab.
     #
-    if MACHINE == "CHEYENNE":
+    if machine == "CHEYENNE":
         if called_from_cron:
             __crontab_cmd__ = "/usr/bin/crontab"
 
@@ -68,7 +71,7 @@ def get_crontab_contents(called_from_cron):
         =========================================================
           {__crontab_cmd__} -l
         =========================================================""",
-        verbose=DEBUG,
+        verbose=debug,
     )
 
     (_, __crontab_contents__, _) = run_command(f"""{__crontab_cmd__} -l""")
@@ -79,7 +82,7 @@ def get_crontab_contents(called_from_cron):
         =========================================================
           {__crontab_contents__}
         =========================================================""",
-        verbose=DEBUG,
+        verbose=debug,
     )
 
     # replace single quotes (hopefully in comments) with double quotes
@@ -95,16 +98,20 @@ def add_crontab_line():
     IMPORTS = ["MACHINE", "CRONTAB_LINE", "VERBOSE", "EXPTDIR"]
     import_vars(env_vars=IMPORTS)
 
+    crontab_line = CRONTAB_LINE  # noqa: F821
+    verbose = VERBOSE  # noqa: F821
+    exptdir = EXPTDIR  # noqa: F821
+
     #
     # Make a backup copy of the user's crontab file and save it in a file.
     #
     time_stamp = datetime.now().strftime("%F_%T")
-    crontab_backup_fp = os.path.join(EXPTDIR, f"crontab.bak.{time_stamp}")
+    crontab_backup_fp = os.path.join(exptdir, f"crontab.bak.{time_stamp}")
     log_info(
         f"""
         Copying contents of user cron table to backup file:
           crontab_backup_fp = '{crontab_backup_fp}'""",
-        verbose=VERBOSE,
+        verbose=verbose,
     )
 
     global called_from_cron
@@ -122,13 +129,13 @@ def add_crontab_line():
     run_command(f"""printf "%s" '{crontab_contents}' > '{crontab_backup_fp}'""")
 
     # Add crontab line
-    if CRONTAB_LINE in crontab_contents:
+    if crontab_line in crontab_contents:
 
         log_info(
             f"""
             The following line already exists in the cron table and thus will not be
             added:
-              CRONTAB_LINE = '{CRONTAB_LINE}'"""
+              CRONTAB_LINE = '{crontab_line}'"""
         )
 
     else:
@@ -137,8 +144,8 @@ def add_crontab_line():
             f"""
             Adding the following line to the user's cron table in order to automatically
             resubmit SRW workflow:
-              CRONTAB_LINE = '{CRONTAB_LINE}'""",
-            verbose=VERBOSE,
+              CRONTAB_LINE = '{crontab_line}'""",
+            verbose=verbose,
         )
 
         # add new line to crontab contents if it doesn't have one
@@ -148,7 +155,7 @@ def add_crontab_line():
 
         # add the crontab line
         run_command(
-            f"""printf "%s%b%s\n" '{crontab_contents}' '{NEWLINE_CHAR}' '{CRONTAB_LINE}' | {crontab_cmd}"""
+            f"""printf "%s%b%s\n" '{crontab_contents}' '{NEWLINE_CHAR}' '{crontab_line}' | {crontab_cmd}"""
         )
 
 
@@ -161,6 +168,8 @@ def delete_crontab_line(called_from_cron):
     # import selected env vars
     IMPORTS = ["MACHINE", "CRONTAB_LINE", "DEBUG"]
     import_vars(env_vars=IMPORTS)
+
+    crontab_line = CRONTAB_LINE  # noqa: F821
 
     #
     # Get the full contents of the user's cron table.
@@ -180,10 +189,10 @@ def delete_crontab_line(called_from_cron):
         verbose=True,
     )
 
-    if (CRONTAB_LINE + "\n") in crontab_contents:
-        crontab_contents = crontab_contents.replace(CRONTAB_LINE + "\n", "")
+    if (crontab_line + "\n") in crontab_contents:
+        crontab_contents = crontab_contents.replace(crontab_line + "\n", "")
     else:
-        crontab_contents = crontab_contents.replace(CRONTAB_LINE, "")
+        crontab_contents = crontab_contents.replace(crontab_line, "")
 
     run_command(f"""echo '{crontab_contents}' | {crontab_cmd}""")
 

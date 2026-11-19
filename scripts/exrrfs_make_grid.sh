@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 
-source ${FIXrrfs}/workflow/${WGF}/workflow.conf
+source "${FIXrrfs}"/workflow/"${WGF}"/workflow.conf
 
 #
 #-----------------------------------------------------------------------
@@ -10,11 +10,11 @@ source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 #
 #-----------------------------------------------------------------------
 #
-. $USHrrfs/source_util_funcs.sh
+. "${USHrrfs}"/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -68,19 +68,19 @@ APRUN="time"
 #
 #-----------------------------------------------------------------------
 #
-if [ ${WGF} = "firewx" ]; then
+if [ "${WGF}" = "firewx" ]; then
   hh="${CDATE:8:2}"
   firewx_loc="${COMrrfs}/firewx_input/rrfs_firewx_loc"
-  if [ -s ${firewx_loc} ]; then
-    LAT_CTR=`grep ${hh}z $firewx_loc | awk '{print $2}'`
-    LON_CTR=`grep ${hh}z $firewx_loc | awk '{print $3}'`
+  if [ -s "${firewx_loc}" ]; then
+    LAT_CTR=$(awk -v pattern="${hh}z" 'index($0, pattern) { print $2; exit }' "${firewx_loc}")
+    LON_CTR=$(awk -v pattern="${hh}z" 'index($0, pattern) { print $3; exit }' "${firewx_loc}")
   else
     echo "WARNING:  Did not find firewx_loc to to set center point.  Will default to DC region"
     LAT_CTR=38.9
     LON_CTR=-77.0
   fi
 
-  python ${USHrrfs}/rrfsfw_domain.py ${LAT_CTR} ${LON_CTR}
+  python "${USHrrfs}"/rrfsfw_domain.py "${LAT_CTR}" "${LON_CTR}"
   if [ $? -ne 0 ]; then
     err_exit "WARNING: Problem with the requested fire weather grid - ABORT"
   fi
@@ -92,7 +92,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-print_info_msg "$VERBOSE" "Starting grid file generation..."
+print_info_msg "${VERBOSE}" "Starting grid file generation..."
 if [ "${GRID_GEN_METHOD}" = "GFDLgrid" ]; then
   #
   # Generate a GFDLgrid-type of grid.
@@ -103,25 +103,25 @@ if [ "${GRID_GEN_METHOD}" = "GFDLgrid" ]; then
   export pgm="ufs_util_make_hgrid"
   . prep_step
 
-  $APRUN ${EXECrrfs}/$pgm \
+  ${APRUN} "${EXECrrfs}"/${pgm} \
     --grid_type gnomonic_ed \
     --nlon ${nx_t6sg} \
-    --grid_name ${grid_name} \
+    --grid_name "${grid_name}" \
     --do_schmidt \
-    --stretch_factor ${STRETCH_FAC} \
-    --target_lon ${LON_CTR} \
-    --target_lat ${LAT_CTR} \
+    --stretch_factor "${STRETCH_FAC}" \
+    --target_lon "${LON_CTR}" \
+    --target_lat "${LAT_CTR}" \
     --nest_grid \
     --parent_tile 6 \
-    --refine_ratio ${GFDLgrid_REFINE_RATIO} \
-    --istart_nest ${ISTART_OF_RGNL_DOM_WITH_WIDE_HALO_ON_T6SG} \
-    --jstart_nest ${JSTART_OF_RGNL_DOM_WITH_WIDE_HALO_ON_T6SG} \
-    --iend_nest ${IEND_OF_RGNL_DOM_WITH_WIDE_HALO_ON_T6SG} \
-    --jend_nest ${JEND_OF_RGNL_DOM_WITH_WIDE_HALO_ON_T6SG} \
+    --refine_ratio "${GFDLgrid_REFINE_RATIO}" \
+    --istart_nest "${ISTART_OF_RGNL_DOM_WITH_WIDE_HALO_ON_T6SG}" \
+    --jstart_nest "${JSTART_OF_RGNL_DOM_WITH_WIDE_HALO_ON_T6SG}" \
+    --iend_nest "${IEND_OF_RGNL_DOM_WITH_WIDE_HALO_ON_T6SG}" \
+    --jend_nest "${JEND_OF_RGNL_DOM_WITH_WIDE_HALO_ON_T6SG}" \
     --halo 1 \
-    --great_circle_algorithm >>$pgmout 2>${DATA}/errfile
+    --great_circle_algorithm >>"${pgmout}" 2>"${DATA}"/errfile
   export err=$?; err_chk
-  mv ${DATA}/errfile ${DATA}/errfile_make_hgrid
+  mv "${DATA}"/errfile "${DATA}"/errfile_make_hgrid
 
   # Set the name of the regional grid file.
   grid_fn="${grid_name}.tile${TILE_RGNL}.nc"
@@ -149,26 +149,26 @@ elif [ "${GRID_GEN_METHOD}" = "ESGgrid" ]; then
 "
 
   # Call the python script to create the namelist file.
-  ${USHrrfs}/set_namelist.py -q -u "$settings" -o ${rgnl_grid_nml_fp}
+  "${USHrrfs}"/set_namelist.py -q -u "${settings}" -o "${rgnl_grid_nml_fp}"
   export err=$?
-  if [ $err -ne 0 ]; then
-    err_exit "Call to python script set_namelist.py to set the variables 
-  in the regional_esg_grid namelist file failed. Parameters passed to this 
+  if [ ${err} -ne 0 ]; then
+    err_exit "Call to python script set_namelist.py to set the variables
+  in the regional_esg_grid namelist file failed. Parameters passed to this
   script are:
   Full path to output namelist file:
     rgnl_grid_nml_fp = \"${rgn_grid_nml_fp}\"
   Namelist settings specified on command line (these have highest precedence):
     settings =
-$settings"
+${settings}"
   fi
 
   # Call the executable that generates the grid file.
   export pgm="ufs_util_regional_esg_grid"
   . prep_step
 
-  $APRUN ${EXECrrfs}/$pgm ${rgnl_grid_nml_fp} >>$pgmout 2>${DATA}/errfile
+  ${APRUN} "${EXECrrfs}"/${pgm} "${rgnl_grid_nml_fp}" >>"${pgmout}" 2>"${DATA}"/errfile
   export err=$?; err_chk
-  mv ${DATA}/errfile ${DATA}/errfile_regional_esg_grid
+  mv "${DATA}"/errfile "${DATA}"/errfile_regional_esg_grid
 
   # Set the name of the regional grid file generated by the above call.
   # This must be the same name as in the regional_esg_grid code.
@@ -178,7 +178,7 @@ fi
 # Set the full path to the grid file generated above.
 grid_fp="${DATA}/${grid_fn}"
 
-print_info_msg "$VERBOSE" "Grid file generation completed successfully."
+print_info_msg "${VERBOSE}" "Grid file generation completed successfully."
 #
 #-----------------------------------------------------------------------
 #
@@ -190,18 +190,25 @@ print_info_msg "$VERBOSE" "Grid file generation completed successfully."
 export pgm="ufs_util_global_equiv_resol"
 . prep_step
 
-$APRUN ${EXECrrfs}/$pgm "${grid_fp}" >>$pgmout 2>${DATA}/errfile
+${APRUN} "${EXECrrfs}"/${pgm} "${grid_fp}" >>"${pgmout}" 2>"${DATA}"/errfile
 export err=$?; err_chk
-mv ${DATA}/errfile ${DATA}/errfile_global_equiv_resol
+mv "${DATA}"/errfile "${DATA}"/errfile_global_equiv_resol
 
 # Make the following (reading of res_equiv) a function in another file
 # so that it can be used both here and in the exrrfs_make_orog.sh
 # script.
-res_equiv=$( ncdump -h "${grid_fp}" | \
-             grep -o ":RES_equiv = [0-9]\+" | grep -o "[0-9]" )
-export err=$?
-if [ $err -ne 0 ]; then
-  err_exit "Attempt to extract the equivalent global uniform cubed-sphere 
+grid_header=$(ncdump -h "${grid_fp}") || err_exit "Unable to read grid header: ${grid_fp}"
+
+# Use native Bash regex to find ":RES_equiv = " followed by digits, capturing only the digits
+if [[ "${grid_header}" =~ :RES_equiv[[:space:]]=[[:space:]]([0-9]+) ]]; then
+  res_equiv="${BASH_REMATCH[1]}"
+  err=0
+else
+  err=1
+  # Optional: err_exit "Could not find RES_equiv in ${grid_fp}"
+fi
+if [ ${err} -ne 0 ]; then
+  err_exit "Attempt to extract the equivalent global uniform cubed-sphere
   grid resolution from the grid file (grid_fp) failed:
   grid_fp = \"${grid_fp}\""
 fi
@@ -227,7 +234,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Copy the grid file from the run directory (DATA) to COM. 
+# Copy the grid file from the run directory (DATA) to COM.
 # In the process, rename it such that its name includes CRES and the halo width.
 #
 #-----------------------------------------------------------------------
@@ -251,12 +258,12 @@ cpreq -p "${grid_fn}" "${grid_fp}"
 #
 if [ ! -z "${RES_IN_FIXLAM_FILENAMES}" ]; then
   res="${CRES:1}"
-  if [ "$res" -ne "${RES_IN_FIXLAM_FILENAMES}" ]; then
+  if [ "${res}" -ne "${RES_IN_FIXLAM_FILENAMES}" ]; then
     err_exit "\
 The resolution (res) calculated for the grid does not match the resolution
 (RES_IN_FIXLAM_FILENAMES) appearing in the names of the orography and/or
 surface climatology files:
-  res = \"$res\"
+  res = \"${res}\"
   RES_IN_FIXLAM_FILENAMES = \"${RES_IN_FIXLAM_FILENAMES}\""
   fi
 fi
@@ -264,8 +271,8 @@ fi
 #-----------------------------------------------------------------------
 #
 # Partially "shave" the halo from the grid file having a wide halo to
-# generate multiple grid files with [6,4,3,0]-grid-wide halos. 
-# These are needed as inputs by the forecast model as well as by the code 
+# generate multiple grid files with [6,4,3,0]-grid-wide halos.
+# These are needed as inputs by the forecast model as well as by the code
 # (chgres_cube) that generates the lateral boundary condition files.
 #
 #-----------------------------------------------------------------------
@@ -282,15 +289,15 @@ for halo_num in "${halo_num_list[@]}"; do
   nml_fn="input.shave.grid.halo${halo_num}"
   shaved_fp="${DATA}/${CRES}${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${halo_num}.nc"
   printf "%s %s %s %s %s\n" \
-  $NX $NY ${halo_num} \"${unshaved_fp}\" \"${shaved_fp}\" \
-  > ${nml_fn}
+  "${NX}" "${NY}" "${halo_num}" \""${unshaved_fp}"\" \""${shaved_fp}"\" \
+  > "${nml_fn}"
 
   . prep_step
 
-  $APRUN ${EXECrrfs}/$pgm < ${nml_fn} >>$pgmout 2>${DATA}/errfile
+  ${APRUN} "${EXECrrfs}"/${pgm} < "${nml_fn}" >>"${pgmout}" 2>"${DATA}"/errfile
   export err=$?; err_chk
-  mv ${DATA}/errfile ${DATA}/errfile_shave_nh${halo_num}
-  cpreq -p ${shaved_fp} ${COMOUT}/
+  mv "${DATA}"/errfile "${DATA}"/errfile_shave_nh"${halo_num}"
+  cpreq -p "${shaved_fp}" "${COMOUT}"/
 done
 #
 #-----------------------------------------------------------------------
@@ -303,7 +310,7 @@ export pgm="ufs_util_make_solo_mosaic"
 
 halo_num_list[${#halo_num_list[@]}]="${NHW}"
 for halo_num in "${halo_num_list[@]}"; do
-  print_info_msg "Creating grid mosaic file with ${halo_num}-cell-wide halo..."  
+  print_info_msg "Creating grid mosaic file with ${halo_num}-cell-wide halo..."
   grid_fn="${CRES}${DOT_OR_USCORE}grid.tile${TILE_RGNL}.halo${halo_num}.nc"
   grid_fp="${COMOUT}/${grid_fn}"
   mosaic_fn="${CRES}${DOT_OR_USCORE}mosaic.halo${halo_num}.nc"
@@ -312,13 +319,13 @@ for halo_num in "${halo_num_list[@]}"; do
 
   . prep_step
 
-  $APRUN ${EXECrrfs}/$pgm \
+  ${APRUN} "${EXECrrfs}"/${pgm} \
       --num_tiles 1 \
       --dir "${DATA}" \
       --tile_file "${grid_fn}" \
-      --mosaic "${mosaic_fp_prefix}" >>$pgmout 2>${DATA}/errfile
+      --mosaic "${mosaic_fp_prefix}" >>"${pgmout}" 2>"${DATA}"/errfile
   export err=$?; err_chk
-  mv ${DATA}/errfile ${DATA}/errfile_mosaic_nh${halo_num}  
+  mv "${DATA}"/errfile "${DATA}"/errfile_mosaic_nh"${halo_num}"
 done
 #
 #-----------------------------------------------------------------------

@@ -10,11 +10,11 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-function set_gridparams_GFDLgrid() {
+set_gridparams_GFDLgrid() {
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -34,33 +34,33 @@ function set_gridparams_GFDLgrid() {
 #
 #-----------------------------------------------------------------------
 #
-# Specify the set of valid argument names for this script/function.  
-# Then process the arguments provided to this script/function (which 
+# Specify the set of valid argument names for this script/function.
+# Then process the arguments provided to this script/function (which
 # should consist of a set of name-value pairs of the form arg1="value1",
 # etc).
 #
 #-----------------------------------------------------------------------
 #
   local valid_args=( \
-"lon_of_t6_ctr" \
-"lat_of_t6_ctr" \
-"res_of_t6g" \
-"stretch_factor" \
-"refine_ratio_t6g_to_t7g" \
-"istart_of_t7_on_t6g" \
-"iend_of_t7_on_t6g" \
-"jstart_of_t7_on_t6g" \
-"jend_of_t7_on_t6g" \
-"output_varname_lon_of_t7_ctr" \
-"output_varname_lat_of_t7_ctr" \
-"output_varname_nx_of_t7_on_t7g" \
-"output_varname_ny_of_t7_on_t7g" \
-"output_varname_halo_width_on_t7g" \
-"output_varname_stretch_factor" \
-"output_varname_istart_of_t7_with_halo_on_t6sg" \
-"output_varname_iend_of_t7_with_halo_on_t6sg" \
-"output_varname_jstart_of_t7_with_halo_on_t6sg" \
-"output_varname_jend_of_t7_with_halo_on_t6sg" \
+    "lon_of_t6_ctr" \
+    "lat_of_t6_ctr" \
+    "res_of_t6g" \
+    "stretch_factor" \
+    "refine_ratio_t6g_to_t7g" \
+    "istart_of_t7_on_t6g" \
+    "iend_of_t7_on_t6g" \
+    "jstart_of_t7_on_t6g" \
+    "jend_of_t7_on_t6g" \
+    "output_varname_lon_of_t7_ctr" \
+    "output_varname_lat_of_t7_ctr" \
+    "output_varname_nx_of_t7_on_t7g" \
+    "output_varname_ny_of_t7_on_t7g" \
+    "output_varname_halo_width_on_t7g" \
+    "output_varname_stretch_factor" \
+    "output_varname_istart_of_t7_with_halo_on_t6sg" \
+    "output_varname_iend_of_t7_with_halo_on_t6sg" \
+    "output_varname_jstart_of_t7_with_halo_on_t6sg" \
+    "output_varname_jend_of_t7_with_halo_on_t6sg" \
   )
   process_args valid_args "$@"
 #
@@ -84,13 +84,11 @@ function set_gridparams_GFDLgrid() {
         jend_of_t7_on_t6sg \
         halo_width_on_t7g \
         halo_width_on_t6sg \
+        halo_width_on_t6g \
         istart_of_t7_with_halo_on_t6sg \
         iend_of_t7_with_halo_on_t6sg \
         jstart_of_t7_with_halo_on_t6sg \
         jend_of_t7_with_halo_on_t6sg \
-        halo_width_on_t6sg \
-        halo_width_on_t6g \
-        halo_width_on_t7g \
         nx_of_t7_on_t6sg \
         nx_of_t7_on_t6g \
         nx_of_t7_on_t7g \
@@ -110,30 +108,30 @@ function set_gridparams_GFDLgrid() {
 #
 #-----------------------------------------------------------------------
 #
-# To simplify the grid setup, we require that tile 7 be centered on tile 
+# To simplify the grid setup, we require that tile 7 be centered on tile
 # 6.  Note that this is not really a restriction because tile 6 can al-
-# ways be moved so that it is centered on tile 7 [the location of tile 6 
-# doesn't really matter because for a regional setup, the forecast model 
+# ways be moved so that it is centered on tile 7 [the location of tile 6
+# doesn't really matter because for a regional setup, the forecast model
 # will only run on tile 7 (not on tiles 1-6)].
 #
-# We now check that tile 7 is centered on tile 6 by checking (1) that 
-# the number of cells (on tile 6) between the left boundaries of these 
-# two tiles is equal to that between their right boundaries and (2) that 
+# We now check that tile 7 is centered on tile 6 by checking (1) that
+# the number of cells (on tile 6) between the left boundaries of these
+# two tiles is equal to that between their right boundaries and (2) that
 # the number of cells (on tile 6) between the bottom boundaries of these
-# two tiles is equal to that between their top boundaries.  If not, we 
-# print out an error message and exit.  If so, we set the longitude and 
+# two tiles is equal to that between their top boundaries.  If not, we
+# print out an error message and exit.  If so, we set the longitude and
 # latitude of the center of tile 7 to those of tile 6 and continue.
 #
 #-----------------------------------------------------------------------
 #
-  nx_of_t6_on_t6g=${res_of_t6g}
-  ny_of_t6_on_t6g=${res_of_t6g}
+  nx_of_t6_on_t6g="${res_of_t6g}"
+  ny_of_t6_on_t6g="${res_of_t6g}"
 
   num_left_margin_cells_on_t6g=$(( istart_of_t7_on_t6g - 1 ))
-  num_right_margin_cells_on_t6g=$(( nx_of_t6_on_t6g - iend_of_t7_on_t6g )) 
+  num_right_margin_cells_on_t6g=$(( nx_of_t6_on_t6g - iend_of_t7_on_t6g ))
 
   num_bot_margin_cells_on_t6g=$(( jstart_of_t7_on_t6g - 1 ))
-  num_top_margin_cells_on_t6g=$(( ny_of_t6_on_t6g - jend_of_t7_on_t6g )) 
+  num_top_margin_cells_on_t6g=$(( ny_of_t6_on_t6g - jend_of_t7_on_t6g ))
 
   lon_of_t7_ctr="${lon_of_t6_ctr}"
   lat_of_t7_ctr="${lat_of_t6_ctr}"
@@ -294,19 +292,19 @@ function set_gridparams_GFDLgrid() {
 #
 #-----------------------------------------------------------------------
 #
-  if [ $(( istart_of_t7_with_halo_on_t6sg%2 )) -eq 0 ]; then
+  if (( istart_of_t7_with_halo_on_t6sg % 2 == 0 )); then
     istart_of_t7_with_halo_on_t6sg=$(( istart_of_t7_with_halo_on_t6sg - 1 ))
   fi
 
-  if [ $(( iend_of_t7_with_halo_on_t6sg%2 )) -eq 1 ]; then
+  if (( iend_of_t7_with_halo_on_t6sg % 2 == 1 )); then
     iend_of_t7_with_halo_on_t6sg=$(( iend_of_t7_with_halo_on_t6sg + 1 ))
   fi
 
-  if [ $(( jstart_of_t7_with_halo_on_t6sg%2 )) -eq 0 ]; then
+  if (( jstart_of_t7_with_halo_on_t6sg % 2 == 0 )); then
     jstart_of_t7_with_halo_on_t6sg=$(( jstart_of_t7_with_halo_on_t6sg - 1 ))
   fi
 
-  if [ $(( jend_of_t7_with_halo_on_t6sg%2 )) -eq 1 ]; then
+  if (( jend_of_t7_with_halo_on_t6sg % 2 == 1 )); then
     jend_of_t7_with_halo_on_t6sg=$(( jend_of_t7_with_halo_on_t6sg + 1 ))
   fi
 #
@@ -325,8 +323,8 @@ function set_gridparams_GFDLgrid() {
 #
 #-----------------------------------------------------------------------
 #
-  print_info_msg "$VERBOSE" "
-Original values of the halo width on the tile 6 supergrid and on the 
+  print_info_msg "${VERBOSE}" "
+Original values of the halo width on the tile 6 supergrid and on the
 tile 7 grid are:
   halo_width_on_t6sg = ${halo_width_on_t6sg}
   halo_width_on_t7g  = ${halo_width_on_t7g}"
@@ -335,8 +333,8 @@ tile 7 grid are:
   halo_width_on_t6g=$(( halo_width_on_t6sg/2 ))
   halo_width_on_t7g=$(( halo_width_on_t6g*refine_ratio_t6g_to_t7g ))
 
-  print_info_msg "$VERBOSE" "
-Values of the halo width on the tile 6 supergrid and on the tile 7 grid 
+  print_info_msg "${VERBOSE}" "
+Values of the halo width on the tile 6 supergrid and on the tile 7 grid
 AFTER adjustments are:
   halo_width_on_t6sg = ${halo_width_on_t6sg}
   halo_width_on_t7g  = ${halo_width_on_t7g}"
@@ -345,7 +343,7 @@ AFTER adjustments are:
 #
 # Calculate the number of cells that the regional domain (without halo)
 # has in each of the two horizontal directions (say x and y).  We denote
-# these by nx_of_t7_on_t7g and ny_of_t7_on_t7g, respectively.  These 
+# these by nx_of_t7_on_t7g and ny_of_t7_on_t7g, respectively.  These
 # will be needed in the "shave" steps in the grid generation task of the
 # workflow.
 #
@@ -364,11 +362,13 @@ AFTER adjustments are:
   nx_of_t6_on_t6sg=$(( 2*nx_of_t6_on_t6g ))
   ny_of_t6_on_t6sg=$(( 2*ny_of_t6_on_t6g ))
 
-  prime_factors_nx_of_t7_on_t7g=$( factor ${nx_of_t7_on_t7g} | sed -r -e 's/^[0-9]+: (.*)/\1/' )
-  prime_factors_ny_of_t7_on_t7g=$( factor ${ny_of_t7_on_t7g} | sed -r -e 's/^[0-9]+: (.*)/\1/' )
+  prime_factors_nx_of_t7_on_t7g=$( factor "${nx_of_t7_on_t7g}" )
+  prime_factors_nx_of_t7_on_t7g="${prime_factors_nx_of_t7_on_t7g#*: }"
+  prime_factors_ny_of_t7_on_t7g=$( factor "${ny_of_t7_on_t7g}" )
+  prime_factors_ny_of_t7_on_t7g="${prime_factors_ny_of_t7_on_t7g#*: }"
 
-  print_info_msg "$VERBOSE" "
-The number of cells in the two horizontal directions (x and y) on the 
+  print_info_msg "${VERBOSE}" "
+The number of cells in the two horizontal directions (x and y) on the
 parent tile's (tile 6) grid and supergrid are:
   nx_of_t6_on_t6g = ${nx_of_t6_on_t6g}
   ny_of_t6_on_t6g = ${ny_of_t6_on_t6g}
@@ -428,12 +428,12 @@ determining an MPI task layout):
   ny_of_t7_with_halo_on_t6g=$(( ny_of_t7_with_halo_on_t6sg/2 ))
   ny_of_t7_with_halo_on_t7g=$(( ny_of_t7_with_halo_on_t6g*refine_ratio_t6g_to_t7g ))
 
-  print_info_msg "$VERBOSE" "
+  print_info_msg "${VERBOSE}" "
 nx_of_t7_with_halo_on_t7g = ${nx_of_t7_with_halo_on_t7g} \
 (istart_of_t7_with_halo_on_t6sg = ${istart_of_t7_with_halo_on_t6sg}, \
 iend_of_t7_with_halo_on_t6sg = ${iend_of_t7_with_halo_on_t6sg})"
 
-  print_info_msg "$VERBOSE" "
+  print_info_msg "${VERBOSE}" "
 ny_of_t7_with_halo_on_t7g = ${ny_of_t7_with_halo_on_t7g} \
 (jstart_of_t7_with_halo_on_t6sg = ${jstart_of_t7_with_halo_on_t6sg}, \
 jend_of_t7_with_halo_on_t6sg = ${jend_of_t7_with_halo_on_t6sg})"
@@ -444,15 +444,14 @@ jend_of_t7_with_halo_on_t6sg = ${jend_of_t7_with_halo_on_t6sg})"
 #
 #-----------------------------------------------------------------------
 #
-  eval ${output_varname_lon_of_t7_ctr}="${lon_of_t7_ctr}"
-  eval ${output_varname_lat_of_t7_ctr}="${lat_of_t7_ctr}"
-  eval ${output_varname_nx_of_t7_on_t7g}="${nx_of_t7_on_t7g}"
-  eval ${output_varname_ny_of_t7_on_t7g}="${ny_of_t7_on_t7g}"
-  eval ${output_varname_halo_width_on_t7g}="${halo_width_on_t7g}"
-  eval ${output_varname_stretch_factor}="${stretch_factor}"
-  eval ${output_varname_istart_of_t7_with_halo_on_t6sg}="${istart_of_t7_with_halo_on_t6sg}"
-  eval ${output_varname_iend_of_t7_with_halo_on_t6sg}="${iend_of_t7_with_halo_on_t6sg}"
-  eval ${output_varname_jstart_of_t7_with_halo_on_t6sg}="${jstart_of_t7_with_halo_on_t6sg}"
-  eval ${output_varname_jend_of_t7_with_halo_on_t6sg}="${jend_of_t7_with_halo_on_t6sg}"
+  printf -v "${output_varname_lon_of_t7_ctr}" '%s' "${lon_of_t7_ctr}"
+  printf -v "${output_varname_lat_of_t7_ctr}" '%s' "${lat_of_t7_ctr}"
+  printf -v "${output_varname_nx_of_t7_on_t7g}" '%s' "${nx_of_t7_on_t7g}"
+  printf -v "${output_varname_ny_of_t7_on_t7g}" '%s' "${ny_of_t7_on_t7g}"
+  printf -v "${output_varname_halo_width_on_t7g}" '%s' "${halo_width_on_t7g}"
+  printf -v "${output_varname_stretch_factor}" '%s' "${stretch_factor}"
+  printf -v "${output_varname_istart_of_t7_with_halo_on_t6sg}" '%s' "${istart_of_t7_with_halo_on_t6sg}"
+  printf -v "${output_varname_iend_of_t7_with_halo_on_t6sg}" '%s' "${iend_of_t7_with_halo_on_t6sg}"
+  printf -v "${output_varname_jstart_of_t7_with_halo_on_t6sg}" '%s' "${jstart_of_t7_with_halo_on_t6sg}"
+  printf -v "${output_varname_jend_of_t7_with_halo_on_t6sg}" '%s' "${jend_of_t7_with_halo_on_t6sg}"
 }
-

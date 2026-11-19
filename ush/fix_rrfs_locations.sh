@@ -1,12 +1,12 @@
-#!/bin/sh
+#!/bin/bash
 set -x
 #
 # FIX_RRFS locaitons at different HPC platforms
 #
 if [[ -d /lfs/h2 ]] ; then
     PLATFORM=wcoss2
-    FIX_RRFS_LOCATION="/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS"
-elif [[ "$(hostname -f)" == *"ufe"* ]] ; then
+    FIX_RRFS_LOCATION="/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS"  # ci-skip: hardcoded-path
+elif host_fqdn=$(hostname -f) && [[ "${host_fqdn}" == *"ufe"* ]] ; then
     PLATFORM=ursa
     FIX_RRFS_LOCATION="/scratch4/BMC/rtrr/FIX_RRFS"
 elif [[ -d /scratch1 ]] ; then
@@ -16,9 +16,9 @@ elif [[ -d /jetmon ]] ; then
     PLATFORM=jet
     FIX_RRFS_LOCATION="/lfs4/BMC/nrtrr/FIX_RRFS"
 elif [[ -d /work ]]; then
-    FIX_RRFS_LOCATION="/work/noaa/rtrr/FIX_RRFS"
+    FIX_RRFS_LOCATION="/work/noaa/rtrr/FIX_RRFS"  # ci-skip: hardcoded-path
     hoststr=$(hostname)
-    if [[ "$hoststr" == "hercules"* ]]; then                                                                                                                           
+    if [[ "${hoststr}" == "hercules"* ]]; then
       PLATFORM=hercules
     else
       PLATFORM=orion

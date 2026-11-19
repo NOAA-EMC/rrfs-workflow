@@ -1,4 +1,5 @@
-#!/bin/sh -l
+#!/bin/bash
+set -x
 #==========================================================================
 # Description: This script runs plot_fields.ncl and sets all of the command-
 #              line arguments.  There are 6 examples.  The default plot is at
@@ -42,14 +43,14 @@ grid_dir="/scratch2/BMC/gmtb/Julie.Schramm/C96fv3gfs2016092900/INPUT"
 #RAP_grid_fn="/scratch2/BMC/fim/Gerard.Ketefian/regional_FV3_EMC_visit_20180509/geo_em.d01.nc"
 RAP_grid_fn="/scratch2/BMC/fim/Gerard.Ketefian/regional_FV3_EMC_visit_20180509/geo_em.d01.RAP.nc"
 
-if [ 1 = 1 ]; then
+if true; then
 #
 # Show FV3 global domain (tiles 1-6) on a global cylindrical projection.
 #
 ncl -n plot_fields.ncl \
-  grid_dir=\"$grid_dir\" \
-  base_name=\"$base_name\" \
-  fields=\(\/"$fields"/\) \
+  grid_dir=\"${grid_dir}\" \
+  base_name=\"${base_name}\" \
+  fields=\(/"${fields}"/\) \
   nlev=${nlev} \
   fcst_index=\(/${fcst_index}/\) \
   res=${RES} \
@@ -57,7 +58,7 @@ ncl -n plot_fields.ncl \
   draw_tile_bdy=True \
   draw_tile_grid=False \
   draw_RAP_domain=False \
-  RAP_grid_fn=\"$RAP_grid_fn\" \
+  RAP_grid_fn=\"${RAP_grid_fn}\" \
   draw_RAP_bdy=False \
   draw_RAP_grid=False \
   map_proj=\"cyln\" \
@@ -66,14 +67,14 @@ ncl -n plot_fields.ncl \
 #  tile_inds=\(/4/\) \
 fi
 
-if [ 0 = 1 ]; then
+if false; then
 #
 # Show FV3 regional domain (tile 7) and the original RAP domain outline
 # on a global cylindrical projection.
 #
 ncl -n plot_fields.ncl \
-  grid_dir=\"$grid_dir\" \
-  base_name=\"$base_name\" \
+  grid_dir=\"${grid_dir}\" \
+  base_name=\"${base_name}\" \
   'fields=(/"u1000", "v1000"/)' \
   nlev=${nlev} \
   fcst_index=${fcst_index} \
@@ -82,7 +83,7 @@ ncl -n plot_fields.ncl \
   draw_tile_bdy=True \
   draw_tile_grid=False \
   draw_RAP_domain=True \
-  RAP_grid_fn=\"$RAP_grid_fn\" \
+  RAP_grid_fn=\"${RAP_grid_fn}\" \
   draw_RAP_bdy=True \
   draw_RAP_grid=False \
   map_proj=\"cyln\" \
@@ -90,14 +91,14 @@ ncl -n plot_fields.ncl \
 #
 fi
 
-if [ 0 = 1 ]; then
+if false; then
 #
 # Show FV3 regional domain (tile 7) and the original RAP domain outline
 # on a sphere (orthogonal spherical projection).
 #
 ncl -n plot_fields.ncl \
-  grid_dir=\"$grid_dir\" \
-  base_name=\"$base_name\" \
+  grid_dir=\"${grid_dir}\" \
+  base_name=\"${base_name}\" \
   'fields=(/"u1000", "v1000"/)' \
   nlev=${nlev} \
   fcst_index=${fcst_index} \
@@ -106,7 +107,7 @@ ncl -n plot_fields.ncl \
   draw_tile_bdy=True \
   draw_tile_grid=False \
   draw_RAP_domain=True \
-  RAP_grid_fn=\"$RAP_grid_fn\" \
+  RAP_grid_fn=\"${RAP_grid_fn}\" \
   draw_RAP_bdy=True \
   draw_RAP_grid=False \
   map_proj=\"ortho\" \
@@ -115,14 +116,14 @@ ncl -n plot_fields.ncl \
 #
 fi
 
-if [ 0 = 1 ]; then
+if false; then
 #
 # Show FV3 regional domain (tiles 5,6,7) and the original RAP domain outline
 # on a cylindrical projection.
 #
 ncl -n plot_fields.ncl \
-  grid_dir=\"$grid_dir\" \
-  base_name=\"$base_name\" \
+  grid_dir=\"${grid_dir}\" \
+  base_name=\"${base_name}\" \
   'fields=(/"u1000", "v1000"/)' \
   nlev=${nlev} \
   fcst_index=${fcst_index} \
@@ -131,7 +132,7 @@ ncl -n plot_fields.ncl \
   draw_tile_bdy=True \
   draw_tile_grid=True \
   draw_RAP_domain=True \
-  RAP_grid_fn=\"$RAP_grid_fn\" \
+  RAP_grid_fn=\"${RAP_grid_fn}\" \
   draw_RAP_bdy=True \
   draw_RAP_grid=True \
   map_proj=\"cyln\" \
@@ -140,14 +141,14 @@ ncl -n plot_fields.ncl \
 #
 fi
 
-if [ 0 = 1 ]; then
+if false; then
 #
 # Show FV3 regional domain (tile 7) and the original RAP domain outline
 # on a global cylindrical projection (no subregion).
 #
 ncl -n plot_fields.ncl \
-  grid_dir=\"$grid_dir\" \
-  base_name=\"$base_name\" \
+  grid_dir=\"${grid_dir}\" \
+  base_name=\"${base_name}\" \
   'fields=(/"u1000", "v1000"/)' \
   nlev=${nlev} \
   fcst_index=${fcst_index} \
@@ -156,7 +157,7 @@ ncl -n plot_fields.ncl \
   draw_tile_bdy=False \
   draw_tile_grid=False \
   draw_RAP_domain=True \
-  RAP_grid_fn=\"$RAP_grid_fn\" \
+  RAP_grid_fn=\"${RAP_grid_fn}\" \
   draw_RAP_bdy=True \
   draw_RAP_grid=False \
   map_proj=\"cyln\" \
@@ -165,15 +166,15 @@ ncl -n plot_fields.ncl \
 
 fi
 
-if [ 0 = 1 ]; then
+if false; then
 #
 # Show FV3 regional domain (tile 7) and the original RAP domain outline
 # on a global cylindrical projection (no subregion). Drawing tile boundary
 # and grid makes a black tile 7 over CONUS.
 #
 ncl -n plot_fields.ncl \
-  grid_dir=\"$grid_dir\" \
-  base_name=\"$base_name\" \
+  grid_dir=\"${grid_dir}\" \
+  base_name=\"${base_name}\" \
   'fields=(/"u1000", "v1000"/)' \
   nlev=${nlev} \
   fcst_index=${fcst_index} \
@@ -182,7 +183,7 @@ ncl -n plot_fields.ncl \
   draw_tile_bdy=True \
   draw_tile_grid=True \
   draw_RAP_domain=False \
-  RAP_grid_fn=\"$RAP_grid_fn\" \
+  RAP_grid_fn=\"${RAP_grid_fn}\" \
   draw_RAP_bdy=True \
   draw_RAP_grid=False \
   map_proj=\"cyln\" \
@@ -196,7 +197,7 @@ ncl -n plot_fields.ncl \
 
 fi
 
-if [ 0 = 1 ]; then
+if false; then
 #
 # Show FV3 regional domain (tile 7) and the original RAP domain outline
 # on a subregional cylindrical projection centered over CONUS.
@@ -205,17 +206,17 @@ if [ 0 = 1 ]; then
 # on a subregional cylindrical projection centered over CONUS.
 #
 ncl -n plot_fields.ncl \
-  grid_dir=\"$grid_dir\" \
-  base_name=\"$base_name\" \
-  fields=\(\/"$fields"/\) \
+  grid_dir=\"${grid_dir}\" \
+  base_name=\"${base_name}\" \
+  fields=\(/"${fields}"/\) \
   nlev=${nlev} \
-  fcst_index=\(\/"$fcst_index"/\) \
+  fcst_index=\(/"${fcst_index}"/\) \
   res=${RES} \
   tile_inds=\(/7/\) \
   draw_tile_bdy=True \
   draw_tile_grid=False \
   draw_RAP_domain=False \
-  RAP_grid_fn=\"$RAP_grid_fn\" \
+  RAP_grid_fn=\"${RAP_grid_fn}\" \
   draw_RAP_bdy=True \
   draw_RAP_grid=False \
   map_proj=\"cyln\" \

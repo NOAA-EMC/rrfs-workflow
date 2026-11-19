@@ -5,8 +5,8 @@ export PS4='+ $SECONDS + '
 set -x
 
 export DATA=${DATA:-${DATAROOT:?}/${jobid:?}}
-mkdir -p ${DATA}
-cd ${DATA}
+mkdir -p "${DATA}"
+cd "${DATA}"
 
 export cycle=${cycle:-t${cyc}z}
 setpdy.sh
@@ -21,16 +21,16 @@ export umbrella_forecast_data_base=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver_2
 
 env
 
-${HOMErrfs}/scripts/exrrfs_save_restart_manager.sh
+"${HOMErrfs}"/scripts/exrrfs_save_restart_manager.sh
 export err=$?; err_chk
 
-msg="$job completed normally"
-postmsg "$msg"          
+msg="${job} completed normally"
+postmsg "${msg}"
 
 ##################################################
 # Remove the Temporary working directory
 ##################################################
 if [ "${KEEPDATA^^}" != YES ]; then
-  cd $DATAROOT
-  rm -rf $DATA
+  cd "${DATAROOT}"
+  rm -rf "${DATA}"
 fi

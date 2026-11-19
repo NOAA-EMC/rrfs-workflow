@@ -41,12 +41,19 @@ if [ ! -d "${cycle_root}/${cyc}" ]; then
   for forecast_name in jrrfs_det_forecast jrrfs_det_forecast_long; do
     forecast_task="${forecast_dir}/${forecast_name}"
     if forecast_output=$(ecflow_client --query variable "${forecast_task}:ECF_TRYNO" 2>&1); then
-      try_no=$(printf '%s\n' "${forecast_output}" | sed -nE \
-        's/.*ECF_TRYNO[^=]*=[[:space:]]*([0-9]+).*/\1/p' | tail -1)
+      try_no=""
+      while IFS= read -r forecast_line; do
+        if [[ "${forecast_line}" =~ ECF_TRYNO[^=]*=[[:space:]]*([0-9]+) ]]; then
+          try_no="${BASH_REMATCH[1]}"
+        fi
+      done <<< "${forecast_output}"
       # Some ecFlow client versions return only the queried value.
       if [ -z "${try_no}" ]; then
-        try_no=$(printf '%s\n' "${forecast_output}" | sed -nE \
-          's/^[[:space:]]*([0-9]+)[[:space:]]*$/\1/p' | tail -1)
+        while IFS= read -r forecast_line; do
+          if [[ "${forecast_line}" =~ ^[[:space:]]*([0-9]+)[[:space:]]*$ ]]; then
+            try_no="${BASH_REMATCH[1]}"
+          fi
+        done <<< "${forecast_output}"
       fi
       if [[ "${try_no}" =~ ^[0-9]+$ ]]; then
         forecast_query_ok=YES

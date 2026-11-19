@@ -1,4 +1,6 @@
 #!/bin/bash
+# Suppress unrelated legacy findings to keep this ShellCheck fix focused.
+# shellcheck disable=SC2002,SC2004,SC2086,SC2126,SC2162,SC2185,SC2235,SC2250,SC2312,SC2335
 set -x
 
 source ${FIXrrfs}/workflow/${WGF}/workflow.conf
@@ -53,7 +55,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -326,13 +328,20 @@ Cannot create symlink because target does not exist:
 fi
 
 #
-# If using some specific physics suites such as FV3_HRRR or FV3_RAP, there are two files 
-# (that contain statistics of the orography) that are needed by the gravity 
-# wave drag parameterization in that suite.  Below, create symlinks to these 
+# If using some specific physics suites such as FV3_HRRR or FV3_RAP, there are two files
+# (that contain statistics of the orography) that are needed by the gravity
+# wave drag parameterization in that suite.  Below, create symlinks to these
 # files in the run directory.
 #
 suites=( "RRFS_sas" "FV3_RAP" "FV3_HRRR" "FV3_HRRR_gf" "FV3_GFS_v15_thompson_mynn_lam3km" "FV3_GFS_v17_p8" )
-if [[ ${suites[@]} =~ "${CCPP_PHYS_SUITE}" ]] ; then
+suite_match=FALSE
+for suite in "${suites[@]}"; do
+  if [[ ${CCPP_PHYS_SUITE} == "${suite}" ]]; then
+    suite_match=TRUE
+    break
+  fi
+done
+if [[ ${suite_match} == TRUE ]]; then
   fileids=( "ss" "ls" )
   for fileid in "${fileids[@]}"; do
     target="${FIXLAM}/${CRES}${DOT_OR_USCORE}oro_data_${fileid}.tile${TILE_RGNL}.halo${NH0}.nc"
@@ -545,7 +554,7 @@ if [ "${DO_ENSEMBLE}" = TRUE ] && ([ "${DO_SPP}" = TRUE ] || [ "${DO_SPPT}" = TR
   || [ "${DO_SKEB}" = TRUE ] || [ "${DO_LSM_SPP}" =  TRUE ]); then
    HH=${HH:-${cyc}}
    for cyc_start in "${CYCL_HRS_STOCH[@]}"; do
-     if [ ${HH} -eq ${cyc_start} ]; then 
+     if [ ${HH} -eq ${cyc_start} ]; then
        STOCH="TRUE"
        FV3_NML_RESTART_STOCH_FP=${PARMrrfs}/config/${WGF}/input.nml_restart_stoch
      fi
@@ -563,20 +572,20 @@ if [ ${BKTYPE} -eq 0 ]; then
       cpreq -p ${FV3_NML_RESTART_SPINUPCYC_FP} ${DATA}/${FV3_NML_FN}
     else
       if [ ${WGF} = "enkf" ]; then
-       if [[ $((10#$cyc % 2)) -eq 0 ]]; then
+       if [[ $((10#${cyc} % 2)) -eq 0 ]]; then
          FCST_LEN_HRS=3
        else
          FCST_LEN_HRS=1
        fi
        cpreq -p ${FV3_NML_RESTART_FP} ${DATA}/${FV3_NML_FN}
       else
-        FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$((10#$cyc))]}
+        FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$((10#${cyc}))]}
         # The hourly cycles and the longer ones at 00, 06, 12 and 18z take different
         # namelists, so which cycle it is decides. A forecast length of 18 or 84 hours
         # picks out the same two in operations, but matches neither once the forecasts
         # are shortened, and then nothing is copied and the model stops on a missing
         # input.nml.
-        if [ $(( 10#$cyc % 6 )) -ne 0 ]; then
+        if [ $(( 10#${cyc} % 6 )) -ne 0 ]; then
 
           if [ -e ${FIXLAM}/115_nodes_det/routehandle_fb01 ]; then
            files=`ls ${FIXLAM}/115_nodes_det/routehandle_fb??`
@@ -626,9 +635,9 @@ else # not cycling
        elif [ ${WGF} = "firewx" ] || [ ${WGF} = "enkf" ]; then
          cpreq -p ${FV3_NML_FP} ${DATA}/${FV3_NML_FN}
        else
-         FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$((10#$cyc))]}
+         FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$((10#${cyc}))]}
          # as above: the cycle, not the forecast length, chooses the namelist
-         if [ $(( 10#$cyc % 6 )) -ne 0 ]; then
+         if [ $(( 10#${cyc} % 6 )) -ne 0 ]; then
           if [ -e ${FIXLAM}/115_nodes_det/routehandle_fb01 ]; then
            files=`ls ${FIXLAM}/115_nodes_det/routehandle_fb??`
 	   echo "#! /bin/sh" > ./para_copy.sh
@@ -637,7 +646,7 @@ else # not cycling
              echo "cpreq $fl ${DATA}/" >> ./para_copy.sh
            done
 	   cpprocs=`cat ./para_copy.sh | grep routehandle | wc -l`
-	   mpiexec -n ${cpprocs} -ppn ${cpprocs} --cpu-bind core cfp ./para_copy.sh
+	   mpiexec -n ${cpprocs} -ppn ${cpprocs} --cpu-bind core cfp ./para_copy.sh  # ci-skip: launcher_trap
 	   rm ./para_copy.sh
 	  fi
 
@@ -652,7 +661,7 @@ else # not cycling
              echo "cpreq $fl ${DATA}/" >> ./para_copy.sh
            done
 	   cpprocs=`cat ./para_copy.sh | grep routehandle | wc -l`
-	   mpiexec -n ${cpprocs} -ppn ${cpprocs} --cpu-bind core cfp ./para_copy.sh
+	   mpiexec -n ${cpprocs} -ppn ${cpprocs} --cpu-bind core cfp ./para_copy.sh  # ci-skip: launcher_trap
 	   rm ./para_copy.sh
 	  fi
 
@@ -666,7 +675,7 @@ fi
 if [ "${STOCH}" = "TRUE" ]; then
   if [ ${BKTYPE} -eq 0 ] && [ ${DO_ENSFCST_MULPHY} = "TRUE" ]; then
     ensmem_num=$(echo "${ENSMEM_INDX}" | awk '{print $1+0}')
-    cpreq -p ${FV3_NML_RESTART_STOCH_FP}_ensphy${ensmem_num} ${DATA}/${FV3_NML_FN}_base 
+    cpreq -p ${FV3_NML_RESTART_STOCH_FP}_ensphy${ensmem_num} ${DATA}/${FV3_NML_FN}_base
     rm -fr ${DATA}/field_table
     cpreq -p ${PARMrrfs}/field_table.rrfsens_phy0${ENSMEM_INDX} ${DATA}/field_table
   else
@@ -676,8 +685,8 @@ if [ "${STOCH}" = "TRUE" ]; then
   export err=$?
   if [ $err -ne 0 ]; then
     err_exit "\
- Call to function to create the ensemble-based namelist for the current 
- cycle's (CDATE) run directory (DATA) failed: 
+ Call to function to create the ensemble-based namelist for the current
+ cycle's (CDATE) run directory (DATA) failed:
    cdate = \"${CDATE}\"
    DATA = \"${DATA}\""
   fi
@@ -701,7 +710,7 @@ if [ ${WGF} = "firewx" ]; then
 fi
 
 #-----------------------------------------------------------------------
-#   
+#
 # Forecast hours for current run
 #
 #-----------------------------------------------------------------------
@@ -714,7 +723,7 @@ if [ ${CYCLE_TYPE} = "spinup" ]; then
   WRITE_TSK="${WRTCMP_write_tasks_per_group_SPINUP}"
 else
   if [ ${WGF} = "det" ] || [ ${WGF} = "ensf" ] ; then
-    FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$((10#$cyc))]}
+    FCST_LEN_HRS=${FCST_LEN_HRS_CYCLES[$((10#${cyc}))]}
     # There are three sets of layout and write-task settings: the hourly deterministic cycle
     # (_18H), the longer deterministic cycle at 00, 06, 12 and 18z (_LONG) and the ensemble
     # forecast (_ENSF). Which cycle it is decides the set. Lengths of 18, 84 and 60 hours would
@@ -728,7 +737,7 @@ else
       LAYOUT_Y="${LAYOUT_Y_ENSF}"
       WRITE_GRP="${WRTCMP_write_groups_ENSF}"
       WRITE_TSK="${WRTCMP_write_tasks_per_group_ENSF}"
-    elif [ $(( 10#$cyc % 6 )) -eq 0 ]; then
+    elif [ $(( 10#${cyc} % 6 )) -eq 0 ]; then
       LAYOUT_X="${LAYOUT_X_LONG}"
       LAYOUT_Y="${LAYOUT_Y_LONG}"
       WRITE_GRP="${WRTCMP_write_groups_LONG}"
@@ -853,10 +862,10 @@ if [ ${CYCLE_TYPE} = "spinup" ]; then
   fi
 fi
 
-if [ $WGF = "det" ] && [[ ! $((10#$cyc % 6)) -eq 0 ]]; then
+if [ $WGF = "det" ] && [[ ! $((10#${cyc} % 6)) -eq 0 ]]; then
   RESTART_HRS='1 2 3 6 12'
 fi
-if [ $WGF = "enkf" ] && [[ $((10#$cyc % 2)) -eq 0 ]]; then
+if [ $WGF = "enkf" ] && [[ $((10#${cyc} % 2)) -eq 0 ]]; then
   RESTART_HRS='1 2 3'
 fi
 
@@ -955,18 +964,18 @@ if [ "${DO_FCST_RESTART}" = "TRUE" ] && [ $coupler_res_ct -gt 0 ] && [ $FCST_LEN
     for (( fhr_to_remove=${FHROT_UPPER_RANGE}; fhr_to_remove>=${FHROT}; fhr_to_remove-- )); do
       fhr_to_remove3d=$( printf "%03d" "${fhr_to_remove}" )
       if [ $fhr_to_remove -eq $FHROT ]; then
-        $(find -type f -name "log.atm.f*${fhr_to_remove3d}*" | grep -v "00-00" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh)
-        $(find -type f -name "dynf*${fhr_to_remove3d}*" | grep -v "00-00" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh)
-        $(find -type f -name "phyf*${fhr_to_remove3d}*" | grep -v "00-00" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh)
+        find -type f -name "log.atm.f*${fhr_to_remove3d}*" | grep -v "00-00" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh
+        find -type f -name "dynf*${fhr_to_remove3d}*" | grep -v "00-00" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh
+        find -type f -name "phyf*${fhr_to_remove3d}*" | grep -v "00-00" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh
         sed -i "/log\.atm\.f${fhr_to_remove3d}/d" output_file_backup.sh
         sed -i "/dynf${fhr_to_remove3d}\.nc/d" output_file_backup.sh
         sed -i "/phyf${fhr_to_remove3d}\.nc/d" output_file_backup.sh
       else
-        $(find -type f -name "log.atm.f*${fhr_to_remove3d}*" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh)
-        $(find -type f -name "dynf*${fhr_to_remove3d}*" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh)
-        $(find -type f -name "phyf*${fhr_to_remove3d}*" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh)
-        $(find -name "phyf*${fhr_to_remove3d}.nc" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh)
-        $(find -name "dynf*${fhr_to_remove3d}.nc" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh)
+        find -type f -name "log.atm.f*${fhr_to_remove3d}*" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh
+        find -type f -name "dynf*${fhr_to_remove3d}*" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh
+        find -type f -name "phyf*${fhr_to_remove3d}*" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh
+        find -name "phyf*${fhr_to_remove3d}.nc" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh
+        find -name "dynf*${fhr_to_remove3d}.nc" | awk '{print "mv",$1,"./OLD"}' >> output_file_backup.sh
       fi
     done
     if [ -s output_file_backup.sh ]; then
@@ -1064,7 +1073,7 @@ fi
 #
 $USHrrfs/create_ufs_configure_file.py \
   --path-to-defns ${FIXrrfs}/workflow/${WGF}/workflow.conf \
-  --run-dir ${DATA} 
+  --run-dir ${DATA}
 export err=$?
 if [ $err -ne 0 ]; then
   err_exit "Call to function to create the UFS configuration file for

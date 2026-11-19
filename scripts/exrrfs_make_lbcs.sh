@@ -1,12 +1,12 @@
 #!/bin/bash
 set -x
 
-source ${FIXrrfs}/workflow/${WGF}/workflow.conf
+source "${FIXrrfs}"/workflow/"${WGF}"/workflow.conf
 
 export FIXam=${FIXam:-${HOMErrfs}/fix/am}
 export FIXLAM=${FIXLAM:-${HOMErrfs}/fix/lam/RRFS_NA_3km}
 export THOMPSON_MP_CLIMO_FP="${FIXam}/Thompson_MP_MONTHLY_CLIMO.nc"
-if [ $WGF == "firewx" ]; then
+if [ "${WGF}" == "firewx" ]; then
 #notused?  export CCPP_PHYS_SUITE_FP="${PARMrrfs}/config/${WGF}/suite_RRFS_sas_nogwd.xml"
   export CCPP_PHYS_SUITE='RRFS_sas_nogwd'
 fi
@@ -18,7 +18,7 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-. $USHrrfs/source_util_funcs.sh
+. "${USHrrfs}"/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -56,12 +56,24 @@ hour zero).
 #
 #-----------------------------------------------------------------------
 #
-if [ ${WGF} = "firewx" ]; then
+if [ "${WGF}" = "firewx" ]; then
   hh="${CDATE:8:2}"
   firewx_loc="${COMrrfs}/firewx_input/rrfs_firewx_loc"
-  if [ -s ${firewx_loc} ]; then
-    LAT_CTR=`grep ${hh}z $firewx_loc | awk '{print $2}'`
-    LON_CTR=`grep ${hh}z $firewx_loc | awk '{print $3}'`
+  if [ -s "${firewx_loc}" ]; then
+    LAT_CTR=""
+    LON_CTR=""
+    if [[ -s "${firewx_loc}" ]]; then
+      # Replaced dual awk subprocesses with a single native Bash read loop (Zero Subprocess Rule).
+      while read -r target_hh lat lon _rest; do
+        # Exact match on the first column strictly prevents false positives from the 'index' flaw.
+        if [[ "${target_hh}" == "${hh}z" ]]; then
+          LAT_CTR="${lat}"
+          LON_CTR="${lon}"
+          # Break immediately stops the loop, preventing multi-line variable corruption.
+          break
+        fi
+      done < "${firewx_loc}"
+    fi
   else
     echo "WARNING:  Did not find firewx_loc to to set center point.  Will default to DC region"
     LAT_CTR=38.9
@@ -77,8 +89,8 @@ fi
 #
 export extrn_mdl_name="${EXTRN_MDL_NAME_LBCS}"
 gfs_file_fmt="${GFS_FILE_FMT_LBCS}"
-if [ ${extrn_mdl_name} == GEFS ]; then
-  idx_member_name_2d=$( printf "%02d" "$((10#$MEMBER_NAME))" )
+if [ "${extrn_mdl_name}" == GEFS ]; then
+  idx_member_name_2d=$( printf "%02d" "$((10#${MEMBER_NAME}))" )
   extrn_mdl_memhead=/gep${idx_member_name_2d}
 else
   extrn_mdl_memhead=""
@@ -90,8 +102,8 @@ boundary_len_hrs="${BOUNDARY_LEN}"
 
 hh=${CDATE:8:2}
 yyyymmdd=${CDATE:0:8}
-OFFSETDATE=`$NDATE -${time_offset_hrs} ${yyyymmdd}${hh}`
-export extrn_mdl_cdate="$OFFSETDATE"
+OFFSETDATE=`${NDATE} -"${time_offset_hrs}" "${yyyymmdd}""${hh}"`
+export extrn_mdl_cdate="${OFFSETDATE}"
 
 # Starting year, month, day, and hour of the external model forecast.
 yyyy=${OFFSETDATE:0:4}
@@ -108,9 +120,9 @@ if [ "${boundary_len_hrs}" = "0" ]; then
   boundary_len_hrs=${FCST_LEN_HRS}
 fi
 if [ "${DO_NON_DA_RUN}" = "TRUE" ]; then
-  lbc_spec_fcst_hrs=($( seq ${lbs_spec_intvl_hrs} ${lbs_spec_intvl_hrs} ${boundary_len_hrs} ))
+  lbc_spec_fcst_hrs=($( seq "${lbs_spec_intvl_hrs}" "${lbs_spec_intvl_hrs}" "${boundary_len_hrs}" ))
 else
-  lbc_spec_fcst_hrs=($( seq 0 ${lbs_spec_intvl_hrs} ${boundary_len_hrs} ))
+  lbc_spec_fcst_hrs=($( seq 0 "${lbs_spec_intvl_hrs}" "${boundary_len_hrs}" ))
 fi
 lbc_spec_fhrs=( "${lbc_spec_fcst_hrs[@]}" )
 
@@ -122,8 +134,8 @@ lbc_spec_fhrs=( "${lbc_spec_fcst_hrs[@]}" )
 # the start time of the external model run.
 #
 num_fhrs=${#lbc_spec_fhrs[@]}
-for (( i=0; i<=$((num_fhrs-1)); i++ )); do
-  lbc_spec_fhrs[$i]=$(( ${lbc_spec_fhrs[$i]} + time_offset_hrs ))
+for (( i=0; i<=(num_fhrs-1); i++ )); do
+  lbc_spec_fhrs[i]=$(( lbc_spec_fhrs[i] + time_offset_hrs ))
 done
 fcst_mn="00"
 
@@ -136,7 +148,7 @@ case "${extrn_mdl_name}" in
 
     if [ "${gfs_file_fmt}" = "grib2" ]; then
       prefix="gfs.t${hh}z.pgrb2.0p25.f"
-      fns_on_disk=( "${fcst_hhh[@]/#/$prefix}" )
+      fns_on_disk=( "${fcst_hhh[@]/#/${prefix}}" )
     elif [ "${gfs_file_fmt}" = "netcdf" ]; then
       prefix="gfs.t${hh}z.atmf"
       suffix=".nc"
@@ -151,8 +163,8 @@ case "${extrn_mdl_name}" in
     fcst_hh=( $( printf "%02d " "${lbc_spec_fhrs[@]}" ) )
     prefix="${extrn_mdl_memhead}"".t${hh}z.pgrb2b.0p50.f0"
     prefix2="${extrn_mdl_memhead}"".t${hh}z.pgrb2a.0p50.f0"
-    fns_on_disk=( "${fcst_hh[@]/#/$prefix}" )
-    fns_on_disk2=( "${fcst_hh[@]/#/$prefix2}" )
+    fns_on_disk=( "${fcst_hh[@]/#/${prefix}}" )
+    fns_on_disk2=( "${fcst_hh[@]/#/${prefix2}}" )
     ;;
 
   "RRFS")
@@ -166,7 +178,17 @@ case "${extrn_mdl_name}" in
     # name rather than the NA ones. This task runs as the 1.5 km fire weather grid, so the parent
     # domain is not in its environment; read the spacing and name off a file the parent wrote.
     if [ "${RETRO:-NO}" = "YES" ] && [ ! -e "${sysdir}/${prefix}${fcst_hhh[0]}${suffix}" ]; then
-      fn_parent=$( ls -1 ${sysdir}/rrfs.t${hh}z.natlev.*.f???.*.grib2 2>/dev/null | head -1 )
+      fn_parent=""
+
+      # Enable nullglob so unmatched globs disappear instead of returning literal asterisks
+      shopt -s nullglob
+      parent_files=( "${sysdir}"/rrfs.t"${hh}"z.natlev.*.f???.*.grib2 )
+      shopt -u nullglob # Disable it immediately after use
+
+      # If the array populated, grab the first index [0] natively
+      if [[ ${#parent_files[@]} -gt 0 ]]; then
+        fn_parent="${parent_files[0]}"
+      fi
       if [ -n "${fn_parent}" ]; then
         fn_parent=$( basename "${fn_parent}" )
         prefix="${fn_parent%%.f[0-9][0-9][0-9].*}.f"
@@ -174,8 +196,8 @@ case "${extrn_mdl_name}" in
         print_info_msg "Fire weather LBCs: using the parent post naming ${prefix}NNN${suffix}"
       fi
     fi
-    fns=( "${fcst_hhh[@]/#/$prefix}" )
-    fns_on_disk=( "${fns[@]/%/$suffix}" )
+    fns=( "${fcst_hhh[@]/#/${prefix}}" )
+    fns_on_disk=( "${fns[@]/%/${suffix}}" )
     ;;
 
   *)
@@ -186,9 +208,9 @@ extrn_mdl_sysdir="${sysdir}"
 extrn_mdl_sysdir2="${sysdir2}"
 export extrn_mdl_source_dir="${extrn_mdl_sysdir}"
 export extrn_mdl_source_dir2="${extrn_mdl_sysdir2}"
-extrn_mdl_lbc_spec_fhrs="( "$( printf "\"%s\" " "${lbc_spec_fhrs[@]}" )")"
-extrn_mdl_fns_on_disk="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
-extrn_mdl_fns_on_disk2="( "$( printf "\"%s\" " "${fns_on_disk2[@]}" )")"
+extrn_mdl_lbc_spec_fhrs="( $(printf '"%s" ' "${lbc_spec_fhrs[@]}"))"
+extrn_mdl_fns_on_disk="( $(printf '"%s" ' "${fns_on_disk[@]}"))"
+extrn_mdl_fns_on_disk2="( $(printf '"%s" ' "${fns_on_disk2[@]}"))"
 export use_user_staged_extrn_files="FALSE"
 export extrn_mdl_staging_dir="${DATA}"
 
@@ -201,7 +223,7 @@ export extrn_mdl_staging_dir="${DATA}"
 #
 ulimit -a
 
-case "$MACHINE" in
+case "${MACHINE}" in
 
   "WCOSS2")
     export OMP_STACKSIZE=1G
@@ -234,7 +256,7 @@ case "$MACHINE" in
 
 esac
 
-if [ ${WGF} = "firewx" ]; then
+if [ "${WGF}" = "firewx" ]; then
   export FIXLAM=${COMIN}/${RUN}.${PDY}/${cyc}/input
 else
   export FIXLAM=${FIXLAM:-${FIXrrfs}/lam/${PREDEF_GRID_NAME}}
@@ -252,9 +274,9 @@ fi
 #
 num_files_to_copy="${#fns_on_disk[@]}"
 prefix="${extrn_mdl_source_dir}/"
-extrn_mdl_fps_on_disk=( "${fns_on_disk[@]/#/$prefix}" )
+extrn_mdl_fps_on_disk=( "${fns_on_disk[@]/#/${prefix}}" )
 prefix2="${extrn_mdl_source_dir2}"
-extrn_mdl_fps_on_disk2=( "${fns_on_disk2[@]/#/$prefix2}" )
+extrn_mdl_fps_on_disk2=( "${fns_on_disk2[@]/#/${prefix2}}" )
 #
 #-----------------------------------------------------------------------
 #
@@ -281,7 +303,7 @@ for fp in "${extrn_mdl_fps_on_disk[@]}"; do
   #
   # If the external model file exists, then...
   #
-  if [ -f "$fp" ]; then
+  if [ -f "${fp}" ]; then
     #
     # Increment the counter that keeps track of the number of external
     # model files found on disk and print out an informational message.
@@ -289,23 +311,25 @@ for fp in "${extrn_mdl_fps_on_disk[@]}"; do
     num_files_found_on_disk=$(( num_files_found_on_disk+1 ))
     print_info_msg "
 File fp exists on disk:
-  fp = \"$fp\""
+  fp = \"${fp}\""
     #
     # If we are NOT searching for user-staged external model files, then
     # we also check that the current file is at least min_age minutes old.
     #
     if [ "${use_user_staged_extrn_files}" != "TRUE" ]; then
 
-      if [ $( find "$fp" -mmin +${min_age} ) ]; then
+      old_file=$(find "${fp}" -mmin "+${min_age}" -print -quit) || \
+        err_exit "Failed checking file age for ${fp}"
+      if [ -n "${old_file}" ]; then
         print_info_msg "
 File fp is older than the minimum required age of min_age minutes:
-  fp = \"$fp\"
+  fp = \"${fp}\"
   min_age = ${min_age} minutes"
 
       else
         print_info_msg "
 File fp is NOT older than the minumum required age of min_age minutes:
-  fp = \"$fp\"
+  fp = \"${fp}\"
   min_age = ${min_age} minutes
 Not checking presence and age of remaining external model files on disk."
         break
@@ -320,14 +344,15 @@ Not checking presence and age of remaining external model files on disk."
     # in a user-specified directory, print out an error message and exit.
     #
     if [ "${use_user_staged_extrn_files}" = "TRUE" ]; then
+      fns_on_disk_display=$(printf '"%s" ' "${fns_on_disk[@]}")
       err_exit "\
 File fp does NOT exist on disk:
-  fp = \"$fp\"
+  fp = \"${fp}\"
 Please ensure that the directory specified by extrn_mdl_source_dir exists
 and that all the files specified in the array extrn_mdl_fns_on_disk exist
 within it:
   extrn_mdl_source_dir = \"${extrn_mdl_source_dir}\"
-  extrn_mdl_fns_on_disk = ( $( printf "\"%s\" " "${fns_on_disk[@]}" ))"
+  extrn_mdl_fns_on_disk = ( ${fns_on_disk_display})"
     #
     # If an external model file is not found and we are searching for it
     # in a system directory, give up on the system directory.
@@ -335,7 +360,7 @@ within it:
     else
       print_info_msg "
 File fp does NOT exist on disk:
-  fp = \"$fp\"
+  fp = \"${fp}\"
 Not checking presence and age of remaining external model files on disk."
       break
 
@@ -349,7 +374,7 @@ done
 #
 #-----------------------------------------------------------------------
 #
-extrn_mdl_fns_on_disk_str="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
+extrn_mdl_fns_on_disk_str="( $(printf '"%s" ' "${fns_on_disk[@]}"))"
 
 print_info_msg "
 copy files into staging directory (extrn_mdl_staging_dir) from external
@@ -359,16 +384,16 @@ extrn_mdl_staging_dir = \"${extrn_mdl_staging_dir}\"
 extrn_mdl_source_dir = \"${extrn_mdl_source_dir}\"
 extrn_mdl_fns_on_disk = ${extrn_mdl_fns_on_disk_str}"
 
-if [ ${extrn_mdl_name} != GEFS ] ; then
+if [ "${extrn_mdl_name}" != GEFS ] ; then
  # Wait for files to become available in umbrella_lbcops_data location
  #   Only do parallel copy if BCGRP=00 and (WGF=det or WGF=firewx)
- if [ ${BCGRP} = "00" ] && [[ ${WGF} = det || ${WGF} = firewx ]]; then
-   touch ${DATA}/parallel_copy.sh
+ if [ "${BCGRP}" = "00" ] && [[ ${WGF} = det || ${WGF} = firewx ]]; then
+   touch "${DATA}"/parallel_copy.sh
    for file_to_copy in "${extrn_mdl_fps_on_disk[@]}"; do
      echo "Add file - ${file_to_copy} to parallel transfer job list"
-     echo "cpfs ${file_to_copy} ${umbrella_lbcops_data}" >> ${DATA}/parallel_copy.sh
+     echo "cpfs ${file_to_copy} ${umbrella_lbcops_data}" >> "${DATA}"/parallel_copy.sh
    done
-   if [ -s ${DATA}/parallel_copy.sh ]; then
+   if [ -s "${DATA}"/parallel_copy.sh ]; then
       poe_script=parallel_copy.sh
       export MP_CMDFILE=${poe_script}
       # cfp only exists on WCOSS2, so run the copies serially on other machines
@@ -377,12 +402,12 @@ if [ ${extrn_mdl_name} != GEFS ] ; then
       else
         launcher="bash"
       fi
-      $launcher $MP_CMDFILE
+      ${launcher} ${MP_CMDFILE}
       export err=$?; err_chk
-      ecflow_client --event release_${WGF}_make_lbcs
+      ecflow_client --event release_"${WGF}"_make_lbcs
    fi
  else
-   if [ ${WGF} = firewx ]; then
+   if [ "${WGF}" = firewx ]; then
      # case for firewx
      t_file_ct=36
    else
@@ -392,7 +417,22 @@ if [ ${extrn_mdl_name} != GEFS ] ; then
      # group but the first.
      t_file_ct=${#extrn_mdl_fps_on_disk[@]}
    fi
-   if [ $(ls ${umbrella_lbcops_data} |grep -v cptmp| wc -l) -lt ${t_file_ct} ]; then
+   # Enable nullglob so unmatched patterns do not produce a literal filename.
+   shopt -s nullglob
+
+   # Create an array of all files that do NOT (!) contain 'cptmp'
+   lbcops_files=()
+   for lbcops_file in "${umbrella_lbcops_data}"/*; do
+     # Exclude temporary copy files from the completed-file count.
+     [[ ${lbcops_file##*/} == *cptmp* ]] && continue
+     lbcops_files+=( "${lbcops_file}" )
+   done
+
+   # Disable shopt immediately after use
+   shopt -u nullglob
+
+   # Evaluate the native array length
+   if [[ ${#lbcops_files[@]} -lt "${t_file_ct}" ]]; then
        err_exit "\
 Some or all external model files are missing from ${umbrella_lbcops_data}.
 These files should have been copied into place by det and firewx
@@ -400,46 +440,48 @@ make_lbcs jobs and should remain in place for downstream make_lbcs jobs.
 The list of all external model files is: ${extrn_mdl_fps_on_disk[*]}"
    fi
  fi
- for file_to_link in ${umbrella_lbcops_data}/*; do
-   ln -sf -t ${DATA} ${file_to_link}
+ for file_to_link in "${umbrella_lbcops_data}"/*; do
+   [[ -e ${file_to_link} ]] || continue
+   ln -sf -t "${DATA}" "${file_to_link}"
  done
-elif [ ${extrn_mdl_name} = GEFS ] ; then
+elif [ "${extrn_mdl_name}" = GEFS ] ; then
 # Get GEFS files and do time interpolation using wgrib2
   length=${#extrn_mdl_fps_on_disk[@]}
   for (( j=0; j<length; j++ ));
   do
-    fps=${extrn_mdl_fps_on_disk[$j]}
-    fps2=${extrn_mdl_fps_on_disk2[$j]}
-    fps_name=${fns_on_disk[$j]}
-    if [ -f "$fps" ]; then
+    fps=${extrn_mdl_fps_on_disk[${j}]}
+    fps2=${extrn_mdl_fps_on_disk2[${j}]}
+    fps_name=${fns_on_disk[${j}]}
+    if [ -f "${fps}" ]; then
       #
       # Increment the counter that keeps track of the number of external
       # model files found on disk and print out an informational message.
       #
-      cpreq ${fps} ${extrn_mdl_staging_dir}/${fps_name}
-      if [ -f "$fps2" ]; then
-        cat ${fps2} >>  ${extrn_mdl_staging_dir}/${fps_name}
+      cpreq "${fps}" "${extrn_mdl_staging_dir}"/"${fps_name}"
+      if [ -f "${fps2}" ]; then
+        cat "${fps2}" >>  "${extrn_mdl_staging_dir}"/"${fps_name}"
       fi
 
       print_info_msg "
 File fps exists on disk:
-  fps = \"$fps\""
+  fps = \"${fps}\""
     fi
   done
 
   yyyymmdd=${extrn_mdl_cdate:0:8}
   hh=${extrn_mdl_cdate:8:2}
 
-  echo extrn_mdl_cdate=${extrn_mdl_cdate}
+  echo extrn_mdl_cdate="${extrn_mdl_cdate}"
   echo " yyyymmddhh= ${yyyymmdd} ${hh} "
 
   for files in "${extrn_mdl_fps_on_disk[@]}"; do
-    file=$( basename "$files" )
-    echo " Checking for $file "
-    if [[ -f ${extrn_mdl_staging_dir}/$file ]]; then
-      echo "Found ${extrn_mdl_staging_dir}/$file "
+    file=$( basename "${files}" )
+    echo " Checking for ${file} "
+    if [[ -f ${extrn_mdl_staging_dir}/${file} ]]; then
+      echo "Found ${extrn_mdl_staging_dir}/${file} "
     else
-      fcsthr=$( echo $file | awk '{print substr($0, length($0)-2)}' | sed 's/^0*//'  )
+      fcsthr="${file: -3}"
+      fcsthr="${fcsthr#"${fcsthr%%[!0]*}"}"
       if [ $((fcsthr % 3)) -eq 0 ]; then
         echo "FATAL ERROR: Required ${files} is missing"
         export err=7; err_chk
@@ -447,7 +489,7 @@ File fps exists on disk:
 print_info_msg "
 ========================================================================
 
-INFO: Operational GEFS does not generate $files for forecast hour $fcsthr !
+INFO: Operational GEFS does not generate ${files} for forecast hour ${fcsthr} !
 Need to do time interpolation!
 
 ========================================================================"
@@ -460,35 +502,35 @@ Need to do time interpolation!
       fcsthr_p=$(( fcsthr - fcsthr_0 + 3 ))
       echo fcsthr_p=${fcsthr_p}
       fhrm=$( printf "%03d" ${fcsthr_m} )
-      echo fhrm=${fhrm}
+      echo fhrm="${fhrm}"
       fhrp=$( printf "%03d" ${fcsthr_p} )
-      echo fhrp=${fhrp}
-      in1=$( echo $file | sed 's/...$/'${fhrm}'/g' )
-      echo in1=${in1}
-      in2=$( echo $file | sed 's/...$/'${fhrp}'/g' )
-      echo in2=${in2}
-      vtime=$($NDATE ${fcsthr_m} ${yyyymmdd}${hh})
-      echo vtime = $vtime
+      echo fhrp="${fhrp}"
+      in1=$( echo "${file}" | sed 's/...$/'"${fhrm}"'/g' )
+      echo in1="${in1}"
+      in2=$( echo "${file}" | sed 's/...$/'"${fhrp}"'/g' )
+      echo in2="${in2}"
+      vtime=$(${NDATE} ${fcsthr_m} "${yyyymmdd}""${hh}")
+      echo vtime = "${vtime}"
       a="vt=${vtime}"
       d1="${fcsthr} hour forecast"
-      echo $d1
-      c=$( expr ${fcsthr_0}/3 | bc -l )
-      c1=$( printf "%.5f\n"  $c )
-      b1=$( expr 1-$c1 | bc -l )
-      echo " b1,c1= $b1 $c1 "
+      echo "${d1}"
+      c=$(bc -l <<< "${fcsthr_0} / 3")
+      c1=$( printf "%.5f\n"  "${c}" )
+      b1=$(bc -l <<< "1 - ${c1}")
+      echo " b1,c1= ${b1} ${c1} "
 
 print_info_msg "
 ========================================================================
-Deriving ${extrn_mdl_staging_dir}/$file
+Deriving ${extrn_mdl_staging_dir}/${file}
 based on
-${extrn_mdl_staging_dir}/$in1
+${extrn_mdl_staging_dir}/${in1}
 and
-${extrn_mdl_staging_dir}/$in2
+${extrn_mdl_staging_dir}/${in2}
 ========================================================================"
 
-      wgrib2 ${extrn_mdl_staging_dir}/$in1 -rpn sto_1 -import_grib ${extrn_mdl_staging_dir}/$in2 -rpn sto_2 -set_grib_type same \
-    -if ":$a:" \
-       -rpn "rcl_1:$b1:*:rcl_2:$c1:*:+" -set_ftime "$d1" -set_scaling same same -grib_out ${extrn_mdl_staging_dir}/$file
+      wgrib2 "${extrn_mdl_staging_dir}"/"${in1}" -rpn sto_1 -import_grib "${extrn_mdl_staging_dir}"/"${in2}" -rpn sto_2 -set_grib_type same \
+    -if ":${a}:" \
+       -rpn "rcl_1:${b1}:*:rcl_2:${c1}:*:+" -set_ftime "${d1}" -set_scaling same same -grib_out "${extrn_mdl_staging_dir}"/"${file}"
 
 print_info_msg "
 ========================================================================
@@ -517,13 +559,9 @@ generating lateral boundary conditions for the RRFS forecast!!!
 #
 #-----------------------------------------------------------------------
 #
-eval EXTRN_MDL_CDATE=${extrn_mdl_cdate}
-
-extrn_mdl_fns_str="( "$( printf "\"%s\" " "${fns_on_disk[@]}" )")"
-eval EXTRN_MDL_FNS=${extrn_mdl_fns_str}
-
-extrn_mdl_lbc_spec_fhrs_str="( "$( printf "\"%s\" " "${lbc_spec_fhrs[@]}" )")"
-eval EXTRN_MDL_LBC_SPEC_FHRS=${extrn_mdl_lbc_spec_fhrs_str}
+EXTRN_MDL_CDATE="${extrn_mdl_cdate}"
+EXTRN_MDL_FNS=( "${fns_on_disk[@]}" )
+EXTRN_MDL_LBC_SPEC_FHRS=( "${lbc_spec_fhrs[@]}" )
 #
 #-----------------------------------------------------------------------
 #
@@ -536,19 +574,11 @@ varmap_file=""
 
 case "${CCPP_PHYS_SUITE}" in
 #
-  "FV3_GFS_v16" | \
-  "FV3_GFS_v15p2" )
+  FV3_GFS_v16|FV3_GFS_v15p2)
     varmap_file="GFSphys_var_map.txt"
     ;;
 #
-  "FV3_RRFS_v1beta" | \
-  "FV3_GFS_v15_thompson_mynn_lam3km" | \
-  "FV3_HRRR" | \
-  "FV3_HRRR_gf" | \
-  "FV3_HRRR_gf_nogwd" | \
-  "FV3_RAP" | \
-  "RRFS_sas" | \
-  "RRFS_sas_nogwd" )
+  FV3_RRFS_v1beta|FV3_GFS_v15_thompson_mynn_lam3km|FV3_HRRR|FV3_HRRR_gf|FV3_HRRR_gf_nogwd|FV3_RAP|RRFS_sas|RRFS_sas_nogwd)
     if [ "${EXTRN_MDL_NAME_LBCS}" = "RRFS" ] || \
        [ "${EXTRN_MDL_NAME_LBCS}" = "GFS" ] || \
        [ "${EXTRN_MDL_NAME_LBCS}" = "GEFS" ]; then
@@ -683,19 +713,19 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-export bcgrp=${bcgrp:-$BCGRP}
-export bcgrpnum=${bcgrpnum:-$BCGRPNUM}
+export bcgrp=${bcgrp:-${BCGRP}}
+export bcgrpnum=${bcgrpnum:-${BCGRPNUM}}
 num_fhrs="${#EXTRN_MDL_LBC_SPEC_FHRS[@]}"
 bcgrp10=${bcgrp#0}
 bcgrpnum10=${bcgrpnum#0}
-for (( ii=0; ii<${num_fhrs}; ii=ii+bcgrpnum10 )); do
+for (( ii=0; ii<num_fhrs; ii=ii+bcgrpnum10 )); do
   i=$(( ii + bcgrp10 ))
-  if [ ${i} -lt ${num_fhrs} ]; then
+  if [ ${i} -lt "${num_fhrs}" ]; then
     echo " group ${bcgrp10} processes FHR ${i}"
 #
 # Get the forecast hour of the external model.
 #
-  fhr="${EXTRN_MDL_LBC_SPEC_FHRS[$i]}"
+  fhr="${EXTRN_MDL_LBC_SPEC_FHRS[${i}]}"
 #
 # Set external model output file name and file type/format.  Note that
 # these are now inputs into chgres_cube.
@@ -706,16 +736,16 @@ for (( ii=0; ii<${num_fhrs}; ii=ii+bcgrpnum10 )); do
   case "${EXTRN_MDL_NAME_LBCS}" in
   "GFS")
     if [ "${GFS_FILE_FMT_LBCS}" = "grib2" ]; then
-      fn_grib2="${EXTRN_MDL_FNS[$i]}"
+      fn_grib2="${EXTRN_MDL_FNS[${i}]}"
     elif [ "${GFS_FILE_FMT_LBCS}" = "netcdf" ]; then
-      fn_atm="${EXTRN_MDL_FNS[$i]}"
+      fn_atm="${EXTRN_MDL_FNS[${i}]}"
     fi
     ;;
   "GEFS")
-    fn_grib2="${EXTRN_MDL_FNS[$i]}"
+    fn_grib2="${EXTRN_MDL_FNS[${i}]}"
     ;;
   "RRFS")
-    fn_grib2="${EXTRN_MDL_FNS[$i]}"
+    fn_grib2="${EXTRN_MDL_FNS[${i}]}"
     ;;
   *)
     err_exit "\
@@ -734,7 +764,7 @@ list file has not specified for this external LBC model (EXTRN_MDL_NAME_LBCS):
   dd="${EXTRN_MDL_CDATE:6:2}"
   hh="${EXTRN_MDL_CDATE:8:2}"
 
-  cdate_crnt_fhr=`$NDATE +${fhr} ${yyyymmdd}${hh}`
+  cdate_crnt_fhr=`${NDATE} +"${fhr}" "${yyyymmdd}""${hh}"`
 #
 # Get the month, day, and hour corresponding to the current forecast time
 # of the the external model.
@@ -793,7 +823,7 @@ list file has not specified for this external LBC model (EXTRN_MDL_NAME_LBCS):
 # Call the python script to create the namelist file.
 #
   nml_fn="fort.41"
-  ${USHrrfs}/set_namelist.py -u "$settings" -o ${nml_fn} || \
+  "${USHrrfs}"/set_namelist.py -u "${settings}" -o ${nml_fn} || \
     err_exit "\
 Call to python script set_namelist.py to set the variables in the namelist
 file read in by the ${exec_fn} executable failed.  Parameters passed to
@@ -802,7 +832,7 @@ this script are:
     nml_fn = \"${nml_fn}\"
   Namelist settings specified on command line (these have highest precedence):
     settings =
-$settings"
+${settings}"
 #
 #-----------------------------------------------------------------------
 #
@@ -811,22 +841,22 @@ $settings"
 #
 #-----------------------------------------------------------------------
 #
-  if [ ${PREDEF_GRID_NAME} = "RRFS_FIREWX_1.5km" ]; then
-    sp_lon=$(echo "$LON_CTR + 360" | bc -l)
-    sp_lat=$(echo "(90 - $LAT_CTR) * -1" | bc -l)
+  if [ "${PREDEF_GRID_NAME}" = "RRFS_FIREWX_1.5km" ]; then
+    sp_lon=$(echo "${LON_CTR} + 360" | bc -l)
+    sp_lat=$(echo "(90 - ${LAT_CTR}) * -1" | bc -l)
     gridspecs="rot-ll:${sp_lon}:${sp_lat}:0 -10:801:0.025 -10:801:0.025"
-    lbc_spec_fhrs=( "${EXTRN_MDL_LBC_SPEC_FHRS[$i]}" ) 
-    fcst_hhh=$(( ${lbc_spec_fhrs} - ${EXTRN_MDL_LBCS_OFFSET_HRS} ))
-    fcst_hhh_FV3LAM=`printf %3.3i $fcst_hhh`
+    lbc_spec_fhrs=( "${EXTRN_MDL_LBC_SPEC_FHRS[${i}]}" )
+    fcst_hhh=$(( lbc_spec_fhrs - EXTRN_MDL_LBCS_OFFSET_HRS ))
+    fcst_hhh_FV3LAM=`printf %3.3i ${fcst_hhh}`
     fn_grib2_subset=rrfs.t${hh}z.natlev.f${fcst_hhh_FV3LAM}.subset.grib2
 
-    if [ ! -s ${extrn_mdl_staging_dir}/${fn_grib2} ]; then
+    if [ ! -s "${extrn_mdl_staging_dir}"/"${fn_grib2}" ]; then
       echo "FATAL ERROR: FIREWX LBCS file not found ${extrn_mdl_staging_dir}/${fn_grib2}"
     fi
-    wgrib2 ${extrn_mdl_staging_dir}/${fn_grib2} -set_grib_type c3b \
-      -new_grid_winds grid -new_grid ${gridspecs} ${extrn_mdl_staging_dir}/${fn_grib2_subset}
+    wgrib2 "${extrn_mdl_staging_dir}"/"${fn_grib2}" -set_grib_type c3b \
+      -new_grid_winds grid -new_grid "${gridspecs}" "${extrn_mdl_staging_dir}"/"${fn_grib2_subset}"
     export err=$?; err_chk
-    mv ${extrn_mdl_staging_dir}/${fn_grib2_subset} ${extrn_mdl_staging_dir}/${fn_grib2}
+    mv "${extrn_mdl_staging_dir}"/"${fn_grib2_subset}" "${extrn_mdl_staging_dir}"/"${fn_grib2}"
   fi
 #
 #-----------------------------------------------------------------------
@@ -838,7 +868,7 @@ $settings"
   export pgm="ufs_util_chgres_cube"
   . prep_step
 
-  ${APRUN} ${EXECrrfs}/$pgm >>$pgmout 2>errfile
+  ${APRUN} "${EXECrrfs}"/${pgm} >>"${pgmout}" 2>errfile
   export err=$?; err_chk
 #
 # Move LBCs file for the current lateral boundary update time to the LBCs
@@ -846,12 +876,12 @@ $settings"
 # the forecast hour of the FV3-LAM (which is not necessarily the same as
 # that of the external model since their start times may be offset).
 #
-  lbc_spec_fhrs=( "${EXTRN_MDL_LBC_SPEC_FHRS[$i]}" ) 
-  fcst_hhh=$(( ${lbc_spec_fhrs} - ${EXTRN_MDL_LBCS_OFFSET_HRS} ))
-  fcst_hhh_FV3LAM=`printf %3.3i $fcst_hhh`
+  lbc_spec_fhrs=( "${EXTRN_MDL_LBC_SPEC_FHRS[${i}]}" )
+  fcst_hhh=$(( lbc_spec_fhrs - EXTRN_MDL_LBCS_OFFSET_HRS ))
+  fcst_hhh_FV3LAM=`printf %3.3i ${fcst_hhh}`
 
 # copy results to COMOUT for longer time disk storage.
-  cpreq gfs.bndy.nc ${COMOUT}/gfs_bndy.tile7.${fcst_hhh_FV3LAM}.nc
+  cpreq gfs.bndy.nc "${COMOUT}"/gfs_bndy.tile7."${fcst_hhh_FV3LAM}".nc
 
   fi
 done

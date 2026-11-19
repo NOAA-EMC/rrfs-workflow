@@ -1,0 +1,194 @@
+---
+name: NCO_Consistency_Yamllint_Scientific_Hierarchical
+"on":
+  push:
+  pull_request:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  yaml-scientific-ci:
+    runs-on: ubuntu-latest
+    env:
+      CI_IGNORE: >-
+        ${{ github.event.head_commit.message }}
+        ${{ github.event.pull_request.title }}${{ github.event.pull_request.body }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: pip install pyyaml
+
+      - name: Create Scientific Checker Script
+        run: |
+          cat << 'EOF' > "${{ runner.temp }}/check_scientific_hierarchical.py"
+          import sys
+          import yaml
+
+          class UniqueKeyLoader(yaml.FullLoader):
+              def construct_mapping(self, node, deep=False):
+                  mapping = []
+                  for key_node, value_node in node.value:
+                      key = self.construct_object(key_node, deep=deep)
+                      if key in [k for k, v in mapping]:
+                          raise ValueError(f"Duplicate key '{key}' found in YAML.")
+                      mapping.append((key, self.construct_object(value_node, deep=deep)))
+                  return dict(mapping)
+
+          UniqueKeyLoader.add_constructor(
+              yaml.resolver.BaseResolver.DEFAULT_MAPPING_TAG,
+              UniqueKeyLoader.construct_mapping
+          )
+          UniqueKeyLoader.add_constructor(
+              'tag:yaml.org,2002:python/none',
+              lambda loader, node: None
+          )
+
+          def check_file(filepath):
+              try:
+                  with open(filepath, 'r', encoding='utf-8') as f:
+                      # load_all evaluates all documents separated by ---
+                      list(yaml.load_all(f, Loader=UniqueKeyLoader))
+                  return True
+              except Exception as e:
+                  print(f"Error in {filepath}: {e}", file=sys.stderr)
+                  return False
+
+          if __name__ == '__main__':
+              if len(sys.argv) < 2 or not check_file(sys.argv[1]):
+                  sys.exit(1)
+          EOF
+
+      - name: Check Scientific Yaml files
+        id: check_yaml
+        shell: bash
+        run: |
+          LOG_FILE="ci_scientific_run.log"
+          exec > >(tee -a "$LOG_FILE") 2>&1
+
+          echo "Starting NCO Yamllint Scientific CI..."
+
+          if echo "$CI_IGNORE" | grep -iqE "\[skip[ -_]yamllint_scientific\]|skip-yamllint-scientific"; then
+            echo "Globally skipping yamllint_scientific based on commit/PR message."
+            exit 0
+          fi
+
+          # Search all .yml and .yaml files including symlinks, excluding .git
+          mapfile -d '' yaml_files < <(
+            find -L . -type f \
+              '(' -iname '*.yml' -o -iname '*.yaml' ')' \
+              -not -path '*/\.git/*' -print0 | sort -zu
+          )
+
+          if [ "${#yaml_files[@]}" -eq 0 ]; then
+            echo "No .yml or .yaml files found in repository. Exiting with success (exit 0)."
+            exit 0
+          fi
+
+          # 1. Pre-parse exclusion list once outside the file loop
+          EXCLUDE_FILE=".github/workflows/exclude_file_list_Yamllint_Scientific_Hierarchical.lst"
+          exclude_dir_patterns=()
+          exclude_file_patterns=()
+
+          if [ -f "$EXCLUDE_FILE" ]; then
+            while IFS= read -r pattern || [ -n "$pattern" ]; do
+              pattern="${pattern%$'\r'}"
+              pattern="${pattern#"${pattern%%[![:space:]]*}"}"
+              pattern="${pattern%"${pattern##*[![:space:]]}"}"
+              [ -z "$pattern" ] && continue
+              case "$pattern" in \#*) continue ;; esac
+
+              norm_pattern="${pattern#./}"
+              if [[ "$norm_pattern" == *"/*" ]]; then
+                exclude_dir_patterns+=("${norm_pattern%"/*"}")
+              elif [[ "$norm_pattern" == *"/" ]]; then
+                exclude_dir_patterns+=("${norm_pattern%"/"}")
+              elif [ -d "$norm_pattern" ]; then
+                exclude_dir_patterns+=("$norm_pattern")
+              else
+                exclude_file_patterns+=("$norm_pattern")
+              fi
+            done < "$EXCLUDE_FILE"
+          fi
+
+          failed=0
+          checked_count=0
+
+          # 2. Check remaining files
+          for file in "${yaml_files[@]}"; do
+            norm_file="${file#./}"
+
+            case "$norm_file" in
+              *.yml|*.yaml|*.YML|*.YAML) ;;
+              *) continue ;;
+            esac
+
+            excluded=0
+            for dir_p in "${exclude_dir_patterns[@]}"; do
+              if [[ "$norm_file" == "$dir_p"/* ]]; then
+                excluded=1
+                break
+              fi
+            done
+
+            if [ "$excluded" -eq 0 ]; then
+              for file_p in "${exclude_file_patterns[@]}"; do
+                if [ "$norm_file" = "$file_p" ]; then
+                  excluded=1
+                  break
+                fi
+              done
+            fi
+
+            if [ "$excluded" -eq 1 ]; then
+              echo "Skipping excluded file: $norm_file"
+              continue
+            fi
+
+            if grep -iq '^[[:space:]]*#[[:space:]]*ci-ignore:.*yamllint_scientific' "$file"; then
+              echo "Skipping file with in-file ignore: $norm_file"
+              continue
+            fi
+
+            echo "Checking hierarchical structure: $norm_file"
+            checked_count=$((checked_count + 1))
+            if ! python -B "${{ runner.temp }}/check_scientific_hierarchical.py" "$file"; then
+              failed=1
+            fi
+          done
+
+          if [ "$checked_count" -eq 0 ]; then
+            echo "No .yml or .yaml files remained to check after exclusions. Exiting (exit 0)."
+            exit 0
+          fi
+
+          echo "Completed checking $checked_count YAML file(s). Failure status: $failed"
+          exit "$failed"
+
+      - name: Write GitHub Step Summary
+        if: always()
+        run: |
+          if [ -f ci_scientific_run.log ]; then
+            {
+              echo "### NCO Yamllint Scientific Run Log"
+              echo '```text'
+              cat ci_scientific_run.log
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload Scientific CI Log Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: yamllint-scientific-logs
+          path: ci_scientific_run.log
+          if-no-files-found: ignore

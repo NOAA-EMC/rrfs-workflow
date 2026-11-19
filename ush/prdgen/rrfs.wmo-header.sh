@@ -1,72 +1,64 @@
 #!/bin/bash
-#
-
-set -xv
+set -x
 
 # ---- Add wmo header to grib2 file ----------------------
-#
 
-case=$1
-fhr=$2
-cyc=$3
-file=$4
-gridid=$5
-parmdir=$6
-data=$7
+case_type="$1"
+case="${case_type}"
+fhr="$2"
+cyc="$3"
+file="$4"
+gridid="$5"
+parmdir="$6"
+data="$7"
 
-#-- remove the leading 0"
+mkdir -p "${data}/wmo"
 
-mkdir -p ${data}/wmo
-
-wmo_outdir=${data}/wmo
+wmo_outdir="${data}/wmo"
 
 . prep_step
 
-#--------------------------------------------------------------- 
+err=0
+
+#---------------------------------------------------------------
 #-- process WMO header
 
-if [ "${case}" == "AWIPS" ]; then
+if [[ "${case_type}" == "AWIPS" ]]; then
   echo "PLACING HEADERS for t${cyc}z f${fhr}, RUNNING TOCGRIB2"
 
-  parm_dir=${parmdir}/wmo
-  parmfile=grib2.awips.rrfs.${fhr}
+  parm_dir="${parmdir}/wmo"
+  parmfile="grib2.awips.rrfs.${fhr}"
 
   #-- remove ".grib2"
-  
-  suffix=".grib2"
-  string=${file}
-  infilex=${string::${#string}-${#suffix}}
- 
-  infile=${file}
-  outfile=grib2.$infilex
+  infile="${file}"
+  infilex="${infile%.grib2}"
+  outfile="grib2.${infilex}"
 
-  export FORT11=${data}/${infile}           # input file
-  export FORT12=                            # optional index file
-  export FORT51=${wmo_outdir}/${outfile}    # output file w/ headers
+  export FORT11="${data}/${infile}"           # input file
+  export FORT12=""                            # optional index file
+  export FORT51="${wmo_outdir}/${outfile}"    # output file w/ headers
 
-  tocgrib2 < ${parm_dir}/$parmfile 1>outfile.${gridid}.f${fhr}.$$
+  tocgrib2 < "${parm_dir}/${parmfile}" > "outfile.${gridid}.f${fhr}.$$"
+  err=$?
 
-elif [ "${case}" == "WARP" ]; then
+elif [[ "${case_type}" == "WARP" ]]; then
   echo "PLACING HEADERS for t${cyc}z f${fhr}, RUNNING TOCGRIB2"
 
-  parm_dir=${parmdir}/wmo
-  parmfile=grib2.faa.warp${gridid}.rrfs.${fhr}
+  parm_dir="${parmdir}/wmo"
+  parmfile="grib2.faa.warp${gridid}.rrfs.${fhr}"
 
   #-- remove ".grib2"
-    
-  suffix=".grib2"
-  string=${file}
-  infilex=${string::${#string}-${#suffix}}
+  infile="${file}"
+  infilex="${infile%.grib2}"
+  outfile="grib2.${infilex}"
 
-  infile=${file}
-  outfile=grib2.$infilex
+  export FORT11="${data}/${infile}"            # input file
+  export FORT12=""                             # optional index file
+  export FORT51="${wmo_outdir}/${outfile}"     # output file w/ headers
 
-  export FORT11=${data}/${infile}            # input file
-  export FORT12=                             # optional index file
-  export FORT51=${wmo_outdir}/${outfile}     # output file w/ headers
-
-  tocgrib2 < ${parm_dir}/$parmfile 1>outfile.${gridid}.f${fhr}.$$
+  tocgrib2 < "${parm_dir}/${parmfile}" > "outfile.${gridid}.f${fhr}.$$"
+  err=$?
 
 fi
 
-exit 0
+exit "${err}"

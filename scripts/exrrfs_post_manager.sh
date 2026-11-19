@@ -6,7 +6,7 @@ set -x
 # 00 | 06 | 12 | 18:
 #   det_post_long && ensf_post
 # Other cycles:
-#   det_post 
+#   det_post
 #-----------------------------------------------------------------------
 
 #-----------------------------------------------------------------------
@@ -19,23 +19,23 @@ set -x
 # configurations byte-for-byte unchanged.
 # Unlike the other ex-scripts, neither this one nor its J-job sources workflow.conf, so DT_ATMOS
 # is not in the environment at all and the default below would silently win. Source it here.
-source ${FIXrrfs}/workflow/${WGF}/workflow.conf
+source "${FIXrrfs}"/workflow/"${WGF}"/workflow.conf
 first_subh=$( printf "%02d%02d" $(( ${DT_ATMOS:-36} / 60 )) $(( ${DT_ATMOS:-36} % 60 )) )
 
 # scan switches
-if [ ${WGF} == "det" ]; then
+if [ "${WGF}" == "det" ]; then
   scan_release_ensf_post="NO"
   scan_release_firewx_post="NO"
-  if [[ "$cyc" =~ ^(00|06|12|18)$ ]]; then
-    scan_release_det_post_long="YES" 
+  if [[ "${cyc}" =~ ^(00|06|12|18)$ ]]; then
+    scan_release_det_post_long="YES"
     scan_release_det_post="NO"
 
     for fhr in $(seq 0 84); do
-      fhr_2d=$( printf "%02d" ${fhr} )
-      fhr_3d=$( printf "%03d" ${fhr} )
-      if [ $(($fhr)) -le 17 ]; then
+      fhr_2d=$( printf "%02d" "${fhr}" )
+      fhr_3d=$( printf "%03d" "${fhr}" )
+      if [ $((fhr)) -le 17 ]; then
         for sub_fhr in 00 15 30 45; do
-          if [ ${fhr_2d} == "00" ] && [ ${sub_fhr} == "00" ]; then
+          if [ "${fhr_2d}" == "00" ] && [ ${sub_fhr} == "00" ]; then
             # FV3 writes the hour-0 entry of output_fh at its first time step, named by valid time,
             # and only does so at the 36 s NA step; with a longer step it writes no hour-0 file at
             # all. Registering one then would leave this manager waiting 900 s for a file that is
@@ -55,11 +55,11 @@ if [ ${WGF} == "det" ]; then
     scan_release_det_post="YES"
 
     for fhr in $(seq 0 18); do
-      fhr_2d=$( printf "%02d" ${fhr} )
-      fhr_3d=$( printf "%03d" ${fhr} )
-      if [ $(($fhr)) -le 17 ]; then
+      fhr_2d=$( printf "%02d" "${fhr}" )
+      fhr_3d=$( printf "%03d" "${fhr}" )
+      if [ $((fhr)) -le 17 ]; then
         for sub_fhr in 00 15 30 45; do
-          if [ ${fhr_2d} == "00" ] && [ ${sub_fhr} == "00" ]; then
+          if [ "${fhr_2d}" == "00" ] && [ ${sub_fhr} == "00" ]; then
             # FV3 writes the hour-0 entry of output_fh at its first time step, named by valid time,
             # and only does so at the 36 s NA step; with a longer step it writes no hour-0 file at
             # all. Registering one then would leave this manager waiting 900 s for a file that is
@@ -75,72 +75,72 @@ if [ ${WGF} == "det" ]; then
       fi
     done
   fi
-elif [ ${WGF} == "ensf" ]; then
+elif [ "${WGF}" == "ensf" ]; then
   scan_release_ensf_post="YES"
   scan_release_firewx_post="NO"
-  scan_release_det_post_long="NO" 
+  scan_release_det_post_long="NO"
   scan_release_det_post="NO"
 
   for mem in $(seq 1 5); do
     for fhr in $(seq 0 60); do
-      fhr_3d=$( printf "%03d" ${fhr} )
-      memuse=$( printf "%03d" ${mem} )
+      fhr_3d=$( printf "%03d" "${fhr}" )
+      memuse=$( printf "%03d" "${mem}" )
       search_str=${memuse}${fhr_3d}00
-      array_element_scan_release_ensf_post[$((10#$search_str))]="NO"
+      array_element_scan_release_ensf_post[$((10#${search_str}))]="NO"
     done
   done
-elif [ ${WGF} == "firewx" ]; then
+elif [ "${WGF}" == "firewx" ]; then
   scan_release_firewx_post="YES"
   scan_release_ensf_post="NO"
-  scan_release_det_post_long="NO" 
+  scan_release_det_post_long="NO"
   scan_release_det_post="NO"
-    
+
   for fhr in $(seq 0 36); do
-    array_element_scan_release_firewx_post[$fhr]="NO"
+    array_element_scan_release_firewx_post[fhr]="NO"
   done
 else
   err_exit "FATAL ERROR: WGF is not set."
 fi
 
-SLEEP_LOOP_MAX=`expr $SLEEP_TIME / $SLEEP_INT`
+SLEEP_LOOP_MAX=`expr "${SLEEP_TIME}" / "${SLEEP_INT}"`
 #-----------------------------------------------------------------------
 # Process files and directories level dependency scan
 #-----------------------------------------------------------------------
 
 proceed_trigger_scan="YES"
 ic=1
-while [ $proceed_trigger_scan == "YES" ]; do
+while [ ${proceed_trigger_scan} == "YES" ]; do
   proceed_trigger_scan="NO"
-  
+
   #### release_det_post_long
-  if [ ${scan_release_det_post_long} == "YES" ]; then
+  if [ "${scan_release_det_post_long}" == "YES" ]; then
     echo "Proceeding with scan_release_det_post_long"
     source_file_found="YES"
     umbrella_forecast_data=${umbrella_forecast_data_base}/output
     # fhr cover 000~084
     for fhr in $(seq 0 84); do
-      fhr_2d=$( printf "%02d" ${fhr} )
-      fhr_3d=$( printf "%03d" ${fhr} )
+      fhr_2d=$( printf "%02d" "${fhr}" )
+      fhr_3d=$( printf "%03d" "${fhr}" )
 
       # 000~017 have every 15 minutes
-      if [ $(($fhr)) -le 17 ]; then
+      if [ $((fhr)) -le 17 ]; then
         for sub_fhr in 00 15 30 45; do
           # check for f000-00-36
-          if [ $fhr -eq 0 ] && [ $sub_fhr == "00" ] && \
-             [ ${array_element_scan_release_det_post_long[${fhr}${first_subh}]} == "NO" ]; then
+          if [ "${fhr}" -eq 0 ] && [ ${sub_fhr} == "00" ] && \
+             [ "${array_element_scan_release_det_post_long[${fhr}${first_subh}]}" == "NO" ]; then
             if [ -s "${umbrella_forecast_data}/log.atm.f${fhr_3d}-${sub_fhr}-36" ]; then
               array_element_scan_release_det_post_long[${fhr}${first_subh}]="found"
-              ecflow_client --event release_det_post_f${fhr_3d}_00_36_long
+              ecflow_client --event release_det_post_f"${fhr_3d}"_00_36_long
               ic=1
             else
               source_file_found="NO"
             fi
             continue
           else # from f000-15-00 to f017-45-00
-            if [ ${array_element_scan_release_det_post_long[${fhr}${sub_fhr}00]} == "NO" ]; then
+            if [ "${array_element_scan_release_det_post_long[${fhr}${sub_fhr}00]}" == "NO" ]; then
               if [ -s "${umbrella_forecast_data}/log.atm.f${fhr_3d}-${sub_fhr}-00" ]; then
                 array_element_scan_release_det_post_long[${fhr}${sub_fhr}00]="found"
-                ecflow_client --event release_det_post_f${fhr_3d}_${sub_fhr}_00_long
+                ecflow_client --event release_det_post_f"${fhr_3d}"_${sub_fhr}_00_long
                 ic=1
                 continue
               else
@@ -150,10 +150,10 @@ while [ $proceed_trigger_scan == "YES" ]; do
           fi
         done
       else # f018-00-00 and beyong. Starting from f018, no sub hour data.
-        if [ ${array_element_scan_release_det_post_long[${fhr}0000]} == "NO" ]; then
+        if [ "${array_element_scan_release_det_post_long[${fhr}0000]}" == "NO" ]; then
           if [ -s "${umbrella_forecast_data}/log.atm.f${fhr_3d}-00-00" ]; then
             array_element_scan_release_det_post_long[${fhr}0000]="found"
-            ecflow_client --event release_det_post_f${fhr_3d}_00_00_long
+            ecflow_client --event release_det_post_f"${fhr_3d}"_00_00_long
             ic=1
             continue
           else
@@ -171,34 +171,34 @@ while [ $proceed_trigger_scan == "YES" ]; do
   #### release_det_post_long
 
   #### release_det_post
-  if [ ${scan_release_det_post} == "YES" ]; then
+  if [ "${scan_release_det_post}" == "YES" ]; then
     echo "Proceeding with scan_release_det_post"
     source_file_found="YES"
     umbrella_forecast_data=${umbrella_forecast_data_base}/output
     # fhr cover 000~018
     for fhr in $(seq 0 18); do
-      fhr_2d=$( printf "%02d" ${fhr} )
-      fhr_3d=$( printf "%03d" ${fhr} )
+      fhr_2d=$( printf "%02d" "${fhr}" )
+      fhr_3d=$( printf "%03d" "${fhr}" )
 
       # 000~017 have every 15 minutes
-      if [ $(($fhr)) -le 17 ]; then
+      if [ $((fhr)) -le 17 ]; then
         for sub_fhr in 00 15 30 45; do
           # check for f000-00-36
-          if [ $fhr -eq 0 ] && [ $sub_fhr == "00" ] && \
-             [ ${array_element_scan_release_det_post[${fhr}${first_subh}]} == "NO" ]; then
+          if [ "${fhr}" -eq 0 ] && [ ${sub_fhr} == "00" ] && \
+             [ "${array_element_scan_release_det_post[${fhr}${first_subh}]}" == "NO" ]; then
             if [ -s "${umbrella_forecast_data}/log.atm.f${fhr_3d}-${sub_fhr}-36" ]; then
               array_element_scan_release_det_post[${fhr}${first_subh}]="found"
-              ecflow_client --event release_det_post_f${fhr_3d}_00_36
+              ecflow_client --event release_det_post_f"${fhr_3d}"_00_36
               ic=1
             else
               source_file_found="NO"
             fi
             continue
           else # from f000-15-00 to f017-45-00
-            if [ ${array_element_scan_release_det_post[${fhr}${sub_fhr}00]} == "NO" ]; then
+            if [ "${array_element_scan_release_det_post[${fhr}${sub_fhr}00]}" == "NO" ]; then
               if [ -s "${umbrella_forecast_data}/log.atm.f${fhr_3d}-${sub_fhr}-00" ]; then
                 array_element_scan_release_det_post[${fhr}${sub_fhr}00]="found"
-                ecflow_client --event release_det_post_f${fhr_3d}_${sub_fhr}_00
+                ecflow_client --event release_det_post_f"${fhr_3d}"_${sub_fhr}_00
                 ic=1
                 continue
               else
@@ -208,10 +208,10 @@ while [ $proceed_trigger_scan == "YES" ]; do
           fi
         done
       else # f018-00-00
-        if [ ${array_element_scan_release_det_post[${fhr}0000]} == "NO" ]; then
+        if [ "${array_element_scan_release_det_post[${fhr}0000]}" == "NO" ]; then
           if [ -s "${umbrella_forecast_data}/log.atm.f${fhr_3d}-00-00" ]; then
             array_element_scan_release_det_post[${fhr}0000]="found"
-            ecflow_client --event release_det_post_f${fhr_3d}_00_00
+            ecflow_client --event release_det_post_f"${fhr_3d}"_00_00
             ic=1
             continue
           else
@@ -229,21 +229,21 @@ while [ $proceed_trigger_scan == "YES" ]; do
   #### release_det_post
 
   #### release_ensf_post
-  if [ ${scan_release_ensf_post} == "YES" ]; then
+  if [ "${scan_release_ensf_post}" == "YES" ]; then
     echo "Proceeding with scan_release_ensf_post"
     source_file_found="YES"
     # mems 1-5
     for mem in $(seq 1 5); do
-      memuse=$( printf "%03d" ${mem} )
+      memuse=$( printf "%03d" "${mem}" )
       umbrella_forecast_data=${umbrella_forecast_data_base}/m${memuse}/output/
     # fhr cover 000~060
       for fhr in $(seq 0 60); do
-        fhr_3d=$( printf "%03d" ${fhr} )
+        fhr_3d=$( printf "%03d" "${fhr}" )
         if [ -s "${umbrella_forecast_data}/log.atm.f${fhr_3d}" ]; then
           search_str=${memuse}${fhr_3d}00
-          if [ ${array_element_scan_release_ensf_post[$((10#$search_str))]} == "NO" ]; then
-            array_element_scan_release_ensf_post[$((10#$search_str))]="found"
-            ecflow_client --event release_ensf_post_mem${memuse}_f${fhr_3d}
+          if [ "${array_element_scan_release_ensf_post[$((10#${search_str}))]}" == "NO" ]; then
+            array_element_scan_release_ensf_post[$((10#${search_str}))]="found"
+            ecflow_client --event release_ensf_post_mem"${memuse}"_f"${fhr_3d}"
             ic=1
             continue
           fi
@@ -261,17 +261,17 @@ while [ $proceed_trigger_scan == "YES" ]; do
   #### release_ensf_post
 
   #### release_firewx_post
-  if [ ${scan_release_firewx_post} == "YES" ]; then
+  if [ "${scan_release_firewx_post}" == "YES" ]; then
     echo "Proceeding with scan_release_firewx_post"
     source_file_found="YES"
     umbrella_forecast_data=${umbrella_forecast_data_base}/output/
     # fhr cover 000~036
     for fhr in $(seq 0 36); do
-      fhr_3d=$( printf "%03d" ${fhr} )
+      fhr_3d=$( printf "%03d" "${fhr}" )
       if [ -s "${umbrella_forecast_data}/log.atm.f${fhr_3d}" ]; then
-        if [ ${array_element_scan_release_firewx_post[$fhr]} == "NO" ]; then
-          array_element_scan_release_firewx_post[$fhr]="found"
-          ecflow_client --event release_firewx_post_f${fhr_3d}
+        if [ "${array_element_scan_release_firewx_post[${fhr}]}" == "NO" ]; then
+          array_element_scan_release_firewx_post[fhr]="found"
+          ecflow_client --event release_firewx_post_f"${fhr_3d}"
           ic=1
           continue
         fi
@@ -289,17 +289,15 @@ while [ $proceed_trigger_scan == "YES" ]; do
 
   #### sleep and wait
   # The counter, ic, is reset when a new log file arrives.
-  if [ $ic -eq $SLEEP_LOOP_MAX ]; then
+  if [ "${ic}" -eq "${SLEEP_LOOP_MAX}" ]; then
     echo " *** FATAL ERROR: ${cyc}z ${WGF} forecast output files not available after ${SLEEP_TIME} seconds."
     echo " *** Check ${umbrella_forecast_data}"
       export err=9
       err_chk
-  fi 
+  fi
 
-  if [ $proceed_trigger_scan == "YES" ]; then
-    ic=`expr $ic + 1`
-    sleep $SLEEP_INT
+  if [ ${proceed_trigger_scan} == "YES" ]; then
+    ic=`expr "${ic}" + 1`
+    sleep "${SLEEP_INT}"
   fi
 done                 # proceed_trigger_scan
-
-exit 0

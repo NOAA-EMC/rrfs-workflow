@@ -1,11 +1,13 @@
+#!/bin/bash
+set -x
 #
 #-----------------------------------------------------------------------
 #
 # This file defines a function that is used to interpolate (or extrapo-
 # late) a grid cell size-dependent property to an arbitrary cubed-sphere
-# resolution using arrays that specify a set of property values for a 
+# resolution using arrays that specify a set of property values for a
 # corresponding set of resolutions.
-# 
+#
 #-----------------------------------------------------------------------
 #
 function interpol_to_arbit_CRES() {
@@ -13,7 +15,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -60,7 +62,7 @@ where the arguments are defined as follows:
   The name of the array containing the cubed-sphere resolutions for
   which corresponding property values are given (in prop_array).  These
   are assumed to be given from smallest to largest.
- 
+
   prop_array:
   The name of the array containing the values of the property corres-
   ponding to the cubed-sphere resolutions in RES_array.
@@ -86,13 +88,13 @@ where the arguments are defined as follows:
 #
 #-----------------------------------------------------------------------
 #
-# If RES is less than or equal to the smallest value in RES_array, set 
+# If RES is less than or equal to the smallest value in RES_array, set
 # the property value to the one corresponding to the smallest value in
-# RES_array.  Similarly, if RES is larger than the largest value in 
-# RES_array, set the property value to the one corresponding to the 
+# RES_array.  Similarly, if RES is larger than the largest value in
+# RES_array, set the property value to the one corresponding to the
 # largest value in RES_array.  If RES is somewhere in between the small-
 # est and largest values in RES_array, find the property value by line-
-# arly interpolating between the two RES_array elements between which 
+# arly interpolating between the two RES_array elements between which
 # RES lies.
 #
 #-----------------------------------------------------------------------
@@ -100,38 +102,38 @@ where the arguments are defined as follows:
   num_valid_RESes="${#RES_array[@]}"
 
   i_min=0
-  i_max=$( bc -l <<< "$num_valid_RESes - 1" )
+  i_max=$( bc -l <<< "${num_valid_RESes} - 1" )
 
-  if [ "${RES}" -le "${RES_array[$i_min]}" ]; then
+  if [ "${RES}" -le "${RES_array[${i_min}]}" ]; then
 
-    prop="${prop_array[$i_min]}"
+    prop="${prop_array[${i_min}]}"
 
-  elif [ "${RES}" -gt "${RES_array[$i_max]}" ]; then
+  elif [ "${RES}" -gt "${RES_array[${i_max}]}" ]; then
 
-    prop="${prop_array[$i_max]}"
+    prop="${prop_array[${i_max}]}"
 
   else
 
     for (( i=0; i<$((num_valid_RESes-1)); i++ )); do
-    
-      if [ "$RES" -gt "${RES_array[$i]}" ] && \
-         [ "$RES" -le "${RES_array[$i+1]}" ]; then
-        RES1="${RES_array[$i]}"
-        RES2="${RES_array[$i+1]}"
-        prop1="${prop_array[$i]}"
-        prop2="${prop_array[$i+1]}"
-        m_slope=$( bc -l <<< "($prop2 - $prop1)/($RES2 - $RES1)" )
-        y_intcpt=$( bc -l <<< "($RES2*$prop1 - $RES1*$prop2)/($RES2 - $RES1)" )
-        prop=$( bc -l <<< "$m_slope*$RES + $y_intcpt" )
+
+      if [ "${RES}" -gt "${RES_array[${i}]}" ] && \
+         [ "${RES}" -le "${RES_array[${i}+1]}" ]; then
+        RES1="${RES_array[${i}]}"
+        RES2="${RES_array[${i}+1]}"
+        prop1="${prop_array[${i}]}"
+        prop2="${prop_array[${i}+1]}"
+        m_slope=$( bc -l <<< "(${prop2} - ${prop1})/(${RES2} - ${RES1})" )
+        y_intcpt=$( bc -l <<< "(${RES2}*${prop1} - ${RES1}*${prop2})/(${RES2} - ${RES1})" )
+        prop=$( bc -l <<< "${m_slope}*${RES} + ${y_intcpt}" )
         break
       fi
-    
+
     done
 
   fi
 
-  prop=$( printf "%e\n" $prop )
-  echo "$prop"
+  prop=$( printf "%e\n" "${prop}" )
+  echo "${prop}"
 #
 }
 

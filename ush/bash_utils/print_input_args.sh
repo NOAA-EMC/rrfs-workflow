@@ -1,15 +1,17 @@
+#!/bin/bash
+set -x
 #
 #-----------------------------------------------------------------------
 #
 # This file defines a function that prints to stdout the names and val-
-# ues of a specified list of variables that are the valid arguments to 
-# the script or function that calls this function.  It is mainly used 
+# ues of a specified list of variables that are the valid arguments to
+# the script or function that calls this function.  It is mainly used
 # for debugging to check that the argument values passed to the calling
 # script/function have been set correctly.  Note that if a global varia-
 # ble named VERBOSE is not defined, the message will be printed out.  If
-# a global variable named VERBOSE is defined, then the message will be 
+# a global variable named VERBOSE is defined, then the message will be
 # printed out only if VERBOSE is set to TRUE.
-# 
+#
 #-----------------------------------------------------------------------
 #
 function print_input_args() {
@@ -100,18 +102,18 @@ function.
 #
 #-----------------------------------------------------------------------
 #
-# Get the array containing the list of valid argument names that can be 
+# Get the array containing the list of valid argument names that can be
 # passed to the calling script/function.  Note that if this is set to an
-# empty array in the calling script/function [e.g. using the notation 
+# empty array in the calling script/function [e.g. using the notation
 # some_array=()], then it will (for whatever reason) not be defined in
 # the scope of this function.  For this reason, we need the if-statement
-# below to check for this case.  Then get the number of valid arguments. 
+# below to check for this case.  Then get the number of valid arguments.
 #
 #-----------------------------------------------------------------------
 #
   array_name_valid_caller_args="$1"
   valid_arg_names_0th="${array_name_valid_caller_args}[0]"
-  if [ ${!valid_arg_names_0th:-"__unset__"} = "__unset__" ]; then
+  if [ "${!valid_arg_names_0th:-"__unset__"}" = "__unset__" ]; then
     valid_caller_args=()
   else
     valid_caller_args_at="${array_name_valid_caller_args}[@]"
@@ -133,7 +135,7 @@ function.
     script_or_function="function \"${caller_name}\""
   fi
 
-  if [ ${num_valid_caller_args} -eq 0 ]; then
+  if [ "${num_valid_caller_args}" -eq 0 ]; then
 
     msg="
 No arguments have been passed to ${script_or_function} in file
@@ -151,25 +153,24 @@ The arguments to ${script_or_function} in file
 have been set as follows:
 "
 
-    for (( i=0; i<${num_valid_caller_args}; i++ )); do
-      line=$( declare -p "${valid_caller_args[$i]}" )
-      msg=$( printf "%s\n%s" "$msg" "  $line" )
+    for (( i=0; i<num_valid_caller_args; i++ )); do
+      line=$( declare -p "${valid_caller_args[${i}]}" )
+      msg=$( printf "%s\n%s" "${msg}" "  ${line}" )
     done
 
   fi
 #
 #-----------------------------------------------------------------------
 #
-# If a global variable named DEBUG is not defined, print out the message.  
+# If a global variable named DEBUG is not defined, print out the message.
 # If it is defined, print out the message only if DEBUG is set to "TRUE".
 #
 #-----------------------------------------------------------------------
 #
   if [ ! -v VERBOSE ]; then
-    print_info_msg "$msg"
+    print_info_msg "${msg}"
   else
-    print_info_msg "$VERBOSE" "$msg"
+    print_info_msg "${VERBOSE}" "${msg}"
   fi
 #
 }
-
