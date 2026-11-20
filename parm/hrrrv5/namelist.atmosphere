@@ -70,7 +70,7 @@
     config_tempo_ml_for_bl_nc = .true.
 /
 &soundings
-    config_sounding_interval = 'none'
+    config_sounding_interval = '${sounding_interval}'
 /
 &assimilation
     config_jedi_da = ${jedi_da}

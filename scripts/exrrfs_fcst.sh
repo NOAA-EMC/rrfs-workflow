@@ -53,6 +53,12 @@ lsm_scheme=${LSM_SCHEME:-'sf_ruc'}
 nsoillevels=${NSOIL_LEVELS:-9}
 jedi_da=true #true
 do_sppt=${DO_SPPT:-'false'}
+if [[ "${DO_MODEL_SOUNDINGS:-FALSE}" == "TRUE" ]];  then
+  ${cpreq} ${PARMrrfs}/sounding_locations.txt .
+  sounding_interval='1:00:00'    # soundings every hour
+else
+  sounding_interval='none'
+fi
 
 pio_num_iotasks=${NODES}
 pio_stride=${PPN}
