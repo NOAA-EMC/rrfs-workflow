@@ -207,8 +207,13 @@ subroutine generate_anl_grid(nx,ny,grid_lon,grid_lont,grid_lat,grid_latt)
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 !--------------------------obtain analysis grid dimensions nxa,nya
-  nxa=2+nint((nx-one)/grid_ratio_fv3_regional)
-  nya=2+nint((ny-one)/grid_ratio_fv3_regional)
+  nxa=1+nint((nx-one)/grid_ratio_fv3_regional)
+  nya=1+nint((ny-one)/grid_ratio_fv3_regional)
+  ! Match the ratio-2 grid extent when using the ratio-1 analysis grid.
+  if (abs(grid_ratio_fv3_regional-one) < 10*epsilon(one)) then
+     nxa=nxa+1
+     nya=nya+1
+  endif
   nlat=nya
   nlon=nxa
   if(mype==0) print *,'nlat,nlon=nya,nxa= ',nlat,nlon
@@ -710,8 +715,13 @@ subroutine m_generate_anl_grid(nx,ny,grid_lon,grid_lont,grid_lat,grid_latt,gsi_l
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 !--------------------------obtain analysis grid dimensions nxa,nya
-  nxa=2+nint((nx-one)/grid_ratio_fv3_regional)
-  nya=2+nint((ny-one)/grid_ratio_fv3_regional)
+  nxa=1+nint((nx-one)/grid_ratio_fv3_regional)
+  nya=1+nint((ny-one)/grid_ratio_fv3_regional)
+  ! Match the ratio-2 grid extent when using the ratio-1 analysis grid.
+  if (abs(grid_ratio_fv3_regional-one) < 10*epsilon(one)) then
+     nxa=nxa+1
+     nya=nya+1
+  endif
   nlat=nya
   nlon=nxa
   if(mype==0) print *,'nlat,nlon=nya,nxa= ',nlat,nlon

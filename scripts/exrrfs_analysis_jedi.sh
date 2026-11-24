@@ -281,6 +281,9 @@ cpreq -p "${PARM_JCB}"/"${jcb_config}" .
 cpreq -p "${FIX_GSI}"/gsd_sfcobs_uselist.txt .
 cpreq -p "${FIX_GSI}"/gsd_sfcobs_provider.txt .
 cpreq -p "${USHrrfs}"/run_jcb.py .
+# Prepare the namelist before JCB so a configured grid ratio can update its runtime copy.
+cpreq -p "${PARM_JCB}"/"${PREDEF_GRID_NAME}"/gsiparm_regional.anl .
+chmod u+w gsiparm_regional.anl
 
 #sed - rdas-atmosphere-templates.yaml
 # set other placeholders
@@ -297,7 +300,7 @@ sed -i \
   -e "s|@SUFFIX@|${SUFFIX}|g" \
   "${jcb_config}"
 
-python run_jcb.py "${YYYYMMDDHH}" "${jcb_config}" "${jedi_yaml}"
+python run_jcb.py "${YYYYMMDDHH}" "${jcb_config}" "${jedi_yaml}" || exit 1
 
 if [[ ! -s "${jedi_yaml}" ]]; then
   echo "ERROR: ${jedi_yaml} was not created or is empty"
@@ -446,7 +449,6 @@ berror=${FIX_JEDI}/berror_stats
 cpreq -p "${berror}" berror_stats
 # the per-grid namelists live in parm beside the JCB templates that have to match them
 cpreq -p "${PARM_JCB}"/"${PREDEF_GRID_NAME}"/fmsmpp.nml .
-cpreq -p "${PARM_JCB}"/"${PREDEF_GRID_NAME}"/gsiparm_regional.anl .
 cpreq -p "${PARM_JCB}"/"${PREDEF_GRID_NAME}"/input_lam* .
 # only the 13 km grid has the MGBF namelists, which the hybrid background error alone reads
 for f in "${PARM_JCB}/${PREDEF_GRID_NAME}"/mgbf*; do

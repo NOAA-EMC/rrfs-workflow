@@ -9,6 +9,37 @@ from collections.abc import Mapping, Sequence
 from pathlib import Path
 import os
 
+def configure_gsibec_grid(config, namelist):
+    """Return a matching runtime namelist and grid dimensions for supported ratios."""
+    ratio = config["gsibec_grid_ratio"]
+    if isinstance(ratio, bool) or not isinstance(ratio, (int, float)) or ratio not in (1, 2):
+        raise ValueError("gsibec_grid_ratio must be 1 or 2")
+    ratio = int(ratio)
+
+    # The common-endpoint calculation has only been established for even FV3 dimensions.
+    dims = []
+    for key in ("atmosphere_npx_ges", "atmosphere_npy_ges"):
+        n = config.get(key)
+        if isinstance(n, bool) or not isinstance(n, int) or n < 2 or n % 2:
+            raise ValueError(f"{key} must be a positive even FV3 cell-center dimension")
+        dims.append(1 + (n - 1 + ratio // 2) // ratio + (ratio == 1))
+    nlon, nlat = dims
+
+    # Change only GRIDOPTS, and fail if its expected fields are absent or duplicated.
+    groups = list(re.finditer(r"(?ims)^\s*&gridopts\b(.*?)^\s*/", namelist))
+    if len(groups) != 1:
+        raise ValueError("expected exactly one GRIDOPTS namelist")
+    group = groups[0]
+    block = group.group(0)
+    for key, value in (("grid_ratio_fv3_regional", f"{ratio}.0"),
+                       ("nlon", str(nlon)), ("nlat", str(nlat))):
+        pattern = r"(?i)(\b" + key + r"\s*=\s*)[^,\s/]+"
+        block, count = re.subn(pattern, lambda m: m.group(1) + value, block)
+        if count != 1:
+            raise ValueError(f"expected exactly one {key} in GRIDOPTS")
+    namelist = namelist[:group.start()] + block + namelist[group.end():]
+    return {"gsibec_lons": nlon, "gsibec_lats": nlat}, namelist
+
 def update_cycle_times(config, cycle_str):
     cycle_time = datetime.strptime(cycle_str, "%Y%m%d%H")
     hour = cycle_time.hour
@@ -204,6 +235,16 @@ if __name__ == "__main__":
     with open(jcb_config, "r") as f:
         task_config = yaml.safe_load(f)
 
+    # Keep GSIBEC's runtime namelist and SABER's geometry on the same grid.
+    grid_dimensions = None
+    if "gsibec_grid_ratio" in task_config:
+        namelist_path = Path("gsiparm_regional.anl")
+        grid_dimensions, namelist = configure_gsibec_grid(task_config, namelist_path.read_text())
+        namelist_path.write_text(namelist)
+        task_config.update(grid_dimensions)
+        print(f"GSIBEC ratio {task_config['gsibec_grid_ratio']}: "
+              f"{grid_dimensions['gsibec_lons']} x {grid_dimensions['gsibec_lats']}")
+
     uselist_path = task_config.get("mesonet_gsd_sfcobs_uselist")
     provider_path = task_config.get("mesonet_gsd_sfcobs_provider")
     msonet_station_accepts_winds = []
@@ -233,6 +274,9 @@ if __name__ == "__main__":
        (msonet_provider_accepts_allsprvs, msonet_provider_accepts_subproviders) = parse_gsd_sfcobs_provider(provider_path)
 
     jcb_config = parse_j2yaml(jcb_config, task_config)
+    if grid_dimensions is not None:
+        # Explicitly override the static fallback dimensions after template parsing.
+        jcb_config.update(grid_dimensions)
     jcb_config["msonet_station_accepts_winds"] = msonet_station_accepts_winds
     jcb_config["msonet_station_accepts_airTemperature"] = msonet_station_accepts_airTemperature
     jcb_config["msonet_station_accepts_specificHumidity"] = msonet_station_accepts_specificHumidity
