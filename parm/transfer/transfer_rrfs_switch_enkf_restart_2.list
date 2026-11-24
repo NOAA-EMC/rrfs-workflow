@@ -34,6 +34,12 @@ _COMROOT_/rrfs/_SHORTVER_/enkfrrfs._PDY_/
 + /10/m008/forecast/RESTART/*.120000.*
 + /10/m009/forecast/RESTART/*.120000.*
 + /10/m010/forecast/RESTART/*.120000.*
++ /10/m???/forecast/INPUT/
++ /10/m006/forecast/INPUT/gfs_ctrl.nc
++ /10/m007/forecast/INPUT/gfs_ctrl.nc
++ /10/m008/forecast/INPUT/gfs_ctrl.nc
++ /10/m009/forecast/INPUT/gfs_ctrl.nc
++ /10/m010/forecast/INPUT/gfs_ctrl.nc
 - *
 B 1000000
 
