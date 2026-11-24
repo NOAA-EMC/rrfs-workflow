@@ -90,7 +90,7 @@ export ECF_HOST=${ECFLOW_HOST}
 # fix tree; setup_retro_links.sh links <repo>/fix to it. The production package's tree has the
 # workflow.conf_dev and _prod files the retro needs; NCO may remove a version once the next is
 # installed, so update the version here (or link a copy of your own) when the links break.
-FIX_RRFS_DIR=${FIX_RRFS_DIR:-/lfs/h1/ops/prod/packages/rrfs.v1.0.28/fix}
+FIX_RRFS_DIR=${FIX_RRFS_DIR:-/lfs/h1/ops/prod/packages/rrfs.v1.0.29/fix}
 # dev-sci's shared fix tree; the domain files (ecf/defs/retro/domains) link other grids' fix files
 # from it
 FIX_RRFS_SHARED=${FIX_RRFS_SHARED:-/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS}
@@ -104,10 +104,10 @@ DOMAIN=${DOMAIN:-RRFS_CONUS_13km}
 # ---------------------------------------------------------------------------------------------
 # Retro period and suite
 # ---------------------------------------------------------------------------------------------
-RETRO_START=${RETRO_START:-20240506}      # first retro day, and the day that cold starts
-RETRO_END=${RETRO_END:-20240512}          # last retro day
 # Cycles run at once; increasing beyond 2 could break satbias cycling
 # Chains run back to back below 13; 13 or more lets the next chain start alongside the current one
+RETRO_START=${RETRO_START:-20240506}      # first retro day, and the day that cold starts
+RETRO_END=${RETRO_END:-20240506}          # last retro day
 CYCLE_THROTTLE=${CYCLE_THROTTLE:-2}
 # YES relaxes the suite's 399 clock-time triggers so cycles are not gated on the wall clock
 RETRO=${RETRO:-YES}
@@ -155,14 +155,15 @@ DO_LONG_FORECAST=${DO_LONG_FORECAST:-TRUE}
 # rewritten: a step taken out of the middle of a chain hands on its own dependencies, so what
 # followed it keeps its place in the order rather than starting as soon as the cycle opens.
 
+
 # The deterministic spin-up cycles (03-08z and 15-20z in operations) and their 1 h forecasts.
 # With them off, the cold start moves into the production cycle at DET_COLD_START_HRS, which
 # exrrfs_prep_cyc.sh and exrrfs_process_radar.sh already do when DO_SPINUP is FALSE.
 DO_SPINUP=${DO_SPINUP:-FALSE}
-DET_COLD_START_HRS=${DET_COLD_START_HRS:-"03 15"}
+DET_COLD_START_HRS=${DET_COLD_START_HRS:-"00 12"}
 # Cold starts read the GFS cycle 3 h earlier (6 for 00/12z); grib2 reads gfs.tHHz.pgrb2.0p25.fHHH
-EXTRN_MDL_ICS_OFFSET_HRS=${EXTRN_MDL_ICS_OFFSET_HRS:-3}
-GFS_FILE_FMT_ICS=${GFS_FILE_FMT_ICS:-}
+EXTRN_MDL_ICS_OFFSET_HRS=${EXTRN_MDL_ICS_OFFSET_HRS:-6}
+GFS_FILE_FMT_ICS=${GFS_FILE_FMT_ICS:-grib2}
 DO_SURFACE_CYCLE=${DO_SURFACE_CYCLE:-FALSE}
 
 # Forecast length in hours: the hourly cycles, and the 00, 06, 12 and 18z cycles. Operations runs
@@ -171,8 +172,7 @@ DO_SURFACE_CYCLE=${DO_SURFACE_CYCLE:-FALSE}
 # hours is the minimum: each cycle warm starts from the hour 1, 2 or 3 restart of one of the
 # three cycles before it.
 FCST_LEN_HRS=${FCST_LEN_HRS:-3}
-FCST_LEN_HRS_LONG=${FCST_LEN_HRS_LONG:-12}
-
+FCST_LEN_HRS_LONG=${FCST_LEN_HRS_LONG:-3}
 # Steps inside a cycle, each the ecflow side of one of the FALSE switches in the Rocoto config.sh.
 RUN_NONVARCLD=${RUN_NONVARCLD:-FALSE}     # non-variational cloud analysis (DO_NONVAR_CLDANAL)
 RUN_UPDATE_BC=${RUN_UPDATE_BC:-FALSE}     # boundary update and soil adjustment (DO_UPDATE_BC)
@@ -193,7 +193,9 @@ RUN_POST=${RUN_POST:-TRUE}                # post and products; FALSE for a DA-on
 RUN_SUBHOURLY_POST=${RUN_SUBHOURLY_POST:-FALSE}
 # Archive completed deterministic cycles separately for each experiment.
 DO_ARCHIVE_RETRO=${DO_ARCHIVE_RETRO:-TRUE}
-ARCHIVE_ROOT=${ARCHIVE_ROOT:-/NCEPDEV/emc-meso/5year/${USER}/RRFSv1/May2024_retro/v1.2.0}
+# HPSS may require the RDHPCS account spelling rather than the WCOSS2 username.
+RDHPCS_USER=${RDHPCS_USER:-Donald.E.Lippi}
+ARCHIVE_ROOT=${ARCHIVE_ROOT:-/NCEPDEV/emc-meso/5year/${RDHPCS_USER}/RRFSv1/May2024_retro/v1.2.0}
 ARCHIVEDIR=${ARCHIVEDIR:-${ARCHIVE_ROOT}/${EXPT_ID}}
 # JEDI analysis, the Rocoto config.sh "JEDI options". DA_SYSTEM_DET picks which det analysis
 # runs, GSI (the operational route) or JEDI; the rest are read only when it is JEDI.
@@ -208,7 +210,7 @@ JCB_CONFIG_DBZ=${JCB_CONFIG_DBZ-rdas-atmosphere-templates-fv3_c13_dbz.yaml}
 # Whether the analysis also runs on cold-start cycles, and whether synthetic radiosonde
 # temperature and humidity levels are added the way GSI's sonde_ext does
 DO_DACOLD=${DO_DACOLD:-FALSE}
-EXT_SONDE=${EXT_SONDE:-FALSE}
+EXT_SONDE=${EXT_SONDE:-TRUE}
 # Job size. Nodes x tasks per node must match the template's layout,
 # Walltimes for the 13 km retro tasks. These config values override the task-card defaults.
 WALLTIME_ARCHIVE_RETRO=${WALLTIME_ARCHIVE_RETRO:-00:12:00}
@@ -226,7 +228,6 @@ WALLTIME_DET_PREP_CYC=${WALLTIME_DET_PREP_CYC:-00:12:00}
 WALLTIME_DET_PROCESS_BUFR=${WALLTIME_DET_PROCESS_BUFR:-00:12:00}
 WALLTIME_DET_SAVE_RESTART=${WALLTIME_DET_SAVE_RESTART:-00:12:00}
 WALLTIME_DET_SAVE_RESTART_LONG=${WALLTIME_DET_SAVE_RESTART_LONG:-00:12:00}
-
 
 # the 14x14 layout in the c13 templates: 196 tasks
 NNODES_ANALYSIS_JEDI=${NNODES_ANALYSIS_JEDI:-2}
