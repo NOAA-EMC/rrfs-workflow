@@ -59,6 +59,9 @@ if [[ "${DO_MODEL_SOUNDINGS:-FALSE}" == "TRUE" ]];  then
 else
   sounding_interval='none'
 fi
+if [[ "${DO_SPINUP:-FALSE}" == "TRUE" ]];  then
+  sounding_interval='none'       # no soundings for spinup cycles
+fi
 
 pio_num_iotasks=${NODES}
 pio_stride=${PPN}
@@ -224,7 +227,7 @@ else
         mv "${station}.*.snd" "soundings/${station}.${CDATE}"
       done
       cd soundings
-      tar -czf ${EXP_NAME}_soundings_${CDATE}.tar.gz *.${CDATE}
+      tar -czf "${EXP_NAME}_soundings_${CDATE}.tar.gz" "*.${CDATE}"
       ${cpreq} "${EXP_NAME}_soundings_${CDATE}.tar.gz" "${COMOUT}/fcst/${WGF}${MEMDIR}"
       cd ..
     fi
