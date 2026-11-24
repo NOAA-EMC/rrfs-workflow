@@ -85,10 +85,10 @@ if [ "${WGF}" = "firewx" ]; then
     err_exit "WARNING: Problem with the requested fire weather grid - ABORT"
   fi
 
-  echo $LAT_CTR $LON_CTR > ${COMOUT}/rrfs.t${cyc}z.firewxnest_center_latlon
+  echo "${LAT_CTR}" "${LON_CTR}" > "${COMOUT}/rrfs.t${cyc}z.firewxnest_center_latlon"
   if [[ ${SENDDBN} = "YES" ]]; then
-    $DBNROOT/bin/dbn_alert MODEL RRFS_FIREWX_LOC $job  \
-        ${COMOUT}/rrfs.t${cyc}z.firewxnest_center_latlon
+    "${DBNROOT}/bin/dbn_alert" MODEL RRFS_FIREWX_LOC "${job}"  \
+        "${COMOUT}/rrfs.t${cyc}z.firewxnest_center_latlon"
   fi
 
 fi
