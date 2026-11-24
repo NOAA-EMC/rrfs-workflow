@@ -34,6 +34,8 @@ gradient_norm_reduction: 1e-10
 #write_increment_outer_loop_1: true
 #write_increment_outer_loop_2: true
 distribution: RoundRobin
+# Select OSDF for observation spaces unless an individual space overrides it.
+obs_data_container: OSDF
 empty_obs_space_action: create output
 write_into_existing_files: true
 
