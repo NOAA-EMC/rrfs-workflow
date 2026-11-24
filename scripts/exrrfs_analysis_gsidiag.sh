@@ -1,7 +1,8 @@
 #!/bin/bash
 set -x
 
-source ${FIXrrfs}/workflow/${WGF}/workflow.conf
+# shellcheck source=/dev/null
+source "${FIXrrfs}/workflow/${WGF}/workflow.conf"
 
 #
 #-----------------------------------------------------------------------
@@ -10,11 +11,12 @@ source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 #
 #-----------------------------------------------------------------------
 #
-. $USHrrfs/source_util_funcs.sh
+# shellcheck source=/dev/null
+. "${USHrrfs}/source_util_funcs.sh"
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -49,7 +51,7 @@ ulimit -a
 
 export FIX_GSI="${FIXrrfs}/gsi"
 
-case $MACHINE in
+case ${MACHINE} in
 #
 "WCOSS2")
 #
@@ -98,13 +100,20 @@ esac
 # Process shared_output_data from Umbrella DATA
 #-----------------------------------------------------------------------
 #
-if [ ! -r ${shared_output_data} ]; then
+if [[ ! -r "${shared_output_data}" ]]; then
   echo "FATAL ERROR: Directory ${shared_output_data} is not available for this job"
 fi
-NLN=${NLN:-"/bin/ln -sf"}
-for file in $(ls $shared_output_data); do
-  eval $NLN ${shared_output_data}/${file} ${file}
+NLN="${NLN:-/bin/ln -sf}"
+
+# FIX: Avoid parsing `ls` and use strict file globs
+shopt -s nullglob
+for filepath in "${shared_output_data}"/*; do
+  file="${filepath##*/}"
+  # shellcheck disable=SC2086 # NLN intentionally contains command and flags
+  ${NLN} "${filepath}" "${file}"
 done
+shopt -u nullglob
+
 #
 #-----------------------------------------------------------------------
 #
@@ -115,37 +124,42 @@ done
 #
 START_DATE=$(echo "${CDATE}" | sed 's/\([[:digit:]]\{2\}\)$/ \1/')
 
-YYYYMMDDHH=$CDATE
+YYYYMMDDHH="${CDATE}"
+# shellcheck disable=SC2034 # May be used in sourced scripts
 JJJ=$(date +%j -d "${START_DATE}")
 
-YYYY=${YYYYMMDDHH:0:4}
-MM=${YYYYMMDDHH:4:2}
-DD=${YYYYMMDDHH:6:2}
-HH=${YYYYMMDDHH:8:2}
-YYYYMMDD=${YYYYMMDDHH:0:8}
+YYYY="${YYYYMMDDHH:0:4}"
+# shellcheck disable=SC2034
+MM="${YYYYMMDDHH:4:2}"
+# shellcheck disable=SC2034
+DD="${YYYYMMDDHH:6:2}"
+# shellcheck disable=SC2034
+HH="${YYYYMMDDHH:8:2}"
+# shellcheck disable=SC2034
+YYYYMMDD="${YYYYMMDDHH:0:8}"
 #
 #-----------------------------------------------------------------------
 # Loop over first and last outer loops to generate innovation
 # diagnostic files for indicated observation types (groups)
 #
 # NOTE:  Since we set miter=2 in GSI namelist SETUP, outer
-#        loop 03 will contain innovations with respect to 
+#        loop 03 will contain innovations with respect to
 #        the analysis.  Creation of o-a innovation files
 #        is triggered by write_diag(3)=.true.  The setting
 #        write_diag(1)=.true. turns on creation of o-g
 #        innovation files.
 #-----------------------------------------------------------------------
 #
-netcdf_diag=${netcdf_diag:-".true."}
-binary_diag=${binary_diag:-".false."}
+netcdf_diag="${netcdf_diag:-.true.}"
+binary_diag="${binary_diag:-.false.}"
 
-loops="01 03"
-for loop in $loops; do
+loops=( 01 03 )
+for loop in "${loops[@]}"; do
 
-  case $loop in
+  case ${loop} in
     01) string=ges;;
     03) string=anl;;
-     *) string=$loop;;
+     *) string=${loop};;
   esac
 
   #  Collect diagnostic files for obs types (groups) below
@@ -154,103 +168,127 @@ for loop in $loops; do
   numfile_cnv=0
   numfile_rad=0
   numfile_dbz=0
-  if [ $binary_diag = ".true." ]; then
-    listall="hirs2_n14 msu_n14 sndr_g08 sndr_g11 sndr_g11 sndr_g12 sndr_g13 sndr_g08_prep sndr_g11_prep sndr_g12_prep sndr_g13_prep sndrd1_g11 sndrd2_g11 sndrd3_g11 sndrd4_g11 sndrd1_g15 sndrd2_g15 sndrd3_g15 sndrd4_g15 sndrd1_g13 sndrd2_g13 sndrd3_g13 sndrd4_g13 hirs3_n15 hirs3_n16 hirs3_n17 amsua_n15 amsua_n16 amsua_n17 amsua_n18 amsua_n19 amsua_metop-a amsua_metop-b amsua_metop-c amsub_n15 amsub_n16 amsub_n17 hsb_aqua airs_aqua amsua_aqua imgr_g08 imgr_g11 imgr_g12 pcp_ssmi_dmsp pcp_tmi_trmm conv sbuv2_n16 sbuv2_n17 sbuv2_n18 omi_aura ssmi_f13 ssmi_f14 ssmi_f15 hirs4_n18 hirs4_metop-a mhs_n18 mhs_n19 mhs_metop-a mhs_metop-b mhs_metop-c amsre_low_aqua amsre_mid_aqua amsre_hig_aqua ssmis_las_f16 ssmis_uas_f16 ssmis_img_f16 ssmis_env_f16 iasi_metop-a iasi_metop-b iasi_metop-c seviri_m08 seviri_m09 seviri_m10 seviri_m11 cris_npp atms_npp ssmis_f17 cris-fsr_npp cris-fsr_n20 atms_n20 abi_g16 abi_g18 abi_g19 atms_n21 cris-fsr_n21"
-    if [ -r ${DATA} ]; then
-      cd ${DATA}
 
-      for type in $listall; do
-         count=$(ls pe*.${type}_${loop} 2>/dev/null | wc -l)
-         if [[ $count -gt 0 ]]; then
-            $(cat pe*.${type}_${loop} > diag_${type}_${string}.${YYYYMMDDHH})
+  if [[ "${binary_diag}" == ".true." ]]; then
+    listall="hirs2_n14 msu_n14 sndr_g08 sndr_g11 sndr_g11 sndr_g12 sndr_g13 sndr_g08_prep sndr_g11_prep sndr_g12_prep sndr_g13_prep sndrd1_g11 sndrd2_g11 sndrd3_g11 sndrd4_g11 sndrd1_g15 sndrd2_g15 sndrd3_g15 sndrd4_g15 sndrd1_g13 sndrd2_g13 sndrd3_g13 sndrd4_g13 hirs3_n15 hirs3_n16 hirs3_n17 amsua_n15 amsua_n16 amsua_n17 amsua_n18 amsua_n19 amsua_metop-a amsua_metop-b amsua_metop-c amsub_n15 amsub_n16 amsub_n17 hsb_aqua airs_aqua amsua_aqua imgr_g08 imgr_g11 imgr_g12 pcp_ssmi_dmsp pcp_tmi_trmm conv sbuv2_n16 sbuv2_n17 sbuv2_n18 omi_aura ssmi_f13 ssmi_f14 ssmi_f15 hirs4_n18 hirs4_metop-a mhs_n18 mhs_n19 mhs_metop-a mhs_metop-b mhs_metop-c amsre_low_aqua amsre_mid_aqua amsre_hig_aqua ssmis_las_f16 ssmis_uas_f16 ssmis_img_f16 ssmis_env_f16 iasi_metop-a iasi_metop-b iasi_metop-c seviri_m08 seviri_m09 seviri_m10 seviri_m11 cris_npp atms_npp ssmis_f17 cris-fsr_npp cris-fsr_n20 atms_n20 abi_g16 abi_g18 abi_g19 atms_n21 cris-fsr_n21"
+
+    if [[ -d "${DATA}" && -r "${DATA}" ]]; then
+      cd "${DATA}" || exit 1
+      read -r -a listall_types <<< "${listall}"
+      shopt -s nullglob
+      for type in "${listall_types[@]}"; do
+         diag_files=( pe*."${type}"_"${loop}" )
+         count="${#diag_files[@]}"
+         if [[ ${count} -gt 0 ]]; then
+            cat "${diag_files[@]}" > "diag_${type}_${string}.${YYYYMMDDHH}"
             echo "diag_${type}_${string}.${YYYYMMDDHH}" >> listrad_bin
-            numfile_rad_bin=`expr ${numfile_rad_bin} + 1`
+            ((numfile_rad_bin++))
          fi
       done
+      shopt -u nullglob
     fi
 
     listall="radardbz"
-    if [ -r ${DATA} ]; then
-      cd ${DATA}
-
-      for type in $listall; do
-         count=$(ls pe*.${type}_${loop} 2>/dev/null | wc -l)
-         if [[ $count -gt 0 ]]; then
-            $(cat pe*.${type}_${loop} > diag_${type}_${string}.${YYYYMMDDHH})
+    if [[ -d "${DATA}" && -r "${DATA}" ]]; then
+      cd "${DATA}" || exit 1
+      read -r -a listall_types <<< "${listall}"
+      shopt -s nullglob
+      for type in "${listall_types[@]}"; do
+         diag_files=( pe*."${type}"_"${loop}" )
+         count="${#diag_files[@]}"
+         if [[ ${count} -gt 0 ]]; then
+            cat "${diag_files[@]}" > "diag_${type}_${string}.${YYYYMMDDHH}"
             echo "diag_${type}_${string}.${YYYYMMDDHH}" >> listdbz_bin
-            numfile_dbz_bin=`expr ${numfile_dbz_bin} + 1`
+            ((numfile_dbz_bin++))
          fi
       done
+      shopt -u nullglob
     fi
   fi
 
-  if [ $netcdf_diag = ".true." ]; then
+  if [[ "${netcdf_diag}" == ".true." ]]; then
     export pgm="nc_diag_cat.x"
 
     listall_cnv="conv_ps conv_q conv_t conv_uv conv_pw conv_rw conv_sst"
     listall_rad="hirs2_n14 msu_n14 sndr_g08 sndr_g11 sndr_g11 sndr_g12 sndr_g13 sndr_g08_prep sndr_g11_prep sndr_g12_prep sndr_g13_prep sndrd1_g11 sndrd2_g11 sndrd3_g11 sndrd4_g11 sndrd1_g15 sndrd2_g15 sndrd3_g15 sndrd4_g15 sndrd1_g13 sndrd2_g13 sndrd3_g13 sndrd4_g13 hirs3_n15 hirs3_n16 hirs3_n17 amsua_n15 amsua_n16 amsua_n17 amsua_n18 amsua_n19 amsua_metop-a amsua_metop-b amsua_metop-c amsub_n15 amsub_n16 amsub_n17 hsb_aqua airs_aqua amsua_aqua imgr_g08 imgr_g11 imgr_g12 pcp_ssmi_dmsp pcp_tmi_trmm conv sbuv2_n16 sbuv2_n17 sbuv2_n18 omi_aura ssmi_f13 ssmi_f14 ssmi_f15 hirs4_n18 hirs4_metop-a mhs_n18 mhs_n19 mhs_metop-a mhs_metop-b mhs_metop-c amsre_low_aqua amsre_mid_aqua amsre_hig_aqua ssmis_las_f16 ssmis_uas_f16 ssmis_img_f16 ssmis_env_f16 iasi_metop-a iasi_metop-b iasi_metop-c seviri_m08 seviri_m09 seviri_m10 seviri_m11 cris_npp atms_npp ssmis_f17 cris-fsr_npp cris-fsr_n20 atms_n20 abi_g16 abi_g18 abi_g19 atms_n21 cris-fsr_n21"
-    if [ -r ${DATA} ]; then
-      cd ${DATA}
 
-      for type in $listall_cnv; do
-         count=$(ls pe*.${type}_${loop}.nc4 2>/dev/null | wc -l)
-         if [[ $count -gt 0 ]]; then
-            . prep_step   
-            ${APRUN} $pgm -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4 >>$pgmout >errfile
+    if [[ -d "${DATA}" && -r "${DATA}" ]]; then
+      cd "${DATA}" || exit 1
+      read -r -a listall_cnv_types <<< "${listall_cnv}"
+      read -r -a listall_rad_types <<< "${listall_rad}"
+
+      shopt -s nullglob
+      for type in "${listall_cnv_types[@]}"; do
+         diag_files=( pe*."${type}"_"${loop}".nc4 )
+         count="${#diag_files[@]}"
+         if [[ ${count} -gt 0 ]]; then
+            # shellcheck source=/dev/null
+            . prep_step
+            # shellcheck disable=SC2086 # APRUN contains command flags
+            ${APRUN} "${pgm}" -o "diag_${type}_${string}.${YYYYMMDDHH}.nc4" "${diag_files[@]}" >>"${pgmout}" 2>errfile
             export err=$?; err_chk
-	    mv errfile errfile_nc_diag_cat_$type
-            if [ -s diag_${type}_${string}.${YYYYMMDDHH}.nc4 ]; then
-              gzip diag_${type}_${string}.${YYYYMMDDHH}.nc4
-              cpreq -p diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz ${COMOUT}
+            mv errfile "errfile_nc_diag_cat_${type}"
+            if [[ -s "diag_${type}_${string}.${YYYYMMDDHH}.nc4" ]]; then
+              gzip "diag_${type}_${string}.${YYYYMMDDHH}.nc4"
+              cpreq -p "diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz" "${COMOUT}"
               echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz" >> listcnv
-              numfile_cnv=`expr ${numfile_cnv} + 1`
+              ((numfile_cnv++))
             else
-              echo "WARNING diag_${type}_${string}.${YYYYMMDDHH}.nc4 is not available check errfile_nc_diag_cat_$type"
+              echo "WARNING diag_${type}_${string}.${YYYYMMDDHH}.nc4 is not available check errfile_nc_diag_cat_${type}"
             fi
          fi
       done
 
-      for type in $listall_rad; do
-         count=$(ls pe*.${type}_${loop}.nc4 2>/dev/null | wc -l)
-         if [[ $count -gt 0 ]]; then
-            ${APRUN} $pgm -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4 >>$pgmout >errfile
+      for type in "${listall_rad_types[@]}"; do
+         diag_files=( pe*."${type}"_"${loop}".nc4 )
+         count="${#diag_files[@]}"
+         if [[ ${count} -gt 0 ]]; then
+            # shellcheck disable=SC2086 # APRUN contains command flags
+            ${APRUN} "${pgm}" -o "diag_${type}_${string}.${YYYYMMDDHH}.nc4" "${diag_files[@]}" >>"${pgmout}" 2>errfile
             export err=$?; err_chk
-            mv errfile errfile_nc_diag_cat_$type
-            if [ -s diag_${type}_${string}.${YYYYMMDDHH}.nc4 ]; then
-              gzip diag_${type}_${string}.${YYYYMMDDHH}.nc4
-              cpreq -p diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz ${COMOUT}
+            mv errfile "errfile_nc_diag_cat_${type}"
+            if [[ -s "diag_${type}_${string}.${YYYYMMDDHH}.nc4" ]]; then
+              gzip "diag_${type}_${string}.${YYYYMMDDHH}.nc4"
+              cpreq -p "diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz" "${COMOUT}"
               echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz" >> listrad
-              numfile_rad=`expr ${numfile_rad} + 1`
+              ((numfile_rad++))
             else
-              echo "WARNING diag_${type}_${string}.${YYYYMMDDHH}.nc4 is not available check errfile_nc_diag_cat_$type"
+              echo "WARNING diag_${type}_${string}.${YYYYMMDDHH}.nc4 is not available check errfile_nc_diag_cat_${type}"
             fi
          else
-            echo 'No diag_' ${type} 'exist'
+            echo "No diag_${type} exist"
          fi
       done
+      shopt -u nullglob
     fi
 
     listall="conv_dbz conv_fed"
-    if [ -r ${DATA} ]; then
-      cd ${DATA}
+    if [[ -d "${DATA}" && -r "${DATA}" ]]; then
+      cd "${DATA}" || exit 1
 
-      for type in $listall; do
-         count=$(ls pe*.${type}_${loop}.nc4 2>/dev/null | wc -l)
-         if [[ $count -gt 0 ]]; then
-	    . prep_step
-            ${APRUN} $pgm -o diag_${type}_${string}.${YYYYMMDDHH}.nc4 pe*.${type}_${loop}.nc4 >>$pgmout >errfile
+      read -r -a listall_types <<< "${listall}"
+      shopt -s nullglob
+      for type in "${listall_types[@]}"; do
+         diag_files=( pe*."${type}"_"${loop}".nc4 )
+         count="${#diag_files[@]}"
+         if [[ ${count} -gt 0 ]]; then
+            # shellcheck source=/dev/null
+            . prep_step
+            # shellcheck disable=SC2086 # APRUN contains command flags
+            ${APRUN} "${pgm}" -o "diag_${type}_${string}.${YYYYMMDDHH}.nc4" "${diag_files[@]}" >>"${pgmout}" 2>errfile
             export err=$?; err_chk
-	    mv errfile errfile_nc_diag_cat_$type
-            if [ -s diag_${type}_${string}.${YYYYMMDDHH}.nc4 ]; then
-              gzip diag_${type}_${string}.${YYYYMMDDHH}.nc4
-              cpreq -p diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz ${COMOUT}
+            mv errfile "errfile_nc_diag_cat_${type}"
+            if [[ -s "diag_${type}_${string}.${YYYYMMDDHH}.nc4" ]]; then
+              gzip "diag_${type}_${string}.${YYYYMMDDHH}.nc4"
+              cpreq -p "diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz" "${COMOUT}"
               echo "diag_${type}_${string}.${YYYYMMDDHH}.nc4.gz" >> listdbz
-              numfile_dbz=`expr ${numfile_dbz} + 1`
+              ((numfile_dbz++))
             else
-              echo "WARNING diag_${type}_${string}.${YYYYMMDDHH}.nc4 is not available errfile_nc_diag_cat_$type"
+              echo "WARNING diag_${type}_${string}.${YYYYMMDDHH}.nc4 is not available errfile_nc_diag_cat_${type}"
             fi
          fi
       done
+      shopt -u nullglob
     fi
   fi
 done
@@ -261,85 +299,85 @@ done
 #
 #-----------------------------------------------------------------------
 #
-if [ "${DO_RADDA}" = "TRUE" ]; then
-  if [ "${CYCLE_TYPE}" = "spinup" ]; then
-    spinup_or_prod_rrfs=spinup
+if [[ "${DO_RADDA}" == "TRUE" ]]; then
+  if [[ "${CYCLE_TYPE}" == "spinup" ]]; then
+    spinup_or_prod_rrfs="spinup"
   else
-    spinup_or_prod_rrfs=prod
-  fi
-  if [ -r ${DATA} ]; then
-     cd ${DATA}
-
-     if [ ${numfile_cnv} -gt 0 ]; then
-        tar -cvzf rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_cnvstat_nc `cat listcnv`
-        cpreq -p ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_cnvstat_nc  ${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_cnvstat
-     fi
-     if [ ${numfile_rad} -gt 0 ]; then
-        tar -cvzf rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat_nc `cat listrad`
-        cpreq -p ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat_nc  ${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat
-     fi
-     if [ ${numfile_rad_bin} -gt 0 ]; then
-        tar -cvzf rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat `cat listrad_bin`
-        cpreq -p ./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat  ${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat
-     fi
-
-     # For EnVar DA  
-     if [ -r ./satbias_out ]; then
-       cpreq -p ./satbias_out ${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
-       cpreq -p ./satbias_out ${COMOUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias
-     fi
-     if [ -r ./satbias_pc.out ]; then
-       cpreq -p ./satbias_pc.out ${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
-       cpreq -p ./satbias_pc.out ${COMOUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc
-     fi
+    spinup_or_prod_rrfs="prod"
   fi
 
+  if [[ -d "${DATA}" && -r "${DATA}" ]]; then
+     cd "${DATA}" || exit 1
+
+     if [[ "${numfile_cnv}" -gt 0 ]]; then
+        tar -cvzf "rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_cnvstat_nc" -T listcnv
+        cpreq -p "./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_cnvstat_nc" "${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_cnvstat"
+     fi
+     if [[ "${numfile_rad}" -gt 0 ]]; then
+        tar -cvzf "rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat_nc" -T listrad
+        cpreq -p "./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat_nc" "${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat"
+     fi
+     if [[ "${numfile_rad_bin}" -gt 0 ]]; then
+        tar -cvzf "rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat" -T listrad_bin
+        cpreq -p "./rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat" "${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat"
+     fi
+
+     # For EnVar DA
+     if [[ -r ./satbias_out ]]; then
+       cpreq -p ./satbias_out "${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias"
+       cpreq -p ./satbias_out "${COMOUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias"
+     fi
+     if [[ -r ./satbias_pc.out ]]; then
+       cpreq -p ./satbias_pc.out "${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc"
+       cpreq -p ./satbias_pc.out "${COMOUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_satbias_pc"
+     fi
+  fi
 fi
 
 #------------------------------------------------------------------------
 # set up local dirs and run run radmon to generate radiance monitor data
 #------------------------------------------------------------------------
 
-if [ "${DO_RADMON}" = "TRUE" ]; then 
-   if [ ! -f ${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat ]; then
-     echo "***radstat file for " ${YYYYMMDDHH} "is not existing, skipping radmon job***"
+if [[ "${DO_RADMON}" == "TRUE" ]]; then
+   if [[ ! -f "${SATBIAS_OUT}/rrfs.${spinup_or_prod_rrfs}.${YYYYMMDDHH}_radstat" ]]; then
+     echo "***radstat file for ${YYYYMMDDHH} is not existing, skipping radmon job***"
    else
      echo "Run EMC Radmon package to generate daily monitoring data for satellite"
 
-     envir=${envir:-prod}
-     REGIONAL_RR=${REGIONAL_RR:-1}
+     envir="${envir:-prod}"
+     REGIONAL_RR="${REGIONAL_RR:-1}"
 
-     export TANKverf=${TANKverf:-$GESROOT/radmon}
-     export TANKverf_rad=$TANKverf/radmon.$PDY
+     export TANKverf="${TANKverf:-${GESROOT}/radmon}"
+     export TANKverf_rad="${TANKverf}/radmon.${PDY}"
 
-
-     if [ ! -d $TANKverf_rad ]; then
-       mkdir -p -m 775 $TANKverf_rad
+     if [[ ! -d "${TANKverf_rad}" ]]; then
+       # shellcheck disable=SC2174
+       mkdir -p -m 775 "${TANKverf_rad}"
      fi
 
+     export RAD_AREA="${RAD_AREA:-rgn}"
+     export CYCLE_INTERVAL="${CYCLE_INTERVAL:-1}"
+     export DATAradmon="${DATA}/radmon"
+     mkdir -p "${DATAradmon}"
+     export TANKverf_radM1="${TANKverf_radM1:-${TANKverf}/radmon.${PDY}}"
 
-     export RAD_AREA=${RAD_AREA:-rgn}
-     export CYCLE_INTERVAL=${CYCLE_INTERVAL:-1}
-     export DATAradmon=${DATA}/radmon
-     mkdir -p $DATAradmon
-     export TANKverf_radM1=${TANKverf_radM1:-${TANKverf}/radmon.${PDY}}
+     export GSI_MON_BIN="${EXECrrfs}"
+     export FIXgdas="${FIX_GSI}"
 
-     export GSI_MON_BIN=$EXECrrfs
-     export FIXgdas=$FIX_GSI
+     export RADMON_SUFFIX="rrfs"
+     export rgnHH="${PDY}${cyc}"
+     export biascr="${biascr:-${SATBIAS_OUT}/${RADMON_SUFFIX}.${CYCLE_TYPE}.${rgnHH}_satbias}"
+     export radstat="${radstat:-${SATBIAS_OUT}/${RADMON_SUFFIX}.${CYCLE_TYPE}.${rgnHH}_radstat}"
 
-     export RADMON_SUFFIX=rrfs
-     export rgnHH=${PDY}${cyc}
-     export biascr=${biascr:-${SATBIAS_OUT}/${RADMON_SUFFIX}.${CYCLE_TYPE}.${rgnHH}_satbias}
-     export radstat=${radstat:-${SATBIAS_OUT}/${RADMON_SUFFIX}.${CYCLE_TYPE}.${rgnHH}_radstat}
-
-     echo "radstat: $radstat"
-     echo "biascr:  $biascr"
-
-     export COMPRESS=gzip
+     echo "radstat: ${radstat}"
+     echo "biascr:  ${biascr}"
+     # ci-ignore: implementation_standard
+     export COMPRESS="gzip"
 
      CLEAN_TANKVERF=1
 
-     . $USHrrfs/rrfs_radmon/exrrfs_verfrad.sh ${PDY} ${cyc}
+     # shellcheck source=/dev/null
+     . "${USHrrfs}/rrfs_radmon/exrrfs_verfrad.sh" "${PDY}" "${cyc}"
    fi
 fi
 #

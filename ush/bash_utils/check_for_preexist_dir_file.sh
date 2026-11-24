@@ -1,3 +1,5 @@
+#!/bin/bash
+set -x
 #
 #-----------------------------------------------------------------------
 #
@@ -12,7 +14,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -54,7 +56,7 @@ where the arguments are defined as follows:
   Name of directory or file to check for a preexisting version.
 
   method:
-  String specifying the action to take if a preexisting version of 
+  String specifying the action to take if a preexisting version of
   dir_or_file is found.  Valid values are \"delete\", \"upgrade\", \"rename\", and \"quit\".
 "
 
@@ -71,7 +73,7 @@ where the arguments are defined as follows:
 #
 #-----------------------------------------------------------------------
 #
-# Set the valid values that method can take on and check to make sure 
+# Set the valid values that method can take on and check to make sure
 # the specified value is valid.
 #
 #-----------------------------------------------------------------------
@@ -88,7 +90,7 @@ where the arguments are defined as follows:
 #
   if [ -e "${dir_or_file}" ]; then
 
-    case "$method" in
+    case "${method}" in
 #
 #-----------------------------------------------------------------------
 #
@@ -104,7 +106,7 @@ where the arguments are defined as follows:
 #
 #-----------------------------------------------------------------------
 #
-# If method is set to "upgrade", 
+# If method is set to "upgrade",
 #  keep preexisting directory intact except that
 #  when preexisting directory is $EXPDIR, do the following:
 #    save all old files to a subdirecotry oldxxx/ and then
@@ -116,7 +118,7 @@ where the arguments are defined as follows:
 #         the workflow generation process
 # This may best suit for incremental system upgrades.
 #
-# Alternatively, one can always elect to use the "rename" option 
+# Alternatively, one can always elect to use the "rename" option
 #   and then manually do the above aftermath
 #
 #-----------------------------------------------------------------------
@@ -124,15 +126,15 @@ where the arguments are defined as follows:
     "upgrade")
       if [[ "${dir_or_file}" == "${EXPTDIR}" ]]; then
         local i=1
-        local old_indx=$( printf "%03d" "$i" )
+        local old_indx=$( printf "%03d" "${i}" )
         local old_dir_or_file="${dir_or_file}_old${old_indx}"
         while [ -d "${old_dir_or_file}" ]; do
-          i=$[$i+1]
-          old_indx=$( printf "%03d" "$i" )
+          i=$(( i + 1 ))
+          old_indx=$( printf "%03d" "${i}" )
           old_dir_or_file="${dir_or_file}_old${old_indx}"
         done
 
-        print_info_msg "$VERBOSE" "
+        print_info_msg "${VERBOSE}" "
   Specified directory or file (dir_or_file) already exists:
     dir_or_file = \"${dir_or_file}\"
   Moving (renaming) preexisting directory or file to:
@@ -152,15 +154,15 @@ where the arguments are defined as follows:
     "rename")
 
       local i=1
-      local old_indx=$( printf "%03d" "$i" )
+      local old_indx=$( printf "%03d" "${i}" )
       local old_dir_or_file="${dir_or_file}_old${old_indx}"
       while [ -e "${old_dir_or_file}" ]; do
-        i=$[$i+1]
-        old_indx=$( printf "%03d" "$i" )
+        i=$(( i + 1 ))
+        old_indx=$( printf "%03d" "${i}" )
         old_dir_or_file="${dir_or_file}_old${old_indx}"
       done
 
-      print_info_msg "$VERBOSE" "
+      print_info_msg "${VERBOSE}" "
 Specified directory or file (dir_or_file) already exists:
   dir_or_file = \"${dir_or_file}\"
 Moving (renaming) preexisting directory or file to:
@@ -185,9 +187,8 @@ Specified directory or file (dir_or_file) already exists:
       ;;
 
     esac
-  
+
   fi
 #
 }
-
 

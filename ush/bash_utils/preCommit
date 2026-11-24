@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+set -x
 # pre-commit hook
 #
 FMAXSIZE="1536" #limit of file size for all files, unit kb, 1.5MB

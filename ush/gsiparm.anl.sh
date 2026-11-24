@@ -1,5 +1,6 @@
 #!/bin/bash
 set -eux
+
 gsi_namelist="
  &SETUP
    miter=${miter},niter(1)=${niter1},niter(2)=${niter2},
@@ -11,10 +12,10 @@ gsi_namelist="
    gencode=78,factqmin=0.0,factqmax=0.0,
    iguess=-1,crtm_coeffs_path='./crtm_coeffs/',
    lread_obs_save=${lread_obs_save},lread_obs_skip=${lread_obs_skip},
-   ${ens_nstarthr:+"ens_nstarthr=$ens_nstarthr,"}
+   ${ens_nstarthr:+"ens_nstarthr=${ens_nstarthr},"}
    oneobtest=.false.,retrieval=.false.,
    nhr_assimilation=3,l_foto=.false.,
-   use_pbl=.false.,use_prepb_satwnd=$ifsatbufr,
+   use_pbl=.false.,use_prepb_satwnd=${ifsatbufr},
    newpc4pred=.true.,adp_anglebc=.true.,angord=4,
    passive_bc=.true.,use_edges=.false.,emiss_bc=.true.,
    diag_precon=.true.,step_start=1.e-3,
@@ -24,7 +25,7 @@ gsi_namelist="
    l_obsprvdiag=${l_obsprvdiag},
    lwrite_peakwt=.true.,
    innov_use_model_fed=${innov_use_model_fed},
- /     
+ /
  &GRIDOPTS
    fv3_regional=.true.,grid_ratio_fv3_regional=${grid_ratio_fv3},nvege_type=20,
    fv3_io_layout_y=${n_iolayouty},
@@ -137,9 +138,9 @@ OBS_INPUT::
    atmsbufr       atms        n20       atms_n20             0.0     2     0
    atmsbufr       atms        n21       atms_n21             0.0     2     0
    crisbufr       cris        npp       cris_npp             0.0     2     0
-   crisfsbufr     cris-fsr    npp       cris-fsr_npp         0.0     2     0 
-   crisfsbufr     cris-fsr    n20       cris-fsr_n20         0.0     2     0 
-   crisfsbufr     cris-fsr    n21       cris-fsr_n21         0.0     2     0 
+   crisfsbufr     cris-fsr    npp       cris-fsr_npp         0.0     2     0
+   crisfsbufr     cris-fsr    n20       cris-fsr_n20         0.0     2     0
+   crisfsbufr     cris-fsr    n21       cris-fsr_n21         0.0     2     0
    abibufr        abi         g16       abi_g16              0.0     2     0
    mlsbufr        mls30       aura      mls30_aura           0.0     0     0
    oscatbufr      uv          null      uv                   0.0     0     0

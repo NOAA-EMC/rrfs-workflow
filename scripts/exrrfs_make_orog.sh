@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 
-source ${FIXrrfs}/workflow/${WGF}/workflow.conf
+source "${FIXrrfs}"/workflow/"${WGF}"/workflow.conf
 
 export TOPO_DIR="${FIXrrfs}/fix_orog"
 export FIXam=${FIXam:-${HOMErrfs}/fix/am}
@@ -13,11 +13,11 @@ export FIXam=${FIXam:-${HOMErrfs}/fix/am}
 #
 #-----------------------------------------------------------------------
 #
-. $USHrrfs/source_util_funcs.sh
+. "${USHrrfs}"/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -55,7 +55,7 @@ export OMP_STACKSIZE=2048m
 #
 # Load modules and set various computational parameters and directories.
 #
-# Note: 
+# Note:
 # These module loads should all be moved to modulefiles.  This has been
 # done for Hera but must still be done for other machines.
 #
@@ -78,12 +78,24 @@ APRUN="time"
 #
 #-----------------------------------------------------------------------
 #
-if [ ${WGF} = "firewx" ]; then
+if [ "${WGF}" = "firewx" ]; then
   hh="${CDATE:8:2}"
   firewx_loc="${COMrrfs}/firewx_input/rrfs_firewx_loc"
-  if [ -s ${firewx_loc} ]; then
-    LAT_CTR=`grep ${hh}z $firewx_loc | awk '{print $2}'`
-    LON_CTR=`grep ${hh}z $firewx_loc | awk '{print $3}'`
+  if [ -s "${firewx_loc}" ]; then
+    LAT_CTR=""
+    LON_CTR=""
+    if [[ -s "${firewx_loc}" ]]; then
+      # Replaced dual awk subprocesses with a single native Bash read loop (Zero Subprocess Rule).
+      while read -r target_hh lat lon _rest; do
+        # Exact match on the first column strictly prevents false positives from the 'index' flaw.
+        if [[ "${target_hh}" == "${hh}z" ]]; then
+          LAT_CTR="${lat}"
+          LON_CTR="${lon}"
+          # Break immediately stops the loop, preventing multi-line variable corruption.
+          break
+        fi
+      done < "${firewx_loc}"
+    fi
   else
     echo "WARNING:  Did not find firewx_loc to to set center point.  Will default to DC region"
     LAT_CTR=38.9
@@ -98,11 +110,11 @@ fi
 #
 #-----------------------------------------------------------------------
 #
-cd ${DATA}/raw_topo/tmp
+cd "${DATA}"/raw_topo/tmp
 
-cpreq -p ${TOPO_DIR}/thirty.second.antarctic.new.bin fort.15
-cpreq -p ${TOPO_DIR}/landcover30.fixed .
-cpreq -p ${TOPO_DIR}/gmted2010.30sec.int fort.235
+cpreq -p "${TOPO_DIR}"/thirty.second.antarctic.new.bin fort.15
+cpreq -p "${TOPO_DIR}"/landcover30.fixed .
+cpreq -p "${TOPO_DIR}"/gmted2010.30sec.int fort.235
 #
 #-----------------------------------------------------------------------
 #
@@ -152,13 +164,13 @@ blat=0
 input_redirect_fn="INPS"
 orogfile="none"
 
-echo $mtnres $lonb $latb $jcap $NR $NF1 $NF2 $efac $blat > "${input_redirect_fn}"
+echo ${mtnres} ${lonb} ${latb} ${jcap} ${NR} ${NF1} ${NF2} ${efac} ${blat} > "${input_redirect_fn}"
 #
 # The following two inputs are read in as strings, so they must be quoted
 # in the input file.
 #
 echo "\"${grid_fp}\"" >> "${input_redirect_fn}"
-echo "\"$orogfile\"" >> "${input_redirect_fn}"
+echo "\"${orogfile}\"" >> "${input_redirect_fn}"
 echo ".false." >> "${input_redirect_fn}"
 echo "none" >> "${input_redirect_fn}"
 cat "${input_redirect_fn}"
@@ -179,11 +191,11 @@ print_info_msg "Starting orography file generation..."
 export pgm="ufs_util_orog"
 . prep_step
 
-$APRUN ${EXECrrfs}/$pgm < "${input_redirect_fn}" >>$pgmout 2>${DATA}/raw_topo/tmp/errfile
+${APRUN} "${EXECrrfs}"/${pgm} < "${input_redirect_fn}" >>"${pgmout}" 2>"${DATA}"/raw_topo/tmp/errfile
 export err=$?; err_chk
-mv ${DATA}/raw_topo/tmp/errfile ${DATA}/raw_topo/tmp/errfile_orog
+mv "${DATA}"/raw_topo/tmp/errfile "${DATA}"/raw_topo/tmp/errfile_orog
 
-cd ${DATA}
+cd "${DATA}"
 #
 #-----------------------------------------------------------------------
 #
@@ -208,13 +220,20 @@ mv "${raw_orog_fp_orig}" "${raw_orog_fp}"
 #-----------------------------------------------------------------------
 #
 suites=( "FV3_RAP" "FV3_HRRR" "FV3_HRRR_gf" "FV3_GFS_v15_thompson_mynn_lam3km" "FV3_GFS_v17_p8" )
-if [[ ${suites[@]} =~ "${CCPP_PHYS_SUITE}" ]] ; then
-  cd ${DATA}/temp_orog_data
+suite_has_gwd=0
+for suite in "${suites[@]}"; do
+  if [ "${CCPP_PHYS_SUITE}" = "${suite}" ]; then
+    suite_has_gwd=1
+    break
+  fi
+done
+if [ "${suite_has_gwd}" -eq 1 ]; then
+  cd "${DATA}"/temp_orog_data || err_exit "Failed to cd into ${DATA}/temp_orog_data"
   mosaic_fn_gwd="${CRES}${DOT_OR_USCORE}mosaic.halo${NH4}.nc"
   mosaic_fp_gwd="${COMrrfs}/${RUN}.${PDY}/${cyc}/input/${mosaic_fn_gwd}"
   grid_fn_gwd=$( get_charvar_from_netcdf "${mosaic_fp_gwd}" "gridfiles" )
   export err=$?
-  if [ $err -ne 0 ]; then
+  if [ ${err} -ne 0 ]; then
     err_exit "get_charvar_from_netcdf function failed."
   fi
   grid_fp_gwd="${COMrrfs}/${RUN}.${PDY}/${cyc}/input/${grid_fn_gwd}"
@@ -236,9 +255,9 @@ EOF
   export pgm="ufs_util_orog_gsl"
   . prep_step
 
-  ${APRUN} ${EXECrrfs}/$pgm < "${input_redirect_fn}" >>$pgmout 2>${DATA}/raw_topo/tmp/errfile
+  ${APRUN} "${EXECrrfs}"/${pgm} < "${input_redirect_fn}" >>"${pgmout}" 2>"${DATA}"/raw_topo/tmp/errfile
   export err=$?; err_chk
-  mv ${DATA}/raw_topo/tmp/errfile ${DATA}/raw_topo/tmp/errfile_orog_gsl
+  mv "${DATA}"/raw_topo/tmp/errfile "${DATA}"/raw_topo/tmp/errfile_orog_gsl
 
   cpreq -p "${CRES}${DOT_OR_USCORE}oro_data_ss.tile${TILE_RGNL}.halo${NH0}.nc" \
            "${CRES}${DOT_OR_USCORE}oro_data_ls.tile${TILE_RGNL}.halo${NH0}.nc" \
@@ -347,7 +366,7 @@ cat > "${DATA}/filtered_topo/input.nml" <<EOF
   mask_field = "land_frac"
   regional = .true.
   stretch_fac = ${STRETCH_FAC}
-  res = $res
+  res = ${res}
 /
 EOF
 #
@@ -369,9 +388,9 @@ print_info_msg "Starting filtering of orography..."
 export pgm="ufs_util_filter_topo"
 . prep_step
 
-$APRUN ${EXECrrfs}/$pgm >>$pgmout 2>${DATA}/raw_topo/tmp/errfile
+${APRUN} "${EXECrrfs}"/${pgm} >>"${pgmout}" 2>"${DATA}"/raw_topo/tmp/errfile
 export err=$?; err_chk
-mv ${DATA}/raw_topo/tmp/errfile ${DATA}/raw_topo/tmp/errfile_filter_topo
+mv "${DATA}"/raw_topo/tmp/errfile "${DATA}"/raw_topo/tmp/errfile_filter_topo
 #
 # For clarity, rename the filtered orography file in filter_dir
 # such that its new name contains the halo size.
@@ -382,7 +401,7 @@ filtered_orog_fp=$( dirname "${filtered_orog_fp}" )"/${filtered_orog_fn}"
 mv "${filtered_orog_fn_orig}" "${filtered_orog_fn}"
 cpreq -p "${filtered_orog_fp}" "${COMrrfs}/${RUN}.${PDY}/${cyc}/input/${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${NHW}.nc"
 
-cd ${DATA}
+cd "${DATA}"
 
 print_info_msg "Filtering of orography complete."
 #
@@ -421,18 +440,18 @@ for halo_num in "${halo_num_list[@]}"; do
   nml_fn="input.shave.orog.halo${halo_num}"
   shaved_fp="${DATA}/shave_tmp/${CRES}${DOT_OR_USCORE}oro_data.tile${TILE_RGNL}.halo${halo_num}.nc"
   printf "%s %s %s %s %s\n" \
-  $NX $NY ${halo_num} \"${unshaved_fp}\" \"${shaved_fp}\" \
-  > ${nml_fn}
+  "${NX}" "${NY}" "${halo_num}" \""${unshaved_fp}"\" \""${shaved_fp}"\" \
+  > "${nml_fn}"
 
   . prep_step
 
-  $APRUN ${EXECrrfs}/$pgm < ${nml_fn} >>$pgmout 2>${DATA}/raw_topo/tmp/errfile
+  ${APRUN} "${EXECrrfs}"/${pgm} < "${nml_fn}" >>"${pgmout}" 2>"${DATA}"/raw_topo/tmp/errfile
   export err=$?; err_chk
-  mv ${DATA}/raw_topo/tmp/errfile ${DATA}/raw_topo/tmp/errfile_shave_${halo_num}
-  cpreq -p ${shaved_fp} ${COMrrfs}/${RUN}.${PDY}/${cyc}/input/
+  mv "${DATA}"/raw_topo/tmp/errfile "${DATA}"/raw_topo/tmp/errfile_shave_"${halo_num}"
+  cpreq -p "${shaved_fp}" "${COMrrfs}"/"${RUN}"."${PDY}"/"${cyc}"/input/
 done
 
-cd ${DATA}
+cd "${DATA}"
 #
 #-----------------------------------------------------------------------
 #

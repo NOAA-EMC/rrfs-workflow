@@ -1,0 +1,189 @@
+---
+name: NCO_Consistency_Implementation_Standard
+"on":
+  push:
+  pull_request:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  implementation-standard-ci:
+    runs-on: ubuntu-latest
+    env:
+      CI_IGNORE: >-
+        ${{ github.event.head_commit.message }}
+        ${{ github.event.pull_request.title }}${{ github.event.pull_request.body }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Run NCO Linter
+        shell: bash
+        run: |
+          set -euo pipefail
+          LOG_FILE="ci_impl_run.log"
+          exec > >(tee -a "$LOG_FILE") 2>&1
+
+          echo "Starting NCO Implementation Standard CI..."
+
+          LINTER=".github/workflows/tools/linter_nco_implementation_standard.py"
+          if [[ ! -f "$LINTER" || ! -r "$LINTER" ]]; then
+            echo "Linter script is missing or unreadable: $LINTER" >&2
+            exit 1
+          fi
+
+          if echo "$CI_IGNORE" | grep -iqE "\[skip[ -_]implementation_standard\]|skip-implementation-standard"; then
+            echo "Globally skipping implementation_standard based on commit/PR message."
+            exit 0
+          fi
+
+          NIS_FILE="nis_file_list.data"
+          EXCLUDE_FILE=".github/workflows/exclude_file_list_Implementation_Standard.lst"
+
+          # Keep the jobs/scripts layout rule in CI, alongside discovery.
+          for directory in jobs scripts; do
+            if [[ -d "$directory" ]]; then
+              subdirectories=$(find -L "$directory" -mindepth 1 -maxdepth 1 -type d -print) || {
+                echo "Failed to inspect subdirectories under $directory." >&2
+                exit 1
+              }
+              if [[ -n "$subdirectories" ]]; then
+                echo "Subdirectories are not allowed directly under $directory:"
+                printf '%s\n' "$subdirectories"
+                exit 1
+              fi
+            fi
+          done
+
+          # 1. Discover all bash files under package root and include all files under ./jobs
+          DISCOVERY_LIST="$(mktemp)"
+          trap 'rm -f "$DISCOVERY_LIST"' EXIT
+          if ! find -L . -type f \
+            \( -iname '*.sh' -o -iname '*.bash' -o -path './jobs/*' \) \
+            -not -path '*/\.git/*' -print0 | sort -zu > "$DISCOVERY_LIST"; then
+            echo "Failed to discover implementation-standard targets." >&2
+            exit 1
+          fi
+          mapfile -d '' -t sh_files < "$DISCOVERY_LIST"
+
+          if [ "${#sh_files[@]}" -eq 0 ]; then
+            echo "No shell scripts found to check. Exiting gracefully (exit 0)."
+            exit 0
+          fi
+
+          # 2. Parse exclusion rules into directory patterns and exact file patterns
+          exclude_dir_patterns=()
+          exclude_file_patterns=()
+
+          if [ -f "$EXCLUDE_FILE" ]; then
+            while IFS= read -r pattern || [ -n "$pattern" ]; do
+              pattern="${pattern%$'\r'}"
+              pattern="${pattern#"${pattern%%[![:space:]]*}"}"
+              pattern="${pattern%"${pattern##*[![:space:]]}"}"
+              [ -z "$pattern" ] && continue
+              case "$pattern" in \#*) continue ;; esac
+
+              norm_pattern="${pattern#./}"
+              if [[ "$norm_pattern" == *"/*" ]]; then
+                exclude_dir_patterns+=("${norm_pattern%"/*"}")
+              elif [[ "$norm_pattern" == *"/" ]]; then
+                exclude_dir_patterns+=("${norm_pattern%"/"}")
+              elif [ -d "$norm_pattern" ]; then
+                exclude_dir_patterns+=("$norm_pattern")
+              else
+                exclude_file_patterns+=("$norm_pattern")
+              fi
+            done < "$EXCLUDE_FILE"
+          fi
+
+          # 3. Filter discovered files and populate nis_file_list.data
+          > "$NIS_FILE"
+          valid_count=0
+
+          for file in "${sh_files[@]}"; do
+            norm_file="${file#./}"
+
+            # If not in ./jobs, enforce shell file naming convention
+            if [[ "$norm_file" != jobs/* ]]; then
+              case "$norm_file" in
+                *.sh|*.bash|*.SH|*.BASH) ;;
+                *) continue ;;
+              esac
+            fi
+
+            excluded=0
+            for dir_p in "${exclude_dir_patterns[@]}"; do
+              if [[ "$norm_file" == "$dir_p"/* ]]; then
+                excluded=1
+                break
+              fi
+            done
+
+            if [ "$excluded" -eq 0 ]; then
+              for file_p in "${exclude_file_patterns[@]}"; do
+                if [ "$norm_file" = "$file_p" ]; then
+                  excluded=1
+                  break
+                fi
+              done
+            fi
+
+            if [ "$excluded" -eq 1 ]; then
+              echo "Skipping excluded file: $norm_file"
+              continue
+            fi
+
+            if grep -iq '^[[:space:]]*#[[:space:]]*ci-ignore:.*implementation_standard' "$file"; then
+              echo "Skipping file with in-file ignore: $norm_file"
+              continue
+            fi
+
+            echo "$file" >> "$NIS_FILE"
+            valid_count=$((valid_count + 1))
+          done
+
+          if [ "$valid_count" -eq 0 ]; then
+            echo "All discovered shell scripts were excluded. Exiting gracefully (exit 0)."
+            exit 0
+          fi
+
+          echo "Saved $valid_count candidate file(s) into $NIS_FILE"
+          echo "Executing python linter against $NIS_FILE..."
+
+          # 4. Run Python linter using the manifest list
+          if ! python -B "$LINTER" --file-list "$NIS_FILE"; then
+            echo "NCO Implementation standard violations found."
+            exit 1
+          fi
+
+          echo "All implementation checks passed!"
+          exit 0
+
+      - name: Write GitHub Step Summary
+        if: always()
+        run: |
+          if [ -f ci_impl_run.log ]; then
+            {
+              echo "### NCO Implementation Standard Run Log"
+              echo '```text'
+              cat ci_impl_run.log
+              echo '```'
+            } >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Upload Logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: impl-standard-logs
+          path: |
+            ci_impl_run.log
+            nis_file_list.data
+          if-no-files-found: ignore

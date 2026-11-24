@@ -1,0 +1,215 @@
+---
+# NCO Consistency GitHub CI for Bash scripts
+# Admin can implement exclusive ci-ignore: (bash_setx, ETC) to ignore the test in target script.
+# Admin can implement insert file in the exclude_file_list.lst to ignore the file being checked.
+name: NCO_Consistency_Bash
+
+"on":
+  push:
+  pull_request:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  shell-consistency:
+    runs-on: ubuntu-latest
+    env:
+      CI_IGNORE: >-
+        ${{ github.event.head_commit.message }}
+        ${{ github.event.pull_request.title }}${{ github.event.pull_request.body }}
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Ensure ShellCheck
+        run: |
+          if ! command -v shellcheck &> /dev/null; then
+            sudo apt-get update
+            sudo apt-get install --no-install-recommends --yes shellcheck
+          fi
+
+      - name: Check Bash scripts
+        shell: bash
+        run: |
+          # 0. Parse GLOBAL ci-ignore options from commit/PR body/title
+          run_bash_shellcheck=1
+          run_shebang_script=1
+          run_bash_setx=1
+          run_bash_exitzero=1
+
+          if echo "$CI_IGNORE" | grep -iq "bash_shellcheck"; then
+            run_bash_shellcheck=0
+            echo "Globally skipping bash_shellcheck"
+          fi
+          if echo "$CI_IGNORE" | grep -iq "shebang_script"; then
+            run_shebang_script=0
+            echo "Globally skipping shebang_script"
+          fi
+          if echo "$CI_IGNORE" | grep -iq "bash_setx"; then
+            run_bash_setx=0
+            echo "Globally skipping bash_setx"
+          fi
+          if echo "$CI_IGNORE" | grep -iq "bash_exitzero"; then
+            run_bash_exitzero=0
+            echo "Globally skipping bash_exitzero"
+          fi
+
+          # 1. Discover all scripts matching target paths and extensions
+          mapfile -d '' shell_files < <(
+            find -L . -type f \
+              \( -path './jobs/*' -o -path './scripts/*' -o -iname '*.sh' -o -iname '*.bash' \) \
+              -not -path '*/\.git/*' -print0 | sort -zu
+          )
+
+          if (( ${#shell_files[@]} == 0 )); then
+            echo "No Bash scripts found to check."
+            exit 0
+          fi
+
+          failed=0
+          source_path="SCRIPTDIR:ush:ush/bash_utils"
+
+          # 1.5 Load exclusion list to apply globally (separated by dir vs file)
+          EXCLUDE_FILE=".github/workflows/exclude_file_list_Bash.lst"
+          exclude_dir_patterns=()
+          exclude_file_patterns=()
+          if [[ -f "$EXCLUDE_FILE" ]]; then
+            while IFS= read -r pattern || [[ -n "$pattern" ]]; do
+              pattern="${pattern%$'\r'}"
+              pattern="${pattern#"${pattern%%[![:space:]]*}"}"
+              pattern="${pattern%"${pattern##*[![:space:]]}"}"
+              [[ -z "$pattern" || "$pattern" == \#* ]] && continue
+
+              norm_pattern="${pattern#./}"
+              if [[ "$norm_pattern" == *"/*" ]]; then
+                exclude_dir_patterns+=("${norm_pattern%"/*"}")
+              elif [[ "$norm_pattern" == *"/" ]]; then
+                exclude_dir_patterns+=("${norm_pattern%"/"}")
+              elif [[ -d "$norm_pattern" ]]; then
+                exclude_dir_patterns+=("$norm_pattern")
+              else
+                exclude_file_patterns+=("$norm_pattern")
+              fi
+            done < "$EXCLUDE_FILE"
+          fi
+
+          # 2. Filter files (Global Exclude.lst + inline shellcheck ignores)
+          valid_shell_files=()
+          shellcheck_files=()
+
+          for file in "${shell_files[@]}"; do
+            norm_file="${file#./}"
+            norm_file="${norm_file%/}"
+            excluded=0
+
+            for dir_p in "${exclude_dir_patterns[@]}"; do
+              if [[ "$norm_file" == "$dir_p"/* ]]; then
+                excluded=1
+                break
+              fi
+            done
+
+            if [[ "$excluded" -eq 0 ]]; then
+              for file_p in "${exclude_file_patterns[@]}"; do
+                if [[ "$norm_file" == "$file_p" ]]; then
+                  excluded=1
+                  break
+                fi
+              done
+            fi
+
+            if [[ "$excluded" -eq 1 ]]; then
+              echo "Skipping all checks (excluded via list): $file"
+              continue
+            fi
+
+            # If not excluded, add to valid files for stage 4
+            valid_shell_files+=("$file")
+
+            # Filter specifically for shellcheck inline ignores
+            if grep -iq '^[[:space:]]*#[[:space:]]*ci-ignore:.*bash_shellcheck' "$file"; then
+              echo "Skipping bash_shellcheck for $file (inline ci-ignore found)"
+            else
+              shellcheck_files+=("$file")
+            fi
+          done
+
+          # 3. RUN: bash_shellcheck (Now only runs on non-excluded files)
+          SC_EXC="SC2321,SC2317,SC2292,SC2249,SC2248,SC2236,SC2207,SC2181,SC2178,SC2164"
+          SC_EXC+=",SC2155,SC2154,SC2153,SC2140,SC2129,SC2128,SC2119,SC2116,SC2103"
+          SC_EXC+=",SC2059,SC2045,SC2034,SC2016,SC2012,SC2006,SC2003,SC2001,SC1091"
+          SC_EXC+=",SC1090,SC1017"
+
+          if (( run_bash_shellcheck == 1 )) && (( ${#shellcheck_files[@]} > 0 )); then
+            echo "==> Running Check: bash_shellcheck"
+            if ! shellcheck --shell=bash --enable=all \
+              --exclude="$SC_EXC" \
+              -P "$source_path" -x "${shellcheck_files[@]}"; then
+              failed=1
+            fi
+          fi
+
+          # 4. RUN: repository conventions
+          for file in "${valid_shell_files[@]}"; do
+            file_run_shebang_script=$run_shebang_script
+            file_run_setx=$run_bash_setx
+            file_run_exitzero=$run_bash_exitzero
+
+            if grep -iq '^[[:space:]]*#[[:space:]]*ci-ignore:.*shebang_script' "$file"; then
+              file_run_shebang_script=0
+              echo "Skipping shebang_script for $file (inline ci-ignore found)"
+            fi
+
+            if grep -iq '^[[:space:]]*#[[:space:]]*ci-ignore:.*bash_setx' "$file"; then
+              file_run_setx=0
+              echo "Skipping bash_setx for $file (inline ci-ignore found)"
+            fi
+
+            if grep -iq '^[[:space:]]*#[[:space:]]*ci-ignore:.*bash_exitzero' "$file"; then
+              file_run_exitzero=0
+              echo "Skipping bash_exitzero for $file (inline ci-ignore found)"
+            fi
+
+            # RUN: shebang_script
+            if (( file_run_shebang_script == 1 )); then
+              first_line=$(head -n 1 "$file" | tr -d '\r' | sed -e 's/[[:space:]]*$//')
+              if [[ "$first_line" != '#!/bin/bash' ]]; then
+                printf 'FAIL (shebang_script): %s\n' "$file"
+                printf '  -> Expected "#!/bin/bash" on line 1 (found: "%s")\n' "$first_line"
+                failed=1
+              fi
+            fi
+
+            # RUN: bash_setx
+            if (( file_run_setx == 1 )); then
+              clean_content=$(sed -e 's/#.*//' "$file" | tr -d '\r')
+              set_lines=$(
+                printf '%s\n' "$clean_content" | grep -E '(^|[;[:space:]])set([[:space:]]+|$)'
+              )
+              has_x=0
+
+              if printf '%s\n' "$set_lines" | grep -Eq '(-[a-zA-Z0-9]*x[a-zA-Z0-9]*|-o[[:space:]]+xtrace)'; then
+                has_x=1
+              fi
+
+              if [[ "$has_x" -eq 0 ]]; then
+                printf 'FAIL (bash_setx): %s\n' "$file"
+                printf '  -> Missing "set -x" (or equivalent flag group) in file\n'
+                failed=1
+              fi
+            fi
+
+            # RUN: bash_exitzero
+            if (( file_run_exitzero == 1 )); then
+              last_line=$(sed -e 's/#.*//' "$file" | tr -d '\r' | grep -v '^[[:space:]]*$' | tail -n 1)
+              if [[ "$last_line" =~ ^[[:space:]]*exit[[:space:]]+0([[:space:]]*|;.*)?$ ]]; then
+                printf 'FAIL (bash_exitzero): %s\n' "$file"
+                printf '  -> unconditional exit 0 on last line is not allowed\n'
+                failed=1
+              fi
+            fi
+          done
+
+          exit "$failed"

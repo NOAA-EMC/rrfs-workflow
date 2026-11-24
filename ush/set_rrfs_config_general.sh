@@ -1,8 +1,9 @@
+#!/bin/bash
 set -x
 
-if [[ $MACHINE == "jet" ]] ; then
+if [[ "${MACHINE}" = "jet" ]] ; then
   ACCOUNT=nrtrr
-  if [[ -n $RESERVATION ]] ; then
+  if [[ -n "${RESERVATION}" ]] ; then
     ACCOUNT=rtrr
     SERVICE_ACCOUNT=rtrr
     HPSS_ACCOUNT=nrtrr
@@ -29,14 +30,14 @@ if [[ $MACHINE == "jet" ]] ; then
     PPN_POST="40"
   fi
 
-elif [[ $MACHINE == "hera" ]] ; then
+elif [[ "${MACHINE}" = "hera" ]] ; then
   ACCOUNT="zrtrr"
   PARTITION_DEFAULT=""
   PARTITION_FORECAST=""
   QUEUE_ANALYSIS="batch"
   QUEUE_PRDGEN="batch"
 
-elif [[ $MACHINE == "orion" ]] ; then
+elif [[ "${MACHINE}" = "orion" ]] ; then
   ACCOUNT="${ACCOUNT:-fv3-cam}"
   PARTITION_ANALYSIS=orion
   QUEUE_ANALYSIS="batch"
@@ -44,7 +45,7 @@ elif [[ $MACHINE == "orion" ]] ; then
   QUEUE_POST="batch"
   NCORES_PER_NODE=24
 
-elif [[ $MACHINE == "hercules" ]] ; then
+elif [[ "${MACHINE}" = "hercules" ]] ; then
   ACCOUNT="${ACCOUNT:-rtrr}"
   PARTITION_ANALYSIS=hercules
   QUEUE_ANALYSIS="batch"
@@ -52,18 +53,18 @@ elif [[ $MACHINE == "hercules" ]] ; then
   QUEUE_POST="batch"
   NCORES_PER_NODE=24
 
-elif [[ $MACHINE == "wcoss2" ]] ; then
+elif [[ "${MACHINE}" = "wcoss2" ]] ; then
   ACCOUNT=RRFS-DEV
   HPSS_ACCOUNT="RRFS-DEV"
 
-  if [[ "${envir}" == "para" ]]; then
+  if [[ "${envir}" = "para" ]]; then
     QUEUE_DEFAULT="pridev"
     QUEUE_ANALYSIS="pridev"
     QUEUE_FORECAST="pridev"
     QUEUE_HPSS="dev_transfer"
     QUEUE_POST="pridev"
     QUEUE_PRDGEN="pridev"
-  elif [[ "${envir}" == "prod" ]]; then
+  elif [[ "${envir}" = "prod" ]]; then
     QUEUE_DEFAULT="prod"
     QUEUE_ANALYSIS="prod"
     QUEUE_FORECAST="prod"
@@ -78,13 +79,13 @@ elif [[ $MACHINE == "wcoss2" ]] ; then
     QUEUE_POST="dev"
     QUEUE_PRDGEN="dev"
   fi
-  if [[ $MACHINETYPE == "backup" ]] ; then
+  if [[ "${MACHINETYPE}" = "backup" ]] ; then
     QUEUE_DEFAULT="devhigh"
     QUEUE_FORECAST="devhigh"
     QUEUE_ANALYSIS="devhigh"
     QUEUE_POST="devhigh"
     QUEUE_PRDGEN="devhigh"
-  elif [[ $MACHINETYPE == "person" ]] ; then
+  elif [[ "${MACHINETYPE}" = "person" ]] ; then
     QUEUE_DEFAULT="dev"
     QUEUE_FORECAST="dev"
     QUEUE_ANALYSIS="dev"
@@ -101,8 +102,10 @@ PRINT_DIFF_PGR="TRUE"
 USE_CUSTOM_POST_CONFIG_FILE="TRUE"
 TESTBED_FIELDS_FN="testbed_fields_bgdawp.txt"
 TESTBED_FIELDS_FN2="testbed_fields_bgrd3d.txt"
-CUSTOM_POST_CONFIG_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/postxconfig-NT-rrfs.txt"
-CUSTOM_POST_PARAMS_FP="$(cd "$( dirname "${BASH_SOURCE[0]}" )/.." &>/dev/null&&pwd)/fix/upp/params_grib2_tbl_new"
+_rrfs_base_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )/.." && pwd )"
+CUSTOM_POST_CONFIG_FP="${_rrfs_base_dir}/fix/upp/postxconfig-NT-rrfs.txt"
+CUSTOM_POST_PARAMS_FP="${_rrfs_base_dir}/fix/upp/params_grib2_tbl_new"
+unset _rrfs_base_dir
 COMINgfs=""
 
 GFS_FILE_FMT_ICS="grib2"
@@ -146,7 +149,7 @@ START_TIME_CONVENTIONAL="00:50:00"
 START_TIME_NSSLMOSIAC="00:55:00"
 START_TIME_PROCESS_SMOKE="00:50:00"
 
-if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_3km" ]] ; then 
+if [[ "${PREDEF_GRID_NAME}" = "RRFS_CONUS_3km" ]] ; then
   DT_ATMOS=36
   ADDNL_OUTPUT_GRIDS=()
   TILE_LABELS="CONUS REGIONS"
@@ -154,8 +157,8 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_3km" ]] ; then
   CCPP_PHYS_SUITE="FV3_HRRR_gf"
   PPN_UPDATE_LBC_SOIL="5"
 
-  if [[ $MACHINE == "jet" ]] ; then
-    if [[ -n $RESERVATION ]] ; then
+  if [[ "${MACHINE}" = "jet" ]] ; then
+    if [[ -n "${RESERVATION}" ]] ; then
       NNODES_MAKE_ICS="3"
       PPN_MAKE_ICS="20"
       NNODES_BLEND_ICS="1"
@@ -173,6 +176,7 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_3km" ]] ; then
       NNODES_ANALYSIS_NONVARCLD="12"
       PPN_ANALYSIS_ENKF="2"
       NNODES_RECENTER="5"
+      NNODES_RECENTER="5"
       PPN_RECENTER="40"
 
       NCORES_PER_NODE=40
@@ -182,7 +186,7 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_3km" ]] ; then
       CLEAN_OLDFCST_HRS="18"
     fi
 
-  elif [[ $MACHINE == "hera" ]] ; then
+  elif [[ "${MACHINE}" = "hera" ]] ; then
     LAYOUT_X="15"
     LAYOUT_Y="20"
     PPN_FORECAST="20"
@@ -213,7 +217,7 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_3km" ]] ; then
     START_TIME_PROD="02:10:00"
     START_TIME_LATE_ANALYSIS="01:40:00"
 
-  elif [[ $MACHINE == "wcoss2" ]] ; then
+  elif [[ "${MACHINE}" = "wcoss2" ]] ; then
     LAYOUT_X="31"
     LAYOUT_Y="32"
     PPN_MAKE_ICS="32"
@@ -287,20 +291,20 @@ if [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_3km" ]] ; then
     CLEAN_OLDSTMPPOST_HRS="6"
     CLEAN_NWGES_HRS="28"
 
-  elif [[ $MACHINE == "orion" ]] ; then
+  elif [[ "${MACHINE}" = "orion" ]] ; then
     LAYOUT_X="30"
     LAYOUT_Y="40"
     PPN_FORECAST="40"
     WTIME_PRDGEN="00:20:00"
 
-  elif [[ $MACHINE == "hercules" ]] ; then
+  elif [[ "${MACHINE}" = "hercules" ]] ; then
     LAYOUT_X="30"
     LAYOUT_Y="40"
     PPN_FORECAST="40"
     WTIME_PRDGEN="00:20:00"
   fi
 
-elif [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_13km" ]] ; then 
+elif [[ "${PREDEF_GRID_NAME}" = "RRFS_CONUS_13km" ]] ; then
   DT_ATMOS=120
   ADDNL_OUTPUT_GRIDS=()
   TILE_LABELS="CONUS REGIONS"
@@ -308,7 +312,7 @@ elif [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_13km" ]] ; then
   CCPP_PHYS_SUITE="FV3_HRRR_gf"
   PPN_UPDATE_LBC_SOIL="5"
 
-  if [[ $MACHINE == "wcoss2" ]] ; then
+  if [[ "${MACHINE}" = "wcoss2" ]] ; then
     LAYOUT_X="7"
     LAYOUT_Y="8"
     PPN_MAKE_ICS="64"
@@ -370,19 +374,19 @@ elif [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_13km" ]] ; then
     GFS_FILE_FMT_ICS="netcdf"
     GFS_FILE_FMT_LBCS="netcdf"
 
-  elif [[ $MACHINE == "orion" ]] ; then
+  elif [[ "${MACHINE}" = "orion" ]] ; then
     LAYOUT_X="30"
     LAYOUT_Y="40"
     PPN_FORECAST="40"
     WTIME_PRDGEN="00:20:00"
- 
-  elif [[ $MACHINE == "hercules" ]] ; then
+
+  elif [[ "${MACHINE}" = "hercules" ]] ; then
     LAYOUT_X="30"
     LAYOUT_Y="40"
     PPN_FORECAST="40"
     WTIME_PRDGEN="00:20:00"
- 
-  elif [[ $MACHINE == "hera" ]] ; then
+
+  elif [[ "${MACHINE}" = "hera" ]] ; then
     NNODES_MAKE_ICS="1"
     NNODES_BLEND_ICS="1"
     NNODES_MAKE_LBCS="1"
@@ -414,7 +418,7 @@ elif [[ ${PREDEF_GRID_NAME} == "RRFS_CONUS_13km" ]] ; then
     PPN_ANALYSIS_GSIDIAG=40
   fi
 
-elif [[ ${PREDEF_GRID_NAME} == "RRFS_NA_3km" ]] ; then 
+elif [[ "${PREDEF_GRID_NAME}" = "RRFS_NA_3km" ]] ; then
   DT_ATMOS=36
   CCPP_PHYS_SUITE="RRFS_sas"
   ADDNL_OUTPUT_GRIDS=( "hrrr" "hrrrak" )
@@ -424,7 +428,7 @@ elif [[ ${PREDEF_GRID_NAME} == "RRFS_NA_3km" ]] ; then
     GreatLakes,NYC-BOS,SEA-POR SouthCA,SouthFL,VortexSE AKRange,Anchorage,Juneau"
   PPN_UPDATE_LBC_SOIL="5"
 
-  if [[ -n $RESERVATION ]] ; then
+  if [[ -n "${RESERVATION}" ]] ; then
     NNODES_MAKE_ICS="10"
     NNODES_BLEND_ICS="10"
     NNODES_MAKE_LBCS="5"
@@ -452,7 +456,7 @@ elif [[ ${PREDEF_GRID_NAME} == "RRFS_NA_3km" ]] ; then
     WTIME_POST="00:35:00"
   fi
 
-  if [[ $MACHINE == "wcoss2" ]] ; then
+  if [[ "${MACHINE}" = "wcoss2" ]] ; then
     WRTCMP_write_groups="1"
     WRTCMP_write_tasks_per_group="128"
     LAYOUT_X="50"
@@ -505,7 +509,7 @@ elif [[ ${PREDEF_GRID_NAME} == "RRFS_NA_3km" ]] ; then
     MEMO_PROCESS_SMOKE="256G"
     MEMO_PREP_CYC="120G"
     MEMO_SAVE_RESTART="120G"
-    MEMO_SAVE_INPUT="120G"                                                                                                     
+    MEMO_SAVE_INPUT="120G"
     MEMO_PRDGEN="256G"
 
     START_TIME_SPINUP="01:05:00"
@@ -529,7 +533,7 @@ elif [[ ${PREDEF_GRID_NAME} == "RRFS_NA_3km" ]] ; then
     CLEAN_OLDSTMPPOST_HRS="12"
     CLEAN_NWGES_HRS="18"
 
-  elif [[ $MACHINE == "hera" ]] ; then
+  elif [[ "${MACHINE}" = "hera" ]] ; then
     CCPP_PHYS_SUITE="FV3_HRRR"
     WRTCMP_write_groups="1"
     WRTCMP_write_tasks_per_group="50"
@@ -544,7 +548,7 @@ elif [[ ${PREDEF_GRID_NAME} == "RRFS_NA_3km" ]] ; then
     PPN_ANALYSIS_GSIDIAG=40
   fi
 
-elif [[ ${PREDEF_GRID_NAME} == "GSD_RAP13km" ]] ; then 
+elif [[ "${PREDEF_GRID_NAME}" = "GSD_RAP13km" ]] ; then
   DT_ATMOS=120
   CCPP_PHYS_SUITE="FV3_RAP"
   ADDNL_OUTPUT_GRIDS=( "130" "242" )
@@ -558,4 +562,3 @@ elif [[ ${PREDEF_GRID_NAME} == "GSD_RAP13km" ]] ; then
   PPN_FORECAST="20"
   NNODES_FORECAST="11"
 fi
-

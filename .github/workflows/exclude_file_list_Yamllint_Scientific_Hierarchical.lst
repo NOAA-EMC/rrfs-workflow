@@ -1,0 +1,5 @@
+./.github/*
+./sorc/manage_externals/.travis.yml
+./sorc/_workaround_/*
+./parm/jedi/*
+./parm/rdas-atmosphere-templates-fv3_c13.yaml

@@ -49,6 +49,45 @@ def create_model_configure_file(
     # import all environment variables
     import_vars()
 
+    # Bind dynamically imported variables to local scope
+    model_config_fn = MODEL_CONFIG_FN  # noqa: F821
+    model_config_tmpl_fp = MODEL_CONFIG_TMPL_FP  # noqa: F821
+    verbose = VERBOSE  # noqa: F821
+    quilting = QUILTING  # noqa: F821
+    use_saved_routehandles = USE_SAVED_ROUTEHANDLES  # noqa: F821
+    write_dopost = WRITE_DOPOST  # noqa: F821
+    nsout_var = NSOUT  # noqa: F821
+    fcst_len_hrs_cycles = FCST_LEN_HRS_CYCLES  # noqa: F821
+    fcst_len_hrs = FCST_LEN_HRS  # noqa: F821
+    output_fh_15min = OUTPUT_FH_15min  # noqa: F821
+    output_fh = OUTPUT_FH  # noqa: F821
+    fcst_len_hrs_spinup = FCST_LEN_HRS_SPINUP  # noqa: F821
+    cycl_hrs_spinstart = CYCL_HRS_SPINSTART  # noqa: F821
+    dt_atmos = DT_ATMOS  # noqa: F821
+    wrtcmp_output_grid = WRTCMP_output_grid  # noqa: F821
+    wrtcmp_output_file = WRTCMP_output_file  # noqa: F821
+    wrtcmp_zstandard_level = WRTCMP_zstandard_level  # noqa: F821
+    wrtcmp_ideflate = WRTCMP_ideflate  # noqa: F821
+    wrtcmp_quantize_mode = WRTCMP_quantize_mode  # noqa: F821
+    wrtcmp_quantize_nsd = WRTCMP_quantize_nsd  # noqa: F821
+    nfhout = NFHOUT  # noqa: F821
+    nfhmax_hf = NFHMAX_HF  # noqa: F821
+    nfhout_hf = NFHOUT_HF  # noqa: F821
+    wrtcmp_write_groups = WRTCMP_write_groups  # noqa: F821
+    wrtcmp_write_tasks_per_group = WRTCMP_write_tasks_per_group  # noqa: F821
+    wrtcmp_lon_lwr_left = WRTCMP_lon_lwr_left  # noqa: F821
+    wrtcmp_lat_lwr_left = WRTCMP_lat_lwr_left  # noqa: F821
+    wrtcmp_stdlat1 = WRTCMP_stdlat1  # noqa: F821
+    wrtcmp_stdlat2 = WRTCMP_stdlat2  # noqa: F821
+    wrtcmp_nx = WRTCMP_nx  # noqa: F821
+    wrtcmp_ny = WRTCMP_ny  # noqa: F821
+    wrtcmp_dx = WRTCMP_dx  # noqa: F821
+    wrtcmp_dy = WRTCMP_dy  # noqa: F821
+    wrtcmp_lon_upr_rght = WRTCMP_lon_upr_rght  # noqa: F821
+    wrtcmp_lat_upr_rght = WRTCMP_lat_upr_rght  # noqa: F821
+    wrtcmp_dlon = WRTCMP_dlon  # noqa: F821
+    wrtcmp_dlat = WRTCMP_dlat  # noqa: F821
+
     #
     # -----------------------------------------------------------------------
     #
@@ -58,10 +97,10 @@ def create_model_configure_file(
     #
     print_info_msg(
         f"""
-        Creating a model configuration file ('{MODEL_CONFIG_FN}') in the specified
+        Creating a model configuration file ('{model_config_fn}') in the specified
         run directory (run_dir):
           run_dir = '{run_dir}'""",
-        verbose=VERBOSE,
+        verbose=verbose,
     )
     #
     # Extract from cdate the starting year, month, day, and hour of the forecast.
@@ -73,26 +112,24 @@ def create_model_configure_file(
     #
     # Set parameters in the model configure file.
     #
-    dot_quilting_dot = f".{lowercase(str(QUILTING))}."
-    dot_usesavedroutehandles_dot = f".{lowercase(str(USE_SAVED_ROUTEHANDLES))}."
-    dot_write_dopost = f".{lowercase(str(WRITE_DOPOST))}."
+    dot_quilting_dot = f".{lowercase(str(quilting))}."
+    dot_usesavedroutehandles_dot = f".{lowercase(str(use_saved_routehandles))}."
+    dot_write_dopost = f".{lowercase(str(write_dopost))}."
     restart_interval = restart_hrs
-    nsout = NSOUT
+    nsout = nsout_var
 
     #
     # Decide the forecast length for this cycle
     #
-    if FCST_LEN_HRS_CYCLES == None:
-        FCST_LEN_HRS_thiscycle = FCST_LEN_HRS
+    if fcst_len_hrs_cycles is None:
+        FCST_LEN_HRS_thiscycle = fcst_len_hrs
     else:
-        num_fhrs = len(FCST_LEN_HRS_CYCLES)
+        num_fhrs = len(fcst_len_hrs_cycles)
         ihh = int(hh)
         if num_fhrs > ihh:
-            FCST_LEN_HRS_thiscycle = FCST_LEN_HRS_CYCLES[ihh]
+            FCST_LEN_HRS_thiscycle = fcst_len_hrs_cycles[ihh]
         else:
-            FCST_LEN_HRS_thiscycle = FCST_LEN_HRS
-
-
+            FCST_LEN_HRS_thiscycle = fcst_len_hrs
 
     # The deterministic and ensemble production forecasts are posted every 15 minutes, and the
     # post tasks are named for those files (dynf001-00-00.nc and so on), which the model writes
@@ -101,31 +138,35 @@ def create_model_configure_file(
     # shortened, and the model then writes hourly files that the post cannot open. The EnKF and
     # the spin-up cycle keep the plain list: neither is posted, and the EnKF has 30 members.
     if os.environ.get("WGF", "") in ("det", "ensf") and not stoch and cycle_type != "spinup":
-        OUTPUT_FH_thiscycle = OUTPUT_FH_15min
+        OUTPUT_FH_thiscycle = output_fh_15min
     else:
-        OUTPUT_FH_thiscycle = OUTPUT_FH
+        OUTPUT_FH_thiscycle = output_fh
 
     print_info_msg(
         f"""
         The forecast length for cycle ('{hh}') is ('{FCST_LEN_HRS_thiscycle}').
-        """, verbose=VERBOSE,
+        """,
+        verbose=verbose,
     )
 
     if cycle_type == "spinup":
-        FCST_LEN_HRS_thiscycle = FCST_LEN_HRS_SPINUP
-        OUTPUT_FH_thiscycle = OUTPUT_FH
+        FCST_LEN_HRS_thiscycle = fcst_len_hrs_spinup
+        OUTPUT_FH_thiscycle = output_fh
         if cycle_subtype == "ensinit":
-            for cyc_start in CYCL_HRS_SPINSTART:
+            for cyc_start in cycl_hrs_spinstart:
                 if hh == cyc_start:
-                    FCST_LEN_HRS_thiscycle = "{:0.5f}".format(DT_ATMOS/3600)
+                    FCST_LEN_HRS_thiscycle = "{:0.5f}".format(dt_atmos / 3600)
                     nsout = 1
                     restart_interval = "0"
-                    print_info_msg(f"""
-         DT_ATMOS ('{DT_ATMOS}') 
+                    print_info_msg(
+                        f"""
+         DT_ATMOS ('{dt_atmos}') 
          FCST_LEN_HRS_thiscycle ('{FCST_LEN_HRS_thiscycle}')
          NSOUT ('{nsout}')
          RESTART_INTERVAL ('{restart_interval}')
-                    """, verbose=VERBOSE)
+                        """,
+                        verbose=verbose,
+                    )
 
     #
     # -----------------------------------------------------------------------
@@ -143,21 +184,21 @@ def create_model_configure_file(
         "start_hour": hh,
         "nhours_fcst": FCST_LEN_HRS_thiscycle,
         "fhrot": fhrot,
-        "dt_atmos": DT_ATMOS,
-        'atmos_nthreads': nthreads,
+        "dt_atmos": dt_atmos,
+        "atmos_nthreads": nthreads,
         "restart_interval": restart_interval,
         "write_dopost": dot_write_dopost,
         "quilting": dot_quilting_dot,
         "use_saved_routehandles": dot_usesavedroutehandles_dot,
-        "output_grid": WRTCMP_output_grid,
-        "output_file": WRTCMP_output_file,
-        "zstandard_level" : WRTCMP_zstandard_level,
-        "ideflate": WRTCMP_ideflate,
-        "quantize_mode": WRTCMP_quantize_mode,
-        "quantize_nsd": WRTCMP_quantize_nsd,
-        "nfhout": NFHOUT,
-        "nfhmax_hf": NFHMAX_HF,
-        "nfhout_hf": NFHOUT_HF,
+        "output_grid": wrtcmp_output_grid,
+        "output_file": wrtcmp_output_file,
+        "zstandard_level": wrtcmp_zstandard_level,
+        "ideflate": wrtcmp_ideflate,
+        "quantize_mode": wrtcmp_quantize_mode,
+        "quantize_nsd": wrtcmp_quantize_nsd,
+        "nfhout": nfhout,
+        "nfhmax_hf": nfhmax_hf,
+        "nfhout_hf": nfhout_hf,
         "nsout": nsout,
         "output_fh": OUTPUT_FH_thiscycle,
     }
@@ -166,42 +207,42 @@ def create_model_configure_file(
     # parameters and a set of grid parameters.  The latter depends on the type
     # (coordinate system) of the grid that the write-component will be using.
     #
-    if QUILTING:
+    if quilting:
         settings.update(
             {
-                "write_groups": WRTCMP_write_groups,
-                "write_tasks_per_group": WRTCMP_write_tasks_per_group,
-                "lon1": WRTCMP_lon_lwr_left,
-                "lat1": WRTCMP_lat_lwr_left,
+                "write_groups": wrtcmp_write_groups,
+                "write_tasks_per_group": wrtcmp_write_tasks_per_group,
+                "lon1": wrtcmp_lon_lwr_left,
+                "lat1": wrtcmp_lat_lwr_left,
             }
         )
 
-        if WRTCMP_output_grid == "lambert_conformal":
+        if wrtcmp_output_grid == "lambert_conformal":
             settings.update(
                 {
                     "cen_lon": WRTCMP_cen_lon,
                     "cen_lat": WRTCMP_cen_lat,
-                    "stdlat1": WRTCMP_stdlat1,
-                    "stdlat2": WRTCMP_stdlat2,
-                    "nx": WRTCMP_nx,
-                    "ny": WRTCMP_ny,
-                    "dx": WRTCMP_dx,
-                    "dy": WRTCMP_dy,
+                    "stdlat1": wrtcmp_stdlat1,
+                    "stdlat2": wrtcmp_stdlat2,
+                    "nx": wrtcmp_nx,
+                    "ny": wrtcmp_ny,
+                    "dx": wrtcmp_dx,
+                    "dy": wrtcmp_dy,
                     "lon2": "",
                     "lat2": "",
                     "dlon": "",
                     "dlat": "",
                 }
             )
-        elif WRTCMP_output_grid == "rotated_latlon":
+        elif wrtcmp_output_grid == "rotated_latlon":
             settings.update(
                 {
                     "cen_lon": WRTCMP_cen_lon,
                     "cen_lat": WRTCMP_cen_lat,
-                    "lon2": WRTCMP_lon_upr_rght,
-                    "lat2": WRTCMP_lat_upr_rght,
-                    "dlon": WRTCMP_dlon,
-                    "dlat": WRTCMP_dlat,
+                    "lon2": wrtcmp_lon_upr_rght,
+                    "lat2": wrtcmp_lat_upr_rght,
+                    "dlon": wrtcmp_dlon,
+                    "dlat": wrtcmp_dlat,
                     "stdlat1": "",
                     "stdlat2": "",
                     "nx": "",
@@ -210,13 +251,13 @@ def create_model_configure_file(
                     "dy": "",
                 }
             )
-        elif WRTCMP_output_grid == "regional_latlon":
+        elif wrtcmp_output_grid == "regional_latlon":
             settings.update(
                 {
-                    "lon2": WRTCMP_lon_upr_rght,
-                    "lat2": WRTCMP_lat_upr_rght,
-                    "dlon": WRTCMP_dlon,
-                    "dlat": WRTCMP_dlat,
+                    "lon2": wrtcmp_lon_upr_rght,
+                    "lat2": wrtcmp_lat_upr_rght,
+                    "dlon": wrtcmp_dlon,
+                    "dlat": wrtcmp_dlat,
                     "cen_lon": "",
                     "cen_lat": "",
                     "stdlat1": "",
@@ -233,12 +274,12 @@ def create_model_configure_file(
     print_info_msg(
         dedent(
             f"""
-            The variable 'settings' specifying values to be used in the '{MODEL_CONFIG_FN}'
+            The variable 'settings' specifying values to be used in the '{model_config_fn}'
             file has been set as follows:\n
             settings =\n\n"""
         )
         + settings_str,
-        verbose=VERBOSE,
+        verbose=verbose,
     )
     #
     # -----------------------------------------------------------------------
@@ -248,7 +289,7 @@ def create_model_configure_file(
     #
     # -----------------------------------------------------------------------
     #
-    model_config_fp = os.path.join(run_dir, MODEL_CONFIG_FN)
+    model_config_fp = os.path.join(run_dir, model_config_fn)
 
     try:
         fill_jinja_template(
@@ -257,7 +298,7 @@ def create_model_configure_file(
                 "-u",
                 settings_str,
                 "-t",
-                MODEL_CONFIG_TMPL_FP,
+                model_config_tmpl_fp,
                 "-o",
                 model_config_fp,
             ]
@@ -266,10 +307,10 @@ def create_model_configure_file(
         print_err_msg_exit(
             dedent(
                 f"""
-                Call to python script fill_jinja_template.py to create a '{MODEL_CONFIG_FN}'
+                Call to python script fill_jinja_template.py to create a '{model_config_fn}'
                 file from a jinja2 template failed.  Parameters passed to this script are:
                   Full path to template model config file:
-                    MODEL_CONFIG_TMPL_FP = '{MODEL_CONFIG_TMPL_FP}'
+                    MODEL_CONFIG_TMPL_FP = '{model_config_tmpl_fp}'
                   Full path to output model config file:
                     model_config_fp = '{model_config_fp}'
                   Namelist settings specified on command line:\n
@@ -279,7 +320,7 @@ def create_model_configure_file(
         )
         return False
 
-    exit()
+    sys.exit(0)
 
     return True
 
@@ -394,4 +435,3 @@ if __name__ == "__main__":
         WRTCMP_cen_lat=str_to_type(args.cen_lat),
         WRTCMP_cen_lon=str_to_type(args.cen_lon),
     )
-

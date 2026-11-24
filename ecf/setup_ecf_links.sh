@@ -103,7 +103,7 @@ add_to_tmpfile "$ECF_DIR/scripts/det/prdgen/jrrfs_det_prdgen_f000_00_36.ecf"
 create_ecf_file "018_00_00"    "jrrfs_det_prdgen_f018_00_00.ecf"
 add_to_tmpfile "$ECF_DIR/scripts/det/prdgen/jrrfs_det_prdgen_f018_00_00.ecf"
 # =========================================================================
-#  Generate Long-Range Forecast Files 
+#  Generate Long-Range Forecast Files
 # =========================================================================
 # Loop for hours 0-17 at 15-minute intervals for the "_long" files.
 for fhr in $(seq 0 17); do
@@ -256,7 +256,7 @@ for fhr in $(seq 18 84); do
   output_file="jrrfs_det_post_f${hour_combo}.ecf"
   create_ecf_file "${hour_combo}" "${output_file}"
   add_to_tmpfile "$ECF_DIR/scripts/det/post/${output_file}"
-done 
+done
 
 # ensf post files
 cd $ECF_DIR/scripts/ensf/post
@@ -616,7 +616,7 @@ if [ ${resource_config} == "EMC" ]; then
           cat ${fl}_new | sed s:128:64:g > ${fl}
           rm -f ${fl}_new
   done
-  
+
   files="${ECF_DIR}/../parm/config/det/input.nml_restart_long ${ECF_DIR}/../parm/config/det/input.nml_long"
   # 71,128 --> 43,64
   #
@@ -626,7 +626,7 @@ if [ ${resource_config} == "EMC" ]; then
           cat ${fl}_new | sed s:128:64:g > ${fl}
           rm -f ${fl}_new
   done
-  
+
   files="${ECF_DIR}/../parm/config/ensf/input.nml_restart_stoch_ensphy?"
   #
   # 45,128 --> 50,64

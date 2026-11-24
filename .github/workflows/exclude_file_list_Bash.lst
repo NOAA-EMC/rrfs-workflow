@@ -1,0 +1,11 @@
+./.github/*
+./sorc/app_build.sh
+./sorc/_workaround_/*
+./ush/rocoto/*
+./ush/retro/*
+./ush/generate_FV3LAM_wflow.sh
+./ush/launch_FV3LAM_wflow.sh
+./ush/load_models_wflow.sh
+./ush/load_modules_wflow.sh
+./ush/prod_clone/*
+./ecf/*

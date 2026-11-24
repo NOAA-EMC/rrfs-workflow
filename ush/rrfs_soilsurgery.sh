@@ -1,17 +1,18 @@
-#! /bin/bash
+#!/bin/bash
+set -x
 
-#   
+#
 #-----------------------------------------------------------------------
 #
 # conduct surface surgery to transfer RAP/HRRR surface fields into RRFS.
-#   
+#
 # This surgery only needs to be done once to give RRFS a good start of the surface.
 # Please consult Ming or Tanya first before turning on this surgery.
-#     
+#
 #-----------------------------------------------------------------------
-#     
-if [ ${SFC_CYC} -eq 3 ] ; then
-      
+#
+if [ "${SFC_CYC}" -eq 3 ] ; then
+
    do_lake_surgery=".false."
    if [ "${USE_CLM}" = "TRUE" ]; then
      do_lake_surgery=".true."
@@ -21,20 +22,20 @@ if [ ${SFC_CYC} -eq 3 ] ; then
    hrrrfile='missing'
    hrrr_akfile='missing'
    current_cdate=${YYYYMMDD}${HH}
-   new_cdate=$($NDATE -1 ${current_cdate})
-   new_pdy=$(echo ${new_cdate}| cut -c1-8)
-   new_cyc=$(echo ${new_cdate}| cut -c9-10)
-   if [ -r ${COMINrap}/nwges/rapges/rap_${new_cdate}f001 ]; then
-     cpreq -p ${COMINrap}/nwges/rapges/rap_${new_cdate}f001 sfc_rap
+   new_cdate=$(${NDATE} -1 "${current_cdate}")
+   new_pdy=$(echo "${new_cdate}"| cut -c1-8)
+   new_cyc=$(echo "${new_cdate}"| cut -c9-10)
+   if [ -r "${COMINrap}"/nwges/rapges/rap_"${new_cdate}"f001 ]; then
+     cpreq -p "${COMINrap}"/nwges/rapges/rap_"${new_cdate}"f001 sfc_rap
           rapfile='sfc_rap'
    fi
-   if [ -r ${COMINhrrr}/nwges/hrrrges_sfc/conus/hrrr_${new_cdate}f001 ]; then
-     cpreq -p ${COMINhrrr}/nwges/hrrrges_sfc/conus/hrrr_${new_cdate}f001 sfc_hrrr
+   if [ -r "${COMINhrrr}"/nwges/hrrrges_sfc/conus/hrrr_"${new_cdate}"f001 ]; then
+     cpreq -p "${COMINhrrr}"/nwges/hrrrges_sfc/conus/hrrr_"${new_cdate}"f001 sfc_hrrr
      hrrrfile='sfc_hrrr'
    fi
 
    export pgm="rrfs_util_use_raphrrr_sfc.exe"
-   ln -sf ${FIX_GSI}/${PREDEF_GRID_NAME}/fv3_grid_spec  fv3_grid_spec
+   ln -sf "${FIX_GSI}"/"${PREDEF_GRID_NAME}"/fv3_grid_spec  fv3_grid_spec
    for file in ${rapfile} ${hrrrfile} ${hrrr_akfile}
    do
      if [ "${file}" = "missing" ]; then
@@ -86,9 +87,9 @@ EOF
      fi
      cpreq sfc_data.nc sfc_data.nc_read
      . prep_step
-     ${APRUN} ${EXECrrfs}/$pgm >>$pgmout 2>errfile
+     ${APRUN} "${EXECrrfs}"/${pgm} >>"${pgmout}" 2>errfile
      export err=$?; err_chk
-     mv errfile errfile_sfc_surgery.${file}
+     mv errfile errfile_sfc_surgery."${file}"
    done
       echo "${YYYYMMDDHH}(${CYCLE_TYPE}): run surface surgery"
 fi

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 date
-export PS4='+ $SECONDS + ' 
+export PS4='+ $SECONDS + '
 set -xue
 
 #-----------------------------------------------------------------------
@@ -18,7 +18,7 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 # RRFS GLM Gridded Lightning Data Preprocessing
 #-----------------------------------------------------------------------
 export pid=${pid:-$$}
-export outid=${outid:-"LL$job"}
+export outid=${outid:-"LL${job}"}
 case "${WGF}" in
   "det")
     export RUN="rrfs"
@@ -36,7 +36,7 @@ esac
 #-----------------------------------------------------------------------
 # Define umbrella data directories
 #-----------------------------------------------------------------------
-export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/${rrfs_ver})}
+export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/"${rrfs_ver}")}
 export CYCLE_TYPE=${CYCLE_TYPE:-prod}
 if [ "${CYCLE_TYPE}" = "spinup" ]; then
   export umbrella_init_data=${umbrella_init_data:-${DATAROOT}/rrfs_init_spinup_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}}
@@ -49,8 +49,8 @@ export shared_output_data=${umbrella_init_data}/output
 # Define data directories
 #-----------------------------------------------------------------------
 export DATA=${DATA:-${umbrella_init_data}/${jobid}}
-mkdir -p ${DATA} ${shared_output_data}
-cd ${DATA}
+mkdir -p "${DATA}" "${shared_output_data}"
+cd "${DATA}"
 export cycle="t${cyc}z"
 setpdy.sh
 . ./PDY
@@ -60,16 +60,16 @@ if [ "${CYCLE_TYPE}" = "spinup" ]; then
 else
   export COMOUT_ANALYSIS=${COMrrfs}/${RUN}.${PDY}/${cyc}/analysis
 fi
-mkdir -p ${COMOUT_ANALYSIS}
+mkdir -p "${COMOUT_ANALYSIS}"
 
 #-----------------------------------------------------------------------
 # Source the bash utility functions.
 #-----------------------------------------------------------------------
 
-. $USHrrfs/source_util_funcs.sh
+. "${USHrrfs}"/source_util_funcs.sh
 
 #-----------------------------------------------------------------------
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #-----------------------------------------------------------------------
@@ -98,11 +98,11 @@ preprocess with RRFS for the specified cycle.
 export pgmout="${DATA}/OUTPUT.$$"
 env
 
-${HOMErrfs}/scripts/exrrfs_process_lightning.sh
+"${HOMErrfs}"/scripts/exrrfs_process_lightning.sh
 export err=$?; err_chk
 
-if [ -e "$pgmout" ]; then
-  cat $pgmout
+if [ -e "${pgmout}" ]; then
+  cat "${pgmout}"
 fi
 
 #-----------------------------------------------------------------------
@@ -119,6 +119,6 @@ In directory:    \"${scrfunc_dir}\"
 # Remove the Temporary working directory
 ##################################################
 if [ "${KEEPDATA^^}" != YES ]; then
-  cd $DATAROOT
-  rm -rf $DATA
+  cd "${DATAROOT}"
+  rm -rf "${DATA}"
 fi

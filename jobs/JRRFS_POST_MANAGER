@@ -5,8 +5,8 @@ export PS4='+ $SECONDS + '
 set -x
 
 export DATA=${DATA:-${DATAROOT:?}/${jobid:?}}
-mkdir -p ${DATA}
-cd ${DATA}
+mkdir -p "${DATA}"
+cd "${DATA}"
 
 export cycle=${cycle:-t${cyc}z}
 setpdy.sh
@@ -19,7 +19,7 @@ export FIXrrfs=${FIXrrfs:-${HOMErrfs}/fix}
 
 export umbrella_forecast_data_base=${DATAROOT}/rrfs_forecast_${cyc}_${rrfs_ver_2d}_${envir}/${WGF}
 
-#################################### 
+####################################
 # Specify Timeout Behavior of Post
 #
 # SLEEP_TIME - Amount of time to wait for
@@ -32,16 +32,16 @@ export SLEEP_INT=15
 
 env
 
-${HOMErrfs}/scripts/exrrfs_post_manager.sh
+"${HOMErrfs}"/scripts/exrrfs_post_manager.sh
 export err=$?; err_chk
 
-msg="$job completed normally"
-postmsg "$msg"          
+msg="${job} completed normally"
+postmsg "${msg}"
 
 ##################################################
 # Remove the Temporary working directory
 ##################################################
 if [ "${KEEPDATA^^}" != YES ]; then
-  cd $DATAROOT
-  rm -rf $DATA
+  cd "${DATAROOT}"
+  rm -rf "${DATA}"
 fi

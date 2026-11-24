@@ -1,3 +1,5 @@
+#!/bin/bash
+set -x
 #
 #-----------------------------------------------------------------------
 #
@@ -9,7 +11,7 @@
 # Here, var_name is the name of the variable to check to determine whe-
 # ther or not it is an array.  If the variable is an array, this func-
 # tion will return a 0, and if it is not, this function will return a 1.
-# 
+#
 #-----------------------------------------------------------------------
 #
 function is_array() {
@@ -17,7 +19,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -53,7 +55,7 @@ Usage:
 
   ${func_name}  var_name
 
-where var_name is the name of the variable to check to determine whether 
+where var_name is the name of the variable to check to determine whether
 or not it is an array.
 "
 
@@ -66,9 +68,9 @@ or not it is an array.
 #-----------------------------------------------------------------------
 #
   local var_name="$1"
-  local declare_output=$( declare -p "$var_name" 2> /dev/null )
+  local declare_output=$( declare -p "${var_name}" 2> /dev/null )
   local regex="^declare -[aA] ${var_name}(=|$)"
-  printf "%s" "$declare_output" | grep --extended-regexp "$regex" >/dev/null 
+  printf "%s" "${declare_output}" | grep --extended-regexp "${regex}" >/dev/null
   is_an_array="$?"
 #
 #
@@ -81,4 +83,3 @@ or not it is an array.
   return ${is_an_array}
 
 }
-

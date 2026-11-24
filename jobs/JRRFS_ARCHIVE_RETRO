@@ -23,7 +23,7 @@ export USHrrfs=${USHrrfs:-${HOMErrfs}/ush}
 export DATA=${DATA:-${DATAROOT}/${jobid}}
 mkdir -p "${DATA}"
 cd "${DATA}"
-export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/${rrfs_ver})}
+export COMrrfs=${COMrrfs:-$(compath.py -o ${NET}/"${rrfs_ver}")}
 export COMOUT=${COMrrfs}/rrfs.${PDY}/${cyc}
 export pgmout="${DATA}/OUTPUT.$$"
 
@@ -31,7 +31,7 @@ export pgmout="${DATA}/OUTPUT.$$"
 # Call the ex-script for this J-job
 #-----------------------------------------------------------------------
 env
-${HOMErrfs}/scripts/exrrfs_archive_retro.sh
+"${HOMErrfs}"/scripts/exrrfs_archive_retro.sh
 export err=$?; err_chk
 
 if [ -e "${pgmout}" ]; then
