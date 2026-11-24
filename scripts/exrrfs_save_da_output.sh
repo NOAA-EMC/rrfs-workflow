@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 
-source ${FIXrrfs}/workflow/${WGF}/workflow.conf
+source "${FIXrrfs}"/workflow/"${WGF}"/workflow.conf
 
 #
 #-----------------------------------------------------------------------
@@ -10,11 +10,11 @@ source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 #
 #-----------------------------------------------------------------------
 #
-. $USHrrfs/source_util_funcs.sh
+. "${USHrrfs}"/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -47,12 +47,12 @@ This is the ex-script for the task that saves DA analysis files to nwges.
 #
 yyyymmdd=${CDATE:0:8}
 hh=${CDATE:8:2}
-# 
+#
 #-----------------------------------------------------------------------
 #
 # Let's save the DA analysis files if needed before run fcst.
 # This will copy the data assimilation analysis files from $DATA/INPUT/
-# to ${NWGES_DIR}/DA_OUTPUT/, 
+# to ${NWGES_DIR}/DA_OUTPUT/,
 # this is to prepare for ensemble free forecast after the ensemble data assimilation
 #
 #-----------------------------------------------------------------------
@@ -60,31 +60,31 @@ hh=${CDATE:8:2}
 filelist="fv_core.res.nc coupler.res"
 filelistn="fv_core.res.tile1.nc fv_srf_wnd.res.tile1.nc fv_tracer.res.tile1.nc phy_data.nc sfc_data.nc"
 filelistcold="gfs_data.tile7.halo0.nc sfc_data.tile7.halo0.nc"
-n_iolayouty=$(($IO_LAYOUT_Y-1))
-list_iolayout=$(seq 0 $n_iolayouty)
+n_iolayouty=$((IO_LAYOUT_Y-1))
+list_iolayout=$(seq 0 ${n_iolayouty})
 
-if [ ! -r ${COMOUT}/DA_OUTPUT/gfs_ctrl.nc ]; then
-  cpreq ${umbrella_forecast_data}/gfs_ctrl.nc ${COMOUT}/DA_OUTPUT/gfs_ctrl.nc
+if [ ! -r "${COMOUT}"/DA_OUTPUT/gfs_ctrl.nc ]; then
+  cpreq "${umbrella_forecast_data}"/gfs_ctrl.nc "${COMOUT}"/DA_OUTPUT/gfs_ctrl.nc
 fi
-if [ -r ${umbrella_forecast_data}/coupler.res ]; then  # warm start
+if [ -r "${umbrella_forecast_data}"/coupler.res ]; then  # warm start
     if [ "${IO_LAYOUT_Y}" = "1" ]; then
       for file in ${filelistn}; do
-        cpreq ${umbrella_forecast_data}/${file} ${COMOUT}/DA_OUTPUT/${file}
+        cpreq "${umbrella_forecast_data}"/"${file}" "${COMOUT}"/DA_OUTPUT/"${file}"
       done
     else
       for file in ${filelistn}; do
         for ii in ${list_iolayout}
         do
-          iii=$(printf %4.4i $ii)
-         cpreq ${umbrella_forecast_data}/${file}.${iii} ${COMOUT}/DA_OUTPUT/${file}.${iii}
+          iii=$(printf %4.4i "${ii}")
+         cpreq "${umbrella_forecast_data}"/"${file}"."${iii}" "${COMOUT}"/DA_OUTPUT/"${file}"."${iii}"
         done
       done
     fi
     for file in ${filelist}; do
-      cpreq ${umbrella_forecast_data}/${file} ${COMOUT}/DA_OUTPUT/${file}
+      cpreq "${umbrella_forecast_data}"/"${file}" "${COMOUT}"/DA_OUTPUT/"${file}"
     done
 else  # cold start
-    print_info_msg "$VERBOSE" "\
+    print_info_msg "${VERBOSE}" "\
 The DA analysis does not exist, no files to save to DA_OUTPUT."
 fi
 #

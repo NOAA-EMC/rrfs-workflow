@@ -1,6 +1,7 @@
+---
 # This configuration file maintains all the supported sets of namelist options
-# for non-DA. To build a namelist for one of these configurations, use the Python 
-# helper script ush/set_namelist.py and provide this file and the desired section 
+# for non-DA. To build a namelist for one of these configurations, use the Python
+# helper script ush/set_namelist.py and provide this file and the desired section
 # via the -c option.
 
 FV3_HRRR:
@@ -29,16 +30,16 @@ FV3_HRRR:
     npz: 65
     nrows_blend: 10
     psm_bc: 1
-    range_warn: False
+    range_warn: false
     regional_bcs_from_gsi: false
     rf_cutoff: 2000.0
     sg_cutoff: !!python/none
     vtdm4: 0.02
     write_restart_with_bcs: false
-  gfs_physics_nml: 
+  gfs_physics_nml:
     cdmbgwd: [3.5, 1.0]
     diag_log: true
-    do_deep: False
+    do_deep: false
     do_gsl_drag_ls_bl: true
     do_gsl_drag_ss: true
     do_gsl_drag_tofd: true
@@ -46,9 +47,9 @@ FV3_HRRR:
     effr_in: true
     gwd_opt: 3
     iaer: 5111
-    ialb: 2 
+    ialb: 2
     icliq_sw: 2
-    iems: 2 
+    iems: 2
     imfdeepcnv: -1
     imfshalcnv: -1
     iopt_alb: 2
@@ -69,7 +70,7 @@ FV3_HRRR:
     mosaic_lu: 0
     mosaic_soil: 0
     sfclay_compute_flux: true
-    thsfc_loc: false 
+    thsfc_loc: false
 
 FV3_HRRR_gf:
   diag_manager_nml:
@@ -97,13 +98,13 @@ FV3_HRRR_gf:
     npz: 65
     nrows_blend: 10
     psm_bc: 1
-    range_warn: False
+    range_warn: false
     regional_bcs_from_gsi: false
     rf_cutoff: 2000.0
     sg_cutoff: !!python/none
     vtdm4: 0.02
     write_restart_with_bcs: false
-  gfs_physics_nml: 
+  gfs_physics_nml:
     cdmbgwd: [3.5, 1.0]
     diag_log: true
     do_deep: true
@@ -114,9 +115,9 @@ FV3_HRRR_gf:
     effr_in: true
     gwd_opt: 3
     iaer: 5111
-    ialb: 2 
+    ialb: 2
     icliq_sw: 2
-    iems: 2 
+    iems: 2
     imfdeepcnv: 3
     imfshalcnv: -1
     iopt_alb: 2
@@ -137,7 +138,7 @@ FV3_HRRR_gf:
     mosaic_lu: 0
     mosaic_soil: 0
     sfclay_compute_flux: true
-    thsfc_loc: false 
+    thsfc_loc: false
 
 RRFS_sas:
   diag_manager_nml:
@@ -165,13 +166,13 @@ RRFS_sas:
     npz: 65
     nrows_blend: 10
     psm_bc: 1
-    range_warn: False
+    range_warn: false
     regional_bcs_from_gsi: false
     rf_cutoff: 2000.0
     sg_cutoff: !!python/none
     vtdm4: 0.02
     write_restart_with_bcs: false
-  gfs_physics_nml: 
+  gfs_physics_nml:
     betadcu: 1.0
     cdmbgwd: [3.5, 1.0]
     diag_log: true
@@ -183,9 +184,9 @@ RRFS_sas:
     effr_in: true
     gwd_opt: 3
     iaer: 5111
-    ialb: 2 
+    ialb: 2
     icliq_sw: 2
-    iems: 2 
+    iems: 2
     imfdeepcnv: 2
     imfshalcnv: -1
     iopt_alb: 2
@@ -230,7 +231,7 @@ FV3_RAP:
     sg_cutoff: !!python/none
     vtdm4: 0.02
     write_restart_with_bcs: false
-  gfs_physics_nml: 
+  gfs_physics_nml:
     cdmbgwd: [3.5, 1.0]
     diag_log: true
     do_deep: true
@@ -242,7 +243,7 @@ FV3_RAP:
     gwd_opt: 3
     iaer: 5111
     ialb: 1
-    icliq_sw: 2 
+    icliq_sw: 2
     iopt_alb: 2
     iopt_btr: 1
     iopt_crs: 1
@@ -280,9 +281,9 @@ FV3_RRFS_v1beta:
     vtdm4: 0.02
     write_restart_with_bcs: false
   gfs_physics_nml:
-    do_deep: False
-    do_mynnsfclay: True
-    effr_in: True
+    do_deep: false
+    do_mynnsfclay: true
+    effr_in: true
     imfdeepcnv: -1
     imfshalcnv: -1
     iopt_alb: 2
@@ -384,14 +385,14 @@ FV3_GFS_v16:
   external_ic_nml:
     levp: 66
   fv_core_nml:
-    agrid_vel_rst: False
+    agrid_vel_rst: false
     d2_bg_k1: 0.2
     d2_bg_k2: 0.0
     delt_max: 0.002
     dnats: 1
-    do_sat_adj: True
+    do_sat_adj: true
     dz_min: 6
-    fv_debug: False
+    fv_debug: false
     fv_sg_adj: 450
     hord_dp: -5
     hord_mt: 5
@@ -402,16 +403,16 @@ FV3_GFS_v16:
     kord_tm: -9
     kord_tr: 9
     kord_wz: 9
-    make_nh: False
+    make_nh: false
     n_split: 6
     n_sponge: 10
     na_init: 0
     nord_zs_filter: !!python/none
     npz: 65
-    nudge_dz: False
-    nudge_qv: True
+    nudge_dz: false
+    nudge_qv: true
     psm_bc: 1
-    range_warn: False
+    range_warn: false
     res_latlon_dynamics: ''
     rf_cutoff: 750.0
     sg_cutoff: !!python/none
@@ -424,67 +425,67 @@ FV3_GFS_v16:
     c_psaci: 0.05
     ccn_l: 300.0
     ccn_o: 100.0
-    const_vg: False
-    const_vi: False
-    const_vr: False
-    const_vs: False
-    de_ice: False
-    do_qa: True
-    do_sedi_heat: False
+    const_vg: false
+    const_vi: false
+    const_vr: false
+    const_vs: false
+    de_ice: false
+    do_qa: true
+    do_sedi_heat: false
     dw_land: 0.16
     dw_ocean: 0.1
-    fast_sat_adj: True
-    fix_negative: True
+    fast_sat_adj: true
+    fix_negative: true
     icloud_f: 1
-    mono_prof: True
+    mono_prof: true
     mp_time: 150.0
-    prog_ccn: False
+    prog_ccn: false
     qi0_crt: 8.0e-05
     qi_lim: 1.0
     ql_gen: 0.001
     ql_mlt: 0.001
     qs0_crt: 0.001
-    rad_graupel: True
-    rad_rain: True
-    rad_snow: True
+    rad_graupel: true
+    rad_rain: true
+    rad_snow: true
     reiflag: 2
     rh_inc: 0.3
     rh_inr: 0.3
     rh_ins: 0.3
     rthresh: 1.0e-05
-    sedi_transport: True
+    sedi_transport: true
     tau_g2v: 900.0
     tau_i2s: 1000.0
     tau_l2v: 225.0
     tau_v2l: 150.0
-    use_ccn: True
-    use_ppm: False
+    use_ccn: true
+    use_ppm: false
     vg_max: 12.0
     vi_max: 1.0
     vr_max: 12.0
     vs_max: 2.0
-    z_slope_ice: True
-    z_slope_liq: True
+    z_slope_ice: true
+    z_slope_liq: true
   gfs_physics_nml:
     bl_mynn_edmf: !!python/none
     bl_mynn_edmf_mom: !!python/none
     bl_mynn_tkeadvect: !!python/none
     cdmbgwd: [4.0, 0.15, 1.0, 1.0]
-    cnvcld: True
-    cnvgwd: True    
+    cnvcld: true
+    cnvgwd: true
     cplflx: !!python/none
     do_myjpbl: !!python/none
     do_myjsfc: !!python/none
     do_mynnedmf: !!python/none
     do_mynnsfclay: !!python/none
-    do_tofd: True
-    do_ugwp: False
+    do_tofd: true
+    do_ugwp: false
     do_ysu: !!python/none
-    effr_in: True
+    effr_in: true
     fhcyc: 0.0
     fhlwr: 3600.0
     fhswr: 3600.0
-    hybedmf: False
+    hybedmf: false
     iaer: 5111
     iau_delthrs: !!python/none
     iaufhrs: !!python/none
@@ -508,9 +509,9 @@ FV3_GFS_v16:
     iopt_trs: 2
     iovr: 3
     isatmedmf: 1
-    ldiag_ugwp: False
-    lgfdlmprad: True
-    lheatstrg: True
+    ldiag_ugwp: false
+    lgfdlmprad: true
+    lheatstrg: true
     lndp_type: !!python/none
     lradar: !!python/none
     lrefres: !!python/none
@@ -519,14 +520,14 @@ FV3_GFS_v16:
     lsoil_lsm: !!python/none
     ltaerosol: !!python/none
     n_var_lndp: !!python/none
-    nst_anl: True
+    nst_anl: true
     nstf_name: [2, 1, 0, 0, 0]
     prautco: [0.00015, 0.00015]
     psautco: [0.0008, 0.0005]
     rrfs_sd: !!python/none
-    satmedmf: True
-    sfclay_compute_flux: True
-    shal_cnv: True
+    satmedmf: true
+    sfclay_compute_flux: true
+    shal_cnv: true
     shinhong: !!python/none
     ttendlim: !!python/none
     xkzminv: !!python/none
@@ -536,7 +537,6 @@ FV3_GFS_v16:
     deflate_level: 1
     shuffle: 1
   namsfc:
-    landice: True
-    ldebug: False
+    landice: true
+    ldebug: false
   surf_map_nml: !!python/none
-

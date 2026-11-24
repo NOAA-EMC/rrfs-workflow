@@ -135,12 +135,12 @@ settings="\
 #fi
 
 num_nml_vars=${#FV3_NML_VARNAME_TO_SFC_CLIMO_FIELD_MAPPING[@]}
-for (( i=0; i<${num_nml_vars}; i++ )); do
+for (( i=0; i<num_nml_vars; i++ )); do
 
-  mapping="${FV3_NML_VARNAME_TO_SFC_CLIMO_FIELD_MAPPING[$i]}"
-  nml_var_name=$( printf "%s\n" "$mapping" | \
+  mapping="${FV3_NML_VARNAME_TO_SFC_CLIMO_FIELD_MAPPING[${i}]}"
+  nml_var_name=$( printf "%s\n" "${mapping}" | \
                   sed -n -r -e "s/${regex_search}/\1/p" )
-  sfc_climo_field_name=$( printf "%s\n" "$mapping" |
+  sfc_climo_field_name=$( printf "%s\n" "${mapping}" |
                           sed -n -r -e "s/${regex_search}/\2/p" )
 #
 # Check that the surface climatology field associated with the current
@@ -150,28 +150,28 @@ for (( i=0; i<${num_nml_vars}; i++ )); do
 #
 # Set the full path to the surface climatology file.
 #
-  fp="${FIXLAM}/${CRES}.${sfc_climo_field_name}.$suffix"
+  fp="${FIXLAM}/${CRES}.${sfc_climo_field_name}.${suffix}"
 #
 # Add a line to the variable "settings" that specifies (in a yaml-compliant
 # format) the name of the current namelist variable and the value it should
 # be set to.
 #
-  settings="$settings
-    '${nml_var_name}': $fp,"
+  settings="${settings}
+    '${nml_var_name}': ${fp},"
 
 done
 
-settings="$settings
+settings="${settings}
   }"
 #
 # For debugging purposes, print out what "settings" has been set to.
 #
-print_info_msg $VERBOSE "
+print_info_msg "${VERBOSE}" "
 The variable \"settings\" specifying values of the namelist variables
 has been set as follows:
 
 settings =
-$settings"
+${settings}"
 #
 #-----------------------------------------------------------------------
 #
@@ -187,10 +187,10 @@ $settings"
 fv3_nml_base_fp="${FV3_NML_FN}.base"
 mv "${DATA}/${FV3_NML_FN}" "${DATA}/${fv3_nml_base_fp}"
 
-$USHrrfs/set_namelist.py -q \
-                        -n ${DATA}/${fv3_nml_base_fp} \
-                        -u "$settings" \
-                        -o ${DATA}/${FV3_NML_FN} || \
+"${USHrrfs}"/set_namelist.py -q \
+                        -n "${DATA}"/"${fv3_nml_base_fp}" \
+                        -u "${settings}" \
+                        -o "${DATA}"/"${FV3_NML_FN}" || \
   print_err_msg_exit "\
 Call to python script set_namelist.py to set the variables in the FV3
 namelist file that specify the paths to the surface climatology files
@@ -201,8 +201,7 @@ failed.  Parameters passed to this script are:
     FV3_NML_FP = \"${DATA}/${FV3_NML_FN}\"
   Namelist settings specified on command line (these have highest precedence):
     settings =
-$settings"
+${settings}"
 
 rm "${DATA}/${fv3_nml_base_fp}"
 }
-

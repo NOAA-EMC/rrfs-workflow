@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 
-source ${FIXrrfs}/workflow/${WGF}/workflow.conf
+source "${FIXrrfs}"/workflow/"${WGF}"/workflow.conf
 
 export FIX_GSI="${FIXrrfs}/gsi"
 export FIX_JEDI="${FIX_RRFS_JEDI:-${FIXrrfs}/jedi}"
@@ -24,7 +24,7 @@ export NUM_ENS_MEMBERS=${NUM_ENS_MEMBERS:-30}
 #
 #-----------------------------------------------------------------------
 #
-. $USHrrfs/source_util_funcs.sh
+. "${USHrrfs}"/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -70,7 +70,7 @@ NNODES_ANALYSIS_ENKF_JEDI=${NNODES_ANALYSIS_ENKF_JEDI:-48}
 PPN_ANALYSIS_ENKF_JEDI=${PPN_ANALYSIS_ENKF_JEDI:-40}
 TPP_ANALYSIS_ENKF_JEDI=${TPP_ANALYSIS_ENKF_JEDI:-1}
 
-case $MACHINE in
+case ${MACHINE} in
 #
 "WCOSS2")
   ulimit -v unlimited
@@ -122,10 +122,10 @@ HH=${YYYYMMDDHH:8:2}
 #
 fixgriddir=${FIX_GSI}/${PREDEF_GRID_NAME}
 
-cpreq -p ${fixgriddir}/fv3_coupler.res  coupler.res
+cpreq -p "${fixgriddir}"/fv3_coupler.res  coupler.res
 chmod 644 coupler.res
-ln -snf ${fixgriddir}/fv3_akbk       fv3_akbk
-ln -snf ${fixgriddir}/fv3_grid_spec  fv3_grid_spec
+ln -snf "${fixgriddir}"/fv3_akbk       fv3_akbk
+ln -snf "${fixgriddir}"/fv3_grid_spec  fv3_grid_spec
 
 # update times in coupler.res to current cycle time
 sed -i "s/yyyy/${YYYY}/" coupler.res
@@ -145,9 +145,9 @@ sed -i "s/hh/${HH}/"     coupler.res
 #
 mkdir -p data/inputs
 ncold=0
-for imem in $(seq 1 ${NUM_ENS_MEMBERS}); do
-  memchar="m"$(printf %03i $imem)
-  memcharv0="mem"$(printf %03i $imem)
+for imem in $(seq 1 "${NUM_ENS_MEMBERS}"); do
+  memchar="m"$(printf %03i "${imem}")
+  memcharv0="mem"$(printf %03i "${imem}")
   bkpath=${FORECAST_INPUT_PRODUCT}/${memchar}/INPUT
 
   # a member without a restart coupler.res is a cold start, which GETKF cannot read
@@ -155,13 +155,13 @@ for imem in $(seq 1 ${NUM_ENS_MEMBERS}); do
     ncold=$(( ncold + 1 ))
   fi
 
-  mkdir -p data/inputs/${memcharv0}
-  ln -snf ${bkpath}/fv_core.res.tile1.nc       data/inputs/${memcharv0}/fv_core.res.tile1.nc
-  ln -snf ${bkpath}/fv_tracer.res.tile1.nc     data/inputs/${memcharv0}/fv_tracer.res.tile1.nc
-  ln -snf ${bkpath}/sfc_data.nc                data/inputs/${memcharv0}/sfc_data.nc
-  ln -snf ${bkpath}/phy_data.nc_prepdbz        data/inputs/${memcharv0}/phy_data.nc_prepdbz
-  ln -snf ${bkpath}/fv_srf_wnd.res.tile1.nc    data/inputs/${memcharv0}/fv_srf_wnd.res.tile1.nc
-  ln -snf ${bkpath}/coupler.res                data/inputs/${memcharv0}/coupler.res
+  mkdir -p data/inputs/"${memcharv0}"
+  ln -snf "${bkpath}"/fv_core.res.tile1.nc       data/inputs/"${memcharv0}"/fv_core.res.tile1.nc
+  ln -snf "${bkpath}"/fv_tracer.res.tile1.nc     data/inputs/"${memcharv0}"/fv_tracer.res.tile1.nc
+  ln -snf "${bkpath}"/sfc_data.nc                data/inputs/"${memcharv0}"/sfc_data.nc
+  ln -snf "${bkpath}"/phy_data.nc_prepdbz        data/inputs/"${memcharv0}"/phy_data.nc_prepdbz
+  ln -snf "${bkpath}"/fv_srf_wnd.res.tile1.nc    data/inputs/"${memcharv0}"/fv_srf_wnd.res.tile1.nc
+  ln -snf "${bkpath}"/coupler.res                data/inputs/"${memcharv0}"/coupler.res
 done
 #
 #-----------------------------------------------------------------------
@@ -172,17 +172,17 @@ done
 #
 # pyioda libraries
 shopt -s nullglob
-dirs=("$RDASAPP_DIR"/build/lib/python3.*)
+dirs=("${RDASAPP_DIR}"/build/lib/python3.*)
 PYIODALIB=${dirs[0]}
 shopt -u nullglob
 WXFLOWLIB=${RDASAPP_DIR}/sorc/wxflow/src
 JCBLIB=${RDASAPP_DIR}/sorc/jcb/src
 export PYTHONPATH="${JCBLIB}:${WXFLOWLIB}:${PYIODALIB}:${PYTHONPATH}"
 
-cpreq -p ${PARM_JCB}/${JCB_CONFIG_ENKF} .
-cpreq -p ${FIX_GSI}/gsd_sfcobs_uselist.txt .
-cpreq -p ${FIX_GSI}/gsd_sfcobs_provider.txt .
-cpreq -p ${USHrrfs}/run_jcb.py .
+cpreq -p "${PARM_JCB}"/"${JCB_CONFIG_ENKF}" .
+cpreq -p "${FIX_GSI}"/gsd_sfcobs_uselist.txt .
+cpreq -p "${FIX_GSI}"/gsd_sfcobs_provider.txt .
+cpreq -p "${USHrrfs}"/run_jcb.py .
 
 # set other placeholders
 WIN_ISO="${YYYY}-${MM}-${DD}T${HH}:00:00Z"
@@ -191,12 +191,12 @@ SUFFIX="${CDATE}"
 jedi_yaml="jedienkf.yaml"
 
 # do replacements
-chmod u+w ${JCB_CONFIG_ENKF}
+chmod u+w "${JCB_CONFIG_ENKF}"
 sed -i \
   -e "s|@ATMOSPHERE_BACKGROUND_TIME_ISO@|'${WIN_ISO}'|" \
   -e "s|@ATMOSPHERE_BACKGROUND_TIME_PREFIX@|'${WIN_PREFIX}'|" \
   -e "s|@SUFFIX@|${SUFFIX}|g" \
-  ${JCB_CONFIG_ENKF}
+  "${JCB_CONFIG_ENKF}"
 
 python run_jcb.py "${YYYYMMDDHH}" "${JCB_CONFIG_ENKF}" "${jedi_yaml}"
 
@@ -230,7 +230,7 @@ sed -i '/^[[:space:]]*obsdataout:/,+6 s/^/#/' "${jedi_yaml}"
 #-----------------------------------------------------------------------
 #
 mkdir -p data/obs
-cp ${COMOUT}/analysis/ioda_*.nc data/obs/.
+cp "${COMOUT}"/analysis/ioda_*.nc data/obs/.
 #
 #-----------------------------------------------------------------------
 #
@@ -241,15 +241,15 @@ cp ${COMOUT}/analysis/ioda_*.nc data/obs/.
 #-----------------------------------------------------------------------
 #
 mkdir -p INPUT
-ln -snf ${FIXLAM}/${CRES}_grid.tile7.halo3.nc INPUT/${CRES}_grid.tile7.halo3.nc
-ln -snf ${FIXLAM}/${CRES}_grid.tile7.halo3.nc INPUT/${CRES}_grid.tile7.nc
-ln -snf ${FIXLAM}/${CRES}_mosaic.halo3.nc INPUT/grid_spec.nc
-cpreq -p ${FIX_JEDI}/dynamics_lam_cmaq.yaml .
-cpreq -p ${FIX_JEDI}/field_table .
+ln -snf "${FIXLAM}"/"${CRES}"_grid.tile7.halo3.nc INPUT/"${CRES}"_grid.tile7.halo3.nc
+ln -snf "${FIXLAM}"/"${CRES}"_grid.tile7.halo3.nc INPUT/"${CRES}"_grid.tile7.nc
+ln -snf "${FIXLAM}"/"${CRES}"_mosaic.halo3.nc INPUT/grid_spec.nc
+cpreq -p "${FIX_JEDI}"/dynamics_lam_cmaq.yaml .
+cpreq -p "${FIX_JEDI}"/field_table .
 # the per-grid namelists live in parm beside the JCB templates that have to match them
-cpreq -p ${PARM_JCB}/${PREDEF_GRID_NAME}/fmsmpp.nml .
-cpreq -p ${PARM_JCB}/${PREDEF_GRID_NAME}/input_lam* .
-ln -snf ${RDASAPP_DIR}/fix/expr_data/fv3_2024052700/DataFix .
+cpreq -p "${PARM_JCB}"/"${PREDEF_GRID_NAME}"/fmsmpp.nml .
+cpreq -p "${PARM_JCB}"/"${PREDEF_GRID_NAME}"/input_lam* .
+ln -snf "${RDASAPP_DIR}"/fix/expr_data/fv3_2024052700/DataFix .
 #
 #-----------------------------------------------------------------------
 #
@@ -271,15 +271,15 @@ fi
 #
 export OMP_NUM_THREADS=1
 export pgm="fv3jedi_letkf.x"
-cpreq -p ${EXECrrfs}/${pgm} ./${pgm}
+cpreq -p "${EXECrrfs}"/${pgm} ./${pgm}
 
 . prep_step
 
-${APRUN} ./$pgm ${jedi_yaml} >>$pgmout 2>errfile
+${APRUN} ./${pgm} ${jedi_yaml} >>"${pgmout}" 2>errfile
 export err=$?; err_chk
-cp $pgmout ${COMOUT}/analysis/${RUN}.t${HH}z.jediout_getkf.tm00
-cp ${JCB_CONFIG_ENKF} ${COMOUT}/analysis
-cp ${jedi_yaml} ${COMOUT}/analysis/${jedi_yaml}
+cp "${pgmout}" "${COMOUT}"/analysis/"${RUN}".t"${HH}"z.jediout_getkf.tm00
+cp "${JCB_CONFIG_ENKF}" "${COMOUT}"/analysis
+cp ${jedi_yaml} "${COMOUT}"/analysis/${jedi_yaml}
 mv errfile errfile_jedi_enkf
 
 print_info_msg "

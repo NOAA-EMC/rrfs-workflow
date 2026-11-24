@@ -1,10 +1,12 @@
+#!/bin/bash
+set -x
 #
 #-----------------------------------------------------------------------
 #
-# This is a generic function that executes the specified command (e.g. 
+# This is a generic function that executes the specified command (e.g.
 # "cp", "mv", etc) with the specified options/arguments and then verifies
-# that the command executed without errors.  The first argument to this 
-# function is the command to execute while the remaining ones are the 
+# that the command executed without errors.  The first argument to this
+# function is the command to execute while the remaining ones are the
 # options/arguments to be passed to that command.
 #
 #-----------------------------------------------------------------------
@@ -14,7 +16,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -37,23 +39,23 @@ set -x
 # Get information about the script or function that calls this function.
 # Note that caller_name will be set as follows:
 #
-# 1) If the caller is a function, caller_name will be set to the name of 
+# 1) If the caller is a function, caller_name will be set to the name of
 #    that function.
-# 2) If the caller is a sourced script, caller_name will be set to 
-#    "script".  Note that a sourced script cannot be the top level 
+# 2) If the caller is a sourced script, caller_name will be set to
+#    "script".  Note that a sourced script cannot be the top level
 #    script since by defintion, it is sourced by another script or
 #    function.
 # 3) If the caller is the top-level script, caller_name will be set to
 #    "main".
 #
-# Thus, if caller_name is set to "script" or "main", the caller is a 
+# Thus, if caller_name is set to "script" or "main", the caller is a
 # script, and if it is set to anything else, the caller is a function.
 #
 # Below, the index into FUNCNAME and BASH_SOURCE is 2 (not 1 as is usually
-# the case) because this function is called by functions such as cp_vrfy, 
-# mv_vrfy, rm_vrfy, ln_vrfy, mkdir_vrfy, and cd_vrfy, but these are just 
-# wrappers, and in the error and informational messages, we are really 
-# interested in the scripts/functions that in turn call these wrappers. 
+# the case) because this function is called by functions such as cp_vrfy,
+# mv_vrfy, rm_vrfy, ln_vrfy, mkdir_vrfy, and cd_vrfy, but these are just
+# wrappers, and in the error and informational messages, we are really
+# interested in the scripts/functions that in turn call these wrappers.
 #
 #-----------------------------------------------------------------------
 #
@@ -107,7 +109,7 @@ are zero or more options and arguments to pass to that command.
 # The first argument to this function is the command to execute while
 # the remaining ones are the arguments to that command.  Extract the
 # command and save it in the variable "cmd".  Then shift the argument
-# list so that $@ contains the arguments to the command but not the 
+# list so that $@ contains the arguments to the command but not the
 # name of the command itself.
 #
 #-----------------------------------------------------------------------
@@ -123,7 +125,7 @@ are zero or more options and arguments to pass to that command.
 #
 #-----------------------------------------------------------------------
 #
-  local output=$( "$cmd" "$@" 2>&1 )
+  local output=$( "${cmd}" "$@" 2>&1 )
   local exit_code=$?
 #
 #-----------------------------------------------------------------------
@@ -134,7 +136,7 @@ are zero or more options and arguments to pass to that command.
 #
 #-----------------------------------------------------------------------
 #
-  if [ -n "$output" ]; then
+  if [ -n "${output}" ]; then
     local double_space="  "
     output="${double_space}${output}"
     output=${output/$'\n'/$'\n'${double_space}}
@@ -162,8 +164,8 @@ ${script_or_function} in file:
 
   \"${caller_fp}\"
 
-Error message from \"${cmd}_vrfy\" function's \"$cmd\" operation:
-$output"
+Error message from \"${cmd}_vrfy\" function's \"${cmd}\" operation:
+${output}"
 
   fi
 #
@@ -178,27 +180,27 @@ $output"
 #
 #-----------------------------------------------------------------------
 #
-  if [ "$cmd" = "cd" ]; then
-    "$cmd" "$@" 2>&1 > /dev/null
+  if [ "${cmd}" = "cd" ]; then
+    "${cmd}" "$@" > /dev/null
   fi
 #
 #-----------------------------------------------------------------------
 #
-# If output is not empty, print out whatever message it contains (e.g. 
+# If output is not empty, print out whatever message it contains (e.g.
 # it might contain a warning or other informational message).
 #
 #-----------------------------------------------------------------------
 #
-  if [ -n "$output" ]; then
+  if [ -n "${output}" ]; then
 
     print_info_msg "
-\"${cmd}_vrfy\" operation returned with a message.  This command was 
+\"${cmd}_vrfy\" operation returned with a message.  This command was
 issued from ${script_or_function} in file:
 
   \"${caller_fp}\"
 
-Message from \"${cmd}_vrfy\" function's \"$cmd\" operation:
-$output"
+Message from \"${cmd}_vrfy\" function's \"${cmd}\" operation:
+${output}"
 
   fi
 #
@@ -212,7 +214,7 @@ $output"
 # commands "with verification", i.e. they execute a filesystem command
 # (such as "cp" and "mv") and then verify that the execution was successful.
 #
-# These functions are called using the "filesys_cmd_vrfy" function defined 
+# These functions are called using the "filesys_cmd_vrfy" function defined
 # above.  In each of these functions, we:
 #
 # 1) Save current shell options (in a global array) and then set new
@@ -254,4 +256,3 @@ function cd_vrfy() {
   set -x
   filesys_cmd_vrfy "cd" "$@"
 }
-

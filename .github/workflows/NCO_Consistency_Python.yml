@@ -1,0 +1,139 @@
+---
+# NCO Consistency GitHub CI for Python scripts
+name: NCO_Consistency_Python
+
+"on":
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  python_ci:
+    runs-on: ubuntu-latest
+    env:
+      CI_IGNORE: >-
+        ${{ github.event.head_commit.message }}
+        ${{ github.event.pull_request.title }}${{ github.event.pull_request.body }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          pip install flake8 pytest pytest-cov coverage numpy netCDF4 jinja2
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Parse ignores and exclusions
+        id: parse_excludes
+        run: |
+          set -euo pipefail
+
+          if echo "$CI_IGNORE" | grep -iq "python_flake8"; then
+            echo "RUN_FLAKE8=0" >> "$GITHUB_ENV"
+          else
+            echo "RUN_FLAKE8=1" >> "$GITHUB_ENV"
+          fi
+
+          if echo "$CI_IGNORE" | grep -iq "python_pytest"; then
+            echo "RUN_PYTEST=0" >> "$GITHUB_ENV"
+          else
+            echo "RUN_PYTEST=1" >> "$GITHUB_ENV"
+          fi
+
+          EXCLUDE_FILE=".github/workflows/exclude_file_list_python.lst"
+          FLAKE8_EXCLUDES="venv,.venv,env,.env,build,dist,*.egg-info,.eggs,.tox,site-packages,.git"
+          PYTEST_IGNORES="--ignore=venv --ignore=.venv --ignore=env --ignore=.env --ignore=build "
+          PYTEST_IGNORES+="--ignore=dist --ignore=site-packages --ignore=.git"
+
+          if [[ -f "$EXCLUDE_FILE" ]]; then
+            while IFS= read -r pattern || [[ -n "$pattern" ]]; do
+              pattern="${pattern%$'\r'}"
+              pattern="${pattern#"${pattern%%[![:space:]]*}"}"
+              pattern="${pattern%"${pattern##*[![:space:]]}"}"
+              [[ -z "$pattern" || "$pattern" == \#* ]] && continue
+
+              norm_pattern="${pattern#./}"
+              if [[ "$norm_pattern" == *"/*" ]]; then
+                norm_pattern="${norm_pattern%"/*"}"
+              elif [[ "$norm_pattern" == *"/" ]]; then
+                norm_pattern="${norm_pattern%"/"}"
+              fi
+
+              FLAKE8_EXCLUDES="$FLAKE8_EXCLUDES,$norm_pattern"
+              PYTEST_IGNORES="$PYTEST_IGNORES --ignore=$norm_pattern"
+            done < "$EXCLUDE_FILE"
+          fi
+
+          while IFS= read -r -d '' file; do
+            norm_file="${file#./}"
+
+            if grep -iq '^[[:space:]]*#[[:space:]]*ci-ignore:.*python_flake8' "$file"; then
+              FLAKE8_EXCLUDES="$FLAKE8_EXCLUDES,$norm_file"
+            fi
+            if grep -iq '^[[:space:]]*#[[:space:]]*ci-ignore:.*python_pytest' "$file"; then
+              PYTEST_IGNORES="$PYTEST_IGNORES --ignore=$norm_file"
+            fi
+          done < <(find . -type d \( \
+            -name 'venv' -o -name '.venv' -o -name 'env' -o -name '.env' -o \
+            -name 'build' -o -name 'dist' -o -name '*.egg-info' -o \
+            -name '.eggs' -o -name '.tox' -o -name 'site-packages' -o -name '.git' \
+            \) -prune -o -type f -name '*.py' -print0)
+
+          echo "FLAKE8_EXCLUDE_ARG=--extend-exclude=$FLAKE8_EXCLUDES" >> "$GITHUB_ENV"
+          echo "PYTEST_IGNORE_ARGS=$PYTEST_IGNORES" >> "$GITHUB_ENV"
+
+      - name: Lint with flake8
+        if: env.RUN_FLAKE8 == '1'
+        run: |
+          set -uo pipefail
+          echo "### Flake8 Linting Results" >> "$GITHUB_STEP_SUMMARY"
+          echo '```bash' >> "$GITHUB_STEP_SUMMARY"
+          set +e
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics \
+            $FLAKE8_EXCLUDE_ARG | tee flake8-report.txt
+          FLAKE8_EXIT=${PIPESTATUS[0]}
+          set -e
+          echo '```' >> "$GITHUB_STEP_SUMMARY"
+          exit "$FLAKE8_EXIT"
+
+      - name: Run pytest with coverage
+        if: success() || failure()
+        run: |
+          if [[ "$RUN_PYTEST" == '1' ]]; then
+            echo "### Pytest & Coverage Results" >> "$GITHUB_STEP_SUMMARY"
+            echo '```bash' >> "$GITHUB_STEP_SUMMARY"
+            set +e
+            pytest $PYTEST_IGNORE_ARGS --junitxml=pytest-results.xml --cov=. \
+              --cov-report=xml:coverage.xml --cov-report=term-missing | tee pytest-coverage.txt
+            PYTEST_EXIT_CODE=${PIPESTATUS[0]}
+            set -e
+            cat pytest-coverage.txt >> "$GITHUB_STEP_SUMMARY"
+            echo '```' >> "$GITHUB_STEP_SUMMARY"
+            if [[ $PYTEST_EXIT_CODE -eq 5 ]]; then
+              echo "INFO: Pytest could not find any tests to run (Exit Code 5)."
+            elif [[ $PYTEST_EXIT_CODE -ne 0 ]]; then
+              exit $PYTEST_EXIT_CODE
+            fi
+          fi
+
+      - name: Upload CI Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: python-ci-reports
+          path: |
+            flake8-report.txt
+            pytest-results.xml
+            coverage.xml
+            pytest-coverage.txt
+          retention-days: 14
+          if-no-files-found: ignore

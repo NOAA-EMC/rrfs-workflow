@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 
-source ${FIXrrfs}/workflow/${WGF}/workflow.conf
+source "${FIXrrfs}"/workflow/"${WGF}"/workflow.conf
 
 #
 #-----------------------------------------------------------------------
@@ -10,11 +10,11 @@ source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 #
 #-----------------------------------------------------------------------
 #
-. $USHrrfs/source_util_funcs.sh
+. "${USHrrfs}"/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -35,7 +35,7 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the ex-script for the task that calculates ensemble mean with 
+This is the ex-script for the task that calculates ensemble mean with
 RRFS for the specified cycle.
 ========================================================================"
 #
@@ -46,7 +46,7 @@ RRFS for the specified cycle.
 
 ulimit -a
 
-case $MACHINE in
+case ${MACHINE} in
 #
 "WCOSS2")
 #
@@ -115,29 +115,29 @@ YYYYMMDD=${YYYYMMDDHH:0:8}
 #--------------------------------------------------------------------
 #
 imem=1
-for imem in  $(seq 1 $nens)
+for imem in  $(seq 1 "${nens}")
   do
-  ensmem=$( printf "%03d" $imem ) 
-  memberstring=$( printf "%03d" $imem )
+  ensmem=$( printf "%03d" "${imem}" )
+  memberstring=$( printf "%03d" "${imem}" )
 
   bkpath=${umbrella_forecast_data}/m${ensmem}/INPUT
   dynvarfile=${bkpath}/fv_core.res.tile1.nc
   tracerfile=${bkpath}/fv_tracer.res.tile1.nc
   if [ -r "${dynvarfile}" ] && [ -r "${tracerfile}" ] ; then
-    ln -sf ${bkpath}/fv_core.res.tile1.nc  ./fv3sar_tile1_mem${memberstring}_dynvar
-    ln -sf ${bkpath}/fv_tracer.res.tile1.nc   ./fv3sar_tile1_mem${memberstring}_tracer
-    ln -sf ${bkpath}/sfc_data.nc  ./fv3sar_tile1_mem${memberstring}_sfcvar
-    if [ $imem -eq 1 ]; then
+    ln -sf "${bkpath}"/fv_core.res.tile1.nc  ./fv3sar_tile1_mem"${memberstring}"_dynvar
+    ln -sf "${bkpath}"/fv_tracer.res.tile1.nc   ./fv3sar_tile1_mem"${memberstring}"_tracer
+    ln -sf "${bkpath}"/sfc_data.nc  ./fv3sar_tile1_mem"${memberstring}"_sfcvar
+    if [ "${imem}" -eq 1 ]; then
       # Prepare the data structure for ensemble mean
-      ln -s ${umbrella_forecast_data}/ensmean/INPUT/fv_core.res.tile1.nc fv3sar_tile1_dynvar
-      ln -s ${umbrella_forecast_data}/ensmean/INPUT/fv_tracer.res.tile1.nc fv3sar_tile1_tracer
-      ln -s ${umbrella_forecast_data}/ensmean/INPUT/sfc_data.nc fv3sar_tile1_sfcvar
+      ln -s "${umbrella_forecast_data}"/ensmean/INPUT/fv_core.res.tile1.nc fv3sar_tile1_dynvar
+      ln -s "${umbrella_forecast_data}"/ensmean/INPUT/fv_tracer.res.tile1.nc fv3sar_tile1_tracer
+      ln -s "${umbrella_forecast_data}"/ensmean/INPUT/sfc_data.nc fv3sar_tile1_sfcvar
 
       # Prepare other needed files for GSI observer run
-      ln -s ${umbrella_forecast_data}/ensmean/INPUT/coupler.res coupler.res
-      ln -s ${umbrella_forecast_data}/ensmean/INPUT/fv_core.res.nc fv_core.res.nc
-      ln -s ${umbrella_forecast_data}/ensmean/INPUT/fv_srf_wnd.res.tile1.nc fv_srf_wnd.res.tile1.nc
-      ln -s ${umbrella_forecast_data}/ensmean/INPUT/phy_data.nc phy_data.nc
+      ln -s "${umbrella_forecast_data}"/ensmean/INPUT/coupler.res coupler.res
+      ln -s "${umbrella_forecast_data}"/ensmean/INPUT/fv_core.res.nc fv_core.res.nc
+      ln -s "${umbrella_forecast_data}"/ensmean/INPUT/fv_srf_wnd.res.tile1.nc fv_srf_wnd.res.tile1.nc
+      ln -s "${umbrella_forecast_data}"/ensmean/INPUT/phy_data.nc phy_data.nc
 
     fi
   else
@@ -180,7 +180,7 @@ EOF
 export pgm="rrfs_util_ens_mean_recenter_P2DIO.exe"
 . prep_step
 
-${APRUN} ${EXECrrfs}/$pgm < namelist.ens >>$pgmout 2>errfile
+${APRUN} "${EXECrrfs}"/${pgm} < namelist.ens >>"${pgmout}" 2>errfile
 export err=$?; err_chk
 #
 #-----------------------------------------------------------------------
@@ -195,7 +195,7 @@ ln -s fv3sar_tile1_sfcvar sfc_data.nc
 #
 # touch a file to show completion of the task
 #
-touch ${COMOUT}/calc_ensmean_complete.txt
+touch "${COMOUT}"/calc_ensmean_complete.txt
 #
 #-----------------------------------------------------------------------
 #

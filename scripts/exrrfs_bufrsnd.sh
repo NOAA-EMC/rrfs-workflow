@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 
-source ${FIXrrfs}/workflow/${WGF}/workflow.conf
+source "${FIXrrfs}"/workflow/"${WGF}"/workflow.conf
 
 export FIX_BUFRSND="${FIXrrfs}/bufrsnd"
 export GEMPAK_FIX=${GEMPAK_FIX:-${FIXrrfs}/gempak/fix}
@@ -13,11 +13,11 @@ export GEMPAK_FIX=${GEMPAK_FIX:-${FIXrrfs}/gempak/fix}
 #
 #-----------------------------------------------------------------------
 #
-. $USHrrfs/source_util_funcs.sh
+. "${USHrrfs}"/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -38,7 +38,7 @@ print_info_msg "
 Entering script:  \"${scrfunc_fn}\"
 In directory:     \"${scrfunc_dir}\"
 
-This is the ex-script for the task that runs the bufr-sounding 
+This is the ex-script for the task that runs the bufr-sounding
 ========================================================================"
 #
 #-----------------------------------------------------------------------
@@ -49,7 +49,7 @@ This is the ex-script for the task that runs the bufr-sounding
 #
 ulimit -a
 
-case $MACHINE in
+case ${MACHINE} in
 
   "WCOSS2")
     ncores=$(( NNODES_BUFRSND*PPN_BUFRSND ))
@@ -85,8 +85,8 @@ case $MACHINE in
   *)
     err_exit "\
 Run command has not been specified for this machine:
-  MACHINE = \"$MACHINE\"
-  APRUN = \"$APRUN\""
+  MACHINE = \"${MACHINE}\"
+  APRUN = \"${APRUN}\""
     ;;
 
 esac
@@ -99,12 +99,12 @@ esac
 #
 #-----------------------------------------------------------------------
 #
-mkdir -p $DATA/bufrpost
-cd $DATA/bufrpost
+mkdir -p "${DATA}"/bufrpost
+cd "${DATA}"/bufrpost
 
 NSTAT=1950
 
-cpreq -p ${FIX_BUFRSND}/${PREDEF_GRID_NAME}/rrfs_profdat.${NSTAT} regional_profdat
+cpreq -p "${FIX_BUFRSND}"/"${PREDEF_GRID_NAME}"/rrfs_profdat.${NSTAT} regional_profdat
 
 OUTTYP=netcdf
 export tmmark=tm00
@@ -113,44 +113,46 @@ model=FV3S
 
 INCR=01
 
-if [ $WGF = "ensf" ]; then
+if [ "${WGF}" = "ensf" ]; then
   FHRLIM=60
-elif [ $WGF = "det" ]; then
+elif [ "${WGF}" = "det" ]; then
   FHRLIM=84
 else
-  echo "bad WGF definition for BUFRSND job : " $WGF
+  echo "bad WGF definition for BUFRSND job : " "${WGF}"
   err_exit
 fi
 
-let NFILE=1
+(( NFILE=1 ))
 
-YYYY=`echo $PDY | cut -c1-4`
-MM=`echo $PDY | cut -c5-6`
-DD=`echo $PDY | cut -c7-8`
-CYCLE=$PDY$cyc
+YYYY=`echo "${PDY}" | cut -c1-4`
+MM=`echo "${PDY}" | cut -c5-6`
+DD=`echo "${PDY}" | cut -c7-8`
+CYCLE=${PDY}${cyc}
 
 STARTDATE=${YYYY}-${MM}-${DD}_${cyc}:00:00
-endtime=$($NDATE ${FHRLIM} ${YYYY}${MM}${DD}${cyc})
+endtime=$(${NDATE} "${FHRLIM}" "${YYYY}""${MM}""${DD}""${cyc}")
 
-YYYY=`echo $endtime | cut -c1-4`
-MM=`echo $endtime | cut -c5-6`
-DD=`echo $endtime | cut -c7-8`
+YYYY=`echo "${endtime}" | cut -c1-4`
+MM=`echo "${endtime}" | cut -c5-6`
+DD=`echo "${endtime}" | cut -c7-8`
 
 FINALDATE=${YYYY}-${MM}-${DD}_${cyc}:00:00
 
 if [ -e sndpostdone00.tm00 ]; then
-  lasthour=`ls -1rt sndpostdone??.tm00 | tail -1 | cut -c 12-13`
+  done_files=$(ls -1rt sndpostdone??.tm00) || err_exit "Unable to list completed BUFR hours"
+  last_done_file=${done_files##*$'\n'}
+  lasthour=${last_done_file:11:2}
   typeset -Z2 lasthour
 
-  let "fhr=$(( ${lasthour#0} + 1 ))"
-  if [ $fhr -le 10 ]; then
-     fhr=$(printf "%02d" $fhr)
+  (( fhr = 10#${lasthour} + 1 ))
+  if [ ${fhr} -le 10 ]; then
+     fhr=$(printf "%02d" ${fhr})
   fi
 else
   fhr=00
 fi
 
-echo starting with fhr $fhr
+echo starting with fhr "${fhr}"
 
 ########################################################
 #  set to 15 minute output for subhour
@@ -165,24 +167,24 @@ else
   fi
 fi
 
-while [ $fhr -le $FHRLIM ]
+while [ "${fhr}" -le "${FHRLIM}" ]
 do
 
-  date=$($NDATE ${fhr} $CDATE)
+  date=$(${NDATE} "${fhr}" "${CDATE}")
 
-  let "fhrold=$(( ${fhr#0} - 1 ))"
-  if [ $fhrold -le 10 ]; then
-     fhrold=$(printf "%02d" $fhrold)
+  (( fhrold = 10#${fhr} - 1 ))
+  if [ ${fhrold} -le 10 ]; then
+     fhrold=$(printf "%02d" ${fhrold})
   fi
 
   LOGFILE=log.atm.f0${fhr}
-  if [ $model = "FV3S" ]; then
-    if [ ${nsout_min} -ge 60 ]; then
+  if [ ${model} = "FV3S" ]; then
+    if [ "${nsout_min}" -ge 60 ]; then
       OUTFILDYN=${shared_forecast_output_data}/dynf0${fhr}.nc
       OUTFILPHYS=${shared_forecast_output_data}/phyf0${fhr}.nc
       LOGFILE=log.atm.f0${fhr}
     else
-      if [ ${fhr} -eq 00 ]; then
+      if [ "${fhr}" -eq 00 ]; then
         SUBOUTFILDYN=dynf0${fhr}-00-36.nc
         SUBOUTFILPHYS=phyf0${fhr}-00-36.nc
         LOGFILE=log.atm.f0${fhr}-00-36
@@ -193,21 +195,21 @@ do
       fi
       OUTFILDYN=${shared_forecast_output_data}/dynf0${fhr}.nc
       OUTFILPHYS=${shared_forecast_output_data}/phyf0${fhr}.nc
-      ln -s ${SUBOUTFILDYN} ${OUTFILDYN}
-      ln -s ${SUBOUTFILPHYS} ${OUTFILPHYS}
+      ln -s "${SUBOUTFILDYN}" "${OUTFILDYN}"
+      ln -s "${SUBOUTFILPHYS}" "${OUTFILPHYS}"
     fi
     icnt=1
 
     # wait for model restart file
-    while [ $icnt -lt 1000 ]
+    while [ ${icnt} -lt 1000 ]
     do
-      if [ -s ${shared_forecast_output_data}/${LOGFILE} ]; then
+      if [ -s "${shared_forecast_output_data}"/"${LOGFILE}" ]; then
         break
       else
         icnt=$((icnt + 1))
         sleep 9
       fi
-      if [ $icnt -ge 200 ]; then
+      if [ ${icnt} -ge 200 ]; then
         err_exit "ABORTING after 30 minutes of waiting for RRFS FCST F${fhr} to end."
       fi
     done
@@ -217,99 +219,100 @@ do
   fi
 
   datestr=`date`
-  echo top of loop after found needed log file for $fhr at $datestr
+  echo top of loop after found needed log file for "${fhr}" at "${datestr}"
 
   cat > itag <<EOF
-$OUTFILDYN
-$OUTFILPHYS
-$model
-$OUTTYP
-$STARTDATE
-$NFILE
-$INCR
-$fhr
-$NSTAT
-$OUTFILDYN
-$OUTFILPHYS
+${OUTFILDYN}
+${OUTFILPHYS}
+${model}
+${OUTTYP}
+${STARTDATE}
+${NFILE}
+${INCR}
+${fhr}
+${NSTAT}
+${OUTFILDYN}
+${OUTFILPHYS}
 EOF
 
-ln -sf $DATA/bufrpost/regional_profdat     fort.19
-ln -sf $DATA/bufrpost/profilm.c1.${tmmark} fort.79
+ln -sf "${DATA}"/bufrpost/regional_profdat     fort.19
+ln -sf "${DATA}"/bufrpost/profilm.c1.${tmmark} fort.79
 ln -sf ./itag                              fort.11
 
   export pgm="rrfs_util_rrfs_bufr.exe"
   . prep_step
 
-  ${APRUNC} ${EXECrrfs}/$pgm >>$pgmout 2>errfile
+  ${APRUNC} "${EXECrrfs}"/${pgm} >>"${pgmout}" 2>errfile
   export err=$?; err_chk
   mv errfile errfile_rrfs_bufr
 
-  echo DONE $fhr at `date`
+  current_time=$(date) || err_exit "Unable to get current time"
+  echo "DONE ${fhr} at ${current_time}"
 
-  mv $DATA/bufrpost/profilm.c1.${tmmark} $DATA/profilm.c1.${tmmark}.f${fhr}
-  echo done > $DATA/sndpostdone${fhr}.${tmmark}
+  mv "${DATA}"/bufrpost/profilm.c1.${tmmark} "${DATA}"/profilm.c1.${tmmark}.f"${fhr}"
+  echo "done" > "${DATA}"/sndpostdone"${fhr}".${tmmark}
 
-  if [ -e $DATA/profilm.c1.${tmmark} ]; then
-    cat $DATA/profilm.c1.${tmmark}  $DATA/profilm.c1.${tmmark}.f${fhr} > $DATA/profilm_int
+  if [ -e "${DATA}"/profilm.c1.${tmmark} ]; then
+    cat "${DATA}"/profilm.c1.${tmmark}  "${DATA}"/profilm.c1.${tmmark}.f"${fhr}" > "${DATA}"/profilm_int
   else
-    cp  $DATA/profilm.c1.${tmmark}.f${fhr}  $DATA/profilm_int
+    cp  "${DATA}"/profilm.c1.${tmmark}.f"${fhr}"  "${DATA}"/profilm_int
   fi
 
-  mv $DATA/profilm_int $DATA/profilm.c1.${tmmark}
+  mv "${DATA}"/profilm_int "${DATA}"/profilm.c1.${tmmark}
 
-  fhr=`expr $fhr + $INCR`
+  fhr=`expr "${fhr}" + ${INCR}`
 
-  if [ $fhr -lt 10 ]; then
-    fhr=0$fhr
+  if [ "${fhr}" -lt 10 ]; then
+    fhr=0${fhr}
   fi
 
 done
 
-cd $DATA
+cd "${DATA}"
 
 ########################################################
 # SNDP code
 ########################################################
 
-cpreq -p ${FIX_BUFRSND}/regional_sndp.parm.mono $DATA/regional_sndp.parm.mono
-cpreq -p ${FIX_BUFRSND}/regional_bufr.tbl $DATA/regional_bufr.tbl
+cpreq -p "${FIX_BUFRSND}"/regional_sndp.parm.mono "${DATA}"/regional_sndp.parm.mono
+cpreq -p "${FIX_BUFRSND}"/regional_bufr.tbl "${DATA}"/regional_bufr.tbl
 
-ln -sf $DATA/regional_sndp.parm.mono fort.11
-ln -sf $DATA/regional_bufr.tbl       fort.32
-ln -sf $DATA/profilm.c1.${tmmark}    fort.66
-ln -sf $DATA/class1.bufr             fort.78
+ln -sf "${DATA}"/regional_sndp.parm.mono fort.11
+ln -sf "${DATA}"/regional_bufr.tbl       fort.32
+ln -sf "${DATA}"/profilm.c1.${tmmark}    fort.66
+ln -sf "${DATA}"/class1.bufr             fort.78
 
-echo here model $model
+echo here model ${model}
 
 nlev=65
 
-FCST_LEN_HRS=$FHRLIM
-echo "$nlev $NSTAT $FCST_LEN_HRS" > itag
+FCST_LEN_HRS=${FHRLIM}
+echo "${nlev} ${NSTAT} ${FCST_LEN_HRS}" > itag
 
 export pgm="rrfs_util_rrfs_sndp.exe"
 . prep_step
 
-${APRUNS} ${EXECrrfs}/$pgm < itag >>$pgmout 2>errfile
+${APRUNS} "${EXECrrfs}"/${pgm} < itag >>"${pgmout}" 2>errfile
 export err=$?; err_chk
 mv errfile errfile_rrfs_sndp
 
 if [[ "${SENDCOM}" = "YES" ]]; then
 
- if [ ${WGF} = "det" ]; then
-  cpreq $DATA/class1.bufr $COMOUT/rrfs.t${cyc}z.class1.bufr
-  cpreq $DATA/profilm.c1.${tmmark} ${COMOUT}/rrfs.t${cyc}z.profilm.c1
- elif [ ${WGF} = "ensf" ]; then
-  cpreq $DATA/class1.bufr $COMOUT/rrfs.t${cyc}z.m${ENSMEM_INDX}.class1.bufr
-  cpreq $DATA/profilm.c1.${tmmark} ${COMOUT}/rrfs.t${cyc}z.m${ENSMEM_INDX}.profilm.c1
+ if [ "${WGF}" = "det" ]; then
+  cpreq "${DATA}"/class1.bufr "${COMOUT}"/rrfs.t"${cyc}"z.class1.bufr
+  cpreq "${DATA}"/profilm.c1.${tmmark} "${COMOUT}"/rrfs.t"${cyc}"z.profilm.c1
+ elif [ "${WGF}" = "ensf" ]; then
+  cpreq "${DATA}"/class1.bufr "${COMOUT}"/rrfs.t"${cyc}"z.m"${ENSMEM_INDX}".class1.bufr
+  cpreq "${DATA}"/profilm.c1.${tmmark} "${COMOUT}"/rrfs.t"${cyc}"z.m"${ENSMEM_INDX}".profilm.c1
  else
-  echo "WARNING: running BUFRSND task for $WGF"
- fi 
- 
+  echo "WARNING: running BUFRSND task for ${WGF}"
+ fi
+
  if [[ "${SENDDBN}" = "YES" ]]; then
- if [ ${WGF} = "det" ]; then
-   $DBNROOT/bin/dbn_alert MODEL RRFS_DET_BUFR $job ${COMOUT}/rrfs.t${cyc}z.class1.bufr
-elif [ ${WGF} = "ensf" ]; then
-   $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_BUFR $job ${COMOUT}/rrfs.t${cyc}z.m${ENSMEM_INDX}.class1.bufr
+ if [ "${WGF}" = "det" ]; then
+   "${DBNROOT}"/bin/dbn_alert MODEL RRFS_DET_BUFR "${job}" "${COMOUT}"/rrfs.t"${cyc}"z.class1.bufr
+elif [ "${WGF}" = "ensf" ]; then
+   "${DBNROOT}"/bin/dbn_alert MODEL RRFS_ENS_BUFR "${job}" "${COMOUT}"/rrfs.t"${cyc}"z.m"${ENSMEM_INDX}".class1.bufr
  fi
  fi
 
@@ -317,25 +320,25 @@ fi #SENDCOM
 
 # remove bufr file breakout directory in $COMOUT if it exists
 
-if [ -d ${COMOUT}/bufr.${cyc} ]; then
-  cd $COMOUT
-  [ -d bufr.${cyc} ]&& rm -r bufr.${cyc}
-  cd $DATA
+if [ -d "${COMOUT}"/bufr."${cyc}" ]; then
+  cd "${COMOUT}"
+  [ -d bufr."${cyc}" ]&& rm -r bufr."${cyc}"
+  cd "${DATA}"
 fi
 
 [ -f stnmlist_input ]&& rm stnmlist_input
 
 cat <<EOF > stnmlist_input
 1
-$DATA/class1.bufr
+${DATA}/class1.bufr
 ${COMOUT}/bufr.${cyc}/bufr
 ${CYCLE}
 EOF
 
-mkdir -p ${COMOUT}/bufr.${cyc}
+mkdir -p "${COMOUT}"/bufr."${cyc}"
 
 # export FORT20=$DATA/class1.bufr
-ln -sf $DATA/class1.bufr fort.20
+ln -sf "${DATA}"/class1.bufr fort.20
 
 export DIRD=${COMOUT}/bufr.${cyc}/bufr
 
@@ -344,66 +347,68 @@ echo "before stnmlist.exe"
 export pgm="rrfs_util_rrfs_stnmlist.exe"
 . prep_step
 
-${APRUNS} ${EXECrrfs}/$pgm < stnmlist_input >>$pgmout 2>errfile
+${APRUNS} "${EXECrrfs}"/${pgm} < stnmlist_input >>"${pgmout}" 2>errfile
 export err=$?; err_chk
 mv errfile errfile_rrfs_stnmlist
 
 echo "after stnmlist.exe"
 
-echo ${COMOUT}/bufr.${cyc} > ${COMOUT}/bufr.${cyc}/bufrloc
+echo "${COMOUT}"/bufr."${cyc}" > "${COMOUT}"/bufr."${cyc}"/bufrloc
 
-cd ${COMOUT}/bufr.${cyc}
+cd "${COMOUT}"/bufr."${cyc}"
 
 # Tar and gzip the individual bufr files and send them to /com
-tar -cf - . | /usr/bin/gzip > ../rrfs.t${cyc}z.bufrsnd.tar.gz
+if ! (set -o pipefail; tar -cf - . | /usr/bin/gzip > ../rrfs.t"${cyc}"z.bufrsnd.tar.gz); then
+  err_exit "Unable to create BUFR archive"
+fi
 
-cpreq -p ${GEMPAK_FIX}/snrrfs.prm snrrfs.prm
-cpreq -p ${GEMPAK_FIX}/sfrrfs.prm_aux sfrrfs.prm_aux
-cpreq -p ${GEMPAK_FIX}/sfrrfs.prm sfrrfs.prm
+cpreq -p "${GEMPAK_FIX}"/snrrfs.prm snrrfs.prm
+cpreq -p "${GEMPAK_FIX}"/sfrrfs.prm_aux sfrrfs.prm_aux
+cpreq -p "${GEMPAK_FIX}"/sfrrfs.prm sfrrfs.prm
 
-mkdir -p $COMOUT/gempak
+mkdir -p "${COMOUT}"/gempak
 
 #  Set input file name.
- if [ ${WGF} = "det" ]; then
-INFILE=$COMOUT/rrfs.t${cyc}z.class1.bufr
- elif [  ${WGF} = "ensf" ]; then
-INFILE=$COMOUT/rrfs.t${cyc}z.m${ENSMEM_INDX}.class1.bufr
+ if [ "${WGF}" = "det" ]; then
+INFILE=${COMOUT}/rrfs.t${cyc}z.class1.bufr
+ elif [  "${WGF}" = "ensf" ]; then
+INFILE=${COMOUT}/rrfs.t${cyc}z.m${ENSMEM_INDX}.class1.bufr
  fi
 
 export INFILE
 
- if [ ${WGF} = "det" ]; then
+ if [ "${WGF}" = "det" ]; then
 outfilbase=rrfs_${PDY}${cyc}
-elif [  ${WGF} = "ensf" ]; then
+elif [  "${WGF}" = "ensf" ]; then
 outfilbase=rrfs_m${ENSMEM_INDX}_${PDY}${cyc}
  fi
 
-namsnd << EOF > /dev/null
-SNBUFR   = $INFILE
+namsnd << EOF
+SNBUFR   = ${INFILE}
 SNOUTF   = ${outfilbase}.snd
 SFOUTF   = ${outfilbase}.sfc+
 SNPRMF   = snrrfs.prm
 SFPRMF   = sfrrfs.prm
-TIMSTN   = 85/$NSTAT
+TIMSTN   = 85/${NSTAT}
 r
 
 exit
 EOF
 
 if [[ "${SENDCOM}" = "YES" ]]; then
-  cpreq ${outfilbase}.snd ${COMOUT}/gempak/
-  cpreq ${outfilbase}.sfc* ${COMOUT}/gempak/
+  cpreq "${outfilbase}".snd "${COMOUT}"/gempak/
+  cpreq "${outfilbase}".sfc* "${COMOUT}"/gempak/
  if [[ "${SENDDBN}" = "YES" ]]; then
-  if [ ${WGF} = "det" ]; then
-    $DBNROOT/bin/dbn_alert MODEL RRFS_DET_BUFR_GEMPAK $job ${COMOUT}/gempak/${outfilbase}.snd
-    $DBNROOT/bin/dbn_alert MODEL RRFS_DET_BUFR_GEMPAK $job ${COMOUT}/gempak/${outfilbase}.sfc
-    $DBNROOT/bin/dbn_alert MODEL RRFS_DET_BUFR_GEMPAK $job ${COMOUT}/gempak/${outfilbase}.sfc_aux
-    $DBNROOT/bin/dbn_alert MODEL RRFS_DET_SOUNDING $job ${COMOUT}/rrfs.t${cyc}z.bufrsnd.tar.gz
-  elif [  ${WGF} = "ensf" ]; then
-    $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_BUFR_GEMPAK $job ${COMOUT}/gempak/${outfilbase}.snd
-    $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_BUFR_GEMPAK $job ${COMOUT}/gempak/${outfilbase}.sfc
-    $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_BUFR_GEMPAK $job ${COMOUT}/gempak/${outfilbase}.sfc_aux
-    $DBNROOT/bin/dbn_alert MODEL RRFS_ENS_SOUNDING $job ${COMOUT}/rrfs.t${cyc}z.bufrsnd.tar.gz
+  if [ "${WGF}" = "det" ]; then
+    "${DBNROOT}"/bin/dbn_alert MODEL RRFS_DET_BUFR_GEMPAK "${job}" "${COMOUT}"/gempak/"${outfilbase}".snd
+    "${DBNROOT}"/bin/dbn_alert MODEL RRFS_DET_BUFR_GEMPAK "${job}" "${COMOUT}"/gempak/"${outfilbase}".sfc
+    "${DBNROOT}"/bin/dbn_alert MODEL RRFS_DET_BUFR_GEMPAK "${job}" "${COMOUT}"/gempak/"${outfilbase}".sfc_aux
+    "${DBNROOT}"/bin/dbn_alert MODEL RRFS_DET_SOUNDING "${job}" "${COMOUT}"/rrfs.t"${cyc}"z.bufrsnd.tar.gz
+  elif [  "${WGF}" = "ensf" ]; then
+    "${DBNROOT}"/bin/dbn_alert MODEL RRFS_ENS_BUFR_GEMPAK "${job}" "${COMOUT}"/gempak/"${outfilbase}".snd
+    "${DBNROOT}"/bin/dbn_alert MODEL RRFS_ENS_BUFR_GEMPAK "${job}" "${COMOUT}"/gempak/"${outfilbase}".sfc
+    "${DBNROOT}"/bin/dbn_alert MODEL RRFS_ENS_BUFR_GEMPAK "${job}" "${COMOUT}"/gempak/"${outfilbase}".sfc_aux
+    "${DBNROOT}"/bin/dbn_alert MODEL RRFS_ENS_SOUNDING "${job}" "${COMOUT}"/rrfs.t"${cyc}"z.bufrsnd.tar.gz
   fi
  fi
 fi

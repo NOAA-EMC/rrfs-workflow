@@ -1,3 +1,4 @@
+---
 # .readthedocs.yaml
 # Read the Docs configuration file
 # See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
@@ -17,19 +18,18 @@ build:
 
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
-   configuration: docs/source/conf.py
+  configuration: docs/source/conf.py
 
 # If using Sphinx, optionally build your docs in additional formats such as PDF
 # formats:
-#    - pdf
+#   - pdf
 
 # Optionally declare the Python requirements required to build your docs
 python:
-   install:
-   - requirements: docs/requirements.txt
+  install:
+    - requirements: docs/requirements.txt
 
 submodules:
-   include:
-   - hpc-stack-mod
-   recursive: true
-
+  include:
+    - hpc-stack-mod
+  recursive: true

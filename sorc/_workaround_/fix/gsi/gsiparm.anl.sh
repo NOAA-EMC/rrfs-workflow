@@ -24,7 +24,7 @@ gsi_namelist="
    lwrite_peakwt=.true.,
    innov_use_model_fed=${innov_use_model_fed},
    lnobalance=.false.,
- /     
+ /
  &GRIDOPTS
    fv3_regional=.true.,grid_ratio_fv3_regional=${grid_ratio_fv3},nvege_type=20,
    fv3_io_layout_y=${n_iolayouty},
@@ -134,9 +134,9 @@ OBS_INPUT::
    atmsbufr       atms        n20       atms_n20             0.0     2     0
    atmsbufr       atms        n21       atms_n21             0.0     2     0
    crisbufr       cris        npp       cris_npp             0.0     2     0
-   crisfsbufr     cris-fsr    npp       cris-fsr_npp         0.0     2     0 
-   crisfsbufr     cris-fsr    n20       cris-fsr_n20         0.0     2     0 
-   crisfsbufr     cris-fsr    n21       cris-fsr_n21         0.0     2     0 
+   crisfsbufr     cris-fsr    npp       cris-fsr_npp         0.0     2     0
+   crisfsbufr     cris-fsr    n20       cris-fsr_n20         0.0     2     0
+   crisfsbufr     cris-fsr    n21       cris-fsr_n21         0.0     2     0
    abibufr        abi         g16       abi_g16              0.0     2     0
    mlsbufr        mls30       aura      mls30_aura           0.0     0     0
    oscatbufr      uv          null      uv                   0.0     0     0

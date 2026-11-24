@@ -1,3 +1,5 @@
+#!/bin/bash
+set -x
 #
 #-----------------------------------------------------------------------
 #
@@ -11,7 +13,7 @@ set -x
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -53,7 +55,7 @@ where the arguments are defined as follows:
   Full path to the file in which the specified parameter's value will be
   set.
 
-  param: 
+  param:
   Name of the parameter whose value will be set.
 
   value:
@@ -94,36 +96,36 @@ where the arguments are defined as follows:
   local regex_search=""
   local regex_replace=""
 
-  case $file in
+  case ${file} in
 #
   "${WFLOW_XML_FN}")
-    regex_search="(^\s*<!ENTITY\s+$param\s*\")(.*)(\">.*)"
-    regex_replace="\1$value\3"
+    regex_search="(^\s*<!ENTITY\s+${param}\s*\")(.*)(\">.*)"
+    regex_replace="\1${value}\3"
     ;;
 #
   "${RGNL_GRID_NML_FN}")
-    regex_search="^(\s*$param\s*=)(.*)"
-    regex_replace="\1 $value"
+    regex_search="^(\s*${param}\s*=)(.*)"
+    regex_replace="\1 ${value}"
     ;;
 #
   "${FV3_NML_FN}")
-    regex_search="^(\s*$param\s*=)(.*)"
-    regex_replace="\1 $value"
+    regex_search="^(\s*${param}\s*=)(.*)"
+    regex_replace="\1 ${value}"
     ;;
 #
   "${DIAG_TABLE_FN}")
-    regex_search="(.*)(<$param>)(.*)"
-    regex_replace="\1$value\3"
+    regex_search="(.*)(<${param}>)(.*)"
+    regex_replace="\1${value}\3"
     ;;
 #
   "${MODEL_CONFIG_FN}")
-    regex_search="^(\s*$param:\s*)(.*)"
-    regex_replace="\1$value"
+    regex_search="^(\s*${param}:\s*)(.*)"
+    regex_replace="\1${value}"
     ;;
 #
   "${GLOBAL_VAR_DEFNS_FN}")
-    regex_search="(^\s*$param=)(\".*\")?([^ \"]*)?(\(.*\))?(\s*[#].*)?"
-    regex_replace="\1$value\5"
+    regex_search="(^\s*${param}=)(\".*\")?([^ \"]*)?(\(.*\))?(\s*[#].*)?"
+    regex_replace="\1${value}\5"
 #    set_bash_param "${file_fp}" "$param" "$value"
     ;;
 #
@@ -136,16 +138,16 @@ where the arguments are defined as follows:
 #
   *)
     print_err_msg_exit "\
-The regular expressions for performing search and replace have not been 
+The regular expressions for performing search and replace have not been
 specified for this file:
-  file = \"$file\""
+  file = \"${file}\""
     ;;
 #
   esac
 #
 #-----------------------------------------------------------------------
 #
-# Use grep to determine whether regex_search exists in the specified 
+# Use grep to determine whether regex_search exists in the specified
 # file.  If so, perform the regex replacement using sed.  If not, print
 # out an error message and exit.
 #
@@ -157,11 +159,11 @@ specified for this file:
     sed -i -r -e "s%${regex_search}%${regex_replace}%" "${file_fp}"
   else
     print_err_msg_exit "\
-The specified file (file_fp) does not contain the searched-for regular 
+The specified file (file_fp) does not contain the searched-for regular
 expression (regex_search):
   file_fp = \"${file_fp}\"
-  param = \"$param\"
-  value = \"$value\"
+  param = \"${param}\"
+  value = \"${value}\"
   regex_search = ${regex_search}"
   fi
 #

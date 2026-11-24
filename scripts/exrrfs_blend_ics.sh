@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 
-source ${FIXrrfs}/workflow/${WGF}/workflow.conf
+source "${FIXrrfs}"/workflow/"${WGF}"/workflow.conf
 
 #
 #-----------------------------------------------------------------------
@@ -10,7 +10,7 @@ source ${FIXrrfs}/workflow/${WGF}/workflow.conf
 #
 #-----------------------------------------------------------------------
 #
-. $USHrrfs/source_util_funcs.sh
+. "${USHrrfs}"/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
@@ -98,8 +98,8 @@ pgm="blending"
 
 yyyymmdd="${cdate_crnt_fhr:0:8}"
 hh="${cdate_crnt_fhr:8:2}"
-cdate_crnt_fhr_m1=$($NDATE -1 ${yyyymmdd}${hh})
-cdate_crnt_fhr_m3=$($NDATE -3 ${yyyymmdd}${hh})
+cdate_crnt_fhr_m1=$(${NDATE} -1 "${yyyymmdd}""${hh}")
+cdate_crnt_fhr_m3=$(${NDATE} -3 "${yyyymmdd}""${hh}")
 yyyymmdd_m1="${cdate_crnt_fhr_m1:0:8}"
 yyyymmdd_m3="${cdate_crnt_fhr_m3:0:8}"
 hh_m1="${cdate_crnt_fhr_m1:8:2}"
@@ -111,29 +111,29 @@ DO_ENS_BLENDING=${DO_ENS_BLENDING:-"TRUE"}
 # is no member restart to warm start from. The blending branch below is the only thing that sets it,
 # so with blending off a cold start skips the one-timestep init and leaves the next cycle's prep_cyc
 # with no background.
-if [[ $DO_ENS_BLENDING == "FALSE" ]]; then
+if [[ ${DO_ENS_BLENDING} == "FALSE" ]]; then
   # This script only runs at 07z and 19z, the cycles that re-initialize the ensemble, and with
   # blending off the one-timestep ensinit forecast is the only thing that can give them a warm
   # start, so ask for it every time rather than only when no previous restart exists.
-  mkdir -p ${COMrrfs}/${RUN}.${yyyymmdd}/${hh}_spinup/${mem_num}
-  touch ${COMrrfs}/${RUN}.${yyyymmdd}/${hh}_spinup/${mem_num}/run_ensinit
-  if [ ${mem_num} == "m001" ]; then
-    mkdir -p ${COMrrfs}/${RUN}.${yyyymmdd}/${hh}_spinup/ensmean
-    touch ${COMrrfs}/${RUN}.${yyyymmdd}/${hh}_spinup/ensmean/run_ensinit
+  mkdir -p "${COMrrfs}"/"${RUN}"."${yyyymmdd}"/"${hh}"_spinup/"${mem_num}"
+  touch "${COMrrfs}"/"${RUN}"."${yyyymmdd}"/"${hh}"_spinup/"${mem_num}"/run_ensinit
+  if [ "${mem_num}" == "m001" ]; then
+    mkdir -p "${COMrrfs}"/"${RUN}"."${yyyymmdd}"/"${hh}"_spinup/ensmean
+    touch "${COMrrfs}"/"${RUN}"."${yyyymmdd}"/"${hh}"_spinup/ensmean/run_ensinit
   fi
   echo "Blending off: do ensinit!"
 fi
 # Check for 1h RRFS EnKF files, if at least one missing then use 1tstep initialization
-if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
+if [[ ${DO_ENS_BLENDING} == "TRUE" ]]; then
 
   # Files to denote whether running blending or ensinit
   run_blending=${COMrrfs}/${RUN}.${yyyymmdd}/${hh}_spinup/${mem_num}/run_blending
   run_ensinit=${COMrrfs}/${RUN}.${yyyymmdd}/${hh}_spinup/${mem_num}/run_ensinit
-  mkdir -p ${COMrrfs}/${RUN}.${yyyymmdd}/${hh}_spinup/${mem_num}
-  if [ ${mem_num} == "m001" ]; then
+  mkdir -p "${COMrrfs}"/"${RUN}"."${yyyymmdd}"/"${hh}"_spinup/"${mem_num}"
+  if [ "${mem_num}" == "m001" ]; then
     run_blending_mean=${COMrrfs}/${RUN}.${yyyymmdd}/${hh}_spinup/ensmean/run_blending
     run_ensinit_mean=${COMrrfs}/${RUN}.${yyyymmdd}/${hh}_spinup/ensmean/run_ensinit
-    mkdir -p ${COMrrfs}/${RUN}.${yyyymmdd}/${hh}_spinup/ensmean
+    mkdir -p "${COMrrfs}"/"${RUN}"."${yyyymmdd}"/"${hh}"_spinup/ensmean
   fi
 
   # check if the 1h RRFS EnKF files exist
@@ -141,15 +141,15 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
   if [[ "${NUM_ENS_MEMBERS_FOUND}" == "NO" ]]; then
     # waite for 5 minutes
     nnn=1
-    while [[ $nnn -le 5 ]] ; do
+    while [[ ${nnn} -le 5 ]] ; do
      checkfile="${COMrrfs}/${RUN}.${yyyymmdd_m1}/${hh_m1}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.coupler.res"
-     if [[ -f $checkfile ]]; then
+     if [[ -f ${checkfile} ]]; then
         NUM_ENS_MEMBERS_FOUND="YES"
         nnn=6
         yyyymmdd_m=${yyyymmdd_m1}
         hh_m=${hh_m1}
      else
-        echo "File missing: $checkfile"
+        echo "File missing: ${checkfile}"
         sleep 60
         ((nnn++))
      fi
@@ -159,15 +159,15 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
   if [[ "${NUM_ENS_MEMBERS_FOUND}" == "NO" ]]; then
     # waite for 3 minutes
     nnn=1
-    while [[ $nnn -le 3 ]] ; do
+    while [[ ${nnn} -le 3 ]] ; do
       checkfile="${COMrrfs}/${RUN}.${yyyymmdd_m3}/${hh_m3}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.coupler.res"
-      if [[ -f $checkfile ]]; then
+      if [[ -f ${checkfile} ]]; then
         NUM_ENS_MEMBERS_FOUND="YES"
         nnn=4
         yyyymmdd_m=${yyyymmdd_m3}
         hh_m=${hh_m3}
       else
-         echo "File missing: $checkfile"
+         echo "File missing: ${checkfile}"
          sleep 60
          ((nnn++))
       fi
@@ -175,43 +175,43 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
   fi
   # Check if the number of existing files is equal to the total number of ensemble members
   if [[ ${NUM_ENS_MEMBERS_FOUND} == "YES" ]]; then
-      print_info_msg "$VERBOSE" "Found ${RUN}.${yyyymmdd_m}/${hh_m}"
+      print_info_msg "${VERBOSE}" "Found ${RUN}.${yyyymmdd_m}/${hh_m}"
       # Check if run_blending file exists, and if not, touch it
-      if [[ ! -f $run_blending ]]; then
-          touch $run_blending
+      if [[ ! -f ${run_blending} ]]; then
+          touch "${run_blending}"
       fi
-      if [[ ${mem_num} == "m001" ]] && [[ ! -f $run_blending_mean ]]; then
-          touch $run_blending_mean
+      if [[ ${mem_num} == "m001" ]] && [[ ! -f ${run_blending_mean} ]]; then
+          touch "${run_blending_mean}"
       fi
       blendmsg="Do blending!"
-      if [[ -f $run_ensinit ]]; then
-         rm -f $run_ensinit
+      if [[ -f ${run_ensinit} ]]; then
+         rm -f "${run_ensinit}"
       fi
-      if [[ ${mem_num} == "m001" ]] && [[ -f $run_ensinit_mean ]]; then
-         rm -f $run_ensinit_mean
+      if [[ ${mem_num} == "m001" ]] && [[ -f ${run_ensinit_mean} ]]; then
+         rm -f "${run_ensinit_mean}"
       fi
   else
       # Check if run_ensinit file exists, and if not, touch it
-      if [[ ! -f $run_ensinit ]]; then
-          touch $run_ensinit
+      if [[ ! -f ${run_ensinit} ]]; then
+          touch "${run_ensinit}"
       fi
-      if [[ ${mem_num} == "m001" ]] && [[ ! -f $run_ensinit_mean ]]; then
-          touch $run_ensinit_mean
+      if [[ ${mem_num} == "m001" ]] && [[ ! -f ${run_ensinit_mean} ]]; then
+          touch "${run_ensinit_mean}"
       fi
       blendmsg="Do ensinit!"
   fi
-  echo "`date`"
-  echo "Blending check: $blendmsg"
+  date
+  echo "Blending check: ${blendmsg}"
 
-  if [ -f $run_blending ] &&
-     [ ! -f $run_ensinit ] &&
-     [ $EXTRN_MDL_NAME_ICS = "GDASENKF" ]; then
+  if [ -f "${run_blending}" ] &&
+     [ ! -f "${run_ensinit}" ] &&
+     [ "${EXTRN_MDL_NAME_ICS}" = "GDASENKF" ]; then
 
      echo "Blending Starting."
 
-     if [ ${cyc} == "07" ] || [ ${cyc} == "19" ]; then
+     if [ "${cyc}" == "07" ] || [ "${cyc}" == "19" ]; then
        echo "Currently running ENKF 07Z or 19Z Blending - will set enkf ensinit forecast and save restart job to complete"
-       if [ ${cyc} == "07" ]; then
+       if [ "${cyc}" == "07" ]; then
          cycmaj=06
        else
          cycmaj=18
@@ -220,17 +220,17 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
      fi
 
      # F2Py shared object files to PYTHONPATH
-     export PYTHONPATH=$PYTHONPATH:$HOMErrfs/lib
+     export PYTHONPATH=${PYTHONPATH}:${HOMErrfs}/lib
 
      # Required NETCDF files - RRFS
-     cpreq -p ${COMrrfs}/${RUN}.${yyyymmdd_m}/${hh_m}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.tile1.nc ./fv_core.res.tile1.nc
-     cpreq -p ${COMrrfs}/${RUN}.${yyyymmdd_m}/${hh_m}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_tracer.res.tile1.nc ./fv_tracer.res.tile1.nc
+     cpreq -p "${COMrrfs}"/"${RUN}"."${yyyymmdd_m}"/"${hh_m}"/"${mem_num}"/forecast/RESTART/"${yyyymmdd}"."${hh}"0000.fv_core.res.tile1.nc ./fv_core.res.tile1.nc
+     cpreq -p "${COMrrfs}"/"${RUN}"."${yyyymmdd_m}"/"${hh_m}"/"${mem_num}"/forecast/RESTART/"${yyyymmdd}"."${hh}"0000.fv_tracer.res.tile1.nc ./fv_tracer.res.tile1.nc
 
      # Shortcut the file names/arguments.
-     Lx=$ENS_BLENDING_LENGTHSCALE
+     Lx=${ENS_BLENDING_LENGTHSCALE}
      # Using gfs_data.tile7.halo0.nc from umberlla ics directory as out.atm.tile${TILE_RGNL}.nc
-     if [ -s ${shared_output_data}/cold2warm_all.nc ]; then
-       ln -s ${shared_output_data}/cold2warm_all.nc cold2warm_all.nc
+     if [ -s "${shared_output_data}"/cold2warm_all.nc ]; then
+       ln -s "${shared_output_data}"/cold2warm_all.nc cold2warm_all.nc
      else
        err_exit "FATAL: gfs_data.tile${TILE_RGNL}.halo0.nc not found in ${shared_output_data} - check make ics step"
      fi
@@ -244,23 +244,23 @@ if [[ $DO_ENS_BLENDING == "TRUE" ]]; then
      use_host_enkf=${USE_HOST_ENKF} # ignored if blend="TRUE".
                                     # TRUE:  Final EnKF will be GDAS (no blending)
                                     # FALSE: Final EnKF will be RRFS (no blending)
-     python ${USHrrfs}/blending_fv3.py $Lx $glb $reg $trcr $blend $use_host_enkf
+     python "${USHrrfs}"/blending_fv3.py "${Lx}" ${glb} ${reg} ${trcr} "${blend}" "${use_host_enkf}"
      [[ ! -s fv_core.res.tile1.nc ]]&& err_exit "FATAL: fv_core.res.tile1.nc not found in ${DATA}"
-     [[ ! -s fv_tracer.res.tile1.nc ]]&& err_exit "FATAL: fv_tracer.res.tile1.nc not found in ${DATA}" 
-     if [ -f ${shared_output_data}/fv_core.res.tile1.nc ]; then
-       rm -f ${shared_output_data}/fv_core.res.tile1.nc
+     [[ ! -s fv_tracer.res.tile1.nc ]]&& err_exit "FATAL: fv_tracer.res.tile1.nc not found in ${DATA}"
+     if [ -f "${shared_output_data}"/fv_core.res.tile1.nc ]; then
+       rm -f "${shared_output_data}"/fv_core.res.tile1.nc
      fi
-     cpreq ${DATA}/fv_core.res.tile1.nc ${shared_output_data}/fv_core.res.tile1.nc
-     if [ -f ${shared_output_data}/fv_tracer.res.tile1.nc ]; then
-       rm -f ${shared_output_data}/fv_tracer.res.tile1.nc
+     cpreq "${DATA}"/fv_core.res.tile1.nc "${shared_output_data}"/fv_core.res.tile1.nc
+     if [ -f "${shared_output_data}"/fv_tracer.res.tile1.nc ]; then
+       rm -f "${shared_output_data}"/fv_tracer.res.tile1.nc
      fi
-     cpreq ${DATA}/fv_tracer.res.tile1.nc ${shared_output_data}/fv_tracer.res.tile1.nc
+     cpreq "${DATA}"/fv_tracer.res.tile1.nc "${shared_output_data}"/fv_tracer.res.tile1.nc
      # Move the remaining RESTART files to INPUT
-     cpreq -p ${COMrrfs}/${RUN}.${yyyymmdd_m}/${hh_m}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_core.res.nc          ${shared_output_data}/fv_core.res.nc
-     cpreq -p ${COMrrfs}/${RUN}.${yyyymmdd_m}/${hh_m}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.fv_srf_wnd.res.tile1.nc ${shared_output_data}/fv_srf_wnd.res.tile1.nc
-     cpreq -p ${COMrrfs}/${RUN}.${yyyymmdd_m}/${hh_m}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.phy_data.nc             ${shared_output_data}/phy_data.nc
-     cpreq -p ${COMrrfs}/${RUN}.${yyyymmdd_m}/${hh_m}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.sfc_data.nc             ${shared_output_data}/sfc_data.nc
-     cpreq -p ${COMrrfs}/${RUN}.${yyyymmdd_m}/${hh_m}/${mem_num}/forecast/RESTART/${yyyymmdd}.${hh}0000.coupler.res             ${shared_output_data}/coupler.res
+     cpreq -p "${COMrrfs}"/"${RUN}"."${yyyymmdd_m}"/"${hh_m}"/"${mem_num}"/forecast/RESTART/"${yyyymmdd}"."${hh}"0000.fv_core.res.nc          "${shared_output_data}"/fv_core.res.nc
+     cpreq -p "${COMrrfs}"/"${RUN}"."${yyyymmdd_m}"/"${hh_m}"/"${mem_num}"/forecast/RESTART/"${yyyymmdd}"."${hh}"0000.fv_srf_wnd.res.tile1.nc "${shared_output_data}"/fv_srf_wnd.res.tile1.nc
+     cpreq -p "${COMrrfs}"/"${RUN}"."${yyyymmdd_m}"/"${hh_m}"/"${mem_num}"/forecast/RESTART/"${yyyymmdd}"."${hh}"0000.phy_data.nc             "${shared_output_data}"/phy_data.nc
+     cpreq -p "${COMrrfs}"/"${RUN}"."${yyyymmdd_m}"/"${hh_m}"/"${mem_num}"/forecast/RESTART/"${yyyymmdd}"."${hh}"0000.sfc_data.nc             "${shared_output_data}"/sfc_data.nc
+     cpreq -p "${COMrrfs}"/"${RUN}"."${yyyymmdd_m}"/"${hh_m}"/"${mem_num}"/forecast/RESTART/"${yyyymmdd}"."${hh}"0000.coupler.res             "${shared_output_data}"/coupler.res
   fi
 fi
 #
@@ -272,7 +272,7 @@ fi
 # system.
 #-----------------------------------------------------------------------
 #
-if [[ $DO_ENS_BLENDING = "FALSE" || ($DO_ENS_BLENDING = "TRUE" && -f $run_ensinit ) ]]; then
+if [[ ${DO_ENS_BLENDING} = "FALSE" || (${DO_ENS_BLENDING} = "TRUE" && -f ${run_ensinit} ) ]]; then
   [[ ! -s ${shared_output_data}/gfs_ctrl.nc ]]&& err_exit "FATAL ERROR: gfs_ctrl.nc not found in ${shared_output_data}"
   [[ ! -s ${shared_output_data}/gfs_bndy.tile${TILE_RGNL}.000.nc ]]&& err_exit "FATAL ERROR: gfs_bndy.tile${TILE_RGNL}.000.nc not found in ${shared_output_data}"
   [[ ! -s ${shared_output_data}/gfs_data.tile${TILE_RGNL}.halo${NH0}.nc ]]&& err_exit "FATAL ERROR: gfs_data.tile${TILE_RGNL}.halo${NH0}.nc not found in ${shared_output_data}"

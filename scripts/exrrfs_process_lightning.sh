@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 
-source ${FIXrrfs}/workflow/${WGF}/workflow.conf
+source "${FIXrrfs}"/workflow/"${WGF}"/workflow.conf
 
 export FIXam=${FIXam:-${HOMErrfs}/fix/am}
 export FIXLAM=${FIXLAM:-${HOMErrfs}/fix/lam/RRFS_NA_3km}
@@ -16,11 +16,11 @@ export GLMFED_WEST_ROOT="${DCOMROOT}/ldmdata/obs/GOES-18/GLM/tiles"
 #
 #-----------------------------------------------------------------------
 #
-. $USHrrfs/source_util_funcs.sh
+. "${USHrrfs}"/source_util_funcs.sh
 #
 #-----------------------------------------------------------------------
 #
-# Get the full path to the file in which this script/function is located 
+# Get the full path to the file in which this script/function is located
 # (scrfunc_fp), the name of that file (scrfunc_fn), and the directory in
 # which the file is located (scrfunc_dir).
 #
@@ -49,24 +49,24 @@ data preprocessing with RRFS for the specified cycle.
 #
 print_input_args valid_args
 
-export OBS_EAST=$GLMFED_EAST_ROOT
-export OBS_WEST=$GLMFED_WEST_ROOT
-export MODE=$GLMFED_DATA_MODE
+export OBS_EAST=${GLMFED_EAST_ROOT}
+export OBS_WEST=${GLMFED_WEST_ROOT}
+export MODE=${GLMFED_DATA_MODE}
 export PREP_MODEL=${PREP_MODEL:-0}
 #
 #-----------------------------------------------------------------------
 #
-# Run the lightning processing and copy output file 
+# Run the lightning processing and copy output file
 # to umbrella data directory.
 #
 #-----------------------------------------------------------------------
-# 
-python -u ${HOMErrfs}/ush/process_lightning.py
-if [ -f ${shared_output_data}/fedobs.nc ] && [ -s ${DATA}/fedobs.nc ]; then
-  rm -f ${shared_output_data}/fedobs.nc
+#
+python -u "${HOMErrfs}"/ush/process_lightning.py
+if [ -f "${shared_output_data}"/fedobs.nc ] && [ -s "${DATA}"/fedobs.nc ]; then
+  rm -f "${shared_output_data}"/fedobs.nc
 fi
-cpreq ${DATA}/fedobs.nc ${shared_output_data}/fedobs.nc
-cpreq -p fedobs.nc ${COMOUT_ANALYSIS}/fedobs.nc
+cpreq "${DATA}"/fedobs.nc "${shared_output_data}"/fedobs.nc
+cpreq -p fedobs.nc "${COMOUT_ANALYSIS}"/fedobs.nc
 
 #
 #-----------------------------------------------------------------------

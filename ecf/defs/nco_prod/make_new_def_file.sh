@@ -38,7 +38,7 @@ cat upstream.00 >> $newdefn
 echo "Building 06 cycle info..."
 cat << EOF >> $newdefn
     endfamily # 00
-    family 06 
+    family 06
       family rrfs
         edit PACKAGEHOME '/lfs/h1/ops/%ENVIR%/packages/rrfs.%rrfs_ver%'
         edit PROJ 'RRFS'
@@ -54,7 +54,7 @@ cat upstream.06 >> $newdefn
 echo "Building 12 cycle info..."
 cat << EOF >> $newdefn
     endfamily # 06
-    family 12 
+    family 12
       family rrfs
         edit PACKAGEHOME '/lfs/h1/ops/%ENVIR%/packages/rrfs.%rrfs_ver%'
         edit PROJ 'RRFS'
@@ -70,7 +70,7 @@ cat upstream.12 >> $newdefn
 echo "Building 18 cycle info..."
 cat << EOF >> $newdefn
     endfamily # 12
-    family 18 
+    family 18
       family rrfs
         edit PACKAGEHOME '/lfs/h1/ops/%ENVIR%/packages/rrfs.%rrfs_ver%'
         edit PROJ 'RRFS'

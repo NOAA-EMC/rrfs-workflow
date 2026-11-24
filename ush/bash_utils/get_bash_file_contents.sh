@@ -1,18 +1,20 @@
+#!/bin/bash
+set -x
 #
 #-----------------------------------------------------------------------
 #
 # This file defines a function that returns the contents of a bash script/
-# function with all empty lines, comment lines, and leading and trailing 
+# function with all empty lines, comment lines, and leading and trailing
 # whitespace removed.  Arguments are as follows:
 #
 # fp:
-# The relative or full path to the file containing the bash script or 
+# The relative or full path to the file containing the bash script or
 # function.
 #
 # output_varname_contents:
-# Name of the output variable that will contain the (processed) contents 
+# Name of the output variable that will contain the (processed) contents
 # of the file.  This is the output of the function.
-# 
+#
 #-----------------------------------------------------------------------
 #
 function get_bash_file_contents() {
@@ -27,11 +29,11 @@ set -x
   # Verify that the required arguments to this function have been specified.
   # If not, print out an error message and exit.
   #
-  if [ -z "$fp" ]; then
+  if [ -z "${fp}" ]; then
     print_err_msg_exit "\
 The argument \"fp\" specifying the relative or full path to the file to
 read was not specified in the call to this function:
-  fp = \"$fp\""
+  fp = \"${fp}\""
   fi
 
   local contents \
@@ -47,10 +49,11 @@ read was not specified in the call to this function:
   # utility in the while-loop below.
   #
   contents=""
+  # shellcheck disable=SC2162
   while read crnt_line; do
     contents="${contents}${crnt_line}
 "
-  done < "$fp"
+  done < "${fp}"
   #
   # Strip out any comment and empty lines from contents.
   #
@@ -61,6 +64,5 @@ read was not specified in the call to this function:
   #
   # Set output variables.
   #
-  printf -v ${outvarname_contents} "%s" "${contents}"
+  printf -v "${outvarname_contents}" "%s" "${contents}"
 }
-
