@@ -94,7 +94,7 @@ RETRO_START=${RETRO_START:-20240506}      # first retro day, and the day that co
 RETRO_END=${RETRO_END:-20240506}          # last retro day
 # Debug through the 01z analysis using the 00z cold-start forecast.
 RETRO_END_HOUR=${RETRO_END_HOUR:-01}
-STOP_AFTER_ANALYSIS=${STOP_AFTER_ANALYSIS:-TRUE}
+STOP_AFTER_ANALYSIS=${STOP_AFTER_ANALYSIS:-FALSE}
 CYCLE_THROTTLE=${CYCLE_THROTTLE:-2}
 # YES relaxes the suite's 399 clock-time triggers so cycles are not gated on the wall clock
 RETRO=${RETRO:-YES}

@@ -35,7 +35,7 @@ MACHINE=${MACHINE:-WCOSS2}
 # Where the workflow writes
 # ---------------------------------------------------------------------------------------------
 # Give each experiment its own suite, COM output, work files, and archive path.
-EXPT_ID=${EXPT_ID:-det_c13_3dvar_jedi_baseline006}
+EXPT_ID=${EXPT_ID:-det_c13_3dvar_jedi_regression_20261125}
 RRFS_SUITE=${RRFS_SUITE:-${EXPT_ID}}
 PRODCLONE_SUITE=${PRODCLONE_SUITE:-${RRFS_SUITE}_prod_clone}
 
@@ -96,9 +96,8 @@ FIX_RRFS_DIR=${FIX_RRFS_DIR:-/lfs/h1/ops/prod/packages/rrfs.v1.0.29/fix}
 FIX_RRFS_SHARED=${FIX_RRFS_SHARED:-/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS}
 # staged upstream data in NCO COM/DCOM layout (see make_links.sh in that directory)
 RETRO_DATA_ROOT=${RETRO_DATA_ROOT:-/lfs/h2/emc/lam/noscrub/samuel.degelia/RRFS_RETRO_DATA_NCO}
-# Coarser domains (strip when merging to the nco branch): the model domain. RRFS_NA_3km
-# is the operational v1 domain and changes nothing; any other value needs
-# ecf/defs/retro/domains/<DOMAIN>.sh with its grid, fix files and job sizes.
+# The historical observations for this retro are staged under obsproc v1.2.
+RETRO_OBSPROC_VER=${RETRO_OBSPROC_VER:-v1.2}
 DOMAIN=${DOMAIN:-RRFS_CONUS_13km}
 
 # ---------------------------------------------------------------------------------------------
@@ -108,6 +107,9 @@ DOMAIN=${DOMAIN:-RRFS_CONUS_13km}
 # Chains run back to back below 13; 13 or more lets the next chain start alongside the current one
 RETRO_START=${RETRO_START:-20240506}      # first retro day, and the day that cold starts
 RETRO_END=${RETRO_END:-20240506}          # last retro day
+# Debug through the 01z analysis using the 00z cold-start forecast.
+RETRO_END_HOUR=${RETRO_END_HOUR:-01}
+STOP_AFTER_ANALYSIS=${STOP_AFTER_ANALYSIS:-FALSE}
 CYCLE_THROTTLE=${CYCLE_THROTTLE:-2}
 # YES relaxes the suite's 399 clock-time triggers so cycles are not gated on the wall clock
 RETRO=${RETRO:-YES}
@@ -173,6 +175,7 @@ DO_SURFACE_CYCLE=${DO_SURFACE_CYCLE:-FALSE}
 # three cycles before it.
 FCST_LEN_HRS=${FCST_LEN_HRS:-3}
 FCST_LEN_HRS_LONG=${FCST_LEN_HRS_LONG:-3}
+
 # Steps inside a cycle, each the ecflow side of one of the FALSE switches in the Rocoto config.sh.
 RUN_NONVARCLD=${RUN_NONVARCLD:-FALSE}     # non-variational cloud analysis (DO_NONVAR_CLDANAL)
 RUN_UPDATE_BC=${RUN_UPDATE_BC:-FALSE}     # boundary update and soil adjustment (DO_UPDATE_BC)
@@ -197,6 +200,7 @@ DO_ARCHIVE_RETRO=${DO_ARCHIVE_RETRO:-TRUE}
 RDHPCS_USER=${RDHPCS_USER:-Donald.E.Lippi}
 ARCHIVE_ROOT=${ARCHIVE_ROOT:-/NCEPDEV/emc-meso/5year/${RDHPCS_USER}/RRFSv1/May2024_retro/v1.2.0}
 ARCHIVEDIR=${ARCHIVEDIR:-${ARCHIVE_ROOT}/${EXPT_ID}}
+
 # JEDI analysis, the Rocoto config.sh "JEDI options". DA_SYSTEM_DET picks which det analysis
 # runs, GSI (the operational route) or JEDI; the rest are read only when it is JEDI.
 # setup_retro_links.sh writes them into det/workflow.conf and make_rrfs_retro_def.sh sizes the
