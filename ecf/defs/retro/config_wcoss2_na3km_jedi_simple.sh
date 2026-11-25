@@ -30,6 +30,22 @@ MACHINE=${MACHINE:-WCOSS2}
 # ---------------------------------------------------------------------------------------------
 # Give this experiment its own suite, work area, and archive directory. NA 3 km output can
 # require tens of TB per week; the default ptmp location has a purge policy.
+# Set DEBUG_RETRO=TRUE for a short 01z regression run; FALSE uses the full retro.
+DEBUG_RETRO=${DEBUG_RETRO:-FALSE}
+case ${DEBUG_RETRO} in
+  TRUE)
+    EXPT_ID=${EXPT_ID:-det_na3km_3dvar_jedi_simple_debug}
+    RETRO_END=${RETRO_END:-20240506}
+    RETRO_END_HOUR=${RETRO_END_HOUR:-01}
+    STOP_AFTER_ANALYSIS=${STOP_AFTER_ANALYSIS:-FALSE}
+    DET_COLD_START_HRS=${DET_COLD_START_HRS:-"00 12"}
+    EXTRN_MDL_ICS_OFFSET_HRS=${EXTRN_MDL_ICS_OFFSET_HRS:-6}
+    GFS_FILE_FMT_ICS=${GFS_FILE_FMT_ICS-grib2}
+    FCST_LEN_HRS_LONG=${FCST_LEN_HRS_LONG:-3}
+    ;;
+  FALSE) ;;
+  *) echo "ERROR: DEBUG_RETRO must be TRUE or FALSE." >&2; return 1 2>/dev/null || exit 1 ;;
+esac
 EXPT_ID=${EXPT_ID:-det_na3km_3dvar_jedi_simple}
 RRFS_SUITE=${RRFS_SUITE:-${EXPT_ID}}
 PRODCLONE_SUITE=${PRODCLONE_SUITE:-${RRFS_SUITE}_prod_clone}
@@ -99,10 +115,10 @@ DOMAIN=${DOMAIN:-RRFS_NA_3km}
 # Cycles run at once; increasing beyond 2 could break satbias cycling
 # Chains run back to back below 13; 13 or more lets the next chain start alongside the current one
 RETRO_START=${RETRO_START:-20240506}      # first retro day, and the day that cold starts
-RETRO_END=${RETRO_END:-20240506}          # last retro day
-# Debug through the 01z analysis using the 00z cold-start forecast.
-RETRO_END_HOUR=${RETRO_END_HOUR:-01}
-STOP_AFTER_ANALYSIS=${STOP_AFTER_ANALYSIS:-TRUE}
+RETRO_END=${RETRO_END:-20240512}          # last retro day
+# An optional final hour and analysis-only stop shorten a chain-layout retro.
+RETRO_END_HOUR=${RETRO_END_HOUR:-23}
+STOP_AFTER_ANALYSIS=${STOP_AFTER_ANALYSIS:-FALSE}
 CYCLE_THROTTLE=${CYCLE_THROTTLE:-1}
 # YES relaxes the suite's 399 clock-time triggers so cycles are not gated on the wall clock
 RETRO=${RETRO:-YES}
@@ -130,14 +146,14 @@ DO_LONG_FORECAST=${DO_LONG_FORECAST:-TRUE}
 # following tasks; setup_retro_links.sh applies the matching workflow switches.
 # Spin-up cycles and their forecasts; without them, cold starts use DET_COLD_START_HRS.
 DO_SPINUP=${DO_SPINUP:-FALSE}
-DET_COLD_START_HRS=${DET_COLD_START_HRS:-"00 12"}
-EXTRN_MDL_ICS_OFFSET_HRS=${EXTRN_MDL_ICS_OFFSET_HRS:-6}
-GFS_FILE_FMT_ICS=${GFS_FILE_FMT_ICS:-grib2}
+DET_COLD_START_HRS=${DET_COLD_START_HRS:-"03 15"}
+EXTRN_MDL_ICS_OFFSET_HRS=${EXTRN_MDL_ICS_OFFSET_HRS:-3}
+GFS_FILE_FMT_ICS=${GFS_FILE_FMT_ICS:-}
 DO_SURFACE_CYCLE=${DO_SURFACE_CYCLE:-TRUE}
 # Forecast lengths in hours for hourly and 00, 06, 12, and 18z cycles. Three hours is the
 # minimum for warm starts from the previous three cycles.
 FCST_LEN_HRS=${FCST_LEN_HRS:-3}
-FCST_LEN_HRS_LONG=${FCST_LEN_HRS_LONG:-3}
+FCST_LEN_HRS_LONG=${FCST_LEN_HRS_LONG:-12}
 # Switch individual deterministic cycle steps on or off.
 RUN_NONVARCLD=${RUN_NONVARCLD:-FALSE}  # non-variational cloud analysis (DO_NONVAR_CLDANAL)
 RUN_UPDATE_BC=${RUN_UPDATE_BC:-FALSE}  # boundary update and soil adjustment (DO_UPDATE_BC)
