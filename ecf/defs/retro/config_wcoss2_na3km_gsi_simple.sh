@@ -91,6 +91,8 @@ FIX_RRFS_DIR=${FIX_RRFS_DIR:-/lfs/h1/ops/prod/packages/rrfs.v1.0.29/fix}
 FIX_RRFS_SHARED=${FIX_RRFS_SHARED:-/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS}
 # staged upstream data in NCO COM/DCOM layout (see make_links.sh in that directory)
 RETRO_DATA_ROOT=${RETRO_DATA_ROOT:-/lfs/h2/emc/lam/noscrub/samuel.degelia/RRFS_RETRO_DATA_NCO}
+# The historical observations for this retro are staged under obsproc v1.2.
+RETRO_OBSPROC_VER=${RETRO_OBSPROC_VER:-v1.2}
 DOMAIN=${DOMAIN:-RRFS_NA_3km}
 
 # ---------------------------------------------------------------------------------------------

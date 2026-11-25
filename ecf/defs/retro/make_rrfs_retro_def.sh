@@ -68,6 +68,7 @@ awk \
     -v site="${MACHINE_SITE}" \
     -v eh_host="${ECFLOW_HOST}" \
     -v compath="${DEV_COMPATH}" \
+    -v retro_obsproc_ver="${RETRO_OBSPROC_VER:-}" \
     -v dcom="${DCOMROOT}" \
     -v archivedir="${ARCHIVEDIR:-}" \
     -v suite="${RRFS_SUITE}" \
@@ -85,6 +86,8 @@ awk \
     ed("DEV_PTMP", ptmp)
     ed("DEV_DATAROOT", droot)
     ed("DEV_COMPATH", compath)
+    # Only override the observation input version for retros that request it.
+    if (retro_obsproc_ver != "") ed("RETRO_OBSPROC_VER", retro_obsproc_ver)
     ed("DCOMROOT", dcom)
     if (archivedir != "") ed("ARCHIVEDIR", archivedir)
     ed("RETRO", retro)
