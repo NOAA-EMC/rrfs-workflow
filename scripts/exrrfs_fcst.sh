@@ -53,6 +53,12 @@ lsm_scheme=${LSM_SCHEME:-'sf_ruc'}
 nsoillevels=${NSOIL_LEVELS:-9}
 jedi_da=true #true
 do_sppt=${DO_SPPT:-'false'}
+if [[ "${DO_MODEL_SOUNDINGS:-FALSE}" == "TRUE" ]] && [[ "${DO_SPINUP:-FALSE}" == "FALSE" ]];  then
+  ${cpreq} "${FIXrrfs}/model_sounding/sounding_locations.txt" .
+  sounding_interval='1:00:00'    # soundings every hour
+else
+  sounding_interval='none'
+fi
 
 pio_num_iotasks=${NODES}
 pio_stride=${PPN}
@@ -209,6 +215,18 @@ else
           echo "WARNING: mpasout_file not found - ${mpasout_file}"
         fi
       done
+    fi
+    if [[ "${DO_MODEL_SOUNDINGS}" == "TRUE" ]];  then
+      mkdir soundings
+      mapfile -t stations < <(awk '{print $3}' sounding_locations.txt)
+      for station in "${stations[@]}"; do
+        mkdir "soundings/${station}.${CDATE}"
+        mv "${station}".*.snd "soundings/${station}.${CDATE}"
+      done
+      cd soundings
+      tar -czf "${EXP_NAME}_soundings_${CDATE}.tar.gz" *."${CDATE}"
+      ${cpreq} "${EXP_NAME}_soundings_${CDATE}.tar.gz" "${COMOUT}/fcst/${WGF}${MEMDIR}"
+      cd ..
     fi
   fi
   exit 0

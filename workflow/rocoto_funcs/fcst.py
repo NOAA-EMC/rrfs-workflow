@@ -60,6 +60,7 @@ def fcst(xmlFile, expdir, do_ensemble=False, dcEnsGrpInfo=None, do_spinup=False,
         'FCST_DT': f'{fcst_dt}',
         'FCST_SUBSTEPS': os.getenv('FCST_SUBSTEPS', 'FCST_SUBSTEPS_not_defined'),
         'FCST_RADT': os.getenv('FCST_RADT', 'FCST_RADT_not_defined'),
+        'EXP_NAME': os.getenv('EXP_NAME', 'mpas'),
     }
     if os.getenv('FCST_CONVECTION_SCHEME', 'FALSE').upper() == 'TRUE':
         dcTaskEnv['FCST_CONVECTION_SCHEME'] = "TRUE"
@@ -74,6 +75,11 @@ def fcst(xmlFile, expdir, do_ensemble=False, dcEnsGrpInfo=None, do_spinup=False,
         dcTaskEnv['DO_SPPT'] = "true"
     else:
         dcTaskEnv['DO_SPPT'] = "false"
+
+    if os.getenv('DO_MODEL_SOUNDINGS', 'FALSE').upper() == "TRUE":
+        dcTaskEnv['DO_MODEL_SOUNDINGS'] = "TRUE"
+    else:
+        dcTaskEnv['DO_MODEL_SOUNDINGS'] = "FALSE"
 
     if os.getenv('DO_CHEMISTRY', 'FALSE').upper() == "TRUE":
         dcTaskEnv['EBB_DCYCLE'] = os.getenv('EBB_DCYCLE', 0)
