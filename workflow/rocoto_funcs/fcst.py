@@ -77,9 +77,9 @@ def fcst(xmlFile, expdir, do_ensemble=False, dcEnsGrpInfo=None, do_spinup=False,
         dcTaskEnv['DO_SPPT'] = "false"
 
     if os.getenv('DO_MODEL_SOUNDINGS', 'FALSE').upper() == "TRUE":
-        dcTaskEnv['DO_MODEL_SOUNDINGS'] = "true"
+        dcTaskEnv['DO_MODEL_SOUNDINGS'] = "TRUE"
     else:
-        dcTaskEnv['DO_MODEL_SOUNDINGS'] = "false"
+        dcTaskEnv['DO_MODEL_SOUNDINGS'] = "FALSE"
 
     if os.getenv('DO_CHEMISTRY', 'FALSE').upper() == "TRUE":
         dcTaskEnv['EBB_DCYCLE'] = os.getenv('EBB_DCYCLE', 0)
