@@ -53,14 +53,11 @@ lsm_scheme=${LSM_SCHEME:-'sf_ruc'}
 nsoillevels=${NSOIL_LEVELS:-9}
 jedi_da=true #true
 do_sppt=${DO_SPPT:-'false'}
-if [[ "${DO_MODEL_SOUNDINGS:-FALSE}" == "TRUE" ]];  then
-  ${cpreq} "${PARMrrfs}/sounding_locations.txt" .
+if [[ "${DO_MODEL_SOUNDINGS:-FALSE}" == "TRUE" ]] && [[ "${DO_SPINUP:-FALSE}" == "FALSE" ]];  then
+  ${cpreq} "${FIXrrfs}/model_sounding/sounding_locations.txt" .
   sounding_interval='1:00:00'    # soundings every hour
 else
   sounding_interval='none'
-fi
-if [[ "${DO_SPINUP:-FALSE}" == "TRUE" ]];  then
-  sounding_interval='none'       # no soundings for spinup cycles
 fi
 
 pio_num_iotasks=${NODES}
