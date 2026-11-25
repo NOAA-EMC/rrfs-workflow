@@ -26,9 +26,9 @@ cycle_end tasks go, and so do tasks that never run (defstatus complete) and fami
 unless something waits on one of their events.
 
 Usage:
-  chain_suite.py rrfs  <def> --suite S --clone C --start YYYYMMDD --end YYYYMMDD
-                             --chains "03 15" --dataroot DIR
-  chain_suite.py clone <def> --start YYYYMMDD --end YYYYMMDD
+  chains.py rrfs  <def> --suite S --clone C --start YYYYMMDD --end YYYYMMDD
+                        --chains "03 15" --dataroot DIR
+  chains.py clone <def> --start YYYYMMDD --end YYYYMMDD
 """
 
 import argparse
@@ -38,7 +38,7 @@ import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from skip_tasks import FALSE, TRUE, Prim, fold, parse, resolve, tokenize, unparse  # noqa: E402
+from core import FALSE, TRUE, Prim, fold, parse, resolve, tokenize, unparse  # noqa: E402
 
 NODE_KW = ("suite", "family", "task")
 

@@ -44,7 +44,7 @@ export RUN_ENVIR=${RUN_ENVIR:-nco}
 export SENDECF=${SENDECF:-YES}
 export SENDCOM=${SENDCOM:-YES}
 if [ -n "%PDY:%" ]; then export PDY=${PDY:-%PDY:%}; fi
-# Developer retros (make_rrfs_retro_def.sh) set RETRO=YES, which turns on their workarounds in the ex-scripts
+# Developer retros (make_rrfs_retro_def.py) set RETRO=YES, which turns on their workarounds in the ex-scripts
 if [ -n "%RETRO:%" ]; then export RETRO=%RETRO:%; fi
 # Developer runs can point the JEDI tasks at a fix/jedi outside the package until the package has one
 if [ -n "%FIX_RRFS_JEDI:%" ]; then export FIX_RRFS_JEDI=%FIX_RRFS_JEDI:%; fi
@@ -69,7 +69,7 @@ if [ -d /apps/ops/prod ]; then # On WCOSS2
   set +x
   module load prod_util/${prod_util_ver}
   module load prod_envir/${prod_envir_ver}
-  # Developer retros (make_rrfs_retro_def.sh) read staged DCOM data instead of prod_envir's
+  # Developer retros (make_rrfs_retro_def.py) read staged DCOM data instead of prod_envir's
   if [ -n "%DCOMROOT:%" ]; then export DCOMROOT=%DCOMROOT:%; fi
   echo "Listing modules from head.h:"
   module list

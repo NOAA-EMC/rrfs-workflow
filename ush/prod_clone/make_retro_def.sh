@@ -82,7 +82,7 @@ if ! grep -q "task jgfs_atmos_post_${ics_fhr}$" "${out_def}"; then
   sed -i -E "s/^( *)task jgfs_atmos_post_f003$/&\n\1task jgfs_atmos_post_${ics_fhr}/" "${out_def}"
 fi
 if [ "${RETRO_LAYOUT:-families}" = "chains" ]; then
-  python3 "${PACKAGEHOME}/ecf/defs/retro/chain_suite.py" clone "${out_def}" \
+  python3 "${PACKAGEHOME}/ecf/defs/retro/retro_def/chains.py" clone "${out_def}" \
     --start "${RETRO_START}" \
     --end "${RETRO_END}"
 fi

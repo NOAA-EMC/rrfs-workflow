@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Source the retro settings, ecf/defs/retro/config.sh, into the calling script. It is sourced by
-# ush/retro/setup_retro_links.sh, make_rrfs_retro_def.sh, ush/prod_clone/make_retro_def.sh and
+# ush/retro/setup_retro_links.sh, make_rrfs_retro_def.py, ush/prod_clone/make_retro_def.sh and
 # ush/retro/start_retro.sh, so they agree on where the file is and what happens when it is missing.
 #
 # Usage: . load_config.sh
@@ -28,7 +28,7 @@ else
 fi
 unset _retro_dir _retro_config
 # Simplified retros (no spin-up, EnKF or ensemble forecast) run as cold-start chains, see
-# chain_suite.py; full ones keep the operational families.
+# retro_def/chains.py; full ones keep the operational families.
 RETRO_LAYOUT=families
 if [ "${DO_SPINUP:-TRUE}" = FALSE ] && [ "${RUN_ENKF:-TRUE}" = FALSE ] && [ "${RUN_ENSF:-TRUE}" = FALSE ]; then
   RETRO_LAYOUT=chains

@@ -7,7 +7,7 @@
 # 55N 112.5W. Values come from the package's fix/workflow/{det,enkf,ensf}/workflow.conf_dev, the
 # development job sizes, which keep every job inside Ursa's 75-node limit; the retro overrides at
 # the end are the changes the retros need on top of them. RESOURCE_CONFIG then picks only the ecf
-# cards. Sourced by ush/retro/setup_retro_links.sh and ecf/defs/retro/make_rrfs_retro_def.sh when
+# cards. Sourced by ush/retro/setup_retro_links.sh and ecf/defs/retro/make_rrfs_retro_def.py when
 # DOMAIN=RRFS_NA_3km in retro/config.sh (the default).
 #
 
