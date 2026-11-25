@@ -221,10 +221,10 @@ else
       mapfile -t stations < <(awk '{print $3}' sounding_locations.txt)
       for station in "${stations[@]}"; do
         mkdir "soundings/${station}.${CDATE}"
-        mv ${station}.*.snd "soundings/${station}.${CDATE}"
+        mv "${station}".*.snd "soundings/${station}.${CDATE}"
       done
       cd soundings
-      tar -czf "${EXP_NAME}_soundings_${CDATE}.tar.gz" *.${CDATE}
+      tar -czf "${EXP_NAME}_soundings_${CDATE}.tar.gz" *."${CDATE}"
       ${cpreq} "${EXP_NAME}_soundings_${CDATE}.tar.gz" "${COMOUT}/fcst/${WGF}${MEMDIR}"
       cd ..
     fi
