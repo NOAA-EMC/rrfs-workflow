@@ -442,9 +442,6 @@ if [ "${BUILD_WORKAROUND}" = true ] && [ "${BUILD_RDASAPP}" = "on" ]; then
   mkdir -p "${HOME_DIR}/parm/jedi"
   cp "${SORC_DIR}/_workaround_/parm/jedi/rdas-atmosphere-templates-fv3_c13.yaml" \
      "${HOME_DIR}/parm/jedi/rdas-atmosphere-templates-fv3_c13.yaml"
-  # Stage the NA 3 km runtime template with the matching GSIBEC workaround.
-  cp "${SORC_DIR}/_workaround_/parm/jedi/rdas-atmosphere-templates-fv3_na3km.yaml" \
-     "${HOME_DIR}/parm/jedi/rdas-atmosphere-templates-fv3_na3km.yaml"
 fi
 
 # Apply the optional GSI 3DVAR script overlay after checkout, which may replace workflow sources.
@@ -462,18 +459,12 @@ if [ "${BUILD_WORKAROUND}" = true ] && [ "${BUILD_GSI}" = "on" ]; then
      "${SORC_DIR}/gsi/src/gsi/constants.f90"
 fi
 
-# Stage runtime configuration overlays for the retro fix and JEDI parameter setup.
+# Stage the runtime GSI convinfo workaround for retros.
 if [ "${BUILD_WORKAROUND}" = true ]; then
-  printf "... staging GSI convinfo and JEDI namelist workarounds ...\n"
-  mkdir -p "${HOME_DIR}/fix/gsi" "${HOME_DIR}/parm/jedi/RRFS_CONUS_13km" \
-           "${HOME_DIR}/parm/jedi/RRFS_NA_3km"
+  printf "... staging GSI convinfo workaround ...\n"
+  mkdir -p "${HOME_DIR}/fix/gsi"
   cp --remove-destination "${SORC_DIR}/_workaround_/fix/gsi/convinfo.rrfs" \
      "${HOME_DIR}/fix/gsi/convinfo.rrfs"
-  cp --remove-destination "${SORC_DIR}/_workaround_/parm/jedi/RRFS_CONUS_13km/gsiparm_regional.anl" \
-     "${HOME_DIR}/parm/jedi/RRFS_CONUS_13km/gsiparm_regional.anl"
-  # Stage the NA 3 km namelist before the analysis makes its runtime copy.
-  cp --remove-destination "${SORC_DIR}/_workaround_/parm/jedi/RRFS_NA_3km/gsiparm_regional.anl" \
-     "${HOME_DIR}/parm/jedi/RRFS_NA_3km/gsiparm_regional.anl"
 fi
 
 # Patch ufs-weather-model for Ursa's oneAPI 2024 compilers (icx, no classic icc; ifort 2021.13).
