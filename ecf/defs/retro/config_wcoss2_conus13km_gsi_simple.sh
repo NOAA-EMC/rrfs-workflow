@@ -47,7 +47,6 @@ case ${DEBUG_RETRO} in
     EXTRN_MDL_ICS_OFFSET_HRS=${EXTRN_MDL_ICS_OFFSET_HRS:-6}
     GFS_FILE_FMT_ICS=${GFS_FILE_FMT_ICS-grib2}
     FCST_LEN_HRS_LONG=${FCST_LEN_HRS_LONG:-3}
-    EXT_SONDE=${EXT_SONDE:-TRUE}
     ;;
   FALSE) ;;
   *) echo "ERROR: DEBUG_RETRO must be TRUE or FALSE." >&2; return 1 2>/dev/null || exit 1 ;;
