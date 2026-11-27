@@ -31,9 +31,6 @@
 # URSA or WCOSS2.
 MACHINE=${MACHINE:-WCOSS2}
 
-# ---------------------------------------------------------------------------------------------
-# Where the workflow writes
-# ---------------------------------------------------------------------------------------------
 # Give each experiment its own suite, COM output, work files, and archive path.
 # Set DEBUG_RETRO=TRUE for a short 01z regression run; FALSE keeps baseline006.
 DEBUG_RETRO=${DEBUG_RETRO:-FALSE}
@@ -54,6 +51,10 @@ esac
 EXPT_ID=${EXPT_ID:-det_c13_3dvar_jedi_baseline006}
 RRFS_SUITE=${RRFS_SUITE:-${EXPT_ID}}
 PRODCLONE_SUITE=${PRODCLONE_SUITE:-${RRFS_SUITE}_prod_clone}
+
+# ---------------------------------------------------------------------------------------------
+# Where the workflow writes
+# ---------------------------------------------------------------------------------------------
 
 # Keep model COM output under ptmp and job working files under stmp.
 RETRO_WORK_ROOT=${RETRO_WORK_ROOT:-/lfs/h2/emc/ptmp/${USER}/ecflow_rrfs}
@@ -119,13 +120,13 @@ DOMAIN=${DOMAIN:-RRFS_CONUS_13km}
 # ---------------------------------------------------------------------------------------------
 # Retro period and suite
 # ---------------------------------------------------------------------------------------------
-# Cycles run at once; increasing beyond 2 could break satbias cycling
-# Chains run back to back below 13; 13 or more lets the next chain start alongside the current one
 RETRO_START=${RETRO_START:-20240506}      # first retro day, and the day that cold starts
 RETRO_END=${RETRO_END:-20240512}          # last retro day
 # An optional final hour and analysis-only stop shorten a chain-layout retro.
 RETRO_END_HOUR=${RETRO_END_HOUR:-23}
 STOP_AFTER_ANALYSIS=${STOP_AFTER_ANALYSIS:-FALSE}
+# Cycles run at once; increasing beyond 2 could break satbias cycling
+# Chains run back to back below 13; 13 or more lets the next chain start alongside the current one
 CYCLE_THROTTLE=${CYCLE_THROTTLE:-2}
 # YES relaxes the suite's 399 clock-time triggers so cycles are not gated on the wall clock
 RETRO=${RETRO:-YES}
