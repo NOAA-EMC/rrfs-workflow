@@ -281,10 +281,9 @@ cpreq -p "${PARM_JCB}"/"${jcb_config}" .
 cpreq -p "${FIX_GSI}"/gsd_sfcobs_uselist.txt .
 cpreq -p "${FIX_GSI}"/gsd_sfcobs_provider.txt .
 cpreq -p "${USHrrfs}"/run_jcb.py .
-# Replace any destination link with a writable local namelist before JCB updates it.
-cp --remove-destination -p "${PARM_JCB}/${PREDEF_GRID_NAME}/gsiparm_regional.anl" \
-  gsiparm_regional.anl || err_exit "Unable to copy the JEDI GSIBEC namelist"
-chmod u+w gsiparm_regional.anl || err_exit "Unable to make the JEDI GSIBEC namelist writable"
+# Prepare a writable runtime namelist for the configured grid ratio.
+cpreq -p "${PARM_JCB}"/"${PREDEF_GRID_NAME}"/gsiparm_regional.anl .
+chmod u+w gsiparm_regional.anl
 
 #sed - rdas-atmosphere-templates.yaml
 # set other placeholders
