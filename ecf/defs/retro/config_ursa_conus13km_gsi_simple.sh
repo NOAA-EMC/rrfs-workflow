@@ -101,6 +101,8 @@ RETRO_DATA_ROOT=${RETRO_DATA_ROOT:-/scratch4/BMC/zrtrr/Samuel.Degelia/RRFS_RETRO
 # is the operational v1 domain and changes nothing; any other value needs
 # ecf/defs/retro/domains/<DOMAIN>.sh with its grid, fix files and job sizes.
 DOMAIN=${DOMAIN:-RRFS_CONUS_13km}
+# Deterministic GSI analysis-grid ratio; independent of JEDI's GSIBEC ratio.
+GSI_GRID_RATIO=${GSI_GRID_RATIO:-1.0}
 
 # ---------------------------------------------------------------------------------------------
 # Retro period and suite

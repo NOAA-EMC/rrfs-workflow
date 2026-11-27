@@ -116,6 +116,8 @@ RETRO_DATA_ROOT=${RETRO_DATA_ROOT:-/lfs/h2/emc/lam/noscrub/samuel.degelia/RRFS_R
 # The historical observations for this retro are staged under obsproc v1.2.
 RETRO_OBSPROC_VER=${RETRO_OBSPROC_VER:-v1.2}
 DOMAIN=${DOMAIN:-RRFS_CONUS_13km}
+# Deterministic GSI analysis-grid ratio; independent of JEDI's GSIBEC ratio.
+GSI_GRID_RATIO=${GSI_GRID_RATIO:-1.0}
 
 # ---------------------------------------------------------------------------------------------
 # Retro period and suite
