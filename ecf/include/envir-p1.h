@@ -42,6 +42,13 @@ export CDATE=${PDY}%CYC:%
 export COMrrfs=$(compath.py rrfs/${rrfs_ver})
 export COMOUT_PREP="$(compath.py obsproc/v1.2)"
 
+# Retros may read historical observations staged under a different obsproc version.
+retro_obsproc_ver="%RETRO_OBSPROC_VER:%"
+if [ -n "${retro_obsproc_ver}" ]; then
+  export COMINobsproc="${COMINobsproc:-$(compath.py obsproc/"${retro_obsproc_ver}")}"
+  export OBSPATH="${OBSPATH:-${COMINobsproc}}"
+fi
+
 export DATAROOT=%DEV_DATAROOT:/lfs/h3/emc/lam/noscrub/ecflow/stmp/${USER}/${model}/${PSLOT}%/%RRFS_SUITE:para%
 #### export umbrella_fsm_data=${DATAROOT}/rrfs_fsm_${PDY}${cyc}_${rrfs_ver}/${WGF}
 #if [ "${CYCLE_TYPE}" = "spinup" ]; then

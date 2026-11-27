@@ -4,14 +4,14 @@
 #PBS -S /bin/bash
 #PBS -q %QUEUE_ARCH%
 #PBS -A %PROJ%-%PROJENVIR%
-#PBS -l walltime=00:30:00
+#PBS -l walltime=02:00:00
 #PBS -l place=vscatter:shared,select=1:ncpus=1:mem=16GB
 #PBS -l debug=true
 #SBATCH --job-name=rrfs_archive_retro_%CYC%
 #SBATCH --account=%PROJ%
 #SBATCH --qos=%QUEUE_ARCH%
 #SBATCH --partition=u1-service
-#SBATCH --time=00:30:00
+#SBATCH --time=02:00:00
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --mem=16G

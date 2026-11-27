@@ -12,8 +12,8 @@ one cold start to the next stands on its own, so the whole retro can be written 
 Each chain family carries PDY and its own DEV_DATAROOT (<dataroot>/<PDY>), because the working
 directories are named by cycle hour alone. A chain that runs past midnight (15z to 02z) gives
 those cycles the next day's PDY. Every cycle family starts suspended; the retro driver resumes
-them oldest first, CYCLE_THROTTLE at a time (exretroprodclone.py). The retro covers RETRO_START
-00z to RETRO_END 23z; cycles before the first cold start only make the LBCs it reads.
+them oldest first, CYCLE_THROTTLE at a time (exretroprodclone.py). The retro normally covers RETRO_START
+00z to RETRO_END 23z; an optional end hour can shorten the final day, cycles before the first cold start only make the LBCs it reads.
 
 References between the old families are rewritten for each day:
   - to a cycle in the same chain: the new absolute path
@@ -182,11 +182,27 @@ def expand_rrfs(args):
     def is_pruned(path):
         return is_pruned_in(path, pruned)
 
-    # The retro runs from RETRO_START 00z to RETRO_END 23z. Cycles before the first cold start
-    # only make the LBCs it reads (det/ics); a chain past RETRO_END 23z stops there.
+    # Cycles before the first cold start only make the LBCs it reads (det/ics).
+    # The optional end hour truncates the last day; otherwise it ends at 23z.
     first = datetime.datetime.strptime(args.start, "%Y%m%d")
     first_cold = first + datetime.timedelta(hours=chains[0])
-    retro_last = datetime.datetime.strptime(args.end, "%Y%m%d") + datetime.timedelta(hours=23)
+    retro_last = datetime.datetime.strptime(args.end, "%Y%m%d") + datetime.timedelta(hours=args.end_hour)
+    if retro_last < first_cold:
+        sys.exit("chain_suite.py: end time precedes the first cold start")
+
+    def omitted_after_analysis(path, cycle_time):
+        """Keep final-cycle setup and analysis, but not its forecast or other output work."""
+        if not args.stop_after_analysis or cycle_time != retro_last:
+            return False
+        match = re.match(r"/[^/]+/primary/\d\d/rrfs/v1\.0/\d\dz(?:/(.*))?$", path)
+        if not match or not match.group(1):
+            return False
+        parts = match.group(1).split("/")
+        if parts[0] == "preclean":
+            return False
+        if parts[0] != "det":
+            return True
+        return len(parts) > 1 and parts[1] not in ("ics", "init", "prep", "analysis")
 
     def lbc_only(path):
         """True if path is a cycle's det/ics family, inside it, or one of the families above it."""
@@ -237,6 +253,11 @@ def expand_rrfs(args):
                     touched[0] = True
                     stats["outside the retro"] += 1
                     return true_if_complete(node)
+                # References to omitted final-cycle work cannot remain in the generated suite.
+                if omitted_after_analysis(target, tdt):
+                    touched[0] = True
+                    stats["outside the retro"] += 1
+                    return true_if_complete(node)
                 tchain = chain_of(tdt)
                 if tfam == src_fam and not node.ref.startswith("/") and tchain == own_chain:
                     return node          # relative, inside the old family: still right as written
@@ -276,7 +297,8 @@ def expand_rrfs(args):
 
     def emit_node(node, out, src_fam, src_dt, chain_day):
         """The lines of a cycle family or anything in it, rewritten for the cycle at src_dt."""
-        if node.path in pruned or (src_dt < first_cold and not lbc_only(node.path)):
+        if (node.path in pruned or omitted_after_analysis(node.path, src_dt)
+                or (src_dt < first_cold and not lbc_only(node.path))):
             return
         body_end = node.children[0].start if node.children else (node.end - 1 if node.kind != "task" else node.end)
         for i in range(node.start, body_end):
@@ -381,6 +403,8 @@ def main():
     ap.add_argument("--end", required=True)
     ap.add_argument("--chains", default="03 15")
     ap.add_argument("--dataroot")
+    ap.add_argument("--end-hour", type=int, choices=range(24), default=23)
+    ap.add_argument("--stop-after-analysis", action="store_true")
     args = ap.parse_args()
     if args.which == "rrfs":
         expand_rrfs(args)

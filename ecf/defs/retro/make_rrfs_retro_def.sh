@@ -26,6 +26,22 @@ for suite_name in "${RRFS_SUITE}" "${PRODCLONE_SUITE}"; do
   fi
 done
 
+# A partial final day and analysis-only endpoint require individually released chain cycles.
+end_hour=${RETRO_END_HOUR:-23}
+stop_after_analysis=${STOP_AFTER_ANALYSIS:-FALSE}
+if [[ ! ${end_hour} =~ ^([0-9]|[01][0-9]|2[0-3])$ ]]; then
+  echo "ERROR: RETRO_END_HOUR must be an hour from 00 through 23." >&2
+  exit 1
+fi
+if [[ ${stop_after_analysis} != TRUE && ${stop_after_analysis} != FALSE ]]; then
+  echo "ERROR: STOP_AFTER_ANALYSIS must be TRUE or FALSE." >&2
+  exit 1
+fi
+if { [ "${end_hour}" != 23 ] || [ "${stop_after_analysis}" = TRUE ]; } && [ "${RETRO_LAYOUT}" != chains ]; then
+  echo "ERROR: RETRO_END_HOUR and STOP_AFTER_ANALYSIS require the chains layout." >&2
+  exit 1
+fi
+
 # Derived from the settings above
 PACKAGEHOME=${PACKAGEHOME:-$(cd "${defs_dir}/../../.." && pwd)}
 c=${RETRO_DATA_ROOT}/com
@@ -52,6 +68,7 @@ awk \
     -v site="${MACHINE_SITE}" \
     -v eh_host="${ECFLOW_HOST}" \
     -v compath="${DEV_COMPATH}" \
+    -v retro_obsproc_ver="${RETRO_OBSPROC_VER:-}" \
     -v dcom="${DCOMROOT}" \
     -v archivedir="${ARCHIVEDIR:-}" \
     -v suite="${RRFS_SUITE}" \
@@ -69,6 +86,8 @@ awk \
     ed("DEV_PTMP", ptmp)
     ed("DEV_DATAROOT", droot)
     ed("DEV_COMPATH", compath)
+    # Only override the observation input version for retros that request it.
+    if (retro_obsproc_ver != "") ed("RETRO_OBSPROC_VER", retro_obsproc_ver)
     ed("DCOMROOT", dcom)
     if (archivedir != "") ed("ARCHIVEDIR", archivedir)
     ed("RETRO", retro)
@@ -759,13 +778,15 @@ EOF
 # The whole retro in one suite, a family per day and cold-start chain (RETRO_LAYOUT=chains); see
 # chain_suite.py. Each chain cold starts, so nothing may link one chain to the next.
 if [ "${RETRO_LAYOUT}" = "chains" ]; then
+  endpoint_args=(--end-hour "$((10#${end_hour}))")
+  [ "${stop_after_analysis}" != TRUE ] || endpoint_args+=(--stop-after-analysis)
   python3 "${defs_dir}/chain_suite.py" rrfs "${out_def}" \
     --suite "${RRFS_SUITE}" \
     --clone "${PRODCLONE_SUITE}" \
     --start "${RETRO_START}" \
     --end "${RETRO_END}" \
     --chains "${DET_COLD_START_HRS:-03 15}" \
-    --dataroot "${DEV_DATAROOT}"
+    --dataroot "${DEV_DATAROOT}" "${endpoint_args[@]}"
 fi
 
 echo "Wrote ${out_def} from ${BASE_DEF}"

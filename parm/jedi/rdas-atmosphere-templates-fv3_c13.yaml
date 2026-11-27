@@ -34,6 +34,8 @@ gradient_norm_reduction: 1e-10
 #write_increment_outer_loop_1: true
 #write_increment_outer_loop_2: true
 distribution: RoundRobin
+# Select OSDF for observation spaces unless an individual space overrides it.
+obs_data_container: OSDF
 empty_obs_space_action: create output
 write_into_existing_files: true
 
@@ -173,6 +175,10 @@ atmosphere_gsibec_path: DATA/berror
 atmosphere_number_ensemble_members: 30
 atmosphere_layout_gsib_x: 14
 atmosphere_layout_gsib_y: 14
+# The workflow derives the GSIBEC dimensions and runtime namelist from this ratio.
+# Ratio 1 requires the GSIBEC source installed by app_build.sh --workaround.
+gsibec_grid_ratio: 2
+# The workflow recalculates these dimensions from gsibec_grid_ratio.
 gsibec_lats: 127
 gsibec_lons: 211
 lat_start: -14.726005

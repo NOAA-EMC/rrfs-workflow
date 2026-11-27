@@ -459,14 +459,12 @@ if [ "${BUILD_WORKAROUND}" = true ] && [ "${BUILD_GSI}" = "on" ]; then
      "${SORC_DIR}/gsi/src/gsi/constants.f90"
 fi
 
-# Stage runtime configuration overlays for the retro fix and JEDI parameter setup.
+# Stage the runtime GSI convinfo workaround for retros.
 if [ "${BUILD_WORKAROUND}" = true ]; then
-  printf "... staging GSI convinfo and JEDI namelist workarounds ...\n"
-  mkdir -p "${HOME_DIR}/fix/gsi" "${HOME_DIR}/parm/jedi/RRFS_CONUS_13km"
+  printf "... staging GSI convinfo workaround ...\n"
+  mkdir -p "${HOME_DIR}/fix/gsi"
   cp --remove-destination "${SORC_DIR}/_workaround_/fix/gsi/convinfo.rrfs" \
      "${HOME_DIR}/fix/gsi/convinfo.rrfs"
-  cp --remove-destination "${SORC_DIR}/_workaround_/parm/jedi/RRFS_CONUS_13km/gsiparm_regional.anl" \
-     "${HOME_DIR}/parm/jedi/RRFS_CONUS_13km/gsiparm_regional.anl"
 fi
 
 # Patch ufs-weather-model for Ursa's oneAPI 2024 compilers (icx, no classic icc; ifort 2021.13).

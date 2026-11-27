@@ -31,13 +31,30 @@
 # URSA or WCOSS2.
 MACHINE=${MACHINE:-WCOSS2}
 
-# ---------------------------------------------------------------------------------------------
-# Where the workflow writes
-# ---------------------------------------------------------------------------------------------
 # Give each experiment its own suite, COM output, work files, and archive path.
+# Set DEBUG_RETRO=TRUE for a short 01z regression run; FALSE keeps baseline006.
+DEBUG_RETRO=${DEBUG_RETRO:-FALSE}
+case ${DEBUG_RETRO} in
+  TRUE)
+    EXPT_ID=${EXPT_ID:-det_c13_3dvar_gsi_regression_20261125}
+    RETRO_END=${RETRO_END:-20240506}
+    RETRO_END_HOUR=${RETRO_END_HOUR:-01}
+    STOP_AFTER_ANALYSIS=${STOP_AFTER_ANALYSIS:-FALSE}
+    DET_COLD_START_HRS=${DET_COLD_START_HRS:-"00 12"}
+    EXTRN_MDL_ICS_OFFSET_HRS=${EXTRN_MDL_ICS_OFFSET_HRS:-6}
+    GFS_FILE_FMT_ICS=${GFS_FILE_FMT_ICS-grib2}
+    FCST_LEN_HRS_LONG=${FCST_LEN_HRS_LONG:-3}
+    ;;
+  FALSE) ;;
+  *) echo "ERROR: DEBUG_RETRO must be TRUE or FALSE." >&2; return 1 2>/dev/null || exit 1 ;;
+esac
 EXPT_ID=${EXPT_ID:-det_c13_3dvar_gsi_baseline006}
 RRFS_SUITE=${RRFS_SUITE:-${EXPT_ID}}
 PRODCLONE_SUITE=${PRODCLONE_SUITE:-${RRFS_SUITE}_prod_clone}
+
+# ---------------------------------------------------------------------------------------------
+# Where the workflow writes
+# ---------------------------------------------------------------------------------------------
 
 # Keep model COM output under ptmp and job working files under stmp.
 RETRO_WORK_ROOT=${RETRO_WORK_ROOT:-/lfs/h2/emc/ptmp/${USER}/ecflow_rrfs}
@@ -90,22 +107,26 @@ export ECF_HOST=${ECFLOW_HOST}
 # fix tree; setup_retro_links.sh links <repo>/fix to it. The production package's tree has the
 # workflow.conf_dev and _prod files the retro needs; NCO may remove a version once the next is
 # installed, so update the version here (or link a copy of your own) when the links break.
-FIX_RRFS_DIR=${FIX_RRFS_DIR:-/lfs/h1/ops/prod/packages/rrfs.v1.0.28/fix}
+FIX_RRFS_DIR=${FIX_RRFS_DIR:-/lfs/h1/ops/prod/packages/rrfs.v1.0.29/fix}
 # dev-sci's shared fix tree; the domain files (ecf/defs/retro/domains) link other grids' fix files
 # from it
 FIX_RRFS_SHARED=${FIX_RRFS_SHARED:-/lfs/h2/emc/lam/noscrub/emc.lam/FIX_RRFS}
 # staged upstream data in NCO COM/DCOM layout (see make_links.sh in that directory)
 RETRO_DATA_ROOT=${RETRO_DATA_ROOT:-/lfs/h2/emc/lam/noscrub/samuel.degelia/RRFS_RETRO_DATA_NCO}
-# Coarser domains (strip when merging to the nco branch): the model domain. RRFS_NA_3km
-# is the operational v1 domain and changes nothing; any other value needs
-# ecf/defs/retro/domains/<DOMAIN>.sh with its grid, fix files and job sizes.
+# The historical observations for this retro are staged under obsproc v1.2.
+RETRO_OBSPROC_VER=${RETRO_OBSPROC_VER:-v1.2}
 DOMAIN=${DOMAIN:-RRFS_CONUS_13km}
+# Deterministic GSI analysis-grid ratio; independent of JEDI's GSIBEC ratio.
+GSI_GRID_RATIO=${GSI_GRID_RATIO:-1.0}
 
 # ---------------------------------------------------------------------------------------------
 # Retro period and suite
 # ---------------------------------------------------------------------------------------------
 RETRO_START=${RETRO_START:-20240506}      # first retro day, and the day that cold starts
 RETRO_END=${RETRO_END:-20240512}          # last retro day
+# An optional final hour and analysis-only stop shorten a chain-layout retro.
+RETRO_END_HOUR=${RETRO_END_HOUR:-23}
+STOP_AFTER_ANALYSIS=${STOP_AFTER_ANALYSIS:-FALSE}
 # Cycles run at once; increasing beyond 2 could break satbias cycling
 # Chains run back to back below 13; 13 or more lets the next chain start alongside the current one
 CYCLE_THROTTLE=${CYCLE_THROTTLE:-2}
@@ -155,6 +176,7 @@ DO_LONG_FORECAST=${DO_LONG_FORECAST:-TRUE}
 # rewritten: a step taken out of the middle of a chain hands on its own dependencies, so what
 # followed it keeps its place in the order rather than starting as soon as the cycle opens.
 
+
 # The deterministic spin-up cycles (03-08z and 15-20z in operations) and their 1 h forecasts.
 # With them off, the cold start moves into the production cycle at DET_COLD_START_HRS, which
 # exrrfs_prep_cyc.sh and exrrfs_process_radar.sh already do when DO_SPINUP is FALSE.
@@ -193,8 +215,11 @@ RUN_POST=${RUN_POST:-TRUE}                # post and products; FALSE for a DA-on
 RUN_SUBHOURLY_POST=${RUN_SUBHOURLY_POST:-FALSE}
 # Archive completed deterministic cycles separately for each experiment.
 DO_ARCHIVE_RETRO=${DO_ARCHIVE_RETRO:-TRUE}
-ARCHIVE_ROOT=${ARCHIVE_ROOT:-/NCEPDEV/emc-meso/5year/${USER}/RRFSv1/May2024_retro/v1.2.0}
+# HPSS may require the RDHPCS account spelling rather than the WCOSS2 username.
+RDHPCS_USER=${RDHPCS_USER:-Donald.E.Lippi}
+ARCHIVE_ROOT=${ARCHIVE_ROOT:-/NCEPDEV/emc-meso/5year/${RDHPCS_USER}/RRFSv1/May2024_retro/v1.2.0}
 ARCHIVEDIR=${ARCHIVEDIR:-${ARCHIVE_ROOT}/${EXPT_ID}}
+
 # JEDI analysis, the Rocoto config.sh "JEDI options". DA_SYSTEM_DET picks which det analysis
 # runs, GSI (the operational route) or JEDI; the rest are read only when it is JEDI.
 # setup_retro_links.sh writes them into det/workflow.conf and make_rrfs_retro_def.sh sizes the
@@ -208,7 +233,7 @@ JCB_CONFIG_DBZ=${JCB_CONFIG_DBZ-rdas-atmosphere-templates-fv3_c13_dbz.yaml}
 # Whether the analysis also runs on cold-start cycles, and whether synthetic radiosonde
 # temperature and humidity levels are added the way GSI's sonde_ext does
 DO_DACOLD=${DO_DACOLD:-FALSE}
-EXT_SONDE=${EXT_SONDE:-FALSE}
+EXT_SONDE=${EXT_SONDE:-TRUE}
 # Job size. Nodes x tasks per node must match the template's layout,
 # Walltimes for the 13 km retro tasks. These config values override the task-card defaults.
 WALLTIME_ARCHIVE_RETRO=${WALLTIME_ARCHIVE_RETRO:-00:12:00}
@@ -226,7 +251,6 @@ WALLTIME_DET_PREP_CYC=${WALLTIME_DET_PREP_CYC:-00:12:00}
 WALLTIME_DET_PROCESS_BUFR=${WALLTIME_DET_PROCESS_BUFR:-00:12:00}
 WALLTIME_DET_SAVE_RESTART=${WALLTIME_DET_SAVE_RESTART:-00:12:00}
 WALLTIME_DET_SAVE_RESTART_LONG=${WALLTIME_DET_SAVE_RESTART_LONG:-00:12:00}
-
 
 # the 14x14 layout in the c13 templates: 196 tasks
 NNODES_ANALYSIS_JEDI=${NNODES_ANALYSIS_JEDI:-2}

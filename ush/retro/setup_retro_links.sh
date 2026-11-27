@@ -27,6 +27,15 @@ ecf_dir=${repo}/ecf
 . "${ecf_dir}/defs/retro/load_config.sh"
 : "${FIX_RRFS_DIR:?retro/config.sh must set FIX_RRFS_DIR}"
 
+# Reject unsupported GSI ratios before changing the suite's generated files.
+if [ -n "${GSI_GRID_RATIO:-}" ]; then
+  case ${GSI_GRID_RATIO} in
+    1|1.0) GSI_GRID_RATIO=1.0 ;;
+    2|2.0) GSI_GRID_RATIO=2.0 ;;
+    *) echo "FATAL: GSI_GRID_RATIO must be 1, 1.0, 2, or 2.0." >&2; exit 1 ;;
+  esac
+fi
+
 # cpreq comes from prod_util; on Ursa that is modulefiles/run_ursa.lua (spack-stack). The machine
 # decides this rather than retro/config.sh, since the modules are what that machine has.
 if [ "${MACHINE}" = "URSA" ]; then
@@ -154,6 +163,12 @@ for wgf in det enkf ensf; do
       s/^( *layout *= *).*/\1${NML_LAYOUT}/; ${NML_SED_EXTRA:-}" "${fl}"
   done
 done
+
+# Apply the deterministic GSI ratio after the domain defaults without changing EnKF settings.
+if [ -n "${GSI_GRID_RATIO:-}" ]; then
+  printf "\n# GSI analysis-grid ratio from the retro config\nexport grid_ratio_fv3='%s'\n" \
+    "${GSI_GRID_RATIO}" >> "${fix_dir}/workflow/det/workflow.conf"
+fi
 
 # ---------------------------------------------------------------------------------------------
 # A simplified retro: the same switches the Rocoto workflow's ush/config.sh turns off for a short
